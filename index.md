@@ -2,7 +2,7 @@
 
 ## **Warning**
 
- - This document and the library it describes are *very opiniated*.
+ - This document and the library it describes are opiniated.
  - This is work in progress. Expect frequent changes.
 
 Before starting, let's present a bit of history.
