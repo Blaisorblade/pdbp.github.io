@@ -55,7 +55,7 @@ It is perfectly fine to read this introduction *diagonally*.
 
 ### **Introducing `FP`**
 
-In his Turing Award winning lecture, John Backus describes the [*function level* programming language `FP`](https://en.wikipedia.org/wiki/FP_%28programming_language). 
+In his Turing Award winning lecture, John Backus describes the [*function level* programming language `FP`](https://en.wikipedia.org/wiki/FP_(programming_language)). 
 
 The `FP` programming language consists of *objects*, *programs*, *forms* and *definitions*, where
 
