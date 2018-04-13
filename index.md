@@ -9,12 +9,16 @@ I worked as a
 I am retired now.
 
 I am having fun with Maritza
-  - cycling with my race bike (climbing mountains, ...)
-  - gardening in my green house (lettuce, cauliflower, tomato, bell pepper, ...)
+  - cycling with our race bicycles (climbing mountains, ...)
+  - gardening in our green house (lettuce, cauliflower, tomato, bell pepper, ...)
 
-Below is a link to picture of me and my wife, cycling in the French Alps.
+Below is a link to picture, taken by a friend, of me and my wife, cycling in the French Alps.
 
 [Luc and Maritza](./pictures/LucAndMaritza.JPG)
+
+Below is a link to picture of a radish I picked out out greenhouse 5 minutes ago.
+
+[Radish](./pictures/Radijs.png)
 
 As a hobby I am still
   - programming (bridging the gap between mathematical theory and programming practice)
@@ -26,10 +30,10 @@ All comments are welcome at [ pdbp.blog at gmail.com ]
 ## **Warning**
 
 First, let me be clear about the following
- - This document and the library it describes are opiniated.
+ - Both this document and the library it describes are opiniated.
 
 Second, this document is work in progress
- - major changes are documented in section [Changes](#changes).
+ - Major changes are documented in section [Changes](#changes).
 
 ## **History**
 
