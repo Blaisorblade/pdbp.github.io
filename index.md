@@ -500,7 +500,7 @@ object bindingOperator {
 The *square root of the sum of the squares* of `z` and `y` can be defined as
 
  - `squareRoot(z * z + y * y)` in a expression oriented, argument binding (function application) based way.
- - `squares andThen sum andThen squareRoot(z,y)` in a function oriented, function composition based way.
+ - `(squares andThen sum andThen squareRoot)(z,y)` in a function oriented, function composition based way.
 
 The code below illustrates how to go from the former to the latter.
 
@@ -563,7 +563,9 @@ and
 
 where
 
- - `squares andThen sum andThen squareRoot`, the top level function of `result06` and `result07` is a pointfree function composition expression.
+ - `squares andThen sum andThen squareRoot`, the function level expression of `result06` and `result07`, is a pointfree function composition expression.
+
+Note that argument binding naturally reads from left to right.
 
 ## AppendixDefiningDescriptions
 
