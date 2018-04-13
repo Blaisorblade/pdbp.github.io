@@ -16,7 +16,7 @@ Below is a link to picture, taken by a friend, of me and my wife, cycling in the
 
 [Luc and Maritza](./pictures/LucAndMaritza.JPG)
 
-Below is a link to picture of a radish I picked out out greenhouse 5 minutes ago.
+Below is a link to picture of a radish I picked out of my greenhouse 5 minutes ago.
 
 [Radish](./pictures/Radijs.png)
 
