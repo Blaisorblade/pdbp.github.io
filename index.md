@@ -468,7 +468,7 @@ Hopefully, the statements above sounds exiting to both programmers with and prog
 
 # Appendices
 
-## AppendixFunctionsAndExpressions
+## **AppendixFunctionsAndExpressions**
 
 Recall that
 
@@ -567,7 +567,7 @@ where
 
 Note that argument binding naturally reads from left to right.
 
-## AppendixDefiningDescriptions
+## **AppendixDefiningDescriptions**
 
 ### **Descriptions in terms of declared capabilities**
 
@@ -634,7 +634,7 @@ Think of descriptions as *recipes*
 
 At this moment no definition of the declared capability has been provided yet!
 
-## AppendixLanguageLevelMeaning
+## **AppendixLanguageLevelMeaning**
 
 ### **Define declared capabilities**
 
@@ -715,11 +715,11 @@ In particular, for *type classes*, like `trait Containing`, dependency injection
  - Defining an appropriate `implicit object`.
  - Doing an appropriate `import` of an `object` that depends on that `implicit object`.
 
-## AppendixLibraryLevelMeaning
+## **AppendixLibraryLevelMeaning**
 
 TBD
 
-## Changes
+## **Changes**
 
 
 
