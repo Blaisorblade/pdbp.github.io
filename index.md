@@ -1,5 +1,22 @@
 # **Program Description Based Programming**
 
+## **About me**
+
+I am Luc Duponcheel.
+
+I worked as a
+ - mathematician (research and education)
+ - programmer (research, education and consultancy)
+ 
+I am retired now having fun with
+  - cycling with my race bike (climbing mountains, ...)
+  - gardening in my green house (lettuce, cauliflower, tomato, bell pepper, ...)
+  - programming (bridging the gap between theory and practice)
+
+Below is a picture of me and my wife, cycling in the French Alps.
+
+[Luc and Maritza](./pictures/LucAndMaritza.JPG)
+
 ## **Warning**
 
  - This document and the library it describes are opiniated.
