@@ -17,7 +17,7 @@ object LanguageLevelMeaning {
 
   case class Box[+Z](unbox: Z)
 
-  implicit object box extends Containing[Box] {
+  implicit object implicitBox extends Containing[Box] {
 
     override def contain[Z](z: Z): Box[Z] = Box(z)
 
@@ -25,7 +25,7 @@ object LanguageLevelMeaning {
 
   case class Wrap[+Z](unwrap: Z)
 
-  implicit object wrap extends Containing[Wrap] {
+  implicit object implicitWrap extends Containing[Wrap] {
 
     override def contain[Z](z: Z): Wrap[Z] = Wrap(z)
 

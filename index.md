@@ -136,7 +136,6 @@ The painting above is not a pipe, it is a *description* of a pipe.
 
 `trait Program` exposes a *pointfree* programming API for *application developers*.
 All it's capabilities are `public`, the default in `Dotty`.
-Pointfree programming using `trait Program` is *program oriented* and *composition* based.
 
 Below is a `factorial` program written using `trait Program`'s API .
 
@@ -160,6 +159,11 @@ In a way programs generalize functions.
  - A program also, *somehow*, transforms *program arguments* to yield a *program result*. 
 
 When there is no danger of confusion we are simply going to write *arguments* and *result*, not mentioning *function* or *program*.
+
+To finish
+
+ - pointfree programming using `trait Program` is *program oriented* and *program composition* based.
+
 
 ### **Introducing `trait Computation`**
 
@@ -192,7 +196,6 @@ We hope that this does not lead to any confusion.
 
 `trait Computation` exposes a *pointful* programming API for *library developers*.
 All it's capabilities are `private[pdbp]`.
-Pointful programming using `trait Computation` is *computation oriented* and *result binding* based.
 
 In a way computations generalize *expressions*. 
 
@@ -200,6 +203,11 @@ In a way computations generalize *expressions*.
  - A computation *execution* also, *somehow*, yields a *computation result*. 
 
 When there is no danger of confusion we are simply going to write *result*, not mentioning *expression* or *computation*.
+
+To finish
+
+ - pointful programming using `trait Computation` is *computation oriented* and *result binding* based.
+
 
 ### **Power of expression**
 
@@ -264,8 +272,8 @@ Recall that
  - In a way, computations generalize expressions.
 
 [AppendixFunctionsAndExpressions](#appendixfunctionsandexpressions) has demo code that compares 
- - pointful expression oriented and result binding (function application) based programming,
- - pointfree function oriented and composition (function composition) based programming. 
+ - pointful expression oriented and function application (argument binding) based programming,
+ - pointfree function oriented and function composition based programming. 
 
 #### **About descriptions (for those who are a bit impatient)**
 
@@ -472,7 +480,7 @@ Hopefully, the statements above sounds exiting to both programmers with and prog
 
 Recall that
 
- - Pointful programming with computations is, in a way, similar to expression oriented, argument binding (function application) based programming with value level expressions.
+ - Pointful programming with computations is, in a way, similar to expression oriented, function application (argument binding) based programming with value level expressions.
  - Pointfree programming with programs is, in a way, similar to function oriented, function composition based programming with function level expressions.
 
 This appendix compares pointful and pointfree programming.
@@ -499,71 +507,65 @@ object bindingOperator {
 
 The *square root of the sum of the squares* of `z` and `y` can be defined as
 
- - `squareRoot(z * z + y * y)` in a expression oriented, argument binding (function application) based way.
- - `(squares andThen sum andThen squareRoot)(z,y)` in a function oriented, function composition based way.
+ - `squareRoot(z * z + y * y)`
+   - where the *value level expression* `squareRoot(z * z + y * y)` is pointful, expression oriented and function application based.
 
-The code below illustrates how to go from the former to the latter.
+It can also be defined as
+ - `(squares andThen sum andThen squareRoot) apply (z, y)` or `(z, y)  bind (squares andThen sum andThen squareRoot)` 
+   - where the *function level expression* `squares andThen sum andThen squareRoot` is pointfree, function oriented and function composition based.
+
+The code below illustrates, among others, how to go from the former one to the latter ones.
 
 ```scala
 import scala.math.{sqrt => squareRoot}
+
+import bindingOperator.BindingOperator
 
 object FunctionsAndExpressions {
 
   val z = 3.0
   val y = 4.0
 
-  val square: Double => Double =
-    z => z * z
-
   type &&[+Z, +Y] = Tuple2[Z, Y]
-
-  val sum: Double && Double => Double =
-    (z, y) => z + y
-
-  val squares: Double && Double => Double && Double =
-    (z, y) => (square(z), square(y))
 
   def main(args: Array[String]): Unit = {
 
     val result01: Double = squareRoot(z * z + y * y)
+
+    val square: Double => Double =
+      z => z * z
+
     val result02: Double = squareRoot(square(z) + square(y))
+
+    val sum: Double && Double => Double =
+      (z, y) => z + y
+
     val result03: Double = squareRoot(sum(square(z), square(y)))
+
+    val squares: Double && Double => Double && Double =
+      (z, y) => (square(z), square(y))
+
     val result04: Double = squareRoot(sum(squares(z, y)))
-
     val result05: Double = (squares andThen sum andThen squareRoot)(z, y)
+
     val result06: Double = (squares andThen sum andThen squareRoot) apply (z, y)
-
-    import bindingOperator.BindingOperator
-
     val result07: Double = (z, y) bind (squares andThen sum andThen squareRoot)
+
+    val result08: Double = (z, y) bind squares bind sum bind squareRoot
 
     println(result01)
     println(result02)
     println(result03)
     println(result04)
- 
     println(result05)
     println(result06)
-
     println(result07)
+    println(result08)
 
   }
 
 }
 ```
-
- - `result01` uses a pointful expression that is a top level function application expression with nested operator expressions,
- - ...
- - `result04` uses a pointful expression that is a nested function application expression,
-
-and
-
- - `result05` and `result06` use a pointful expression that is a top level function application expression,
- - `result07` uses a pointful expression that is a top level argument binding expression,
-
-where
-
- - `squares andThen sum andThen squareRoot`, the function level expression of `result06` and `result07`, is a pointfree function composition expression.
 
 Note that argument binding naturally reads from left to right.
 
@@ -622,7 +624,7 @@ We can already start defining some, agreed, very simple, descriptions in terms o
 ```
 
 The type class `trait SomeValuesContainedIn[C[+ _]: Containing]`, declares `C[+ _]` to *implicitly* have the capability to contain a value. 
-It defines descriptions `containedZero` and `containedTrue` in terms of this `implicitly` available capability. 
+It defines descriptions `containedZero` and `containedTrue` using this `implicitly` available capability. 
 
 Think of descriptions as *recipes*
 
@@ -638,37 +640,35 @@ At this moment no definition of the declared capability has been provided yet!
 
 ### **Define declared capabilities**
 
-Let's go ahead and provide a *first definition* of the declared capability in an `object LanguageLevelMeaning`.
+Let's go ahead and provide a first definition of the declared capability in an `object LanguageLevelMeaning`.
 
 ```scala
   case class Box[+Z](unbox: Z)
 
-  implicit object box extends Containing[Box] {
+  implicit object implicitBox extends Containing[Box] {
 
     override def contain[Z](z: Z): Box[Z] = Box(z)
 
   }
 ```
 
-`box` is an `implicit object` that defines the capability `contain` that is declared in `trait Containing`. 
-
-At this moment *one* definition of the declared capability has been provided.
+`implicitBox` is an `implicit object` that defines the capability `contain` that is declared in `trait Containing`. 
 
 ### **Define declared capabilities revisited**
 
-Let's go ahead and provide a *second definition* of the declared capability in `object LanguageLevelMeaning`.
+Let's go ahead and provide a second definition of the declared capability in `object LanguageLevelMeaning`.
 
 ```scala
   case class Wrap[+Z](unwrap: Z)
 
-  implicit object wrap extends Containing[Wrap] {
+  implicit object implicitWrap extends Containing[Wrap] {
 
     override def contain[Z](z: Z): Wrap[Z] = Wrap(z)
 
   }
 ```
 
-`wrap` is an `implicit object` that defines the capability that is declared in `trait Containing`. 
+`implicitWrap` is an `implicit object` that defines the capability that is declared in `trait Containing`. 
 
 ### **Language level meaning**
 
@@ -677,7 +677,7 @@ Think of a them as *language level meanings*
 
 ### **Defining descriptions in terms of defined capabilities**
 
-This simply boils down to defining `object someBoxedValues` that depends on `implicit object box`
+This simply boils down to defining `object someBoxedValues` that depends on `implicit object implicitBox`
 
 ```scala
   object someBoxedValues extends SomeValuesContainedIn[Box]()
@@ -685,7 +685,7 @@ This simply boils down to defining `object someBoxedValues` that depends on `imp
 
 ### **Defining descriptions in terms of defined capabilities revisited**
 
-This simply boils down to defining `object someWrappedValues` that depends on `implicit object wrap`
+This simply boils down to defining `object someWrappedValues` that depends on `implicit object implicitWrap`
 
 ```scala
   object someWrappedValues extends SomeValuesContainedIn[Wrap]()
@@ -714,6 +714,34 @@ In particular, for *type classes*, like `trait Containing`, dependency injection
 
  - Defining an appropriate `implicit object`.
  - Doing an appropriate `import` of an `object` that depends on that `implicit object`.
+
+### **Use descriptions revisited**
+
+We can now use wrapped values
+
+```scala
+  def usingWrappedValues: Unit = {
+
+    import someWrappedValues._
+
+    println(containedZero)
+    println(containedTrue)
+
+  }
+```
+
+Again we use dependency injection by `import`.
+
+### **Summary**
+
+The most important takeway is that, once the `import` has been done, the rest of the code 
+```scala
+    println(containedZero)
+    println(containedTrue)
+```
+is the same for `usingBoxedValues` and `usingWrappedValues`.
+
+In this case we talk about only two lines of code, but, hopefully, you get the point.
 
 ## **AppendixLibraryLevelMeaning**
 
