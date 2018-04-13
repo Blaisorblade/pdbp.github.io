@@ -2,22 +2,26 @@
 
 ## **About me**
 
-I am Luc Duponcheel.
-
 I worked as a
  - mathematician (research and education)
  - programmer (research, education and consultancy)
  
 I am retired now.
 
-I am having fun with
+I am having fun with Maritza
   - cycling with my race bike (climbing mountains, ...)
   - gardening in my green house (lettuce, cauliflower, tomato, bell pepper, ...)
-  - programming (bridging the gap between theory and practice)
 
-Below is a picture of me and my wife, cycling in the French Alps.
+Below is a link to picture of me and my wife, cycling in the French Alps.
 
 [Luc and Maritza](./pictures/LucAndMaritza.JPG)
+
+As a hobby I am still
+  - programming (bridging the gap between mathematical theory and programming practice)
+
+I hope you enjoy the document below.
+
+All comments are welcome at [ pdbp.blog at gmail.com ]
 
 ## **Warning**
 
@@ -245,7 +249,7 @@ Recall that
  - In a way, programs generalize functions. 
  - In a way, computations generalize expressions.
 
-*AppendixFunctionsAndExpressions* has demo code that compares 
+[AppendixFunctionsAndExpressions](#appendixFunctionsAndExpressions) has demo code that compares 
  - pointful expression oriented and result binding (function application) based programming
  - pointfree function oriented and composition (function composition) based programming 
 
@@ -256,7 +260,7 @@ Recall that
  - Program descriptions are defined in terms of programming capabilities that are declared in the type class `trait Program`.
  - Computation descriptions are defined in terms of computational capabilities that are declared in the type class `trait Computation`.
 
-*AppendixDefiningDescriptions* has demo code where descriptions are defined in terms of capabilities that are declared in a type class.
+[AppendixDefiningDescriptions](#appendixDefiningDescriptions) has demo code where descriptions are defined in terms of capabilities that are declared in a type class.
 
 ### **Elegance of use**
 
@@ -371,9 +375,9 @@ Note that `factorial` is a *recursive* program description.
 It can be given both a *stack unsafe* meaning and a *stack safe* meaning.
 The stack safe meaning simply uses the *heap* instead of the *stack*.
 
-*AppendixLanguageLevelMeaning* has demo code where meanings are described at the *language level*.
+[AppendixLanguageLevelMeaning](#appendixLanguageLevelMeaning) has demo code where meanings are described at the *language level*.
 
-*AppendixLibraryLevelMeaning* has demo code where meanings are described at the *library level*.
+[AppendixLibraryLevelMeaning](#appendixLibraryLevelMeaning) has demo code where meanings are described at the *library level*.
 
 #### **Extra programming capabilities**
 
@@ -435,6 +439,24 @@ Here is the good news.
  - **Pointful computation description based library programming naturally leads to deep insights into the nature of computations since it allows you to reason at a powerful (and reasonably elegant) level of abstraction.** 
 
 Hopefully, the statements above sounds exiting to both programmers with and programmers without a background in computer science.
+
+# Appendices
+
+## AppendixFunctionsAndExpressions
+
+TBD
+
+## AppendixDefiningDescriptions
+
+TBD
+
+## AppendixLanguageLevelMeaning
+
+TBD
+
+## AppendixLibraryLevelMeaning
+
+TBD
 
 ## Changes
 
