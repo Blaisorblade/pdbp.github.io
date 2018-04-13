@@ -8,7 +8,9 @@ I worked as a
  - mathematician (research and education)
  - programmer (research, education and consultancy)
  
-I am retired now having fun with
+I am retired now.
+
+I am having fun with
   - cycling with my race bike (climbing mountains, ...)
   - gardening in my green house (lettuce, cauliflower, tomato, bell pepper, ...)
   - programming (bridging the gap between theory and practice)
@@ -19,12 +21,15 @@ Below is a picture of me and my wife, cycling in the French Alps.
 
 ## **Warning**
 
+First, let me be clear about the following
  - This document and the library it describes are opiniated.
- - This is work in progress. Expect frequent changes.
 
-Before starting, let's present a bit of history.
+Second, This is work in progress
+ - major changes are documented in section [Changes](#changes).
 
 ## **History**
+
+Before starting, let's present a bit of history.
 
 In 1977, [John Backus](https://en.wikipedia.org/wiki/John_Backus) was an [ACM](https://www.acm.org/) [A.M. Turing Award Winner](https://amturing.acm.org/award_winners/backus_0703524.cfm).
 The title of his Turing Award winning lecture was 
@@ -431,7 +436,7 @@ Here is the good news.
 
 Hopefully, the statements above sounds exiting to both programmers with and programmers without a background in computer science.
 
-
+## Changes
 
 
 
