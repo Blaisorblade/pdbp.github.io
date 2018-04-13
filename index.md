@@ -28,7 +28,7 @@ All comments are welcome at [ pdbp.blog at gmail.com ]
 First, let me be clear about the following
  - This document and the library it describes are opiniated.
 
-Second, This is work in progress
+Second, this document is work in progress
  - major changes are documented in section [Changes](#changes).
 
 ## **History**
@@ -249,7 +249,7 @@ Recall that
  - In a way, programs generalize functions. 
  - In a way, computations generalize expressions.
 
-[AppendixFunctionsAndExpressions](#appendixFunctionsAndExpressions) has demo code that compares 
+[AppendixFunctionsAndExpressions](#appendixfunctionsandexpressions) has demo code that compares 
  - pointful expression oriented and result binding (function application) based programming
  - pointfree function oriented and composition (function composition) based programming 
 
@@ -260,7 +260,7 @@ Recall that
  - Program descriptions are defined in terms of programming capabilities that are declared in the type class `trait Program`.
  - Computation descriptions are defined in terms of computational capabilities that are declared in the type class `trait Computation`.
 
-[AppendixDefiningDescriptions](#appendixDefiningDescriptions) has demo code where descriptions are defined in terms of capabilities that are declared in a type class.
+[AppendixDefiningDescriptions](#appendixdefiningdescriptions) has demo code where descriptions are defined in terms of capabilities that are declared in a type class.
 
 ### **Elegance of use**
 
@@ -375,9 +375,9 @@ Note that `factorial` is a *recursive* program description.
 It can be given both a *stack unsafe* meaning and a *stack safe* meaning.
 The stack safe meaning simply uses the *heap* instead of the *stack*.
 
-[AppendixLanguageLevelMeaning](#appendixLanguageLevelMeaning) has demo code where meanings are described at the *language level*.
+[AppendixLanguageLevelMeaning](#appendixlanguagelevelmeaning) has demo code where meanings are described at the *language level*.
 
-[AppendixLibraryLevelMeaning](#appendixLibraryLevelMeaning) has demo code where meanings are described at the *library level*.
+[AppendixLibraryLevelMeaning](#appendixlibrarylevelmeaning) has demo code where meanings are described at the *library level*.
 
 #### **Extra programming capabilities**
 
