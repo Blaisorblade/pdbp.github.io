@@ -199,7 +199,7 @@ In a way computations generalize *expressions*.
 
 When there is no danger of confusion we are simply going to write *result*, not mentioning *expression* or *computation*.
 
-### **Introducing `type Kleisli`**
+### **Power of expression**
 
 In 2008, Conor McBride and Ross Paterson described *applicatives* (a.k.a. *idioms*) and used them in `Haskell` in 
 [*Applicative programming with effects*](http://www.staff.city.ac.uk/~ross/papers/Applicative.pdf).
@@ -211,6 +211,8 @@ In 2008, Sam Lindley, Philip Wadler and Jeremy Yallop compared the *power of exp
  - Applicatives have least power of expression. 
  - Arrows are in between.
 
+### **Introducing `type Kleisli`**
+
 Recall that
 
  - Monads naturally lead to a pointful programming style. 
@@ -221,7 +223,7 @@ But
  - Monad based computations can use a pointfree programming style by making use of [*Kleisli categories*](https://en.wikipedia.org/wiki/Kleisli_category). 
  - Arrow based programs can use a pointful programming style by making use of [*arrow calculus*](http://homepages.inf.ed.ac.uk/slindley/papers/arrow-calculus.pdf).
 
-**Our library goes for programming monads in a pointfree style using Kleisli functions.**
+The `PDBP` library goes for programming monads in a pointfree style using Kleisli categories.
 
 The `with Program[[-Z, + Y] => Z => M[Y]]` part of `trait Computation`, which states that computations have more power of expression than programs, is a bit verbose.
 
@@ -252,7 +254,7 @@ private[pdbp] trait Computation[M[+ _]]
     with Program[Kleisli[M]]
 ```  
 
-#### **About functions and expressions**
+#### **About functions and expressions (for those who are a bit impatient)**
 
 Recall that
 
@@ -260,10 +262,10 @@ Recall that
  - In a way, computations generalize expressions.
 
 [AppendixFunctionsAndExpressions](#appendixfunctionsandexpressions) has demo code that compares 
- - pointful expression oriented and result binding (function application) based programming
- - pointfree function oriented and composition (function composition) based programming 
+ - pointful expression oriented and result binding (function application) based programming,
+ - pointfree function oriented and composition (function composition) based programming. 
 
-#### **About descriptions**
+#### **About descriptions (for those who are a bit impatient)**
 
 Recall that
 
@@ -283,7 +285,7 @@ It is possible to *extend the language* in a *type safe* way at the *library* le
 
 By using a *domain specific language for the domain of programs*, program description based programming can be done in a very elegant way.
 
-**Of course, elegance of use is a highly subjective concept.** 
+Of course, elegance of use is a highly subjective concept. 
 
 #### **informal explanantion of `factorial`**
 
@@ -306,31 +308,33 @@ Consider, again, the program description of `factorial`
 Below is an *informal explanation* of the *program fragments* of the `factorial` program description above
 
  - `isZero` is a program description of type `BigInt >--> Boolean`
-   - think of `isZero` as a *predicate* that transforms its argument to yield the result `true` if it is equal to `0` and to yield the result`false` otherwise 
+   - think of `isZero` as a *predicate* that transforms its argument to yield the result `true` if it is equal to `0` and to yield the result`false` otherwise,
  - `one` is a program description of type `BigInt >--> BigInt`
-   - think of `one` as a *constant function* that transforms its argument to yield the result `1`
+   - think of `one` as a *constant function* that transforms its argument to yield the result `1`,
  - `subtractOne` is a program description of type `BigInt >--> BigInt`
-   - think of `subtractOne` as a function that transforms its argument to yield the result obtained by *subtracting* `1` from it
+   - think of `subtractOne` as a function that transforms its argument to yield the result obtained by subtracting `1` from it,
  - `multiply` is a program description of type `(BigInt && BigInt) >--> BigInt`
-   - think of `multiply` as a function that transforms its *two* arguments to yield the result obtained by *multiplying* them
+   - think of `multiply` as a function that transforms its *two* arguments to yield the result obtained by multiplying them.
 
-  - `isZero`, `one` and `subtractOne` are programs with parameter type `BigInt`: one parameter of type `BigInt`.
+Note that
+
+  - `isZero`, `one` and `subtractOne` are programs with parameter type `BigInt`: one parameter of type `BigInt`,
   - `multiply` is a program with parameter type `BigInt && BigInt`: two parameters of type `BigInt`.
 
 Below is an *informal explanation* of the *program templates* of the `factorial` program description above
 
  - `first >--> second`  is part of the `Dotty` program description DSL related to `Composition`
-   - think of `first` as a *first* function that transforms an argument and `second`as a *second* function that transforms the result yielded by the first function  
+   - think of `first` as a *first* function that transforms an argument and `second`as a *second* function that transforms the result yielded by the first function,
  - `` `let` { constructNewUsingCurrent } `in` { useBothNewAndCurrent } `` is part of the `Dotty` program description DSL related to `Construction`
-   - note that `let` and `in` are between *backticks*
-   - think of `constructNew` as a function that *constructs* a *new* value using the *current* one
-   - think of `useBothNewAndCurrent` as a function that uses both the *new* value and the *current* value 
-   - together, the new value and the old current value become the new current value 
+   - note that `let` and `in` are between *backticks*,
+   - think of `constructNew` as a function that *constructs* a *new* value using the *current* one,
+   - think of `useBothNewAndCurrent` as a function that uses both the *new* value and the *current* value, 
+   - together, the new value and the old current value become the new current value,
  - `` `if`(predicate) { trueCase } `else` { falseCase } `` is part of the `Dotty` program description DSL related to `Condition`
-   - note that `if` and `else` are between *backticks*
-   - think of `predicate` as a predicate that tests the current value 
-   - if `true`, them function `trueCase` takes over control
-   - if `false`, them function `falseCase` takes over control
+   - note that `if` and `else` are between *backticks*,
+   - think of `predicate` as a predicate that tests the current value,
+   - if `true`, them function `trueCase` takes over control,
+   - if `false`, them function `falseCase` takes over control.
 
 Agreed, at first sight the pointfree `factorial` code above may seem a bit abstruse.
 Agreed, we explained the pointfree code above in a pointful way.
@@ -338,15 +342,16 @@ Agreed, we explained the pointfree code above in a pointful way.
 Once you get used to
  - ` ... >--> ... `, 
  - `` `if`(...) { ... } `else` { ... } ``,  
- - `` `let` { ... } `in` { ... } ``, 
+ - `` `let` { ... } `in` { ... } ``. 
+
 you will, hopefully, start appreciating the power of expression and elegance of use of pointfree code.
 
 
 ### **`FP` versus `PDBP`**
 
-There is an important difference between `FP` programs and `Dotty` programs. 
+There is an important difference between `FP` programs and `PDBP` programs. 
 
- - `FP` programs are *language* based.
+ - `FP` programs are `FP` *language* based.
  - `PDBP` programs are `Dotty` *library* based.
 
 Exploiting the *flexibility* that comes with this difference is one of the most important themes of the `PDBP` library.
@@ -418,7 +423,7 @@ Of course, eventually, for being useful at all, application code using `PDBP` ma
  - The meaning of `PDBP` I/O effect descriptions is *pushed to the boundaries of application code*.
  - `FP` I/O effects are executed *in the middle of library code*.
 
-A program description performing I/O can be given both an *effectfree* meaning for *testing* purposes and various *effectful* meanings for different deployment scenario's. 
+A program description performing I/O can be given both an *effectfree* meaning for *testing* purposes and various *effectful* meanings for different deployment purposes. 
 
 ### **Main goal of the `PDBP` library**
 
@@ -444,9 +449,18 @@ For some of you this introduction may have touched upon a lot of frightening stu
 
 Here is the good news.
 
- - **You only have to concentrate on power of expression, elegance of use and flexibility of meaning.** 
- - **Pointfree program description based application programming naturally leads to deep insights into the nature of programs since it requires you to reason at an elegant (and reasonably powerful) level of abstraction.** 
- - **Pointful computation description based library programming naturally leads to deep insights into the nature of computations since it allows you to reason at a powerful (and reasonably elegant) level of abstraction.** 
+ - For now, you only have to concentrate on
+   - power of expression, 
+   - elegance of use,
+ - The features below come in later
+   - flexible meanings
+   - extra capabilities
+   - pure I/0
+
+Moreover we claim that
+
+ - Pointfree program description based application programming naturally leads to deep insights into the nature of programs since it requires you, as an application developer, to reason at an elegant (and reasonably powerful) level of abstraction. 
+ - Pointful computation description based library programming naturally leads to deep insights into the nature of computations since it allows you, as a library developer, to reason at a powerful (and reasonably elegant) level of abstraction.
 
 Hopefully, the statements above sounds exiting to both programmers with and programmers without a background in computer science.
 
