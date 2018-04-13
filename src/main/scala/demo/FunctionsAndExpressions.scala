@@ -47,7 +47,7 @@ object FunctionsAndExpressions {
     println(result02)
     println(result03)
     println(result04)
- 
+
     println(result05)
     println(result06)
 

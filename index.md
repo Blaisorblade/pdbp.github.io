@@ -569,11 +569,151 @@ Note that argument binding naturally reads from left to right.
 
 ## AppendixDefiningDescriptions
 
-TBD
+### **Descriptions in terms of declared capabilities**
+
+This section describes how *descriptions* can be *defined* in terms of *capabilities* that are *declared* in a *type class*.
+
+```scala
+package demo
+
+object DefiningDescriptions {
+
+  trait Description[D[+ _]]
+
+  trait Containing[C[+ _]] extends Description[C] {
+
+    def contain[Z](z: Z): C[Z]
+
+  }
+
+  trait SomeValuesContainedIn[C[+ _]: Containing] {
+
+    val containedZero: C[Int] =
+      implicitly.contain(0)
+
+    val containedTrue: C[Boolean] =
+      implicitly.contain(true)
+
+  }
+
+}
+```
+
+`trait Description` is a *marker* `Dotty` type class. 
+
+`trait Containing` is a `Dotty` type class declaring the capability to *contain a value*.
+
+More precisely
+
+ - `Containing[C[+ _]]` declares `C[+ _]`'s capability, `contain`, to contain a value.
+
+We can already start defining some, agreed, very simple, descriptions in terms of this declared capability
+
+```scala
+  trait SomeValuesContainedIn[C[+ _]: Containing] {
+
+    val containedZero: C[Int] =
+      implicitly.contain(0)
+
+    val containedTrue: C[Boolean] =
+      implicitly.contain(true)
+
+  }
+```
+
+The type class `trait SomeValuesContainedIn[C[+ _]: Containing]`, declares `C[+ _]` to *implicitly* have the capability to contain a value. 
+It defines descriptions `containedZero` and `containedTrue` in terms of this `implicitly` available capability. 
+
+Think of descriptions as *recipes*
+
+ - Take `0` and apply `contain` to it to make `containedZero`. 
+   - Think of it as `0` contained in a, for now, *unknown* kind of, *one element container*.
+ - Take `true` and apply `contain` to it to make `containedTrue`.
+   - Think of it as `true` contained in a, for now unknown kind of, one element container.
+ - ... .
+
+At this moment no definition of the declared capability has been provided yet!
 
 ## AppendixLanguageLevelMeaning
 
-TBD
+### **Define declared capabilities**
+
+Let's go ahead and provide a *first definition* of the declared capability in an `object LanguageLevelMeaning`.
+
+```scala
+  case class Box[+Z](unbox: Z)
+
+  implicit object box extends Containing[Box] {
+
+    override def contain[Z](z: Z): Box[Z] = Box(z)
+
+  }
+```
+
+`box` is an `implicit object` that defines the capability `contain` that is declared in `trait Containing`. 
+
+At this moment *one* definition of the declared capability has been provided.
+
+### **Define declared capabilities revisited**
+
+Let's go ahead and provide a *second definition* of the declared capability in `object LanguageLevelMeaning`.
+
+```scala
+  case class Wrap[+Z](unwrap: Z)
+
+  implicit object wrap extends Containing[Wrap] {
+
+    override def contain[Z](z: Z): Wrap[Z] = Wrap(z)
+
+  }
+```
+
+`wrap` is an `implicit object` that defines the capability that is declared in `trait Containing`. 
+
+### **Language level meaning**
+
+So far we have defined `implicit object`'s that define the capabilities that are declared in the `Dotty` type class `trait Containing`.
+Think of a them as *language level meanings*
+
+### **Defining descriptions in terms of defined capabilities**
+
+This simply boils down to defining `object someBoxedValues` that depends on `implicit object box`
+
+```scala
+  object someBoxedValues extends SomeValuesContainedIn[Box]()
+```
+
+### **Defining descriptions in terms of defined capabilities revisited**
+
+This simply boils down to defining `object someWrappedValues` that depends on `implicit object wrap`
+
+```scala
+  object someWrappedValues extends SomeValuesContainedIn[Wrap]()
+```
+
+### **Use descriptions**
+
+We can now use boxed values
+
+```scala
+  def usingBoxedValues: Unit = {
+
+    import someBoxedValues._
+
+    println(containedZero)
+    println(containedTrue)
+
+  }
+```
+
+Some boxed values are made available using `import someBoxedValues._`.
+
+This technique, called *dependency injection by* `import`, is used a lot in `Dotty`. 
+
+In particular, for *type classes*, like `trait Containing`, dependency injection in `Dotty` boils down to
+
+ - Defining an appropriate `implicit object`.
+ - Doing an appropriate `import` of an `object` that depends on that `implicit object`.
 
 ## AppendixLibraryLevelMeaning
 
