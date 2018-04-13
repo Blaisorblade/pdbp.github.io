@@ -63,7 +63,7 @@ The `FP` programming language consists of *objects*, *programs*, *forms* and *de
  - a form transforms programs to a program,
  - a definition defines a program or a form in terms of programs and forms.
 
-Think of forms as *program templates* and programs transformed by them as *program fragments*, or *program components* that can be plugged into them to obtain a *composite program*.
+Think of forms as *program templates* and programs transformed by them as *program fragments*, or *program components*, that can be plugged into them to obtain a *composite program*.
 
 The `FP` forms are 
 
@@ -125,6 +125,12 @@ Program descriptions are *defined* in terms of *programming capabilities* that a
 
 By abuse of notation, we often simply refer to program descriptions as *programs*. 
 We hope that this does not lead to any confusion.
+
+Compare this with the famous painting [Ceci n'est pas une pipe](https://en.wikipedia.org/wiki/The_Treachery_of_Images) of [René Magritte](https://en.wikipedia.org/wiki/Ren%C3%A9_Magritte) below
+
+[Ceci n'est pas une pipe](./pictures/pipe.png)
+
+The painting above is not a pipe, it is a *description* of a pipe.
 
 `trait Program` exposes a *pointfree* programming API for *application developers*.
 All it's capabilities are `public`, the default in `Dotty`.
