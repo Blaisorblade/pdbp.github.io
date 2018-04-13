@@ -126,7 +126,9 @@ Program descriptions are *defined* in terms of *programming capabilities* that a
 By abuse of notation, we often simply refer to program descriptions as *programs*. 
 We hope that this does not lead to any confusion.
 
-Compare this with the famous painting [Ceci n'est pas une pipe](https://en.wikipedia.org/wiki/The_Treachery_of_Images) of [René Magritte](https://en.wikipedia.org/wiki/Ren%C3%A9_Magritte) below
+Compare this with the famous painting [Ceci n'est pas une pipe](https://en.wikipedia.org/wiki/The_Treachery_of_Images) of [René Magritte](https://en.wikipedia.org/wiki/Ren%C3%A9_Magritte). 
+
+Below is a link to a picture of the painting.
 
 [Ceci n'est pas une pipe](./pictures/pipe.png)
 
@@ -468,7 +470,100 @@ Hopefully, the statements above sounds exiting to both programmers with and prog
 
 ## AppendixFunctionsAndExpressions
 
-TBD
+Recall that
+
+ - Pointful programming with computations is, in a way, similar to expression oriented, argument binding (function application) based programming with value level expressions.
+ - Pointfree programming with programs is, in a way, similar to function oriented, function composition based programming with function level expressions.
+
+This appendix compares pointful and pointfree programming.
+
+### **BindingOperator**
+
+The `implicit class` below formalizes argument binding
+
+```scala
+package demo
+
+object bindingOperator {
+
+  implicit class BindingOperator[Z](z: Z) {
+
+    def bind[Y](`z=>y`: Z => Y) = `z=>y` apply z
+
+  }
+
+}
+```
+
+### **Square root of sum of squares**
+
+The *square root of the sum of the squares* of `z` and `y` can be defined as
+
+ - `squareRoot(z * z + y * y)` in a expression oriented, argument binding (function application) based way.
+ - `squares andThen sum andThen squareRoot(z,y)` in a function oriented, function composition based way.
+
+The code below illustrates how to go from the former to the latter.
+
+```scala
+import scala.math.{sqrt => squareRoot}
+
+object FunctionsAndExpressions {
+
+  val z = 3.0
+  val y = 4.0
+
+  val square: Double => Double =
+    z => z * z
+
+  type &&[+Z, +Y] = Tuple2[Z, Y]
+
+  val sum: Double && Double => Double =
+    (z, y) => z + y
+
+  val squares: Double && Double => Double && Double =
+    (z, y) => (square(z), square(y))
+
+  def main(args: Array[String]): Unit = {
+
+    val result01: Double = squareRoot(z * z + y * y)
+    val result02: Double = squareRoot(square(z) + square(y))
+    val result03: Double = squareRoot(sum(square(z), square(y)))
+    val result04: Double = squareRoot(sum(squares(z, y)))
+
+    val result05: Double = (squares andThen sum andThen squareRoot)(z, y)
+    val result06: Double = (squares andThen sum andThen squareRoot) apply (z, y)
+
+    import bindingOperator.BindingOperator
+
+    val result07: Double = (z, y) bind (squares andThen sum andThen squareRoot)
+
+    println(result01)
+    println(result02)
+    println(result03)
+    println(result04)
+ 
+    println(result05)
+    println(result06)
+
+    println(result07)
+
+  }
+
+}
+```
+
+ - `result01` uses a pointful expression that is a top level function application expression with nested operator expressions,
+ - ...
+ - `result04` uses a pointful expression that is a nested function application expression,
+
+and
+
+ - `result05` and `result06` use a pointful expression that is a top level function application expression,
+ - `result07` uses a pointful expression that is a top level argument binding expression,
+
+where
+
+ - `squares andThen sum andThen squareRoot`, the top level function of `result06` and `result07` is a pointfree function composition expression.
 
 ## AppendixDefiningDescriptions
 
