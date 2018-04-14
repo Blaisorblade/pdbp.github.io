@@ -675,7 +675,7 @@ Let's go ahead and provide a second definition of the declared capability in `ob
 So far we have defined `implicit object`'s that define the capabilities that are declared in the `Dotty` type class `trait Containing`.
 Think of a them as *language level meanings*
 
-### **Defining descriptions in terms of defined capabilities**
+### **Defining descriptions in terms of language level meaning**
 
 This simply boils down to defining `object someBoxedValues` that depends on `implicit object implicitBox`
 
@@ -683,7 +683,7 @@ This simply boils down to defining `object someBoxedValues` that depends on `imp
   object someBoxedValues extends SomeValuesContainedIn[Box]()
 ```
 
-### **Defining descriptions in terms of defined capabilities revisited**
+### **Defining descriptions in terms of language level meaning revisited**
 
 This simply boils down to defining `object someWrappedValues` that depends on `implicit object implicitWrap`
 
@@ -691,7 +691,7 @@ This simply boils down to defining `object someWrappedValues` that depends on `i
   object someWrappedValues extends SomeValuesContainedIn[Wrap]()
 ```
 
-### **Use descriptions**
+### **Use language level meaning**
 
 We can now use boxed values
 
@@ -715,7 +715,7 @@ In particular, for *type classes*, like `trait Containing`, dependency injection
  - Defining an appropriate `implicit object`.
  - Doing an appropriate `import` of an `object` that depends on that `implicit object`.
 
-### **Use descriptions revisited**
+### **Use language level meaning revisited**
 
 We can now use wrapped values
 
@@ -745,7 +745,124 @@ In this case we talk about only two lines of code, but, hopefully, you get the p
 
 ## **AppendixLibraryLevelMeaning**
 
-TBD
+### `NaturalTransformation`
+
+Before continuing, we describe *natural transformations*
+
+```scala
+  trait NaturalTransformation[From[+ _], To[+ _]] {
+    def apply[Z](fz: From[Z]): To[Z]
+  }
+```
+
+Natural transformations are like functions, but they work at the *type constructor* level instead of at the type level.
+
+### `MeaningOfContaining`
+
+So far we have described language defined meanings.
+
+Now we go one step further by describing *library defined meanings*.
+
+```scala
+  trait Meaning[D[+ _], M[+ _]] {
+    def meaning: NaturalTransformation[D, M]
+  }
+```
+
+`trait Meaning` *declares* the *meaning* of type constructor as a natural transformation. 
+
+```scala
+  trait MeaningOfContaining[C[+ _]: Containing, M[+ _]] extends Meaning[C, M]
+```
+
+`trait MeaningOfContaining` declares the meaning of type constructors that are declared to implicitly have the capability to contain a value. 
+
+### **Define declared meaning**
+
+We can now define `trait MeaningOfBox` defining the meaning of `Box` in terms of type constructors that are declared to implicitly have the capability to contain a value.
+
+```scala
+  trait MeaningOfBox[C[+ _]: Containing] extends MeaningOfContaining[Box, C] {
+    override def meaning: NaturalTransformation[Box, C] =
+      new NaturalTransformation {
+        override def apply[Z](bz: Box[Z]): C[Z] = {
+          implicitly.contain(bz.unbox)
+        }
+      }
+  }
+```
+
+`meaning` is defined using this `implicitly` available capability. 
+
+We can now define `object wrapMeaningOfBox` defining the meaning of `Box` in terms of `Wrap`.
+
+```scala
+  object wrapMeaningOfBox 
+      extends MeaningOfBox[Wrap]()
+      with MeaningOfContaining[Box, Wrap]()
+```
+
+### **Define declared meaning revisited**
+
+We can also define a more trivial meaning of `Box` in terms of `Box` itself.
+
+```scala
+  object boxMeaningOfBox
+      extends MeaningOfBox[Box]()
+      with MeaningOfContaining[Box, Box]()
+```
+
+### **Library level meaning**
+
+So far we have defined `object`'s that define `meaning` that is declared in `trait Meaning`.
+Think of a them as *library level meanings*
+
+### **Use library level meaning**
+      
+We can now use the wrapped meaning of boxed values
+
+```scala
+  def usingWrappedMeaningOfBoxedValues: Unit = {
+
+    import someBoxedValues._
+    import wrapMeaningOfBox._
+
+    println(meaning(containedZero))
+    println(meaning(containedTrue))
+
+  }
+```
+
+For `trait Meaning` we also use *dependency injection* by `import`.
+
+### **Use library level meaning revisited**
+      
+We can now also use the boxed meaning of boxed values
+
+```scala
+  def usingBoxedMeaningOfBoxedValues: Unit = {
+
+    import someBoxedValues._
+    import boxMeaningOfBox._
+
+    println(meaning(containedZero))
+    println(meaning(containedTrue))
+
+  }
+```
+
+Again we use dependency injection by `import`.
+
+### **Summary**
+
+The most important takeway is that, once the `import`'s have been done, the rest of the code 
+```scala
+    println(meaning(containedZero))
+    println(meaning(containedTrue))
+```
+is the same for `usingWrappedMeaningOfBoxedValues` and `usingBoxedMeaningOfBoxedValues`.
+
+In this case we talk about only two lines of code, but, hopefully, you get the point.
 
 ## **Changes**
 

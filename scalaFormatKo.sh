@@ -24,7 +24,6 @@ scalafmt ./src/main/scala/pdbp/types/kleisli/kleisliFunctionType.scala
 echo ./src/main/scala/demo/LibraryLevelMeaning.scala
 scalafmt ./src/main/scala/demo/LibraryLevelMeaning.scala
 
-
 # appendices
 
 echo ./src/main/scala/demo/DefiningDescriptions.scala
@@ -36,8 +35,8 @@ echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
 sed -i "s/\/\/type Kleisli/type Kleisli/g" ./src/main/scala/pdbp/types/kleisli/kleisliFunctionType.scala
 
-sed -i "s/trait MeaningOfContaining/class MeaningOfContaining/g" ./src/main/scala/demo/LibraryLevelMeaning.scala
-sed -i "s/trait MeaningOfBox/class MeaningOfBox/g" ./src/main/scala/demo/LibraryLevelMeaning.scala
+sed -i "s/class MeaningOfContaining/trait MeaningOfContaining/g" ./src/main/scala/demo/LibraryLevelMeaning.scala
+sed -i "s/class MeaningOfBox/trait MeaningOfBox/g" ./src/main/scala/demo/LibraryLevelMeaning.scala
 
 # appendices
 
