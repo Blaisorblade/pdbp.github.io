@@ -200,7 +200,7 @@ All it's capabilities are `private[pdbp]`.
 In a way computations generalize *expressions*. 
 
  - An expression *evaluation* yields an *expression result*. 
- - A computation *execution* also, *somehow*, yields a *computation result*. 
+ - A computation *execution* also, *somehow*, yields a *computation result*.
 
 When there is no danger of confusion we are simply going to write *result*, not mentioning *expression* or *computation*.
 
