@@ -474,6 +474,213 @@ Moreover we claim that
 
 Hopefully, the statements above sounds exiting to both programmers with and programmers without a background in computer science.
 
+## **`trait Program`**
+
+### **Warning**
+
+From now on this document contains a lot of code. 
+When reading it in sequential order, you will often be confronted with the word *Consider* followed by code that has not been explained yet. 
+Do not worry, the code will be explained in the paragraph immediately below it. 
+
+### **`Program`**
+
+Consider
+
+```scala
+package pdbp.program
+
+trait Program[>-->[- _, + _]]
+    extends Function[>-->]
+    with Composition[>-->]
+    with Construction[>-->]
+    with Condition[>-->]
+    with Aggregation[>-->]
+```
+where
+
+```scala
+trait Function[>-->]
+
+trait Composition[>-->]
+
+trait Construction[>-->]
+
+trait Condition[>-->]
+
+trait Aggregation[>-->]
+```
+
+belong to the same `package pdbp.program`.
+
+`trait Program` is a *type class* that will gradually be explained later in this document. 
+`trait Program` *declares* the *programming capabilities* of *program descriptions*. 
+
+We often write *program* instead of *program description*.
+
+Note that we were a bit sloppy by not showing `[>-->[- _, + _]]`
+
+`trait Function`, `trait Composition`, `trait Construction` and `trait Condition` will be explained later in this section. 
+
+`trait Aggregation` will be explained later in this document. 
+
+The programming capabilities of `Function`, `Composition` and `Construction` correspond to *arrows*. 
+
+Note that we were a bit sloppy by not showing `[>-->]`
+
+A program is an `object` of type `Z >--> Y`.
+
+ - `>-->` is a *binary type constructor*,
+ - `Z` is the *parameter* (or *argument*) type of `>-->`,
+ - `Y` is the *return* (or *result*) type of `>-->`.
+
+By convention,
+
+ - We write *parameter* and *return* if we want to be explicit about being at the *delaration* (or *definition*) site.
+ - We write *argument* and *result* if we want to be explicit about being at the *usage* site.
+ - Otherwise we write *argument* and *result*
+
+Note that `>-->` is
+
+ - *contravariant* in its argument type,
+ - *covariant* in its result type.
+
+[AppendixVariance](#appendixvariance) has demo code that illustrates this.
+
+This *variance* property of `>-->` is related to two *principles* that are known as
+
+ - The [*Liskov Substitution Principle*](https://en.wikipedia.org/wiki/Liskov_substitution_principle) which, roughly speaking, states
+   - *require less* and *provide more*. 
+
+and
+
+ - The [*Internet Robustness Principle*](https://en.wikipedia.org/wiki/Robustness_principle) which, roughly speaking, states 
+   - *be conservative in what you send* and *be liberal in what you accept*.
+
+### **`&&` type alias**
+
+Programs are objects of type `Z >--> Y`.
+
+It may look as if programs can have only *one* argument resp. result.
+
+It is possible to encode *many* arguments resp. results as *nested tuples*.
+
+Consider
+
+```scala
+package pdbp.types.product
+
+object productType {
+
+  type &&[+Z, +Y] = Tuple2[Z, Y]
+  
+}
+```
+
+The product *type alias* above will be used throughout the library to deal with many arguments resp. results.
+
+### **`Function`**
+
+Consider
+
+```scala
+package pdbp.program
+
+trait Function[>-->[- _, + _]] {
+
+  def function[Z, Y](`z=>y`: Z => Y): Z >--> Y
+
+  // ...
+
+}
+```
+
+`` function(`z=>y`) `` is a program that behaves as *function* `` `z=>y` ``. 
+Function `` `z=>y` `` is supposed to be a *pure* function.
+It is supposed to do nothing else than transforming an argument `z` of type `Z` to a yield a result `` y == `z=>y`(z) `` of type `Y`.
+
+For *generic function names*, we use *mixed alphabetic and symbolic characters within backticks*, like `` `z=>y` `` to, hopefully, improve readability. 
+We agree that this is an unusual naming convention.
+We know programers who hate it, we know programmers who love it. 
+ 
+Let's explain the reason of this naming convention with some examples that are special cases of [Theorems for free!](http://homepages.inf.ed.ac.uk/wadler/papers/free/free.dvi), as explained by Philip Wadler.
+
+ - There is really only *one* function of type `Z => Z` *for all* `Z`: *identity*. 
+   - The name `` `z=>z` ``, hopefully, suggests this function.
+ - There is really only *one* function of type `(Z && Y) => Z` *for all* `Z` and `Y`: *left projection*. 
+   - The name `` `(z&&y)=>z` ``, hopefully, suggests this function.
+ - There is really only *one* function of type `(Z && Y) => Y` *for all* `Z` and `Y`: *right projection*. 
+   - The name `` `(z&&y)=>y` ``, hopefully, suggests this function.
+ - There is really only *one* function of type `(Z => Y && Z) => Y` *for all* `Z` and `Y`: *function application* (or, equivalently, *argument binding*). 
+   - The name `` `(z=>y&&z)=>y` ``, hopefully, suggests this function.
+
+Argument binding can be defined as follows
+
+```scala
+object bindingOperator {
+
+  implicit class BindingOperator[Z](z: Z) {
+
+    def bind[Y](`z=>y`: Z => Y) = `z=>y` apply z
+
+  }
+
+}
+```
+
+Ok, we could have named those functions `identity`, `leftProjection`, `rightProjection` and `functionApplication`. 
+Sometimes you simply run out of meaningful generic names. 
+
+The main benefit of generic backtick names comes when trying to understand the type of expressions.
+
+ - `` `z=>y`(z) `` is an example (a function application expression) where, hopefully, it should be clear that it has type `Y`. 
+ - `` `z=>y` apply z `` is an equivalent example where function application is used explicitly using `apply`. 
+ - `` z bind `z=>y` `` is an equivalent example where argument binding is used explicitly using `bind`. 
+
+Argument bindings can conveniently be read from left to right. 
+
+When dealing with more complex expressions, having nested expressions, the usefulness of generic backtick names becomes even more apparent. 
+
+For all this to work, we have to use synonyms like `` `y=>y` ``, `` `x=>x` ``, etc. by need, when types `Y`, `X`, etc. are involved.
+
+Consider
+
+```scala
+package pdbp.program
+
+import pdbp.utils.functionUtils._
+
+trait Function[>-->[- _, + _]] {
+
+  // ...
+
+  def `z>-->z`[Z]: Z >--> Z =
+    function(`z=>z`)  
+  
+} 
+```
+
+where
+
+```scala
+package pdbp.utils
+
+object functionUtils {
+
+  def `z=>z`[Z]: Z => Z = { z =>
+    z
+  }
+
+  // ...
+
+} 
+```
+
+We defined `` `z>-->z` `` in terms of `function` and `` `z=>z` `` where the function `` `z=>z` `` is the one you expect.
+For programs, we use generic backtick names like `` `z>-->y` `` to, hopefully, improve readability. 
+
+You may have doubts about the usefulness of a trivial program like`` `z>-->z` ``.  
+It turns out that, when defining more complex *composite programs*, obtained by plugging *program fragments*, or *program components*, into *program templates*, replacing one or more of the fragments by `` `z>-->z` `` results in interesting programs of their own.
+
 # **Appendices**
 
 ## **AppendixFunctionsAndExpressions**
@@ -863,6 +1070,32 @@ The most important takeway is that, once the `import`'s have been done, the rest
 is the same for `usingWrappedMeaningOfBoxedValues` and `usingBoxedMeaningOfBoxedValues`.
 
 In this case we talk about only two lines of code, but, hopefully, you get the point.
+
+## **AppendixVariance**
+
+Consider 
+
+```scala
+package demo
+
+object Variance {
+  
+  trait SuperZ
+
+  trait Z extends SuperZ
+
+  trait Y
+
+  trait SubY extends Y
+
+  val `z=>y`: Z => Y = new (SuperZ => SubY) { 
+    override def apply(superZ: SuperZ): SubY = ??? 
+  } 
+  
+}
+```
+
+The code above shows that, for the `Dotty` compiler, it is perfectly fine to use a `SuperZ => SubY` where a `Z => Y` is expected. 
 
 ## **Changes**
 

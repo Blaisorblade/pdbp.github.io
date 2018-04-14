@@ -1,4 +1,4 @@
-package pdbp.program
+package demo
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,13 +11,18 @@ package pdbp.program
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.utils.functionUtils._
+object Variance {
 
-trait Function[>-->[- _, + _]] {
+  trait SuperZ
 
-  def function[Z, Y](`z=>y`: Z => Y): Z >--> Y
+  trait Z extends SuperZ
 
-  def `z>-->z`[Z]: Z >--> Z =
-    function(`z=>z`)
+  trait Y
+
+  trait SubY extends Y
+
+  val `z=>y`: Z => Y = new (SuperZ => SubY) {
+    override def apply(superZ: SuperZ): SubY = ???
+  }
 
 }

@@ -1,4 +1,4 @@
-package pdbp.program
+package pdbp.types.product
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,13 +11,8 @@ package pdbp.program
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.utils.functionUtils._
+object productType {
 
-trait Function[>-->[- _, + _]] {
-
-  def function[Z, Y](`z=>y`: Z => Y): Z >--> Y
-
-  def `z>-->z`[Z]: Z >--> Z =
-    function(`z=>z`)
+  type &&[+Z, +Y] = Tuple2[Z, Y]
 
 }
