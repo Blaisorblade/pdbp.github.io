@@ -474,7 +474,7 @@ Moreover we claim that
 
 Hopefully, the statements above sounds exiting to both programmers with and programmers without a background in computer science.
 
-# Appendices
+# **Appendices**
 
 ## **AppendixFunctionsAndExpressions**
 
