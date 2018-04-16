@@ -8,7 +8,7 @@ I worked as a
  
 I am retired now.
 
-I am having fun with Maritza
+I am having fun with my wife Maritza
   - cycling with our race bicycles (climbing mountains, ...)
   - gardening in our green house (lettuce, cauliflower, tomato, bell pepper, ...)
 
@@ -63,8 +63,6 @@ The `FP` programming language consists of *objects*, *programs*, *forms* and *de
  - a form transforms programs to a program,
  - a definition defines a program or a form in terms of programs and forms.
 
-Think of forms as *program templates* and programs transformed by them as *program fragments*, or *program components*, that can be plugged into them to obtain a *composite program*.
-
 The `FP` forms are 
 
  - *Function*
@@ -72,6 +70,8 @@ The `FP` forms are
  - *Construction*
  - *Condition*
  - *Aggregation*
+
+Think of the last four forms as *program templates* and programs transformed by them as *program fragments*, or *program components*, that can be plugged into them to obtain a *composite program*.
 
 #### **Note**
 
@@ -121,7 +121,7 @@ In 1998, John Hughes described arrows and used arrows in `Haskell` in
 [*Generalizing monads to arrows*](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.29.4575&rep=rep1&type=pdf).
 
 `trait Program` is about *program descriptions*.
-Program descriptions are *defined* in terms of *programming capabilities* that are *declared* in `trait Program`.
+Program descriptions are *defined* in terms of *programming capabilities* that are *declared* as *members* (`def`'s or `val`'s) of `trait Program`.
 
 By abuse of notation, we often simply refer to program descriptions as *programs*. 
 We hope that this does not lead to any confusion.
@@ -132,7 +132,7 @@ Below is a link to a picture of the painting.
 
 [Ceci n'est pas une pipe](./pictures/pipe.png)
 
-The painting above is not a pipe, it is a *description* of a pipe.
+The painting is not a pipe, it is a *description* of a pipe.
 
 `trait Program` exposes a *pointfree* programming API for *application developers*.
 All it's capabilities are `public`, the default in `Dotty`.
@@ -153,12 +153,12 @@ Below is a `factorial` program written using `trait Program`'s API .
     }
 ```
 
-In a way programs generalize functions. 
+In a way programs generalize *functions*. 
 
  - A function transforms *function arguments* to yield a *function result*. 
  - A program also, *somehow*, transforms *program arguments* to yield a *program result*. 
 
-When there is no danger of confusion we are simply going to write *arguments* and *result*, not mentioning *function* or *program*.
+When there is no danger of confusion we are simply write *arguments* and *result*, not mentioning *function* or *program*.
 
 To finish
 
@@ -189,7 +189,7 @@ In 1992, Philip Wadler used monads in `Haskell` in
 [*The essence of functional programming*](http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=E09A5FD9362F6780675ADF29471B7428?doi=10.1.1.38.9516&rep=rep1&type=pdf).
 
 `trait Computation` is about *computation descriptions*. 
-Computation descriptions are defined in terms of *computational capabilities* that are declared in `trait Computation`.
+Computation descriptions are defined in terms of *computational capabilities* that are declared as members of `trait Computation`.
 
 By abuse of notation, we often simply refer to computation descriptions as *computations*. 
 We hope that this does not lead to any confusion.
@@ -202,7 +202,7 @@ In a way computations generalize *expressions*.
  - An expression *evaluation* yields an *expression result*. 
  - A computation *execution* also, *somehow*, yields a *computation result*.
 
-When there is no danger of confusion we are simply going to write *result*, not mentioning *expression* or *computation*.
+When there is no danger of confusion we are simply write *result*, not mentioning *expression* or *computation*.
 
 To finish
 
@@ -230,8 +230,8 @@ Recall that
 
 But
 
- - Monad based computations can use a pointfree programming style by making use of [*Kleisli categories*](https://en.wikipedia.org/wiki/Kleisli_category). 
- - Arrow based programs can use a pointful programming style by making use of [*arrow calculus*](http://homepages.inf.ed.ac.uk/slindley/papers/arrow-calculus.pdf).
+ - Monad based computations can, using [*Kleisli categories*](https://en.wikipedia.org/wiki/Kleisli_category), use a pointfree programming style. 
+ - Arrow based programs can, using [*arrow calculus*](http://homepages.inf.ed.ac.uk/slindley/papers/arrow-calculus.pdf), use a pointful programming style.
 
 The `PDBP` library goes for programming monads in a pointfree style using Kleisli categories.
 
@@ -343,10 +343,11 @@ Below is an *informal explanation* of the *program templates* of the `factorial`
  - `` `if`(predicate) { trueCase } `else` { falseCase } `` is part of the `Dotty` program description DSL related to `Condition`
    - note that `if` and `else` are between *backticks*,
    - think of `predicate` as a predicate that tests the current value,
-   - if `true`, them function `trueCase` takes over control,
-   - if `false`, them function `falseCase` takes over control.
+   - if `true`, then function `trueCase` takes over control,
+   - if `false`, then function `falseCase` takes over control.
 
 Agreed, at first sight the pointfree `factorial` code above may seem a bit abstruse.
+
 Agreed, we explained the pointfree code above in a pointful way.
 
 Once you get used to
@@ -372,6 +373,8 @@ Exploiting the *flexibility* that comes with this difference is one of the most 
    -  programs are not objects.
  - `PDBP` is *homogeneous*,
    - in `Dotty`, everything is an oject, in particular programs are objects.
+
+From now on, we use *object* and *value* interchangably.
 
 #### **Meaning of programs**
 
@@ -399,6 +402,8 @@ Consider, again, the `factorial` program below.
 Note that `factorial` is a *recursive* program description.
 It can be given both a *stack unsafe* meaning and a *stack safe* meaning.
 The stack safe meaning simply uses the *heap* instead of the *stack*.
+
+#### **About meanings (for those who are a bit impatient)**
 
 [AppendixLanguageLevelMeaning](#appendixlanguagelevelmeaning) has demo code where meanings are described at the *language level*.
 
@@ -433,7 +438,10 @@ Of course, eventually, for being useful at all, application code using `PDBP` ma
  - The meaning of `PDBP` I/O effect descriptions is *pushed to the boundaries of application code*.
  - `FP` I/O effects are executed *in the middle of library code*.
 
-A program description performing I/O can be given both an *effectfree* meaning for *testing* purposes and various *effectful* meanings for different deployment purposes. 
+A program description performing I/O can be given 
+
+ - *effectfree* meanings for different *testing* purposes
+ - *effectful* meanings for different *deployment* purposes. 
 
 ### **Main goal of the `PDBP` library**
 
@@ -467,19 +475,19 @@ Here is the good news.
    - extra capabilities
    - pure I/0
 
-Moreover we claim that
+To finish:e claim that
 
- - Pointfree program description based application programming naturally leads to deep insights into the nature of programs since it requires you, as an application developer, to reason at an elegant (and reasonably powerful) level of abstraction. 
- - Pointful computation description based library programming naturally leads to deep insights into the nature of computations since it allows you, as a library developer, to reason at a powerful (and reasonably elegant) level of abstraction.
+ - Pointfree program description based application programming naturally leads to deep insights into the nature of programs. It requires you, as an application developer, to reason at an appropriate elegant (and reasonably powerful) level of abstraction. 
+ - Pointful computation description based library programming naturally leads to deep insights into the nature of computations. It allows you, as a library developer, to reason at an appropriate, powerful (and reasonably elegant) level of abstraction.
 
-Hopefully, the statements above sounds exiting to both programmers with and programmers without a background in computer science.
+Hopefully, the statements above sound exiting to both programmers with and programmers without a background in computer science.
 
 ## **Explaining `trait Program`**
 
 ### **Warning**
 
 From now on this document contains a lot of code. 
-When reading it in sequential order, you will often be confronted with the word *Consider* followed by code that has not been explained yet. 
+When reading it in sequential order, you will often be confronted with code that has not been explained yet. 
 Do not worry, the code will be explained in the paragraph immediately below it. 
 
 ### **`Program`**
@@ -517,12 +525,12 @@ belong to the same `package pdbp.program`.
 
 We often write *program* instead of *program description*.
 
-Note that we were a bit sloppy by not showing `[>-->[- _, + _]]`
+Note that we were a bit sloppy by not showing `[>-->[- _, + _]]`.
 
 `trait Function`, `trait Composition`, `trait Construction` and `trait Condition` will be explained later in this section. 
 `trait Aggregation` will be explained later in this document. 
 
-Note that, again, we were a bit sloppy by not showing `[>-->]`
+Note that, again, we were a bit sloppy by not showing `[>-->]`.
 
 The programming capabilities of `Function`, `Composition` and `Construction` correspond to *arrows*. 
 
@@ -618,15 +626,17 @@ Let's explain the reason of this naming convention with some examples that are s
    - The name `` `(z&&y)=>z` ``, hopefully, suggests this function.
  - There is really only *one* function of type `(Z && Y) => Y` *for all* `Z` and `Y` : *right projection*. 
    - The name `` `(z&&y)=>y` ``, hopefully, suggests this function.
+ - There is really only *one* function of type `(Z && Y) => Y && Z` *for all* `Z` and `Y` : *swap*. 
+   - The name `` `(z&&y)=>y&&z` ``, hopefully, suggests this function. 
  - There is really only *one* function of type `(Z => Y && Z) => Y` *for all* `Z` and `Y` : *function application* (or, equivalently, *argument binding*). 
    - The name `` `(z=>y&&z)=>y` ``, hopefully, suggests this function.
 
 We use synonyms like `` `y=>y` ``, `` `x=>x` ``, etc. by need, when types `Y`, `X`, etc. are involved.
 
-We could have used names `identity`, `leftProjection`, `rightProjection` and `functionApplication`. 
+We could have used names `identity`, `leftProjection`, `rightProjection` `swap` and `functionApplication`. 
 Sometimes you simply run out of meaningful generic names.
 
-Argument binding can be defined as follows
+By the way, argument binding, equivalent with function application, can be defined using an `implicit class` as follows
 
 ```scala
 object bindingOperator {
@@ -643,12 +653,12 @@ object bindingOperator {
 The main benefit of generic backtick names comes when trying to understand the type of expressions.
 
  - `` `z=>y`(z) `` is a function application expression where, hopefully, it should be clear that it has type `Y`. 
- - `` `z=>y` apply z `` is an equivalent expression where function application is used explicitly using `apply`. 
- - `` z bind `z=>y` `` is an equivalent expression where argument binding is used explicitly using `bind`. 
+ - `` `z=>y` apply z `` is an equivalent expression where function application is explicit using `apply`. 
+ - `` z bind `z=>y` `` is an equivalent expression where argument binding is explicit using `bind`. 
 
 When dealing with more complex expressions, having nested expressions, the usefulness of generic backtick names becomes even more apparent. 
 
-Note that argument bindings can conveniently be read from left to right. 
+By the way, note that argument bindings can conveniently be read from left to right. 
 
 Consider
 
@@ -726,7 +736,8 @@ The *square root of the sum of the squares* of `z` and `y` can be defined as
    - where the *value level expression* `squareRoot(z * z + y * y)` is pointful, expression oriented and function application based.
 
 It can also be defined as
- - `(squares andThen sum andThen squareRoot) apply (z, y)` or `(z, y)  bind (squares andThen sum andThen squareRoot)` 
+ - `(squares andThen sum andThen squareRoot) apply (z, y)`
+ - `(z, y)  bind (squares andThen sum andThen squareRoot)` 
    - where the *function level expression* `squares andThen sum andThen squareRoot` is pointfree, function oriented and function composition based.
 
 The code below illustrates, among others, how to go from the former one to the latter ones.
@@ -822,7 +833,7 @@ object DefiningDescriptions {
 
 More precisely
 
- - `Containing[C[+ _]]` declares `C[+ _]`'s capability, `contain`, to contain a value.
+ - `Containing[C[+ _]]` declares, using it's member `contain`, `C[+ _]`'s capability to contain a value.
 
 We can already start defining some, agreed, very simple, descriptions in terms of this declared capability
 
@@ -849,13 +860,13 @@ Think of descriptions as *recipes*
    - Think of it as `true` contained in a, for now unknown kind of, one element container.
  - ... .
 
-At this moment no definition of the declared capability has been provided yet!
+At this moment no definition of the declared capability has been provided yet.
 
 ## **AppendixLanguageLevelMeaning**
 
 ### **Define declared capabilities**
 
-Let's go ahead and provide a first definition of the declared capability in an `object LanguageLevelMeaning`.
+Let's go ahead and provide a first definition of the declared capability `contain`.
 
 ```scala
   case class Box[+Z](unbox: Z)
@@ -871,7 +882,7 @@ Let's go ahead and provide a first definition of the declared capability in an `
 
 ### **Define declared capabilities revisited**
 
-Let's go ahead and provide a second definition of the declared capability in `object LanguageLevelMeaning`.
+Let's go ahead and provide a second definition of the declared capability `contain`.
 
 ```scala
   case class Wrap[+Z](unwrap: Z)
@@ -888,7 +899,7 @@ Let's go ahead and provide a second definition of the declared capability in `ob
 ### **Language level meaning**
 
 So far we have defined `implicit object`'s that define the capabilities that are declared in the `Dotty` type class `trait Containing`.
-Think of a them as *language level meanings*
+Think of a them as *language level meanings*.
 
 ### **Defining descriptions in terms of language level meaning**
 
@@ -927,8 +938,8 @@ This technique, called *dependency injection by* `import`, is used a lot in `Dot
 
 In particular, for *type classes*, like `trait Containing`, dependency injection in `Dotty` boils down to
 
- - Defining an appropriate `implicit object`.
- - Doing an appropriate `import` of an `object` that depends on that `implicit object`.
+ - defining an appropriate `implicit object`,
+ - doing an appropriate `import` of an `object` that depends on that `implicit object`.
 
 ### **Use language level meaning revisited**
 
@@ -960,7 +971,7 @@ In this case we talk about only two lines of code, but, hopefully, you get the p
 
 ## **AppendixLibraryLevelMeaning**
 
-### `NaturalTransformation`
+### **Natural transformation**
 
 Before continuing, we describe *natural transformations*
 
@@ -972,7 +983,7 @@ Before continuing, we describe *natural transformations*
 
 Natural transformations are like functions, but they work at the *type constructor* level instead of at the type level.
 
-### `MeaningOfContaining`
+### **Defining `MeaningOfContaining`**
 
 So far we have described language defined meanings.
 
@@ -984,7 +995,7 @@ Now we go one step further by describing *library defined meanings*.
   }
 ```
 
-`trait Meaning` *declares* the *meaning* of type constructor as a natural transformation. 
+`trait Meaning` *declares* the *meaning* of type constructor as a natural transformation `meaning`. 
 
 ```scala
   trait MeaningOfContaining[C[+ _]: Containing, M[+ _]] extends Meaning[C, M]
