@@ -474,7 +474,7 @@ Moreover we claim that
 
 Hopefully, the statements above sounds exiting to both programmers with and programmers without a background in computer science.
 
-## **`trait Program`**
+## **Explaining `trait Program`**
 
 ### **Warning**
 
@@ -520,24 +520,28 @@ We often write *program* instead of *program description*.
 Note that we were a bit sloppy by not showing `[>-->[- _, + _]]`
 
 `trait Function`, `trait Composition`, `trait Construction` and `trait Condition` will be explained later in this section. 
-
 `trait Aggregation` will be explained later in this document. 
+
+Note that, again, we were a bit sloppy by not showing `[>-->]`
 
 The programming capabilities of `Function`, `Composition` and `Construction` correspond to *arrows*. 
 
-Note that we were a bit sloppy by not showing `[>-->]`
-
-A program is an `object` of type `Z >--> Y`.
+A program is an `object` of type `Z >--> Y`, where
 
  - `>-->` is a *binary type constructor*,
  - `Z` is the *parameter* (or *argument*) type of `>-->`,
  - `Y` is the *return* (or *result*) type of `>-->`.
 
-By convention,
+We use
 
- - We write *parameter* and *return* if we want to be explicit about being at the *delaration* (or *definition*) site.
- - We write *argument* and *result* if we want to be explicit about being at the *usage* site.
- - Otherwise we write *argument* and *result*
+ - parameter and return if we want to be explicit about being at the delaration (or definition) site.
+
+We use
+ - argument and result if we want to be explicit about being at the usage site.
+
+We also use argument and result as default. 
+
+#### **Variance**
 
 Note that `>-->` is
 
@@ -556,13 +560,13 @@ and
  - The [*Internet Robustness Principle*](https://en.wikipedia.org/wiki/Robustness_principle) which, roughly speaking, states 
    - *be conservative in what you send* and *be liberal in what you accept*.
 
-### **`&&` type alias**
+### **Many arguments resp. results**
 
 Programs are objects of type `Z >--> Y`.
 
 It may look as if programs can have only *one* argument resp. result.
 
-It is possible to encode *many* arguments resp. results as *nested tuples*.
+The `PDBP` library encodes *many* arguments resp. results as *nested tuples*.
 
 Consider
 
@@ -578,7 +582,12 @@ object productType {
 
 The product *type alias* above will be used throughout the library to deal with many arguments resp. results.
 
-### **`Function`**
+  - `Z && Y` for two of them
+  - `Z && (Y && X)` for three of them
+  - `Z && (Y && (X && W)` for four of them
+  - ...  
+
+### **Explaining `trait Function`**
 
 Consider
 
@@ -594,24 +603,28 @@ trait Function[>-->[- _, + _]] {
 }
 ```
 
-`` function(`z=>y`) `` is a program that behaves as *function* `` `z=>y` ``. 
-Function `` `z=>y` `` is supposed to be a *pure* function.
+`` function(`z=>y`) `` is a program that is a *pure function* `` `z=>y` ``. 
 It is supposed to do nothing else than transforming an argument `z` of type `Z` to a yield a result `` y == `z=>y`(z) `` of type `Y`.
 
 For *generic function names*, we use *mixed alphabetic and symbolic characters within backticks*, like `` `z=>y` `` to, hopefully, improve readability. 
-We agree that this is an unusual naming convention.
+We agree that this is a somewhat unusual naming convention.
 We know programers who hate it, we know programmers who love it. 
  
 Let's explain the reason of this naming convention with some examples that are special cases of [Theorems for free!](http://homepages.inf.ed.ac.uk/wadler/papers/free/free.dvi), as explained by Philip Wadler.
 
- - There is really only *one* function of type `Z => Z` *for all* `Z`: *identity*. 
+ - There is really only *one* function of type `Z => Z` *for all* `Z` : *identity*. 
    - The name `` `z=>z` ``, hopefully, suggests this function.
- - There is really only *one* function of type `(Z && Y) => Z` *for all* `Z` and `Y`: *left projection*. 
+ - There is really only *one* function of type `(Z && Y) => Z` *for all* `Z` and `Y` : *left projection*. 
    - The name `` `(z&&y)=>z` ``, hopefully, suggests this function.
- - There is really only *one* function of type `(Z && Y) => Y` *for all* `Z` and `Y`: *right projection*. 
+ - There is really only *one* function of type `(Z && Y) => Y` *for all* `Z` and `Y` : *right projection*. 
    - The name `` `(z&&y)=>y` ``, hopefully, suggests this function.
- - There is really only *one* function of type `(Z => Y && Z) => Y` *for all* `Z` and `Y`: *function application* (or, equivalently, *argument binding*). 
+ - There is really only *one* function of type `(Z => Y && Z) => Y` *for all* `Z` and `Y` : *function application* (or, equivalently, *argument binding*). 
    - The name `` `(z=>y&&z)=>y` ``, hopefully, suggests this function.
+
+We use synonyms like `` `y=>y` ``, `` `x=>x` ``, etc. by need, when types `Y`, `X`, etc. are involved.
+
+We could have used names `identity`, `leftProjection`, `rightProjection` and `functionApplication`. 
+Sometimes you simply run out of meaningful generic names.
 
 Argument binding can be defined as follows
 
@@ -625,22 +638,17 @@ object bindingOperator {
   }
 
 }
-```
-
-Ok, we could have named those functions `identity`, `leftProjection`, `rightProjection` and `functionApplication`. 
-Sometimes you simply run out of meaningful generic names. 
+``` 
 
 The main benefit of generic backtick names comes when trying to understand the type of expressions.
 
- - `` `z=>y`(z) `` is an example (a function application expression) where, hopefully, it should be clear that it has type `Y`. 
- - `` `z=>y` apply z `` is an equivalent example where function application is used explicitly using `apply`. 
- - `` z bind `z=>y` `` is an equivalent example where argument binding is used explicitly using `bind`. 
-
-Argument bindings can conveniently be read from left to right. 
+ - `` `z=>y`(z) `` is a function application expression where, hopefully, it should be clear that it has type `Y`. 
+ - `` `z=>y` apply z `` is an equivalent expression where function application is used explicitly using `apply`. 
+ - `` z bind `z=>y` `` is an equivalent expression where argument binding is used explicitly using `bind`. 
 
 When dealing with more complex expressions, having nested expressions, the usefulness of generic backtick names becomes even more apparent. 
 
-For all this to work, we have to use synonyms like `` `y=>y` ``, `` `x=>x` ``, etc. by need, when types `Y`, `X`, etc. are involved.
+Note that argument bindings can conveniently be read from left to right. 
 
 Consider
 
@@ -679,7 +687,7 @@ We defined `` `z>-->z` `` in terms of `function` and `` `z=>z` `` where the func
 For programs, we use generic backtick names like `` `z>-->y` `` to, hopefully, improve readability. 
 
 You may have doubts about the usefulness of a trivial program like`` `z>-->z` ``.  
-It turns out that, when defining more complex *composite programs*, obtained by plugging *program fragments*, or *program components*, into *program templates*, replacing one or more of the fragments by `` `z>-->z` `` results in interesting programs of their own.
+It turns out that, when defining more complex *composite programs*, obtained by plugging *program fragments*, a.k.a. *program components*, into *program templates*, replacing one or more of the fragments, a.k.a. components, by `` `z>-->z` `` results in interesting programs of their own.
 
 # **Appendices**
 
