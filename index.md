@@ -3,14 +3,14 @@
 ## **About me**
 
 I worked as a
- - mathematician (research and education)
- - programmer (research, education and consultancy)
+ - mathematician (research and education),
+ - programmer (research, education and consultancy).
  
 I am retired now.
 
 I am having fun with my wife Maritza
-  - cycling with our race bicycles (climbing mountains, ...)
-  - gardening in our green house (lettuce, cauliflower, tomato, bell pepper, ...)
+  - cycling with our race bicycles (climbing mountains, ...),
+  - gardening in our green house (lettuce, cauliflower, tomato, bell pepper, ...).
 
 Below is a link to picture, taken by a friend, of me and my wife, cycling in the French Alps.
 
@@ -20,20 +20,20 @@ Below is a link to picture of a radish I picked out of my greenhouse 5 minutes a
 
 [Radish](./pictures/Radijs.png)
 
-As a hobby I am still
-  - programming (bridging the gap between mathematical theory and programming practice)
+As a hobby I am having fun
+  - programming (bridging the gap between mathematical theory and programming practice).
 
 I hope you enjoy the document below.
 
-All comments are welcome at [ pdbp.blog at gmail.com ]
+All comments are welcome at [ pdbp.blog at gmail.com ].
 
 ## **Warning**
 
 First, let me be clear about the following
- - Both this document and the library it describes are opiniated.
+ - both this document and the library it describes are opiniated.
 
 Second, this document is work in progress
- - Major changes are documented in section [Changes](#changes).
+ - major changes are documented in section [Changes](#changes).
 
 ## **History**
 
@@ -71,7 +71,9 @@ The `FP` forms are
  - *Condition*
  - *Aggregation*
 
-Think of the last four forms as *program templates* and programs transformed by them as *program fragments*, or *program components*, that can be plugged into them to obtain a *composite program*.
+#### **Templates and fragments**
+
+Think of the first four forms as *program templates* and programs transformed by them as *program fragments*, or *program components*, that can be plugged into them to obtain *composite programs*.
 
 #### **Note**
 
@@ -1117,9 +1119,4 @@ object Variance {
 The code above shows that, for the `Dotty` compiler, it is perfectly fine to use a `SuperZ => SubY` where a `Z => Y` is expected. 
 
 ## **Changes**
-
-
-
-
-
 
