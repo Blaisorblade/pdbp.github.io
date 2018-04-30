@@ -1,4 +1,4 @@
-package pdbp.types.kleisli
+package examples.utils
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,8 +11,24 @@ package pdbp.types.kleisli
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-object kleisliFunctionType {
+import pdbp.types.product.productType._
 
-  type Kleisli[M[+ _]] = [-Z, + Y] => Z => M[Y]
+object functionUtils {
+
+  val isZeroFunction: BigInt => Boolean = { i =>
+    i == 0
+  }
+
+  val subtractOneFunction: BigInt => BigInt = { i =>
+    i - 1
+  }
+
+  val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
+    i * j
+  }
+
+  def oneFunction[Z]: Z => BigInt = { z =>
+    1
+  }
 
 }

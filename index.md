@@ -52,7 +52,6 @@ When writing an introduction it is challenging to find the right balance between
 This introduction provides *many* details. 
 It is perfectly fine to read this introduction *diagonally*.
 
-
 ### **Introducing `FP`**
 
 In his Turing Award winning lecture, John Backus describes the [*function level* programming language `FP`](https://en.wikipedia.org/wiki/FP_(programming_language)). 
@@ -99,6 +98,11 @@ Below is the logo of the library
     //  Program Description Based Programming Library
     //  author        Luc Duponcheel        2017-2018
 ```
+
+### **Objects and values**
+
+In `Dotty`, everything is an object.
+From now on, when dealing with `Dotty`, we use *object* and *value* interchangably.
 
 ### **Introducing `trait Program`**
 
@@ -223,8 +227,6 @@ In 2008, Sam Lindley, Philip Wadler and Jeremy Yallop compared the *power of exp
  - Applicatives have least power of expression. 
  - Arrows are in between.
 
-### **Introducing `type Kleisli`**
-
 Recall that
 
  - Monads naturally lead to a pointful programming style. 
@@ -237,6 +239,8 @@ But
 
 The `PDBP` library goes for programming monads in a pointfree style using Kleisli categories.
 
+### **Introducing `type Kleisli`**
+
 The `with Program[[-Z, + Y] => Z => M[Y]]` part of `trait Computation`, which states that computations have more power of expression than programs, is a bit verbose.
 
 Using the *type alias* `type Kleisli` below
@@ -246,7 +250,7 @@ package pdbp.types.kleisli
 
 object kleisliFunctionType {
 
-  type Kleisli = [M[+ _]] => [-Z, + Y] => Z => M[Y]
+  type Kleisli[M[+ _]] = [-Z, + Y] => Z => M[Y]
 
 }
 ```
@@ -333,6 +337,10 @@ Note that
   - `isZero`, `one` and `subtractOne` are programs with parameter type `BigInt`: one parameter of type `BigInt`,
   - `multiply` is a program with parameter type `BigInt && BigInt`: two parameters of type `BigInt`.
 
+Also note that
+
+  - actually, `one` is a *generic* program description of type `Z >--> BigInt` *for all* `Z`
+
 Below is an *informal explanation* of the *program templates* of the `factorial` program description above
 
  - `first >--> second`  is part of the `Dotty` program description DSL related to `Composition`
@@ -344,7 +352,7 @@ Below is an *informal explanation* of the *program templates* of the `factorial`
    - together, the new value and the old current value become the new current value,
  - `` `if`(predicate) { trueCase } `else` { falseCase } `` is part of the `Dotty` program description DSL related to `Condition`
    - note that `if` and `else` are between *backticks*,
-   - think of `predicate` as a predicate that tests the current value,
+   - think of `predicate` as a *predicate* (`Boolean`-valued function) that tests the current value,
    - if `true`, then function `trueCase` takes over control,
    - if `false`, then function `falseCase` takes over control.
 
@@ -375,8 +383,6 @@ Exploiting the *flexibility* that comes with this difference is one of the most 
    -  programs are not objects.
  - `PDBP` is *homogeneous*,
    - in `Dotty`, everything is an oject, in particular programs are objects.
-
-From now on, we use *object* and *value* interchangably.
 
 #### **Meaning of programs**
 
@@ -435,15 +441,15 @@ Extra programming capabilities can be added such as
  - in `PDBP`
    - input and output are *effectfree*, they *describe effects* in an *pure* way. 
 
-Of course, eventually, for being useful at all, application code using `PDBP` may need to execute I/O effects.
-
- - The meaning of `PDBP` I/O effect descriptions is *pushed to the boundaries of application code*.
- - `FP` I/O effects are executed *in the middle of library code*.
-
-A program description performing I/O can be given 
-
- - *effectfree* meanings for different *testing* purposes
+A program description involving I/O can be given 
+ - *effectfree* meanings for different *testing* purposes,
  - *effectful* meanings for different *deployment* purposes. 
+ -  
+Of course, eventually, for being useful at all, application code using `PDBP` may need to execute I/O effects.
+ - in `FP`
+   - I/O effects are executed *in the middle of library code*.
+ - in `PDBP`
+   - I/O effects are executed *at the boundaries of application code*.
 
 ### **Main goal of the `PDBP` library**
 
@@ -457,11 +463,12 @@ The *main goal* of the `PDBP` library is to illustrate that program description 
    - as a library developer you can define many meanings,
    - as an application developer you can use many meanings,
  - *extendible*
-   - as a library developer you can define extra capabilities by need,
-   - as an application developer you can use extra capabilities by need,
+   - as a library developer you can define extra capabilities,
+   - as an application developer you can use extra capabilities,
  - *pure*
-   - as a library developer you can define I/O in a pure way.
-   - as an application developer you can use I/O both in a pure and an impure way.
+   - as a library developer you can define I/O in a pure way,
+   - as a library tester you can use I/O in a pure way.
+   - as an application developer you can use I/O in a impure way.
 
 ### **Summary**
 
@@ -471,16 +478,19 @@ Here is the good news.
 
  - For now, you only have to concentrate on
    - power of expression, 
-   - elegance of use,
- - The features below come in later
-   - flexible meanings
-   - extra capabilities
-   - pure I/0
+   - elegance of use.
+   - 
+ - The features below
+   - flexible meanings,
+   - extra capabilities,
+   - pure I/0,
+   
+   come in later.
 
-To finish:e claim that
+To finish, we claim that
 
- - Pointfree program description based application programming naturally leads to deep insights into the nature of programs. It requires you, as an application developer, to reason at an appropriate elegant (and reasonably powerful) level of abstraction. 
- - Pointful computation description based library programming naturally leads to deep insights into the nature of computations. It allows you, as a library developer, to reason at an appropriate, powerful (and reasonably elegant) level of abstraction.
+ - Pointfree program description based application programming naturally leads to deep insights into the nature of programs (remember: programs generalize functions). It requires you, as an application developer, to reason at an appropriate elegant (and reasonably powerful) level of abstraction. 
+ - Pointful computation description based library programming naturally leads to deep insights into the nature of computations (remember: computations generalize expressions). It allows you, as a library developer, to reason at an appropriate, powerful (and reasonably elegant) level of abstraction.
 
 Hopefully, the statements above sound exiting to both programmers with and programmers without a background in computer science.
 
