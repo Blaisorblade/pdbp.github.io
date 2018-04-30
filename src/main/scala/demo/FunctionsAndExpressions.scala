@@ -38,7 +38,7 @@ object FunctionsAndExpressions {
       (z, y) => (square(z), square(y))
 
     val result04: Double = squareRoot(sum(squares(z, y)))
-    
+
     val result05: Double = (squares andThen sum andThen squareRoot)(z, y)
 
     val result06: Double = (squares andThen sum andThen squareRoot) apply (z, y)

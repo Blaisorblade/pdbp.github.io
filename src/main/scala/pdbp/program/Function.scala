@@ -12,9 +12,12 @@ package pdbp.program
 //  author        Luc Duponcheel        2017-2018
 
 import pdbp.types.product.productType._
+import pdbp.types.sum.sumType._
 
 import pdbp.utils.functionUtils._
 import pdbp.utils.productUtils._
+import pdbp.utils.sumUtils._
+import pdbp.utils.productAndSumUtils._
 
 trait Function[>-->[- _, + _]] {
 
@@ -31,5 +34,17 @@ trait Function[>-->[- _, + _]] {
 
   def `(z&&y)>-->y`[Z, Y]: (Z && Y) >--> Y =
     function(`(z&&y)=>y`)
+
+  def `(y||x)>-->(y||x)`[Y, X]: (Y || X) >--> (Y || X) =
+    function(`(y||x)=>(y||x)`)
+
+  def `z>-->(z||y)`[Z, Y]: Z >--> (Z || Y) =
+    function(`z=>(z||y)`)
+
+  def `y>-->(z||y)`[Z, Y]: Y >--> (Z || Y) =
+    function(`y=>(z||y)`)
+
+  def `(w&&b)>-->(w||w)`[W]: (W && Boolean) >--> (W || W) =
+    function(`(w&&b)=>(w||w)`)
 
 }

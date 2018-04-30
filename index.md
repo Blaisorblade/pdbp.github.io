@@ -577,33 +577,6 @@ This *variance* property of `>-->` is related to two *principles* that are known
  - the [*Internet Robustness Principle*](https://en.wikipedia.org/wiki/Robustness_principle) which, roughly speaking, states 
    - *be conservative in what you send* and *be liberal in what you receive*.
 
-### **Many arguments resp. results**
-
-Programs are objects of type `Z >--> Y`.
-
-It may look as if programs can have only *one* argument resp. result.
-
-The `PDBP` library encodes *many* arguments resp. results as *nested tuples*.
-
-Consider
-
-```scala
-package pdbp.types.product
-
-object productType {
-
-  type &&[+Z, +Y] = Tuple2[Z, Y]
-  
-}
-```
-
-The product *type alias* above will be used throughout the library to deal with many arguments resp. results.
-
-  - `Z && Y` for two of them
-  - `Z && (Y && X)` for three of them
-  - `Z && (Y && (X && W)` for four of them
-  - ...  
-
 ### **Explaining `trait Function`**
 
 Consider
@@ -754,7 +727,8 @@ The type constructor `>-->` is declared to implicitly have the programming capab
 
 `` /* ... */ >--> /* ... */ `` is a first example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
 
-  - It should not come as a surprise that `` `z>-->y` >--> `y>-->x` `` has type `Z >--> X`.
+It should not come as a surprise that 
+  - `` `z>-->y` >--> `y>-->x` `` has type `Z >--> X`.
 
 ### **Explaining `trait Construction`**
 
@@ -795,6 +769,18 @@ trait Construction[>-->[- _, + _]] {
 ```
 
 where
+
+```scala
+package pdbp.types.product
+
+object productType {
+
+  type &&[+Z, +Y] = Tuple2[Z, Y]
+  
+}
+```
+
+and where
 
  - `` `(y&&x)>-->(y&&x)` `` is the program you expect,
  - `` `(z&&y)>-->z` `` is the program you expect,
@@ -850,15 +836,30 @@ object productUtils {
 }
 ```
 
-Think of `product` as a program template and of `` `z>-->y` `` and `` `x>-->x` `` as program fragments.
+Think of `product` as a program template and of `` `z>-->y` `` and `` `z>-->x` `` as program fragments.
 
-The program `` product(`z>-->y`, `z>-->x`) `` that *constructs* a result from the results of the programs, `` `z>-->y` `` and `` `z>-->x` ``.
+The program `` product(`z>-->y`, `z>-->x`) `` *constructs* a result from the results of the programs, `` `z>-->y` `` and `` `z>-->x` ``.
 
 If the program `` `z>-->y` `` transforms an argument of type `Z` to yield a result of type `Y`, 
 and the program `` `z>-->y` `` transforms that argument to yield a result of type `Y`,
 then the program `` product(`z>-->y`, `z>-->x`) `` transforms that argument to yield a result of type `Y && X`.
 
-Think of *one* object of type `Y && X` as *two* objects. More precisely, both an object of type `Y` and an object of type `X`. This is the way the `PDBP` library deals with two results of a program and two arguments of subsequent programs.
+#### **Many arguments resp. results**
+
+Programs are objects of type `Z >--> Y`.
+
+It may look as if programs can have only *one* argument resp. result.
+
+Think of one object of type `Y && X` as two objects. More precisely, both an object of type `Y` and an object of type `X`. This is the way the `PDBP` library deals with *two* arguments resp. results.
+
+The `PDBP` library deals with *many* arguments resp. results using *nested tuples*
+
+  - `Z && Y` for two of them,
+  - `Z && (Y && X)` for three of them,
+  - `Z && (Y && (X && W)` for four of them,
+  - ...  
+
+### **Explaining `trait Construction` continued**
 
 `trait Construction` has three other members
 
@@ -896,17 +897,186 @@ object constructionOperators {
 }
 ```
 
-  - `product[Z, Y, X]` comes with an operator equivalent `&`.
+  - `product[Z, Y, X]` comes with an operator equivalent `&`,
   - `and[Z, Y, X, W]` comes with an operator equivalent `&&`.
 
 The type constructor `>-->` is declared to implicitly have the programming capabilities `product` and `and` that are declared in the the type class `trait Construction`. The operators `&` and `&&` are defined in terms of those declared programming capabilities. The definitions use `implicitly`, an abbreviation for `implicitly[Construction[>-->]]`, that is available as an implicit evidence having the `product` and `and` capabilities of `Construction`.
 
 `` /* ... */ & /* ... */ `` and `` /* ... */ && /* ... */ `` are a third and fourth example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
 
-It should not come as a surprise that `` `z>-->y` & `z>-->x` `` has type `Z >--> (Y && X)`.
+It should not come as a surprise that 
+  - `` `z>-->y` & `z>-->x` `` has type `Z >--> (Y && X)`,
+  - `` `z>-->y` && `x>-->w` `` has type `(Z && X) >--> (Y && W)`.
 
-It should not come as a surprise that `` `z>-->y` && `x>-->w` `` has type `(Z && X) >--> (Y && W)`.
+### **Explaining `trait Condition`**
 
+Consider 
+
+```scala
+package pdbp.program
+
+import pdbp.types.product.productType._
+import pdbp.types.sum.sumType._
+
+import pdbp.utils.productUtils._
+import pdbp.utils.sumUtils._
+
+trait Condition[>-->[- _, + _]] {
+  this: Function[>-->] & Composition[>-->] & Construction[>-->] =>
+
+  def sum[Z, Y, X](`y>-->z`: => Y >--> Z,
+                   `x>-->z`: => X >--> Z): (Y || X) >--> Z =
+    sum(`(y||x)>-->(y||x)`, `y>-->z`, `x>-->z`)
+
+  def sum[Z, Y, X, W](`w>-->(y||x)`: W >--> (Y || X),
+                      `y>-->z`: => Y >--> Z,
+                      `x>-->z`: => X >--> Z): W >--> Z =
+    compose(`w>-->(y||x)`, sum(`y>-->z`, `x>-->z`))
+
+  def or[Z, X, Y, W](`x>-->z`: => X >--> Z,
+                     `w>-->y`: => W >--> Y): (X || W) >--> (Z || Y) =
+    sum(compose(`x>-->z`, `z>-->(z||y)`), compose(`w>-->y`, `y>-->(z||y)`))
+
+  def `if`[W, Z](`w>-->b`: W >--> Boolean): Apply[W, Z] =
+    new Apply[W, Z] {
+      override def apply(`w>-t->z`: => W >--> Z): Else[W, Z] =
+        new Else[W, Z] {
+          override def `else`(`w>-f->z`: => W >--> Z): W >--> Z =
+            sum(`let`(`w>-->b`) `in` `(w&&b)>-->(w||w)`, `w>-t->z`, `w>-f->z`)
+        }
+    }
+
+  trait Apply[W, Z] {
+    def apply(`w>-t->z`: => W >--> Z): Else[W, Z]
+  }
+
+  trait Else[W, Z] {
+    def `else`(`w>-f->z`: => W >--> Z): W >--> Z
+  }
+
+}
+```
+where
+
+```scala
+package pdbp.types.sum
+
+object sumType {
+
+  case class Left[+Z](z: Z)
+
+  case class Right[+Y](y: Y)
+
+  type ||[+Z, +Y] = Left[Z] | Right[Y]
+
+}
+```
+
+and
+
+ - `` `(y||x)>-->(y||x)` `` is the program you expect,
+ - `` `z>-->(z||y)` `` is the program you expect,
+ - `` `y>-->(z||y)` `` is the program you expect.
+ - `` `(w&&b)>-->(w||w)` ``, where `b` corresponds to the type `Boolean` is one of the two program you expect.
+   - It is the one where `true` corresponds to `Left` and  `false` corresponds to `Right`.
+
+The programs above are defined below
+
+```scala
+package pdbp.program
+
+// ...
+import pdbp.types.sum.sumType._
+
+// ...
+import pdbp.utils.sumUtils._
+import pdbp.utils.productAndSumUtils._
+
+trait Function[>-->[- _, + _]] {
+
+  // ...
+
+  def `(y||x)>-->(y||x)`[Y, X]: (Y || X) >--> (Y || X) =
+    function(`(y||x)=>(y||x)`)
+
+  def `z>-->(z||y)`[Z, Y]: Z >--> (Z || Y) =
+    function(`z=>(z||y)`)
+
+  def `y>-->(z||y)`[Z, Y]: Y >--> (Z || Y) =
+    function(`y=>(z||y)`)
+
+  def `(w&&b)>-->(w||w)`[W]: (W && Boolean) >--> (W || W) =
+    function(`(w&&b)=>(w||w)`)
+
+}
+```
+
+where
+
+```scala
+package pdbp.utils
+
+import pdbp.types.sum.sumType._
+
+object sumUtils {
+
+  def `(y||x)=>(y||x)`[Y, X]: (Y || X) => (Y || X) = { `y||x` =>
+    `y||x`
+  }
+
+  def `z=>(z||y)`[Z, Y]: Z => (Z || Y) = { z =>
+    Left(z)
+  }
+
+  def `y=>(z||y)`[Z, Y]: Y => (Z || Y) = { y =>
+    Right(y)
+  }
+
+}
+```
+
+and where
+
+```scala
+package pdbp.utils
+
+import pdbp.types.product.productType._
+import pdbp.types.sum.sumType._
+
+object productAndSumUtils {
+
+  def foldBoolean[Z](tz: => Z, fz: => Z): Boolean => Z = {
+    case true  => tz
+    case false => fz
+  }
+
+  def `(w&&b)=>(w||w)`[W]: (W && Boolean) => (W || W) = { (w, b) =>
+    foldBoolean[W || W](Left(w), Right(w))(b)
+  }
+
+}
+```
+
+Think of `sum` as a program template and of `` `y>-->z` `` and `` `x>-->z` `` as program fragments.
+
+The program `` sum(`y>-->z`, `x>-->z`) `` uses a *"left or right" condition* to behave either as a the program `` `y>-->z` `` or as a the program `` `x>-->z` ``.
+
+### **Explaining `trait Condition` continued**
+
+`trait Condition` has three other members
+
+ - `sum[Z, Y, X, W]` is a more complex version of `sum[Z, Y, X]`,
+ - `or[Z, X, Y, W]` is yet another more complex version of `sum[Z, Y, X]`,
+ - `` `if`[W, Z] `` has a parameter that is a program that has a result of type `Boolean` that is used to *choose* between the parameter of `apply` or the parameter of `` `else` ``. Both are programs of type `W>-->Z`.
+
+Note that
+
+ - `sum[Z, Y, X]` can be defined in terms of `sum[Z, Y, X, W]` and `` `(y||x)>-->(y||x)` ``,
+ - `sum[Z, Y, X, W]` can be defined in terms of `sum[Z, Y, X]` and `compose`,
+ - `and[Z, Y, X, W]` can be defined in terms of `product[Z, Y, X]`, `` `(z&&y)>-->z` ``, `` `(z&&y)>-->y` `` and `compose`,
+ - `` `if`[W, Z] `` and `` `else` `` can be defined in terms of `sum`, `` `let` `` and `` `in` ``.
+
+`` `if`(/* ... */) { /* ... */ } `else` { /* ... */ } `` is a fifth example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
 
 # **Appendices**
 
