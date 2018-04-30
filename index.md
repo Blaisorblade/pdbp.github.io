@@ -710,6 +710,205 @@ It turns out that, when defining more complex *composite programs*, obtained by 
 
 ### **Explaining `trait Composition`**
 
+Consider
+
+```scala
+package pdbp.program
+
+trait Composition[>-->[- _, + _]] {
+
+  def compose[Z, Y, X](`z>-->y`: Z >--> Y, `y>-->x`: => Y >--> X): Z >--> X
+
+}
+```
+Think of `compose` as a program template and of `` `z>-->y` `` and `` `y>-->x` `` as program fragments.
+
+The program `` composition(`z>-->y`, `y>-->x`) `` is the *sequential composition* of the program `` `z>-->y` `` and the program `` `y>-->x` ``. 
+
+If the program `` `z>-->y` `` transforms an argument of type `Z` to yield a result of type `Y`, 
+then that result serves as an argument for the *subsequent* program `` `y>-->x` `` which transforms it to yield a result of type `X`.
+
+Note that `` `y>-->x` `` is a *call-by-name parameter*.
+If program `` `z>-->y` `` fails to yield a result, then program `` `y>-->x` `` is not used.  
+
+Consider
+
+```scala
+object compositionOperator {
+
+  implicit class CompositionOperator[>-->[- _, + _]: Composition, -Z, +Y](
+      `z>-->y`: Z >--> Y) {
+
+    def >-->[X](`y>-->x`: => Y >--> X) = {
+      implicitly.compose(`z>-->y`, `y>-->x`)
+    }
+
+  }
+
+}
+```
+
+`compose` comes with an *operator* equivalent `>-->`. 
+
+The type constructor `>-->` is declared to implicitly have the programming capability `compose` that is declared in the the type class `trait Composition`. The operator `>-->` is defined in terms of this declared programming capability. The definition uses `implicitly`, an abbreviation for `implicitly[Composition[>-->]]`, that is available as an *implicit evidence* having the `compose` capability of `Composition`.
+
+`` /* ... */ >--> /* ... */ `` is a first example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
+
+It should not come as a surprise that `` `z>-->y` >--> `y>-->x` `` has type `Z >--> X`.
+
+### **Explaining `trait Construction`**
+
+Consider
+
+```scala
+package pdbp.program
+
+import pdbp.types.product.productType._
+
+trait Construction[>-->[- _, + _]] {
+  this: Function[>-->] & Composition[>-->] =>
+
+  def product[Z, Y, X](`z>-->y`: Z >--> Y,
+                       `z>-->x`: => Z >--> X): Z >--> (Y && X) =
+    product(`z>-->y`, `z>-->x`, `(y&&x)>-->(y&&x)`)
+
+  def product[Z, Y, X, W](`z>-->y`: Z >--> Y,
+                          `z>-->x`: => Z >--> X,
+                          `(y&&x)>-->w`: => (Y && X) >--> W): Z >--> W =
+    compose(product(`z>-->y`, `z>-->x`), `(y&&x)>-->w`)
+
+  def and[Z, X, Y, W](`z>-->x`: Z >--> X,
+                      `y>-->w`: => Y >--> W): (Z && Y) >--> (X && W) =
+    product(compose(`(z&&y)>-->z`, `z>-->x`), compose(`(z&&y)>-->y`, `y>-->w`))
+
+  def `let`[Z, Y, X](`z>-->y`: Z >--> Y): In[Z, Y, X] =
+    new In[Z, Y, X] {
+      def `in`(`(z&&y)>-->x`: => (Z && Y) >--> X): Z >--> X =
+        compose(product(`z>-->z`, `z>-->y`), `(z&&y)>-->x`)
+    }
+
+  trait In[Z, Y, X] {
+    def `in`(`(z&&y)>-->x`: => (Z && Y) >--> X): Z >--> X
+  }
+
+}
+```
+
+where
+
+ - `` `(y&&x)>-->(y&&x)` `` is the program you expect,
+ - `` `(z&&y)>-->z` `` is the program you expect,
+ - `` `(z&&y)>-->y` `` is the program you expect.
+
+The programs above are defined below
+
+```scala
+package pdbp.program
+
+import pdbp.types.product.productType._
+
+// ...
+import pdbp.utils.productUtils._
+
+trait Function[>-->[- _, + _]] {
+
+  // ...
+
+  def `(y&&x)>-->(y&&x)`[Y, X]: (Y && X) >--> (Y && X) =
+    function(`(y&&x)=>(y&&x)`)
+
+  def `(z&&y)>-->z`[Z, Y]: (Z && Y) >--> Z =
+    function(`(z&&y)=>z`)
+
+  def `(z&&y)>-->y`[Z, Y]: (Z && Y) >--> Y =
+    function(`(z&&y)=>y`)
+
+}
+```
+
+where
+
+```scala
+package pdbp.utils
+
+import pdbp.types.product.productType._
+
+object productUtils {
+
+  def `(y&&x)=>(y&&x)`[Y, X]: (Y && X) => (Y && X) = { `y&&x` =>
+    `y&&x`
+  }
+
+  def `(z&&y)=>z`[Z, Y]: (Z && Y) => Z = { (z, _) =>
+    z
+  }
+
+  def `(z&&y)=>y`[Z, Y]: (Z && Y) => Y = { (_, y) =>
+    y
+  }
+
+}
+```
+
+Think of `product` as a program template and of `` `z>-->y` `` and `` `x>-->x` `` as program fragments.
+
+The program `` product(`z>-->y`, `z>-->x`) `` that *constructs* a result from the results of the programs, `` `z>-->y` `` and `` `z>-->x` ``.
+
+If the program `` `z>-->y` `` transforms an argument of type `Z` to yield a result of type `Y`, 
+and the program `` `z>-->y` `` transforms that argument to yield a result of type `Y`,
+then the program `` product(`z>-->y`, `z>-->x`) `` transforms that argument to yield a result of type `Y && X`.
+
+Think of *one* object of type `Y && X` as *two* objects. More precisely, both an object of type `Y` and an object of type `X`. This is the way the `PDBP` library deals with two results of a program and two arguments of subsequent programs.
+
+`trait Construction` has three other members
+
+ - `product[Z, Y, X, W]` is a more complex version of `product[Z, Y, X]`,
+ - `and[Z, Y, X, W]` is yet another more complex version of `product[Z, Y, X]`,
+ - `` `let`[Z, Y, X] `` has a parameter that is a program that *constructs a new result*, and `` `in` `` has a parameter that is a program that has that result available as an *extra argument*.
+
+Note that
+
+ - `product[Z, Y, X]` can be defined in terms of `product[Z, Y, X, W]` and `` `(y&&x)>-->(y&&x)` ``,
+ - `product[Z, Y, X, W]` can be defined in terms of `product[Z, Y, X]` and `compose`,
+ - `and[Z, Y, X, W]` can be defined in terms of `product[Z, Y, X]`, `` `(z&&y)>-->z` ``, `` `(z&&y)>-->y` `` and `compose`,
+ - `` `let`[Z, Y, X] `` and `` `in` `` can be defined in terms of `product`, `` `z>-->z` `` and `compose`.
+
+`` `let` { /* ... */ } `in` { /* ... */ } `` is a second example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor.
+
+Note that the definitions are *left biased*. The argument for the first by-value parameter is always used. The argument for the second by-name parameter may not be used. 
+
+Consider
+
+```scala
+object constructionOperators {
+
+  implicit class ConstructionOperators[>-->[- _, + _]: Construction, -Z, +Y](
+      `z>-->y`: Z >--> Y) {
+
+    def &[ZZ <: Z, X](`zz>-->x`: => ZZ >--> X) =
+      implicitly.product(`z>-->y`, `zz>-->x`)
+
+    def &&[X, W](`x>-->w`: => X >--> W) =
+      implicitly.and(`z>-->y`, `x>-->w`)
+
+  }
+
+}
+```
+
+`product[Z, Y, X]` comes with an operator equivalent `&`.
+
+`and[Z, Y, X, W]` comes with an operator equivalent `&&`.
+
+The type constructor `>-->` is declared to implicitly have the programming capabilities `product` and `and` that are declared in the the type class `trait Construction`. The operators `&` and `&&` are defined in terms of those declared programming capabilities. The definitions use `implicitly`, an abbreviation for `implicitly[Construction[>-->]]`, that is available as an implicit evidence having the `product` and `and` capabilities of `Construction`.
+
+`` /* ... */ & /* ... */ `` and `` /* ... */ & /* ... */ `` are a second and third example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
+
+It should not come as a surprise that `` `z>-->y` & `z>-->x` `` has type `Z >--> (Y && X)`.
+
+It should not come as a surprise that `` `z>-->y` && `x>-->w` `` has type `(Z && X) >--> (Y && W)`.
+
+
 # **Appendices**
 
 ## **AppendixFunctionsAndExpressions**
