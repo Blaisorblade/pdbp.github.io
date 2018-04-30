@@ -11,10 +11,6 @@ package demo
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import scala.math.{sqrt => squareRoot}
-
-import bindingOperator.BindingOperator
-
 object FunctionsAndExpressions {
 
   val z = 3.0
@@ -23,6 +19,8 @@ object FunctionsAndExpressions {
   type &&[+Z, +Y] = Tuple2[Z, Y]
 
   def main(args: Array[String]): Unit = {
+
+    import scala.math.{sqrt => squareRoot}
 
     val result01: Double = squareRoot(z * z + y * y)
 
@@ -40,9 +38,13 @@ object FunctionsAndExpressions {
       (z, y) => (square(z), square(y))
 
     val result04: Double = squareRoot(sum(squares(z, y)))
+    
     val result05: Double = (squares andThen sum andThen squareRoot)(z, y)
 
     val result06: Double = (squares andThen sum andThen squareRoot) apply (z, y)
+
+    import bindingOperator.BindingOperator
+
     val result07: Double = (z, y) bind (squares andThen sum andThen squareRoot)
 
     val result08: Double = (z, y) bind squares bind sum bind squareRoot

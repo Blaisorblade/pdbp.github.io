@@ -572,13 +572,10 @@ Note that `>-->` is
 
 This *variance* property of `>-->` is related to two *principles* that are known as
 
- - The [*Liskov Substitution Principle*](https://en.wikipedia.org/wiki/Liskov_substitution_principle) which, roughly speaking, states
-   - *require less* and *provide more*. 
-
-and
-
- - The [*Internet Robustness Principle*](https://en.wikipedia.org/wiki/Robustness_principle) which, roughly speaking, states 
-   - *be conservative in what you send* and *be liberal in what you accept*.
+ - the [*Liskov Substitution Principle*](https://en.wikipedia.org/wiki/Liskov_substitution_principle) which, roughly speaking, states
+   - *require less* and *provide more*, 
+ - the [*Internet Robustness Principle*](https://en.wikipedia.org/wiki/Robustness_principle) which, roughly speaking, states 
+   - *be conservative in what you send* and *be liberal in what you receive*.
 
 ### **Many arguments resp. results**
 
@@ -632,15 +629,15 @@ We know programers who hate it, we know programmers who love it.
  
 Let's explain the reason of this naming convention with some examples that are special cases of [Theorems for free!](http://homepages.inf.ed.ac.uk/wadler/papers/free/free.dvi), as explained by Philip Wadler.
 
- - There is really only *one* function of type `Z => Z` *for all* `Z` : *identity*. 
+ - There is really only *one* generic function of type `Z => Z` *for all* `Z` : *identity*. 
    - The name `` `z=>z` ``, hopefully, suggests this function.
- - There is really only *one* function of type `(Z && Y) => Z` *for all* `Z` and `Y` : *left projection*. 
+ - There is really only *one* generic function of type `(Z && Y) => Z` *for all* `Z` and `Y` : *left projection*. 
    - The name `` `(z&&y)=>z` ``, hopefully, suggests this function.
- - There is really only *one* function of type `(Z && Y) => Y` *for all* `Z` and `Y` : *right projection*. 
+ - There is really only *one* generic function of type `(Z && Y) => Y` *for all* `Z` and `Y` : *right projection*. 
    - The name `` `(z&&y)=>y` ``, hopefully, suggests this function.
- - There is really only *one* function of type `(Z && Y) => Y && Z` *for all* `Z` and `Y` : *swap*. 
+ - There is really only *one* generic function of type `(Z && Y) => Y && Z` *for all* `Z` and `Y` : *swap*. 
    - The name `` `(z&&y)=>y&&z` ``, hopefully, suggests this function. 
- - There is really only *one* function of type `(Z => Y && Z) => Y` *for all* `Z` and `Y` : *function application* (or, equivalently, *argument binding*). 
+ - There is really only *one* generic function of type `(Z => Y && Z) => Y` *for all* `Z` and `Y` : *function application* (or, equivalently, *argument binding*). 
    - The name `` `(z=>y&&z)=>y` ``, hopefully, suggests this function.
 
 We use synonyms like `` `y=>y` ``, `` `x=>x` ``, etc. by need, when types `Y`, `X`, etc. are involved.
@@ -665,12 +662,12 @@ object bindingOperator {
 The main benefit of generic backtick names comes when trying to understand the type of expressions.
 
  - `` `z=>y`(z) `` is a function application expression where, hopefully, it should be clear that it has type `Y`. 
- - `` `z=>y` apply z `` is an equivalent expression where function application is explicit using `apply`. 
- - `` z bind `z=>y` `` is an equivalent expression where argument binding is explicit using `bind`. 
+ - `` `z=>y` apply z `` is an equivalent expression where function application is explicit, using `apply`. 
+ - `` z bind `z=>y` `` is an equivalent expression where argument binding is explicit, using `bind`. 
 
-When dealing with more complex expressions, having nested expressions, the usefulness of generic backtick names becomes even more apparent. 
+When dealing with more complex expressions, having nested sub-expressions, the usefulness of generic backtick names becomes even more apparent. 
 
-By the way, note that argument bindings can conveniently be read from left to right. 
+By the way, note that argument bindings can, conveniently, be read from left to right. 
 
 Consider
 
@@ -709,7 +706,9 @@ We defined `` `z>-->z` `` in terms of `function` and `` `z=>z` `` where the func
 For programs, we use generic backtick names like `` `z>-->y` `` to, hopefully, improve readability. 
 
 You may have doubts about the usefulness of a trivial program like`` `z>-->z` ``.  
-It turns out that, when defining more complex *composite programs*, obtained by plugging *program fragments*, a.k.a. *program components*, into *program templates*, replacing one or more of the fragments, a.k.a. components, by `` `z>-->z` `` results in interesting programs of their own.
+It turns out that, when defining more complex *composite programs*, obtained by plugging *program components*, into *program templates*, replacing one or more of the components, by `` `z>-->z` `` results in interesting programs of their own.
+
+### **Explaining `trait Composition`**
 
 # **Appendices**
 
@@ -717,14 +716,14 @@ It turns out that, when defining more complex *composite programs*, obtained by 
 
 Recall that
 
- - Pointful programming with computations is, in a way, similar to expression oriented, function application (argument binding) based programming with value level expressions.
+ - Pointful programming with computations is, in a way, similar to expression oriented, function application (argument binding) based programming with value (object) level expressions.
  - Pointfree programming with programs is, in a way, similar to function oriented, function composition based programming with function level expressions.
 
 This appendix compares pointful and pointfree programming.
 
 ### **BindingOperator**
 
-The `implicit class` below formalizes argument binding
+Recall that the `implicit class` below formalizes argument binding
 
 ```scala
 package demo
@@ -742,23 +741,19 @@ object bindingOperator {
 
 ### **Square root of sum of squares**
 
-The *square root of the sum of the squares* of `z` and `y` can be defined as
+*The square root of the sum of the squares* of `z` and `y` can be defined as
 
- - `squareRoot(z * z + y * y)`
+ - `squareRoot(z * z + y * y)`,
    - where the *value level expression* `squareRoot(z * z + y * y)` is pointful, expression oriented and function application based.
 
 It can also be defined as
- - `(squares andThen sum andThen squareRoot) apply (z, y)`
- - `(z, y)  bind (squares andThen sum andThen squareRoot)` 
+ - `(squares andThen sum andThen squareRoot) apply (z, y)`, or
+ - `(z, y)  bind (squares andThen sum andThen squareRoot)`, 
    - where the *function level expression* `squares andThen sum andThen squareRoot` is pointfree, function oriented and function composition based.
 
 The code below illustrates, among others, how to go from the former one to the latter ones.
 
 ```scala
-import scala.math.{sqrt => squareRoot}
-
-import bindingOperator.BindingOperator
-
 object FunctionsAndExpressions {
 
   val z = 3.0
@@ -767,6 +762,8 @@ object FunctionsAndExpressions {
   type &&[+Z, +Y] = Tuple2[Z, Y]
 
   def main(args: Array[String]): Unit = {
+
+    import scala.math.{sqrt => squareRoot}
 
     val result01: Double = squareRoot(z * z + y * y)
 
@@ -784,21 +781,16 @@ object FunctionsAndExpressions {
       (z, y) => (square(z), square(y))
 
     val result04: Double = squareRoot(sum(squares(z, y)))
+
     val result05: Double = (squares andThen sum andThen squareRoot)(z, y)
 
     val result06: Double = (squares andThen sum andThen squareRoot) apply (z, y)
+
+    import bindingOperator.BindingOperator
+
     val result07: Double = (z, y) bind (squares andThen sum andThen squareRoot)
 
     val result08: Double = (z, y) bind squares bind sum bind squareRoot
-
-    println(result01)
-    println(result02)
-    println(result03)
-    println(result04)
-    println(result05)
-    println(result06)
-    println(result07)
-    println(result08)
 
   }
 
@@ -864,13 +856,12 @@ We can already start defining some, agreed, very simple, descriptions in terms o
 The type class `trait SomeValuesContainedIn[C[+ _]: Containing]`, declares `C[+ _]` to *implicitly* have the capability to contain a value. 
 It defines descriptions `containedZero` and `containedTrue` using this `implicitly` available capability. 
 
-Think of descriptions as *recipes*
+Think of those descriptions as *recipes*
 
  - Take `0` and apply `contain` to it to make `containedZero`. 
    - Think of it as `0` contained in a, for now, *unknown* kind of, *one element container*.
  - Take `true` and apply `contain` to it to make `containedTrue`.
    - Think of it as `true` contained in a, for now unknown kind of, one element container.
- - ... .
 
 At this moment no definition of the declared capability has been provided yet.
 
@@ -977,7 +968,7 @@ The most important takeway is that, once the `import` has been done, the rest of
     println(containedZero)
     println(containedTrue)
 ```
-is the same for `usingBoxedValues` and `usingWrappedValues`.
+*is the same* for `usingBoxedValues` and `usingWrappedValues`.
 
 In this case we talk about only two lines of code, but, hopefully, you get the point.
 
@@ -1007,13 +998,13 @@ Now we go one step further by describing *library defined meanings*.
   }
 ```
 
-`trait Meaning` *declares* the *meaning* of type constructor as a natural transformation `meaning`. 
+`trait Meaning` *declares* the *meaning* of a type constructor `D` (cfr. description) as a natural transformation `meaning` to a type constructor `M` (cfr. meaning). 
 
 ```scala
   trait MeaningOfContaining[C[+ _]: Containing, M[+ _]] extends Meaning[C, M]
 ```
 
-`trait MeaningOfContaining` declares the meaning of type constructors that are declared to implicitly have the capability to contain a value. 
+`trait MeaningOfContaining` declares the meaning of a type constructor that is declared to implicitly have the capability to contain a value. 
 
 ### **Define declared meaning**
 
@@ -1098,7 +1089,7 @@ The most important takeway is that, once the `import`'s have been done, the rest
     println(meaning(containedZero))
     println(meaning(containedTrue))
 ```
-is the same for `usingWrappedMeaningOfBoxedValues` and `usingBoxedMeaningOfBoxedValues`.
+*is the same* for `usingWrappedMeaningOfBoxedValues` and `usingBoxedMeaningOfBoxedValues`.
 
 In this case we talk about only two lines of code, but, hopefully, you get the point.
 
