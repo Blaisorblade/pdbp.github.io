@@ -748,13 +748,13 @@ object compositionOperator {
 }
 ```
 
-`compose` comes with an *operator* equivalent `>-->`. 
+  - `compose` comes with an *operator* equivalent `>-->`. 
 
 The type constructor `>-->` is declared to implicitly have the programming capability `compose` that is declared in the the type class `trait Composition`. The operator `>-->` is defined in terms of this declared programming capability. The definition uses `implicitly`, an abbreviation for `implicitly[Composition[>-->]]`, that is available as an *implicit evidence* having the `compose` capability of `Composition`.
 
 `` /* ... */ >--> /* ... */ `` is a first example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
 
-It should not come as a surprise that `` `z>-->y` >--> `y>-->x` `` has type `Z >--> X`.
+  - It should not come as a surprise that `` `z>-->y` >--> `y>-->x` `` has type `Z >--> X`.
 
 ### **Explaining `trait Construction`**
 
@@ -873,9 +873,9 @@ Note that
  - `and[Z, Y, X, W]` can be defined in terms of `product[Z, Y, X]`, `` `(z&&y)>-->z` ``, `` `(z&&y)>-->y` `` and `compose`,
  - `` `let`[Z, Y, X] `` and `` `in` `` can be defined in terms of `product`, `` `z>-->z` `` and `compose`.
 
-`` `let` { /* ... */ } `in` { /* ... */ } `` is a second example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor.
+Note that the definitions are *left biased*. Their first parameter is a by-value parameter. Their second parameter is a by-name parameter. 
 
-Note that the definitions are *left biased*. The argument for the first by-value parameter is always used. The argument for the second by-name parameter may not be used. 
+`` `let` { /* ... */ } `in` { /* ... */ } `` is a second example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor.
 
 Consider
 
@@ -896,13 +896,12 @@ object constructionOperators {
 }
 ```
 
-`product[Z, Y, X]` comes with an operator equivalent `&`.
-
-`and[Z, Y, X, W]` comes with an operator equivalent `&&`.
+  - `product[Z, Y, X]` comes with an operator equivalent `&`.
+  - `and[Z, Y, X, W]` comes with an operator equivalent `&&`.
 
 The type constructor `>-->` is declared to implicitly have the programming capabilities `product` and `and` that are declared in the the type class `trait Construction`. The operators `&` and `&&` are defined in terms of those declared programming capabilities. The definitions use `implicitly`, an abbreviation for `implicitly[Construction[>-->]]`, that is available as an implicit evidence having the `product` and `and` capabilities of `Construction`.
 
-`` /* ... */ & /* ... */ `` and `` /* ... */ & /* ... */ `` are a second and third example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
+`` /* ... */ & /* ... */ `` and `` /* ... */ && /* ... */ `` are a third and fourth example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
 
 It should not come as a surprise that `` `z>-->y` & `z>-->x` `` has type `Z >--> (Y && X)`.
 
