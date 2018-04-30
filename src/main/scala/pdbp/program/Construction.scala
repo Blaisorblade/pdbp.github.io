@@ -46,11 +46,13 @@ object constructionOperators {
   implicit class ConstructionOperators[>-->[- _, + _]: Construction, -Z, +Y](
       `z>-->y`: Z >--> Y) {
 
+    import implicitly._   
+
     def &[ZZ <: Z, X](`zz>-->x`: => ZZ >--> X) =
-      implicitly.product(`z>-->y`, `zz>-->x`)
+      product(`z>-->y`, `zz>-->x`)
 
     def &&[X, W](`x>-->w`: => X >--> W) =
-      implicitly.and(`z>-->y`, `x>-->w`)
+      and(`z>-->y`, `x>-->w`)
 
   }
 

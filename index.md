@@ -638,9 +638,9 @@ The main benefit of generic backtick names comes when trying to understand the t
  - `` `z=>y` apply z `` is an equivalent expression where function application is explicit, using `apply`. 
  - `` z bind `z=>y` `` is an equivalent expression where argument binding is explicit, using `bind`. 
 
-When dealing with more complex expressions, having nested sub-expressions, the usefulness of generic backtick names becomes even more apparent. 
+Note that argument binding can, conveniently, be read from left to right. 
 
-By the way, note that argument bindings can, conveniently, be read from left to right. 
+When dealing with more complex expressions, having nested sub-expressions, the usefulness of generic backtick names becomes even more apparent. 
 
 Consider
 
@@ -659,7 +659,13 @@ trait Function[>-->[- _, + _]] {
 } 
 ```
 
-where
+We defined `` `z>-->z` `` in terms of `function` and `` `z=>z` `` where 
+
+  - `` `z=>z` `` 
+
+is the function you expect.
+
+The function is defined below
 
 ```scala
 package pdbp.utils
@@ -675,11 +681,10 @@ object functionUtils {
 } 
 ```
 
-We defined `` `z>-->z` `` in terms of `function` and `` `z=>z` `` where the function `` `z=>z` `` is the one you expect.
 For programs, we use generic backtick names like `` `z>-->y` `` to, hopefully, improve readability. 
 
 You may have doubts about the usefulness of a trivial program like`` `z>-->z` ``.  
-It turns out that, when defining more complex *composite programs*, obtained by plugging *program components*, into *program templates*, replacing one or more of the components, by `` `z>-->z` `` results in interesting programs of their own.
+It turns out that, when defining more complex composite programs, obtained by plugging program components, into program templates, replacing one or more of the components, by `` `z>-->z` `` results in interesting programs of their own.
 
 ### **Explaining `trait Composition`**
 
@@ -696,7 +701,7 @@ trait Composition[>-->[- _, + _]] {
 ```
 Think of `compose` as a program template and of `` `z>-->y` `` and `` `y>-->x` `` as program fragments.
 
-The program `` composition(`z>-->y`, `y>-->x`) `` is the *sequential composition* of the program `` `z>-->y` `` and the program `` `y>-->x` ``. 
+`` composition(`z>-->y`, `y>-->x`) `` is the *sequential composition* of `` `z>-->y` `` and `` `y>-->x` ``. 
 
 If the program `` `z>-->y` `` transforms an argument of type `Z` to yield a result of type `Y`, 
 then that result serves as an argument for the *subsequent* program `` `y>-->x` `` which transforms it to yield a result of type `X`.
@@ -712,8 +717,10 @@ object compositionOperator {
   implicit class CompositionOperator[>-->[- _, + _]: Composition, -Z, +Y](
       `z>-->y`: Z >--> Y) {
 
+    import implicitly._    
+
     def >-->[X](`y>-->x`: => Y >--> X) = {
-      implicitly.compose(`z>-->y`, `y>-->x`)
+      compose(`z>-->y`, `y>-->x`)
     }
 
   }
@@ -723,7 +730,7 @@ object compositionOperator {
 
   - `compose` comes with an *operator* equivalent `>-->`. 
 
-The type constructor `>-->` is declared to implicitly have the programming capability `compose` that is declared in the the type class `trait Composition`. The operator `>-->` is defined in terms of this declared programming capability. The definition uses `implicitly`, an abbreviation for `implicitly[Composition[>-->]]`, that is available as an *implicit evidence* having the `compose` capability of `Composition`.
+The type constructor `>-->` is declared to implicitly have the programming capability `compose` that is declared in the type class `trait Composition`. The operator `>-->` is defined in terms of this declared programming capability. The definition uses `implicitly`, an abbreviation for `implicitly[Composition[>-->]]`, that is available as an *implicit evidence* having the `compose` capability of `Composition`.
 
 `` /* ... */ >--> /* ... */ `` is a first example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
 
@@ -782,11 +789,13 @@ object productType {
 
 and where
 
- - `` `(y&&x)>-->(y&&x)` `` is the program you expect,
- - `` `(z&&y)>-->z` `` is the program you expect,
- - `` `(z&&y)>-->y` `` is the program you expect.
+ - `` `(y&&x)>-->(y&&x)` ``,
+ - `` `(z&&y)>-->z` ``, 
+ - `` `(z&&y)>-->y` ``,
 
-The programs above are defined below
+are the programs you expect.
+
+The programs are defined below
 
 ```scala
 package pdbp.program
@@ -838,7 +847,7 @@ object productUtils {
 
 Think of `product` as a program template and of `` `z>-->y` `` and `` `z>-->x` `` as program fragments.
 
-The program `` product(`z>-->y`, `z>-->x`) `` *constructs* a result from the results of the programs, `` `z>-->y` `` and `` `z>-->x` ``.
+`` product(`z>-->y`, `z>-->x`) `` *constructs* a result from the results of `` `z>-->y` `` and `` `z>-->x` ``.
 
 If the program `` `z>-->y` `` transforms an argument of type `Z` to yield a result of type `Y`, 
 and the program `` `z>-->y` `` transforms that argument to yield a result of type `Y`,
@@ -850,7 +859,7 @@ Programs are objects of type `Z >--> Y`.
 
 It may look as if programs can have only *one* argument resp. result.
 
-Think of one object of type `Y && X` as two objects. More precisely, both an object of type `Y` and an object of type `X`. This is the way the `PDBP` library deals with *two* arguments resp. results.
+Think of one object of type `Y && X` as two objects, more precisely, both an object of type `Y` and an object of type `X`. This is the way the `PDBP` library deals with *two* arguments resp. results.
 
 The `PDBP` library deals with *many* arguments resp. results using *nested tuples*
 
@@ -886,11 +895,13 @@ object constructionOperators {
   implicit class ConstructionOperators[>-->[- _, + _]: Construction, -Z, +Y](
       `z>-->y`: Z >--> Y) {
 
+    import implicitly._   
+
     def &[ZZ <: Z, X](`zz>-->x`: => ZZ >--> X) =
-      implicitly.product(`z>-->y`, `zz>-->x`)
+      product(`z>-->y`, `zz>-->x`)
 
     def &&[X, W](`x>-->w`: => X >--> W) =
-      implicitly.and(`z>-->y`, `x>-->w`)
+      and(`z>-->y`, `x>-->w`)
 
   }
 
@@ -900,7 +911,7 @@ object constructionOperators {
   - `product[Z, Y, X]` comes with an operator equivalent `&`,
   - `and[Z, Y, X, W]` comes with an operator equivalent `&&`.
 
-The type constructor `>-->` is declared to implicitly have the programming capabilities `product` and `and` that are declared in the the type class `trait Construction`. The operators `&` and `&&` are defined in terms of those declared programming capabilities. The definitions use `implicitly`, an abbreviation for `implicitly[Construction[>-->]]`, that is available as an implicit evidence having the `product` and `and` capabilities of `Construction`.
+The type constructor `>-->` is declared to implicitly have the programming capabilities `product` and `and` that are declared in the type class `trait Construction`. The operators `&` and `&&` are defined in terms of those declared programming capabilities. The definitions use `implicitly`, an abbreviation for `implicitly[Construction[>-->]]`, that is available as an implicit evidence having the `product` and `and` capabilities of `Construction`.
 
 `` /* ... */ & /* ... */ `` and `` /* ... */ && /* ... */ `` are a third and fourth example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
 
@@ -972,15 +983,18 @@ object sumType {
 }
 ```
 
-and
+and where
 
- - `` `(y||x)>-->(y||x)` `` is the program you expect,
- - `` `z>-->(z||y)` `` is the program you expect,
- - `` `y>-->(z||y)` `` is the program you expect.
- - `` `(w&&b)>-->(w||w)` ``, where `b` corresponds to the type `Boolean` is one of the two program you expect.
-   - It is the one where `true` corresponds to `Left` and  `false` corresponds to `Right`.
+ - `` `(y||x)>-->(y||x)` ``,
+ - `` `z>-->(z||y)` ``,
+ - `` `y>-->(z||y)` ``,
+ - `` `(w&&b)>-->(w||w)` ``, , where `b` corresponds to the type `Boolean`,
 
-The programs above are defined below
+are the programs you expect. 
+
+Agreed, `` `(w&&b)>-->(w||w)` `` is actually one of the two program you expect. It is the one where `true` corresponds to `Left` and  `false` corresponds to `Right`.
+
+The programs are defined below
 
 ```scala
 package pdbp.program
@@ -1059,7 +1073,7 @@ object productAndSumUtils {
 
 Think of `sum` as a program template and of `` `y>-->z` `` and `` `x>-->z` `` as program fragments.
 
-The program `` sum(`y>-->z`, `x>-->z`) `` uses a *"left or right" condition* to behave either as a the program `` `y>-->z` `` or as a the program `` `x>-->z` ``.
+`` sum(`y>-->z`, `x>-->z`) `` uses a *"left or right" condition* to behave either as `` `y>-->z` `` or as `` `x>-->z` ``.
 
 ### **Explaining `trait Condition` continued**
 
@@ -1067,7 +1081,7 @@ The program `` sum(`y>-->z`, `x>-->z`) `` uses a *"left or right" condition* to 
 
  - `sum[Z, Y, X, W]` is a more complex version of `sum[Z, Y, X]`,
  - `or[Z, X, Y, W]` is yet another more complex version of `sum[Z, Y, X]`,
- - `` `if`[W, Z] `` has a parameter that is a program that has a result of type `Boolean` that is used to *choose* between the parameter of `apply` or the parameter of `` `else` ``. Both are programs of type `W>-->Z`.
+ - `` `if`[W, Z] `` has a parameter that is a program that has a result of type `Boolean` that is used to behave either as the parameter of `apply` or as the parameter of `` `else` ``.
 
 Note that
 
