@@ -21,42 +21,93 @@ object LibraryLevelMeaning {
     def apply[Z](fz: From[Z]): To[Z]
   }
 
-  trait Meaning[D[+ _], M[+ _]] {
-    def meaning: NaturalTransformation[D, M]
+  trait Meaning[From[+ _], To[+ _]] {
+    def meaning: NaturalTransformation[From, To]
   }
 
-  trait MeaningOfContaining[C[+ _]: Containing, M[+ _]] extends Meaning[C, M]
-
-  trait MeaningOfBox[C[+ _]: Containing] extends MeaningOfContaining[Box, C] {
-    override def meaning: NaturalTransformation[Box, C] =
+  trait ContainingMeaningOfContaining[
+      From[+ _]: Containing, To[+ _]: Containing]
+      extends Meaning[From, To] {
+    val implicitlyFrom = implicitly[Containing[From]]
+    val implicitlyTo = implicitly[Containing[To]]
+    override def meaning: NaturalTransformation[From, To] =
       new NaturalTransformation {
-        override def apply[Z](bz: Box[Z]): C[Z] = {
-          implicitly.contain(bz.unbox)
+        override def apply[Z](fz: From[Z]): To[Z] = {
+          implicitlyTo.contain(implicitlyFrom.contained(fz))
         }
       }
   }
 
-  object wrapMeaningOfBox
-      extends MeaningOfBox[Wrap]()
-      with MeaningOfContaining[Box, Wrap]()
+  trait ContainingMeaningOfBox[C[+ _]: Containing]
+      extends ContainingMeaningOfContaining[Box, C]
+
+  trait CoveringMeaningOfContaining[From[+ _]: Containing, To[+ _]: Covering]
+      extends Meaning[From, To] {
+    val implicitlyFrom = implicitly[Containing[From]]
+    val implicitlyTo = implicitly[Covering[To]]
+    override def meaning: NaturalTransformation[From, To] =
+      new NaturalTransformation {
+        override def apply[Z](fz: From[Z]): To[Z] = {
+          implicitlyTo.cover(implicitlyFrom.contained(fz))
+        }
+      }
+  }
+
+  trait CoveringMeaningOfBox[C[+ _]: Covering]
+      extends CoveringMeaningOfContaining[Box, C]
+
+  trait ContainingMeaningOfCovering[From[+ _]: Covering, To[+ _]: Containing]
+      extends Meaning[From, To] {
+    val implicitlyFrom = implicitly[Covering[From]]
+    val implicitlyTo = implicitly[Containing[To]]
+    override def meaning: NaturalTransformation[From, To] =
+      new NaturalTransformation {
+        override def apply[Z](fz: From[Z]): To[Z] = {
+          implicitlyTo.contain(implicitlyFrom.covered(fz))
+        }
+      }
+  }
+
+  trait ContainingMeaningOfCap[C[+ _]: Containing]
+      extends ContainingMeaningOfCovering[Cap, C]
+
+  object bagMeaningOfBox
+      extends ContainingMeaningOfBox[Bag]()
+      with ContainingMeaningOfContaining[Box, Bag]()
 
   object boxMeaningOfBox
-      extends MeaningOfBox[Box]()
-      with MeaningOfContaining[Box, Box]()
+      extends ContainingMeaningOfBox[Box]()
+      with ContainingMeaningOfContaining[Box, Box]()
 
-  def usingWrappedMeaningOfBoxedValues: Unit = {
+  object capMeaningOfBox
+      extends CoveringMeaningOfBox[Cap]()
+      with CoveringMeaningOfContaining[Box, Cap]()
 
-    import someBoxedValues._
-    import wrapMeaningOfBox._
+  object fezMeaningOfBox
+      extends CoveringMeaningOfBox[Fez]()
+      with CoveringMeaningOfContaining[Box, Fez]()
+
+  object boxMeaningOfCap
+      extends ContainingMeaningOfCap[Box]()
+      with ContainingMeaningOfCovering[Cap, Box]()
+
+  object bagMeaningOfCap
+      extends ContainingMeaningOfCap[Bag]()
+      with ContainingMeaningOfCovering[Cap, Bag]()
+
+  def usingBagMeaningOfValuesContainedInBox: Unit = {
+
+    import someValuesContainedInBox._
+    import bagMeaningOfBox._
 
     println(meaning(containedZero))
     println(meaning(containedTrue))
 
   }
 
-  def usingBoxedMeaningOfBoxedValues: Unit = {
+  def usingBoxMeaningOfValuesContainedInBox: Unit = {
 
-    import someBoxedValues._
+    import someValuesContainedInBox._
     import boxMeaningOfBox._
 
     println(meaning(containedZero))
@@ -64,11 +115,59 @@ object LibraryLevelMeaning {
 
   }
 
+  def usingCapMeaningOfValuesContainedInBox: Unit = {
+
+    import someValuesContainedInBox._
+    import capMeaningOfBox._
+
+    println(meaning(containedZero))
+    println(meaning(containedTrue))
+
+  }
+
+  def usingFezMeaningOfValuesContainedInBox: Unit = {
+
+    import someValuesContainedInBox._
+    import fezMeaningOfBox._
+
+    println(meaning(containedZero))
+    println(meaning(containedTrue))
+
+  }
+
+  def usingBoxMeaningOfValuesCoveredByCap: Unit = {
+
+    import someValuesCoveredByCap._
+    import boxMeaningOfCap._
+
+    println(meaning(coveredZero))
+    println(meaning(coveredTrue))
+
+  }
+
+  def usingBagMeaningOfValuesCoveredByCap: Unit = {
+
+    import someValuesCoveredByCap._
+    import bagMeaningOfCap._
+
+    println(meaning(coveredZero))
+    println(meaning(coveredTrue))
+
+  }
+
   def main(args: Array[String]): Unit = {
 
-    usingWrappedMeaningOfBoxedValues
+    usingBagMeaningOfValuesContainedInBox
 
-    usingBoxedMeaningOfBoxedValues
+    usingBoxMeaningOfValuesContainedInBox
+
+    usingCapMeaningOfValuesContainedInBox
+
+    usingFezMeaningOfValuesContainedInBox
+
+    usingBoxMeaningOfValuesCoveredByCap
+
+    usingBagMeaningOfValuesCoveredByCap
 
   }
 

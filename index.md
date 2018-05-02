@@ -1183,6 +1183,9 @@ Note that argument binding naturally reads from left to right.
 
 ## **AppendixDefiningDescriptions**
 
+Warning: the next appendices (before [AppendixVariance](#appendixvariance)) are elaborate ones.
+This is intentional: the concepts they describe, *descriptions* and their *meanings* are important.
+
 ### **Descriptions in terms of declared capabilities**
 
 This section describes how *descriptions* can be *defined* in terms of *capabilities* that are *declared* in a *type class*.
@@ -1202,13 +1205,17 @@ object DefiningDescriptions {
 
   trait SomeValuesContainedIn[C[+ _]: Containing] {
 
+    import implicitly._
+
     val containedZero: C[Int] =
-      implicitly.contain(0)
+      contain(0)
 
     val containedTrue: C[Boolean] =
-      implicitly.contain(true)
+      contain(true)
 
   }
+
+  // ...
 
 }
 ```
@@ -1221,40 +1228,64 @@ More precisely
 
  - `Containing[C[+ _]]` declares, using it's member `contain`, `C[+ _]`'s capability to contain a value.
 
-We can already start defining some, agreed, very simple, descriptions in terms of this declared capability
+We have also already defined some, agreed, very simple, descriptions, `containedZero` and `containedTrue` in terms of this declared capability.
 
-```scala
-  trait SomeValuesContainedIn[C[+ _]: Containing] {
-
-    val containedZero: C[Int] =
-      implicitly.contain(0)
-
-    val containedTrue: C[Boolean] =
-      implicitly.contain(true)
-
-  }
-```
-
-The type class `trait SomeValuesContainedIn[C[+ _]: Containing]`, declares `C[+ _]` to *implicitly* have the capability to contain a value. 
+`trait SomeValuesContainedIn[C[+ _]: Containing]`, declares `C[+ _]` to *implicitly* have the capability to contain a value. 
 It defines descriptions `containedZero` and `containedTrue` using this `implicitly` available capability. 
 
 Think of those descriptions as *recipes*
 
  - Take `0` and apply `contain` to it to make `containedZero`. 
-   - Think of it as `0` contained in a, for now, *unknown* kind of, *one element container*.
+   - Think of it as `0` contained in a, for now, *unknown* kind of, *(one element) container*.
  - Take `true` and apply `contain` to it to make `containedTrue`.
-   - Think of it as `true` contained in a, for now unknown kind of, one element container.
+   - Think of it as `true` contained in a, for now, unknown kind of, (one element) container.
 
-At this moment no definition of the declared capability has been provided yet.
+Note that, at this moment, no definition of the declared capability has been provided yet.
+
+Below is another example
+
+```scala
+package demo
+
+object DefiningDescriptions {
+
+  // ...
+
+  trait Covering[C[+ _]] extends Description[C] {
+
+    def cover[Z](z: Z): C[Z]
+
+  }
+
+  trait SomeValuesCoveredBy[C[+ _]: Covering] {
+
+    import implicitly._
+
+    val coveredZero: C[Int] =
+      cover(0)
+
+    val coveredTrue: C[Boolean] =
+      cover(true)
+
+  }  
+
+}
+```
+
+`trait Covering` is a `Dotty` type class declaring the capability to *cover a value*.
+
+Again, we have also already defined some, agreed, very simple, descriptions, `coveredZero` and `coveredTrue`, in terms of this declared capability.
+
+Note, again, that, at this moment, no definition of the declared capability has been provided yet.
 
 ## **AppendixLanguageLevelMeaning**
 
-### **Define declared capabilities**
+### **Define declared `contain` capability for `Box`**
 
 Let's go ahead and provide a first definition of the declared capability `contain`.
 
 ```scala
-  case class Box[+Z](unbox: Z)
+  case class Box[+Z](contained: Z)
 
   implicit object implicitBox extends Containing[Box] {
 
@@ -1265,51 +1296,82 @@ Let's go ahead and provide a first definition of the declared capability `contai
 
 `implicitBox` is an `implicit object` that defines the capability `contain` that is declared in `trait Containing`. 
 
-### **Define declared capabilities revisited**
+### **Define declared `contain` capability for `Bag`**
 
 Let's go ahead and provide a second definition of the declared capability `contain`.
 
 ```scala
-  case class Wrap[+Z](unwrap: Z)
+  case class Bag[+Z](contained: Z)
 
-  implicit object implicitWrap extends Containing[Wrap] {
+  implicit object implicitBag extends Containing[Bag] {
 
-    override def contain[Z](z: Z): Wrap[Z] = Wrap(z)
+    override def contain[Z](z: Z): Bag[Z] = Bag(z)
 
   }
 ```
 
-`implicitWrap` is an `implicit object` that defines the capability that is declared in `trait Containing`. 
+`implicitBag` is an `implicit object` that defines the capability that is declared in `trait Containing`. 
+
+### **Define declared `cover` capability for `Cap`**
+
+Let's go ahead and provide a first definition of the declared capability `cover`.
+
+```scala
+  case class Cap[+Z](covered: Z)
+
+  implicit object implicitCap extends Covering[Cap] {
+
+    override def cover[Z](z: Z): Cap[Z] = Cap(z)
+
+  }
+```
+
+`implicitCap` is an `implicit object` that defines the capability `cover` that is declared in `trait Covering`. 
+
+### **Define declared `cover` capability for `Fez`**
+
+Let's go ahead and provide a second definition of the declared capability `cover`.
+
+```scala
+  case class Fez[+Z](covered: Z)
+
+  implicit object implicitFez extends Covering[Fez] {
+
+    override def cover[Z](z: Z): Fez[Z] = Fez(z)
+
+  } 
+```
+
+`implicitFez` is an `implicit object` that defines the capability that is declared in `trait Covering`. 
 
 ### **Language level meaning**
 
-So far we have defined `implicit object`'s that define the capabilities that are declared in the `Dotty` type class `trait Containing`.
+So far we have defined `implicit object`'s that define the capabilities that are declared in the type classes `trait Containing` and `trait Covering`.
+
 Think of a them as *language level meanings*.
 
 ### **Defining descriptions in terms of language level meaning**
 
-This simply boils down to defining `object someBoxedValues` that depends on `implicit object implicitBox`
+This simply boils down to defining `object`'s that depend on appropriate `implicit object`'s.
 
 ```scala
-  object someBoxedValues extends SomeValuesContainedIn[Box]()
+  object someValuesContainedInBox extends SomeValuesContainedIn[Box]()
+
+  object someValuesContainedInBag extends SomeValuesContainedIn[Bag]()
+
+  object someValuesCoveredByCap extends SomeValuesCoveredBy[Cap]()
+
+  object someValuesCoveredByFez extends SomeValuesCoveredBy[Fez]()
 ```
 
-### **Defining descriptions in terms of language level meaning revisited**
+### **Using `Box` language level meaning of `Containing`** 
 
-This simply boils down to defining `object someWrappedValues` that depends on `implicit object implicitWrap`
-
-```scala
-  object someWrappedValues extends SomeValuesContainedIn[Wrap]()
-```
-
-### **Use language level meaning**
-
-We can now use boxed values
+We can now use values contained in a box
 
 ```scala
-  def usingBoxedValues: Unit = {
+  def usingSomeValuesContainedInBox: Unit = {
 
-    import someBoxedValues._
+    import someValuesContainedInBox._
 
     println(containedZero)
     println(containedTrue)
@@ -1317,7 +1379,7 @@ We can now use boxed values
   }
 ```
 
-Some boxed values are made available using `import someBoxedValues._`.
+Some values contained in a box are made available using `import someValuesContainedInBox._`.
 
 This technique, called *dependency injection by* `import`, is used a lot in `Dotty`. 
 
@@ -1326,14 +1388,14 @@ In particular, for *type classes*, like `trait Containing`, dependency injection
  - defining an appropriate `implicit object`,
  - doing an appropriate `import` of an `object` that depends on that `implicit object`.
 
-### **Use language level meaning revisited**
+### **Using `Bag` language level meaning of `Containing`**
 
-We can now use wrapped values
+We can now use values contained in a bag
 
 ```scala
-  def usingWrappedValues: Unit = {
+  def usingSomeValuesContainedInBag: Unit = {
 
-    import someWrappedValues._
+    import someValuesContainedInBag._
 
     println(containedZero)
     println(containedTrue)
@@ -1343,22 +1405,71 @@ We can now use wrapped values
 
 Again we use dependency injection by `import`.
 
+### **Using `Cap` language level meaning of `Covering`** 
+
+We can now use values covered by a cap
+
+```scala
+  def usingSomeValuesCoveredByCap: Unit = {
+
+    import someValuesCoveredByCap._
+
+    println(coveredZero)
+    println(coveredTrue)
+
+  }
+```
+
+Again, we use dependency injection by `import`.
+
+### **Using `Fez` language level meaning of `Covering`**
+
+We can now use values covered by a fez
+
+```scala
+  def usingSomeValuesCoveredByFez: Unit = {
+
+    import someValuesCoveredByFez._
+
+    println(coveredZero)
+    println(coveredTrue)
+
+  } 
+```
+
+Again, we use dependency injection by `import`.
+
 ### **Summary**
 
-The most important takeway is that, once the `import` has been done, the rest of the code 
+The most important takeway is that 
+
+for `Containing`, once the `import` has been done, the rest of the code 
 ```scala
     println(containedZero)
     println(containedTrue)
 ```
-*is the same* for `usingBoxedValues` and `usingWrappedValues`.
+*is the same* for `usingSomeValuesContainedInBag` and `usingSomeValuesContainedInBag`.
+
+In this case we talk about only two lines of code, but, hopefully, you get the point.
+
+for `Covering`, once the `import` has been done, the rest of the code 
+```scala
+    println(containedZero)
+    println(containedTrue)
+```
+*is the same* for `usingSomeValuesCoveredByCap` and `usingSomeValuesCoveredByFez`.
 
 In this case we talk about only two lines of code, but, hopefully, you get the point.
 
 ## **AppendixLibraryLevelMeaning**
 
+So far we have described language defined meanings.
+
+Now we go one step further by describing *library defined meanings*.
+
 ### **Natural transformation**
 
-Before continuing, we describe *natural transformations*
+Before we continue, we describe *natural transformations*
 
 ```scala
   trait NaturalTransformation[From[+ _], To[+ _]] {
@@ -1368,59 +1479,156 @@ Before continuing, we describe *natural transformations*
 
 Natural transformations are like functions, but they work at the *type constructor* level instead of at the type level.
 
-### **Defining `MeaningOfContaining`**
-
-So far we have described language defined meanings.
-
-Now we go one step further by describing *library defined meanings*.
+### **Define `Meaning`**
 
 ```scala
-  trait Meaning[D[+ _], M[+ _]] {
-    def meaning: NaturalTransformation[D, M]
+  trait Meaning[From[+ _], To[+ _]] {
+    def meaning: NaturalTransformation[From, To]
   }
 ```
 
-`trait Meaning` *declares* the *meaning* of a type constructor `D` (cfr. description) as a natural transformation `meaning` to a type constructor `M` (cfr. meaning). 
+`trait Meaning` *declares* the *meaning* of a type constructor `From` as a natural transformation `meaning` to a type constructor `To`.
 
+### **Define `ContainingMeaningOfContaining`**
+ 
 ```scala
-  trait MeaningOfContaining[C[+ _]: Containing, M[+ _]] extends Meaning[C, M]
-```
-
-`trait MeaningOfContaining` declares the meaning of a type constructor that is declared to implicitly have the capability to contain a value. 
-
-### **Define declared meaning**
-
-We can now define `trait MeaningOfBox` defining the meaning of `Box` in terms of type constructors that are declared to implicitly have the capability to contain a value.
-
-```scala
-  trait MeaningOfBox[C[+ _]: Containing] extends MeaningOfContaining[Box, C] {
-    override def meaning: NaturalTransformation[Box, C] =
+  trait ContainingMeaningOfContaining[
+      From[+ _]: Containing, To[+ _]: Containing]
+      extends Meaning[From, To] {
+    val implicitlyFrom = implicitly[Containing[From]]
+    val implicitlyTo = implicitly[Containing[To]]
+    override def meaning: NaturalTransformation[From, To] =
       new NaturalTransformation {
-        override def apply[Z](bz: Box[Z]): C[Z] = {
-          implicitly.contain(bz.unbox)
+        override def apply[Z](fz: From[Z]): To[Z] = {
+          implicitlyTo.contain(implicitlyFrom.contained(fz))
         }
       }
   }
 ```
 
-`meaning` is defined using this `implicitly` available capability. 
+`trait ContainingMeaningOfContaining` declares the meaning of a type constructor that is declared to implicitly have the capability to contain a value
+in terms of type constructors that are declared to implicitly have the capability to contain a value. 
 
-We can now define `object wrapMeaningOfBox` defining the meaning of `Box` in terms of `Wrap`.
+`meaning` is defined using those implicitly available capabilities. 
+
+### **Define `Containing` meaning of `Box`**
+
+We can now define `trait ContainingMeaningOfBox` defining the meaning of `Box` in terms of type constructors that are declared to implicitly have the capability to contain a value.
 
 ```scala
-  object wrapMeaningOfBox 
-      extends MeaningOfBox[Wrap]()
-      with MeaningOfContaining[Box, Wrap]()
+  trait ContainingMeaningOfBox[C[+ _]: Containing]
+      extends ContainingMeaningOfContaining[Box, C]
 ```
 
-### **Define declared meaning revisited**
-
-We can also define a more trivial meaning of `Box` in terms of `Box` itself.
+Below are two examples
 
 ```scala
+  object bagMeaningOfBox
+      extends ContainingMeaningOfBox[Bag]()
+      with ContainingMeaningOfContaining[Box, Bag]()
+
   object boxMeaningOfBox
-      extends MeaningOfBox[Box]()
-      with MeaningOfContaining[Box, Box]()
+      extends ContainingMeaningOfBox[Box]()
+      with ContainingMeaningOfContaining[Box, Box]()
+```
+
+### **Exploiting similarity**
+
+So far we have defined `meaning` for `Containing` descriptions in terms of `Containing`.
+
+`Containing` and `Covering` describe similar concepts. Maybe you can think of
+
+  - a box as something covering something
+  - a bag as something covering something
+  - a cap as something containing something
+  - a fez as something containing something
+
+This is where the flexibility of library level declarations and definitions comes in.
+
+### **Define `CoveringMeaningOfContaining`**
+ 
+```scala
+  trait CoveringMeaningOfContaining[From[+ _]: Containing, To[+ _]: Covering]
+      extends Meaning[From, To] {
+    val implicitlyFrom = implicitly[Containing[From]]
+    val implicitlyTo = implicitly[Covering[To]]
+    override def meaning: NaturalTransformation[From, To] =
+      new NaturalTransformation {
+        override def apply[Z](fz: From[Z]): To[Z] = {
+          implicitlyTo.cover(implicitlyFrom.contained(fz))
+        }
+      }
+  }
+```
+
+`trait CoveringMeaningOfContaining` declares the meaning of a type constructor that is declared to implicitly have the capability to contain a value
+in terms of type constructors that are declared to implicitly have the capability to cover a value. 
+
+`meaning` is defined using those implicitly available capabilities. 
+
+### **Define `Covering` meaning of `Box`**
+
+We can now define `trait ContainingMeaningOfBox` defining the meaning of `Box` in terms of type constructors that are declared to implicitly have the capability to cover a value.
+
+```scala
+  trait CoveringMeaningOfBox[C[+ _]: Covering]
+      extends CoveringMeaningOfContaining[Box, C]
+```
+
+Below are two examples
+
+```scala
+  object capMeaningOfBox
+      extends CoveringMeaningOfBox[Cap]()
+      with CoveringMeaningOfContaining[Box, Cap]()
+
+  object fezMeaningOfBox
+      extends CoveringMeaningOfBox[Fez]()
+      with CoveringMeaningOfContaining[Box, Fez]()
+```
+
+### **Define `ContainingMeaningOfCovering`**
+ 
+```scala
+  trait ContainingMeaningOfCovering[From[+ _]: Covering, To[+ _]: Containing]
+      extends Meaning[From, To] {
+    val implicitlyFrom = implicitly[Covering[From]]
+    val implicitlyTo = implicitly[Containing[To]]
+    override def meaning: NaturalTransformation[From, To] =
+      new NaturalTransformation {
+        override def apply[Z](fz: From[Z]): To[Z] = {
+          implicitlyTo.contain(implicitlyFrom.covered(fz))
+        }
+      }
+  }
+```
+
+`trait CoveringMeaningOfContaining` declares the meaning of a type constructor that is declared to implicitly have the capability to cover a value
+in terms of type constructors that are declared to implicitly have the capability to contain a value. 
+
+`meaning` is defined using those implicitly available capabilities. 
+
+### **Define `Containing` meaning of `Cap`**
+
+We can now define `trait ContainingMeaningOfCap` defining the meaning of `Cap` in terms of type constructors that are declared to implicitly have the capability to contain a value.
+
+```scala
+  trait ContainingMeaningOfCap[C[+ _]: Containing]
+      extends ContainingMeaningOfCovering[Cap, C] 
+```
+
+`meaning` is defined using this `implicitly` available capability.
+
+Below are two examples
+
+```scala
+  object boxMeaningOfCap
+      extends ContainingMeaningOfCap[Box]()
+      with ContainingMeaningOfCovering[Cap, Box]()
+
+  object bagMeaningOfCap
+      extends ContainingMeaningOfCap[Bag]()
+      with ContainingMeaningOfCovering[Cap, Bag]()
 ```
 
 ### **Library level meaning**
@@ -1428,15 +1636,15 @@ We can also define a more trivial meaning of `Box` in terms of `Box` itself.
 So far we have defined `object`'s that define `meaning` that is declared in `trait Meaning`.
 Think of a them as *library level meanings*
 
-### **Use library level meaning**
+### **Use `Bag` library level `Containing` meaning for `Box`**
       
-We can now use the wrapped meaning of boxed values
+We can now use the bag meaning of values contained in a box
 
 ```scala
-  def usingWrappedMeaningOfBoxedValues: Unit = {
+  def usingBagMeaningOfValuesContainedInBox: Unit = {
 
-    import someBoxedValues._
-    import wrapMeaningOfBox._
+    import someValuesContainedInBox._
+    import bagMeaningOfBox._
 
     println(meaning(containedZero))
     println(meaning(containedTrue))
@@ -1444,16 +1652,16 @@ We can now use the wrapped meaning of boxed values
   }
 ```
 
-For `trait Meaning` we also use *dependency injection* by `import`.
+For `trait Meaning` we also use dependency injection by `import`.
 
-### **Use library level meaning revisited**
+### **Use `Box` library level `Containing` meaning for `Box`**
       
-We can now also use the boxed meaning of boxed values
+We can now use the box meaning of values contained in a box
 
 ```scala
-  def usingBoxedMeaningOfBoxedValues: Unit = {
+  def usingBoxMeaningOfValuesContainedInBox: Unit = {
 
-    import someBoxedValues._
+    import someValuesContainedInBox._
     import boxMeaningOfBox._
 
     println(meaning(containedZero))
@@ -1464,14 +1672,97 @@ We can now also use the boxed meaning of boxed values
 
 Again we use dependency injection by `import`.
 
+### **Use `Cap` library level `Covering` meaning for `Box`**
+      
+We can now use the cap meaning of values contained in a box
+
+```scala
+  def usingCapMeaningOfValuesContainedInBox: Unit = {
+
+    import someValuesContainedInBox._
+    import capMeaningOfBox._
+
+    println(meaning(containedZero))
+    println(meaning(containedTrue))
+
+  } 
+```
+
+Again we use dependency injection by `import`.
+
+### **Use `Fez` library level `Covering` meaning for `Box`**
+      
+We can now use the box meaning of values contained in a box
+
+```scala
+  def usingFezMeaningOfValuesContainedInBox: Unit = {
+
+    import someValuesContainedInBox._
+    import fezMeaningOfBox._
+
+    println(meaning(containedZero))
+    println(meaning(containedTrue))
+
+  } 
+```
+
+Again we use dependency injection by `import`.
+
+### **Use `Box` library level `Containing` meaning for `Cap`**
+      
+We can now use the box meaning of values covered by a cap
+
+```scala
+  def usingBoxMeaningOfValuesCoveredByCap: Unit = {
+
+    import someValuesCoveredByCap._
+    import boxMeaningOfCap._
+
+    println(meaning(coveredZero))
+    println(meaning(coveredTrue))
+
+  } 
+```
+
+Again we use dependency injection by `import`.
+
+### **Use `Bag` library level `Containing` meaning for `Cap`**
+      
+We can now use the bag meaning of values covered by a cap
+
+```scala
+  def usingBagMeaningOfValuesCoveredByCap: Unit = {
+
+    import someValuesCoveredByCap._
+    import bagMeaningOfCap._
+
+    println(meaning(coveredZero))
+    println(meaning(coveredTrue))
+
+  }
+```
+
+Again we use dependency injection by `import`.
+
 ### **Summary**
 
-The most important takeway is that, once the `import`'s have been done, the rest of the code 
+The most important takeway is that, 
+
+for `Containing`, once the `import`'s have been done, the rest of the code 
 ```scala
     println(meaning(containedZero))
     println(meaning(containedTrue))
 ```
-*is the same* for `usingWrappedMeaningOfBoxedValues` and `usingBoxedMeaningOfBoxedValues`.
+*is the same* for `usingBoxMeaningOfValuesCoveredByCap` and usingBagMeaningOfValuesCoveredByCap, usingCapMeaningOfValuesContainedInBox and `usingFezMeaningOfValuesContainedInBox`.
+
+In this case we talk about only two lines of code, but, hopefully, you get the point.
+
+for `Covering`, once the `import`'s have been done, the rest of the code 
+```scala
+    println(meaning(coveredZero))
+    println(meaning(coveredTrue))
+```
+*is the same* for `usingBoxMeaningOfValuesCoveredByCap` and `usingBagMeaningOfValuesCoveredByCap`.
 
 In this case we talk about only two lines of code, but, hopefully, you get the point.
 

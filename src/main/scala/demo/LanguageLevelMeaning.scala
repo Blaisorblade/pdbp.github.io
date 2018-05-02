@@ -15,49 +15,107 @@ import DefiningDescriptions._
 
 object LanguageLevelMeaning {
 
-  case class Box[+Z](unbox: Z)
+  case class Box[+Z](contained: Z)
 
   implicit object implicitBox extends Containing[Box] {
 
     override def contain[Z](z: Z): Box[Z] = Box(z)
 
-  }
-
-  case class Wrap[+Z](unwrap: Z)
-
-  implicit object implicitWrap extends Containing[Wrap] {
-
-    override def contain[Z](z: Z): Wrap[Z] = Wrap(z)
+    override def contained[Z](bz: Box[Z]) = bz match {
+      case Box(z) => z
+    }
 
   }
 
-  object someBoxedValues extends SomeValuesContainedIn[Box]()
+  case class Bag[+Z](contained: Z)
 
-  object someWrappedValues extends SomeValuesContainedIn[Wrap]()
+  implicit object implicitBag extends Containing[Bag] {
 
-  def usingBoxedValues: Unit = {
+    override def contain[Z](z: Z): Bag[Z] = Bag(z)
 
-    import someBoxedValues._
+    override def contained[Z](bz: Bag[Z]) = bz match {
+      case Bag(z) => z
+    }
+
+  }
+
+  case class Cap[+Z](covered: Z)
+
+  implicit object implicitCap extends Covering[Cap] {
+
+    override def cover[Z](z: Z): Cap[Z] = Cap(z)
+
+    override def covered[Z](cz: Cap[Z]) = cz match {
+      case Cap(z) => z
+    }
+
+  }
+
+  case class Fez[+Z](covered: Z)
+
+  implicit object implicitFez extends Covering[Fez] {
+
+    override def cover[Z](z: Z): Fez[Z] = Fez(z)
+
+    override def covered[Z](fz: Fez[Z]) = fz match {
+      case Fez(z) => z
+    }
+
+  }
+
+  object someValuesContainedInBox extends SomeValuesContainedIn[Box]()
+
+  object someValuesContainedInBag extends SomeValuesContainedIn[Bag]()
+
+  object someValuesCoveredByCap extends SomeValuesCoveredBy[Cap]()
+
+  object someValuesCoveredByFez extends SomeValuesCoveredBy[Fez]()
+
+  def usingSomeValuesContainedInBox: Unit = {
+
+    import someValuesContainedInBox._
 
     println(containedZero)
     println(containedTrue)
 
   }
 
-  def usingWrappedValues: Unit = {
+  def usingSomeValuesContainedInBag: Unit = {
 
-    import someWrappedValues._
+    import someValuesContainedInBag._
 
     println(containedZero)
     println(containedTrue)
+
+  }
+
+  def usingSomeValuesCoveredByCap: Unit = {
+
+    import someValuesCoveredByCap._
+
+    println(coveredZero)
+    println(coveredTrue)
+
+  }
+
+  def usingSomeValuesCoveredByFez: Unit = {
+
+    import someValuesCoveredByFez._
+
+    println(coveredZero)
+    println(coveredTrue)
 
   }
 
   def main(args: Array[String]): Unit = {
 
-    usingBoxedValues
+    usingSomeValuesContainedInBox
 
-    usingWrappedValues
+    usingSomeValuesContainedInBag
+
+    usingSomeValuesCoveredByCap
+
+    usingSomeValuesCoveredByFez
 
   }
 

@@ -19,15 +19,39 @@ object DefiningDescriptions {
 
     def contain[Z](z: Z): C[Z]
 
+    def contained[Z](cz: C[Z]): Z
+
   }
 
   trait SomeValuesContainedIn[C[+ _]: Containing] {
 
+    import implicitly._
+
     val containedZero: C[Int] =
-      implicitly.contain(0)
+      contain(0)
 
     val containedTrue: C[Boolean] =
-      implicitly.contain(true)
+      contain(true)
+
+  }
+
+  trait Covering[C[+ _]] extends Description[C] {
+
+    def cover[Z](z: Z): C[Z]
+
+    def covered[Z](cz: C[Z]): Z
+
+  }
+
+  trait SomeValuesCoveredBy[C[+ _]: Covering] {
+
+    import implicitly._
+
+    val coveredZero: C[Int] =
+      cover(0)
+
+    val coveredTrue: C[Boolean] =
+      cover(true)
 
   }
 
