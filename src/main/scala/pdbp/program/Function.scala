@@ -47,6 +47,15 @@ trait Function[>-->[- _, + _]] {
   def `y>-->(z||y)`[Z, Y]: Y >--> (Z || Y) =
     function(`y=>(z||y)`)
 
+  def `(y||x)>-->y`[Y, X]: (Y || X) >--> Y =
+    function(`(y||x)=>y`)
+
+  def `(y||x)>-->x`[Y, X]: (Y || X) >--> X =
+    function(`(y||x)=>x`)    
+
+  def `(y||x)>-->b`[Y, X]: (Y || X) >--> Boolean =
+    function(`(y||x)=>b`)
+
   def `(w&&b)>-->(w||w)`[W]: (W && Boolean) >--> (W || W) =
     function(`(w&&b)=>(w||w)`)
 

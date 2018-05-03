@@ -27,4 +27,20 @@ object sumUtils {
     Right(y)
   }
 
+  def foldSum[Z, Y, X](`y=>z`: => Y => Z, `x=>z`: => X => Z): (Y || X) => Z = {
+    case Left(y) =>
+      `y=>z`(y)
+    case Right(x) =>
+      `x=>z`(x)
+  }
+
+  def `(y||x)=>b`[Y, X]: (Y || X) => Boolean =
+    foldSum[Boolean, Y, X](_ => true, _ => false)
+
+  def `(y||x)=>y`[Y, X]: (Y || X) => Y =
+    foldSum[Y, Y, X](y => y, _ => ???)
+
+  def `(y||x)=>x`[Y, X]: (Y || X) => X =
+    foldSum[X, Y, X](_ => ???, x => x)  
+
 }

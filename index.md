@@ -1056,7 +1056,7 @@ and where
  - `` `(y||x)>-->(y||x)` ``,
  - `` `z>-->(z||y)` ``,
  - `` `y>-->(z||y)` ``,
- - `` `(w&&b)>-->(w||w)` ``, , where `b` corresponds to the type `Boolean`,
+ - `` `(w&&b)>-->(w||w)` ``, where `b` corresponds to the type `Boolean`
 
 are the programs you expect. 
 
@@ -1310,15 +1310,13 @@ trait ProductInTermsOfLetAndIn[
 
 }
 ```
-The definition of `product` is an example of a recurring theme of the `PDBP` library: defining a program description, or programming capability, often boils down to a *getting the types right puzzle*. Often there is only one meaningful way to get them right. Let's have a look at some of the details of the puzzle for this definition`.
+where
 
-The outer `` `let` `` creates, using `` `z>-->y` ``, a new argument of type `Y` for the outer `` `in` `` which, as a consequence, has an argument of type `Z && Y` available, representing two arguments, one of type `Z` and one of type `Y`. The main difference between `` `let` `` and `compose` is that `` `let` `` does *not* loose the original argument of type `Z`. 
+  - `` `(z&&y&&x)>-->(y&&x)` `` 
+ 
+is the program you expect.
 
-The inner `` `let` `` of the outer `` `in` `` creates, using `` `(z&&y)>-->z` >--> `z>-->x` ``, the composition of `` `(z&&y)>-->z` `` and `` `z>-->x` ``, a new argument of type `X` for the inner `` `in` ``  of the outer `` `in` `` which, as a consequence, has an argument of type `Z && Y && X` available, representing three arguments, one of type `Z`, one of type `Y`, and one of type `X`. 
-
-The inner `` `in` `` in the outer `` `in` `` simply gets rid of the original argument of type `Z` using `` `(z&&y&&x)>-->(y&&x)` ``.
-
-The program `` `(z&&y&&x)>-->(y&&x)` `` is the program you expect.
+The program is defined below
 
 ```scala
 package pdbp.program
@@ -1355,10 +1353,136 @@ object productUtils {
 }
 ```
 
-Note that generic backtick names help to understand the puzzle. For example
+The definition of `product` is an example of a recurring theme of the `PDBP` library: defining a program description, or programming capability, often boils down to a *getting the types right puzzle*. Often there is only one meaningful way to get them right. Let's have a look at some of the details of the puzzle for this definition`.
+
+The outer `` `let` `` creates, using `` `z>-->y` ``, a new argument of type `Y` for the outer `` `in` `` which, as a consequence, has an argument of type `Z && Y` available, representing two arguments, one of type `Z` and one of type `Y`. The main difference between `` `let` `` and `compose` is that `` `let` `` does *not* loose the original argument of type `Z`. 
+
+The inner `` `let` `` of the outer `` `in` `` creates, using `` `(z&&y)>-->z` >--> `z>-->x` ``, the composition of `` `(z&&y)>-->z` `` and `` `z>-->x` ``, a new argument of type `X` for the inner `` `in` ``  of the outer `` `in` `` which, as a consequence, has an argument of type `Z && Y && X` available, representing three arguments, one of type `Z`, one of type `Y`, and one of type `X`. 
+
+The inner `` `in` `` in the outer `` `in` `` simply gets rid of the original argument of type `Z` using `` `(z&&y&&x)>-->(y&&x)` ``.
+
+Note that generic backtick names, hopefully, help to understand the puzzle. 
+For example
 
   - in the composition `` `(z&&y)>-->z` >--> `z>-->x` ``, the matching `z`'s reflect the type `Z` involved,
   - in the name `` `(z&&y&&x)>-->(y&&x)` ``, both `(z&&y&&x)` and `(y&&x)` reflect the types `(Z && Y && X)` and `(Y && X)` involved. 
+
+#### **about the power of expression of `` `if`(...) { ... } `else` { ... }``**
+
+`sum[Z, Y, X]` can be defined in terms of `` `if`(...) { ... } `else` { ... }``.
+
+```scala
+package demo
+
+import pdbp.types.sum.sumType._
+
+import pdbp.utils.sumUtils._
+
+import pdbp.program.Function
+import pdbp.program.Composition
+import pdbp.program.Condition
+
+import pdbp.program.compositionOperator._
+
+trait SumInTermsOfIfAndElse[>-->[- _, + _]: Function: Composition: Condition] {
+  val implicitFunction = implicitly[Function[>-->]]
+  val implicitCondition = implicitly[Condition[>-->]]
+
+  import implicitFunction._
+  import implicitCondition._
+
+  def sum[Z, Y, X](`y>-->z`: => Y >--> Z,
+                   `x>-->z`: => X >--> Z): (Y || X) >--> Z =
+    `if`(`(y||x)>-->b`) {
+      `(y||x)>-->y` >--> `y>-->z`
+    } `else` {
+      `(y||x)>-->x` >--> `x>-->z`
+    }
+
+}
+```
+
+where
+
+  - `` `(y||x)>-->y` ``,
+  - `` `(y||x)>-->x` ``,
+  - `` `(y||x)>-->b` ``, where `b` corresponds to the type `Boolean`
+ 
+are the programs you expect.
+
+Agreed, `` `(y||x)>-->b` `` is actually one of the two programs you expect. It is the one where `true` corresponds to `Left` and  `false` corresponds to `Right`.
+
+The programs are defined below
+
+```scala
+package pdbp.utils
+
+// ...
+
+object sumUtils {
+
+  // ...
+
+  def foldSum[Z, Y, X](`y=>z`: => Y => Z, `x=>z`: => X => Z): (Y || X) => Z = {
+    case Left(y) =>
+      `y=>z`(y)
+    case Right(x) =>
+      `x=>z`(x)
+  }
+
+  def `(y||x)=>b`[Y, X]: (Y || X) => Boolean =
+    foldSum[Boolean, Y, X](_ => true, _ => false)
+
+  def `(y||x)=>y`[Y, X]: (Y || X) => Y =
+    foldSum[Y, Y, X](y => y, _ => ???)
+
+  def `(y||x)=>x`[Y, X]: (Y || X) => X =
+    foldSum[X, Y, X](_ => ???, x => x)  
+
+}
+```
+
+where
+
+```scala
+package pdbp.program
+
+// ...
+
+trait Function[>-->[- _, + _]] {
+
+  // ...
+
+  def `(y||x)>-->y`[Y, X]: (Y || X) >--> Y =
+    function(`(y||x)=>y`)
+
+  def `(y||x)>-->x`[Y, X]: (Y || X) >--> X =
+    function(`(y||x)=>x`)    
+
+  def `(y||x)>-->b`[Y, X]: (Y || X) >--> Boolean =
+    function(`(y||x)=>b`)
+
+  // ...
+
+}
+```
+
+Note that, again, generic backtick names, hopefully, help to understand the puzzle. 
+For example
+
+  - in the composition `` `(y||x)>-->y` >--> `y>-->z` ``, the matching `y`'s reflect the type `Y` involved, 
+  - In the composition `` `(y||x)>-->x` >--> `x>-->z` ``, the matching `x`'s reflect the type `X` involved.
+
+#### **pointfree programming challenge**
+
+One challenge that comes with pointfree programming is getting the *necessary arguments* out of *all arguments*. 
+One way to deal with this challenge is to keep programs, and therefore, the arguments that come with them, relatively small. 
+
+After all, small program fragments can be combined to obtain larger ones by plugging them into program templates.
+
+[*Erik Meijer*](https://en.wikipedia.org/wiki/Erik_Meijer_(computer_scientist)) refers to this programming paradigm in a somewhat funny way as *good programmers write baby-code.* 
+Erik Meijer is so famous that he does not need an introduction. 
+I was very lucky to be able to do research with him, on monads and related stuff, at the Univeristy of Utrecht back in the ninetees.
 
 # **Appendices**
 
