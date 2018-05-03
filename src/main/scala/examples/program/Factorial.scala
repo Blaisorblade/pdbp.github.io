@@ -15,6 +15,8 @@ import pdbp.types.product.productType._
 
 import pdbp.program.Program
 
+import pdbp.program.compositionOperator._
+
 import examples.utils.functionUtils._
 
 class Factorial[>-->[- _, + _]: Program] {
@@ -35,16 +37,16 @@ class Factorial[>-->[- _, + _]: Program] {
   def one[Z]: Z >--> BigInt =
     function(oneFunction)
 
-  // val factorial: BigInt >--> BigInt =
-  //   `if`(isZero) {
-  //     one
-  //   } `else` {
-  //     `let` {
-  //       subtractOne >-->
-  //         factorial
-  //     } `in` {
-  //       multiply
-  //     }
-  //   }
+  val factorial: BigInt >--> BigInt =
+    `if`(isZero) {
+      one
+    } `else` {
+      `let` {
+        subtractOne >-->
+          factorial
+      } `in` {
+        multiply
+      }
+    }
 
 }

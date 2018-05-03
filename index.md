@@ -686,6 +686,72 @@ For programs, we use generic backtick names like `` `z>-->y` `` to, hopefully, i
 You may have doubts about the usefulness of a trivial program like`` `z>-->z` ``.  
 It turns out that, when defining more complex composite programs, obtained by plugging program components, into program templates, replacing one or more of the components, by `` `z>-->z` `` results in interesting programs of their own.
 
+In what follows we also refer to programs `` function(`z=>y`) `` as *atomic program fragments*. 
+In `PDBP` pure functions are atomic building blocks. 
+It is up to you to define the *complexity* of the functions `` `z=>y` ``.
+
+For example, `factorial` might as wel have been defined as follows
+
+```scala
+package demo
+
+import pdbp.types.product.productType._
+
+object FactorialFunction {
+
+  val factorialFunction: BigInt => BigInt = { i =>
+    if (isZeroFunction(i)) {
+      oneFunction(i)
+    } else {
+      val subtractOneAndThenFactorial =
+        subtractOneFunction andThen factorialFunction
+      multiplyFunction(i, subtractOneAndThenFactorial(i))
+    }
+  }
+
+  // ...
+
+}
+
+import pdbp.program.Function
+
+import FactorialFunction._
+
+class FactorialAsFunction[>-->[- _, + _]: Function] {
+
+  import implicitly._
+
+  val factorial: BigInt >--> BigInt = function(factorialFunction)
+
+} 
+
+```  
+
+where
+
+```scala
+  val isZeroFunction: BigInt => Boolean = { i =>
+    i == 0
+  }
+
+  def oneFunction[Z]: Z => BigInt = { z =>
+    1
+  }
+
+  val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
+    i * j
+  }
+
+  val subtractOneFunction: BigInt => BigInt = { i =>
+    i - 1
+  }
+
+}
+```
+
+If we define the program description `factorial` as `function(factorialFunction)`,
+then we have less flexibility for giving a meaning to it.
+
 ### **Explaining `trait Composition`**
 
 Consider
@@ -1092,6 +1158,112 @@ Note that
 
 `` `if`(/* ... */) { /* ... */ } `else` { /* ... */ } `` is a fifth example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
 
+#### **formal top-down explanantion of `factorial`**
+  
+Below is a *formal top-down explanation* of the `factorial` program description using the programming capabilities defined so far.
+
+```scala
+package demo
+
+import pdbp.types.product.productType._
+
+import pdbp.utils.productUtils._
+
+import pdbp.program.Program
+import pdbp.program.compositionOperator._
+
+class FactorialTopDown[>-->[- _, + _]: Program] {
+
+  import implicitly._
+
+  val factorial: BigInt >--> BigInt =
+    `if`(isZero) {
+      one
+    } `else` {
+      factorialOfNonZero
+    }
+
+  // ...  
+```
+
+`factorial` above uses 
+
+  - the `` `if`(...) { ... } `else` { ... } `` program template capability of `trait Condition`.
+  - the atomic program fragment `isZero`
+  - the atomic program fragment `one`
+  - the composite program fragment `factorialOfNonZero`
+
+where
+
+```scala
+  val isZero: BigInt >--> Boolean =
+    function(isZeroFunction)
+
+  val isZeroFunction: BigInt => Boolean = { i =>
+    i == 0
+  }
+
+  def one[Z]: Z >--> BigInt =
+    function(oneFunction)
+
+  def oneFunction[Z]: Z => BigInt = { z =>
+    1
+  }
+```
+
+and
+
+```scala
+  val factorialOfNonZero: BigInt >--> BigInt =
+    `let` {
+      subtractOneAndThenFactorial
+    } `in` {
+      multiply
+    }  
+```
+
+`factorialOfNonZero` above uses 
+
+  - the `` `let` { ... } `in` { ... } `` program template capability of `trait Construction`.
+  - the atomic program fragment `multiply`
+  - the composite program fragment `subtractOneAndThenFactorial`
+
+where
+
+```scala
+  val multiply: (BigInt && BigInt) >--> BigInt =
+    function(multiplyFunction)
+
+  val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
+    i * j
+  }    
+```
+
+and
+
+```scala
+  val subtractOneAndThenFactorial: BigInt >--> BigInt =
+    subtractOne >-->
+      factorial    
+```
+
+`subtractOneAndThenFactorial` above uses 
+
+  - the `>-->` program template capability of `trait Composition` (more precisely, of `implicit class CompositionOperator`).
+  - the atomic program fragment `subtractOne`
+  - *recursively*, `factorial` itself as a program fragment
+
+where
+
+```scala
+  val subtractOne: BigInt >--> BigInt =
+    function(subtractOneFunction)
+
+  val subtractOneFunction: BigInt => BigInt = { i =>
+    i - 1
+  }   
+```
+
 # **Appendices**
 
 ## **AppendixFunctionsAndExpressions**
@@ -1280,7 +1452,7 @@ Note, again, that, at this moment, no definition of the declared capability has 
 
 ## **AppendixLanguageLevelMeaning**
 
-### **Define declared `contain` capability for `Box`**
+### **Defining declared `contain` capability for `Box`**
 
 Let's go ahead and provide a first definition of the declared capability `contain`.
 
@@ -1296,7 +1468,7 @@ Let's go ahead and provide a first definition of the declared capability `contai
 
 `implicitBox` is an `implicit object` that defines the capability `contain` that is declared in `trait Containing`. 
 
-### **Define declared `contain` capability for `Bag`**
+### **Defining declared `contain` capability for `Bag`**
 
 Let's go ahead and provide a second definition of the declared capability `contain`.
 
@@ -1312,7 +1484,7 @@ Let's go ahead and provide a second definition of the declared capability `conta
 
 `implicitBag` is an `implicit object` that defines the capability that is declared in `trait Containing`. 
 
-### **Define declared `cover` capability for `Cap`**
+### **Defining declared `cover` capability for `Cap`**
 
 Let's go ahead and provide a first definition of the declared capability `cover`.
 
@@ -1328,7 +1500,7 @@ Let's go ahead and provide a first definition of the declared capability `cover`
 
 `implicitCap` is an `implicit object` that defines the capability `cover` that is declared in `trait Covering`. 
 
-### **Define declared `cover` capability for `Fez`**
+### **Defining declared `cover` capability for `Fez`**
 
 Let's go ahead and provide a second definition of the declared capability `cover`.
 
@@ -1479,7 +1651,7 @@ Before we continue, we describe *natural transformations*
 
 Natural transformations are like functions, but they work at the *type constructor* level instead of at the type level.
 
-### **Define `Meaning`**
+### **Defining `Meaning`**
 
 ```scala
   trait Meaning[From[+ _], To[+ _]] {
@@ -1489,7 +1661,7 @@ Natural transformations are like functions, but they work at the *type construct
 
 `trait Meaning` *declares* the *meaning* of a type constructor `From` as a natural transformation `meaning` to a type constructor `To`.
 
-### **Define `ContainingMeaningOfContaining`**
+### **Defining `ContainingMeaningOfContaining`**
  
 ```scala
   trait ContainingMeaningOfContaining[
@@ -1511,7 +1683,7 @@ in terms of type constructors that are declared to implicitly have the capabilit
 
 `meaning` is defined using those implicitly available capabilities. 
 
-### **Define `Containing` meaning of `Box`**
+### **Defining `Containing` meaning of `Box`**
 
 We can now define `trait ContainingMeaningOfBox` defining the meaning of `Box` in terms of type constructors that are declared to implicitly have the capability to contain a value.
 
@@ -1545,7 +1717,7 @@ So far we have defined `meaning` for `Containing` descriptions in terms of `Cont
 
 This is where the flexibility of library level declarations and definitions comes in.
 
-### **Define `CoveringMeaningOfContaining`**
+### **Defining `CoveringMeaningOfContaining`**
  
 ```scala
   trait CoveringMeaningOfContaining[From[+ _]: Containing, To[+ _]: Covering]
@@ -1566,7 +1738,7 @@ in terms of type constructors that are declared to implicitly have the capabilit
 
 `meaning` is defined using those implicitly available capabilities. 
 
-### **Define `Covering` meaning of `Box`**
+### **Defining `Covering` meaning of `Box`**
 
 We can now define `trait ContainingMeaningOfBox` defining the meaning of `Box` in terms of type constructors that are declared to implicitly have the capability to cover a value.
 
@@ -1587,7 +1759,7 @@ Below are two examples
       with CoveringMeaningOfContaining[Box, Fez]()
 ```
 
-### **Define `ContainingMeaningOfCovering`**
+### **Defining `ContainingMeaningOfCovering`**
  
 ```scala
   trait ContainingMeaningOfCovering[From[+ _]: Covering, To[+ _]: Containing]
@@ -1608,7 +1780,7 @@ in terms of type constructors that are declared to implicitly have the capabilit
 
 `meaning` is defined using those implicitly available capabilities. 
 
-### **Define `Containing` meaning of `Cap`**
+### **Defining `Containing` meaning of `Cap`**
 
 We can now define `trait ContainingMeaningOfCap` defining the meaning of `Cap` in terms of type constructors that are declared to implicitly have the capability to contain a value.
 

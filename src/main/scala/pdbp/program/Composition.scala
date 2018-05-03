@@ -22,7 +22,7 @@ object compositionOperator {
   implicit class CompositionOperator[>-->[- _, + _]: Composition, -Z, +Y](
       `z>-->y`: Z >--> Y) {
 
-    import implicitly._    
+    import implicitly._
 
     def >-->[X](`y>-->x`: => Y >--> X) = {
       compose(`z>-->y`, `y>-->x`)
