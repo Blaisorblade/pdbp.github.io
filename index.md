@@ -908,6 +908,8 @@ object productUtils {
     y
   }
 
+  // ...
+
 }
 ```
 
@@ -1058,7 +1060,7 @@ and where
 
 are the programs you expect. 
 
-Agreed, `` `(w&&b)>-->(w||w)` `` is actually one of the two program you expect. It is the one where `true` corresponds to `Left` and  `false` corresponds to `Right`.
+Agreed, `` `(w&&b)>-->(w||w)` `` is actually one of the two programs you expect. It is the one where `true` corresponds to `Left` and  `false` corresponds to `Right`.
 
 The programs are defined below
 
@@ -1112,6 +1114,8 @@ object sumUtils {
     Right(y)
   }
 
+  // ...
+
 }
 ```
 
@@ -1133,6 +1137,8 @@ object productAndSumUtils {
   def `(w&&b)=>(w||w)`[W]: (W && Boolean) => (W || W) = { (w, b) =>
     foldBoolean[W || W](Left(w), Right(w))(b)
   }
+
+  // ...
 
 }
 ```
@@ -1251,7 +1257,7 @@ and
 
   - the `>-->` program template capability of `trait Composition` (more precisely, of `implicit class CompositionOperator`).
   - the atomic program fragment `subtractOne`
-  - *recursively*, `factorial` itself as a program fragment
+  - *recursively*, `factorial` *itself* as a program fragment
 
 where
 
@@ -1263,6 +1269,96 @@ where
     i - 1
   }   
 ```
+
+#### **about the power of expression of `` `let` { ... } `in` { ... } ``**
+
+`product[Z, Y, X]` can be defined in terms of `` `let` { ... } `in` { ... } ``.
+
+```scala
+package demo
+
+import pdbp.types.product.productType._
+
+import pdbp.utils.productUtils._
+
+import pdbp.program.Function
+import pdbp.program.Composition
+import pdbp.program.Construction
+
+import pdbp.program.compositionOperator._
+
+trait ProductInTermsOfLetAndIn[
+    >-->[- _, + _]: Function: Composition: Construction] {
+
+  val implicitFunction = implicitly[Function[>-->]]
+  val implicitConstruction = implicitly[Construction[>-->]]
+
+  import implicitFunction._
+  import implicitConstruction._
+
+  def product[Z, Y, X](`z>-->y`: Z >--> Y,
+                       `z>-->x`: => Z >--> X): Z >--> (Y && X) =
+    `let` {
+      `z>-->y`
+    } `in` {
+      `let` {
+        `(z&&y)>-->z` >--> `z>-->x`
+      } `in` {
+        `(z&&y&&x)>-->(y&&x)`
+      }
+    }
+
+}
+```
+The definition of `product` is an example of a recurring theme of the `PDBP` library: defining a program description, or programming capability, often boils down to a *getting the types right puzzle*. Often there is only one meaningful way to get them right. Let's have a look at some of the details of the puzzle for this definition`.
+
+The outer `` `let` `` creates, using `` `z>-->y` ``, a new argument of type `Y` for the outer `` `in` `` which, as a consequence, has an argument of type `Z && Y` available, representing two arguments, one of type `Z` and one of type `Y`. The main difference between `` `let` `` and `compose` is that `` `let` `` does *not* loose the original argument of type `Z`. 
+
+The inner `` `let` `` of the outer `` `in` `` creates, using `` `(z&&y)>-->z` >--> `z>-->x` ``, the composition of `` `(z&&y)>-->z` `` and `` `z>-->x` ``, a new argument of type `X` for the inner `` `in` ``  of the outer `` `in` `` which, as a consequence, has an argument of type `Z && Y && X` available, representing three arguments, one of type `Z`, one of type `Y`, and one of type `X`. 
+
+The inner `` `in` `` in the outer `` `in` `` simply gets rid of the original argument of type `Z` using `` `(z&&y&&x)>-->(y&&x)` ``.
+
+The program `` `(z&&y&&x)>-->(y&&x)` `` is the program you expect.
+
+```scala
+package pdbp.program
+
+// ...
+
+trait Function[>-->[- _, + _]] {
+
+  // ...
+
+  def `(z&&y&&x)>-->(y&&x)`[Z, Y, X]: (Z && Y && X) >--> (Y && X) =
+    function(`(z&&y&&x)=>(y&&x)`)    
+
+  // ...
+
+}
+```
+
+where
+
+```scala
+package pdbp.utils
+
+// ...
+
+object productUtils {
+
+  // ...
+
+  def `(z&&y&&x)=>(y&&x)`[Z, Y, X]: (Z && Y && X) => (Y && X) = {
+    case ((_, y), x) => (y, x)
+  }
+
+}
+```
+
+Note that generic backtick names help to understand the puzzle. For example
+
+  - in the composition `` `(z&&y)>-->z` >--> `z>-->x` ``, the matching `z`'s reflect the type `Z` involved,
+  - in the name `` `(z&&y&&x)>-->(y&&x)` ``, both `(z&&y&&x)` and `(y&&x)` reflect the types `(Z && Y && X)` and `(Y && X)` involved. 
 
 # **Appendices**
 

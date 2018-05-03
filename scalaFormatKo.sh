@@ -17,6 +17,8 @@ sed -i "s/trait CoveringMeaningOfContaining/class CoveringMeaningOfContaining/g"
 sed -i "s/trait CoveringMeaningOfBox/class CoveringMeaningOfBox/g" ./src/main/scala/demo/LibraryLevelMeaning.scala
 sed -i "s/trait ContainingMeaningOfCovering/class ContainingMeaningOfCovering/g" ./src/main/scala/demo/LibraryLevelMeaning.scala
 sed -i "s/trait ContainingMeaningOfCap/class ContainingMeaningOfCap/g" ./src/main/scala/demo/LibraryLevelMeaning.scala
+sed -i "s/trait ProductInTermsOfLetAndIn/class ProductInTermsOfLetAndIn/g" ./src/main/scala/demo/ProductInTermsOfLetAndIn.scala
+sed -i "s/trait SumInTermsOfIfAndElse/class SumInTermsOfIfAndElse/g" ./src/main/scala/demo/SumInTermsOfIfAndElse.scala
 
 echo "!!!!!!!!!!!!!!!!!!"
 echo "!!! formatting !!!"
@@ -31,6 +33,10 @@ echo ./src/main/scala/demo/DefiningDescriptions.scala
 scalafmt ./src/main/scala/demo/DefiningDescriptions.scala
 echo ./src/main/scala/demo/LibraryLevelMeaning.scala
 scalafmt ./src/main/scala/demo/LibraryLevelMeaning.scala
+echo ./src/main/scala/demo/ProductInTermsOfLetAndIn.scala
+scalafmt ./src/main/scala/demo/ProductInTermsOfLetAndIn.scala
+echo ./src/main/scala/demo/SumInTermsOfIfAndElse.scala
+scalafmt ./src/main/scala/demo/SumInTermsOfIfAndElse.scala
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!!! postprocessing with sed !!!"
@@ -49,3 +55,5 @@ sed -i "s/class CoveringMeaningOfContaining/trait CoveringMeaningOfContaining/g"
 sed -i "s/class CoveringMeaningOfBox/trait CoveringMeaningOfBox/g" ./src/main/scala/demo/LibraryLevelMeaning.scala
 sed -i "s/class ContainingMeaningOfCovering/trait ContainingMeaningOfCovering/g" ./src/main/scala/demo/LibraryLevelMeaning.scala
 sed -i "s/class ContainingMeaningOfCap/trait ContainingMeaningOfCap/g" ./src/main/scala/demo/LibraryLevelMeaning.scala
+sed -i "s/class ProductInTermsOfLetAndIn/trait ProductInTermsOfLetAndIn/g" ./src/main/scala/demo/ProductInTermsOfLetAndIn.scala
+sed -i "s/class SumInTermsOfIfAndElse/trait SumInTermsOfIfAndElse/g" ./src/main/scala/demo/SumInTermsOfIfAndElse.scala
