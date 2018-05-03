@@ -857,7 +857,7 @@ and where
 
  - `` `(y&&x)>-->(y&&x)` ``,
  - `` `(z&&y)>-->z` ``, 
- - `` `(z&&y)>-->y` ``,
+ - `` `(z&&y)>-->y` ``
 
 are the programs you expect.
 
@@ -1164,112 +1164,6 @@ Note that
 
 `` `if`(/* ... */) { /* ... */ } `else` { /* ... */ } `` is a fifth example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
 
-#### **formal top-down explanantion of `factorial`**
-  
-Below is a *formal top-down explanation* of the `factorial` program description using the programming capabilities defined so far.
-
-```scala
-package demo
-
-import pdbp.types.product.productType._
-
-import pdbp.utils.productUtils._
-
-import pdbp.program.Program
-import pdbp.program.compositionOperator._
-
-class FactorialTopDown[>-->[- _, + _]: Program] {
-
-  import implicitly._
-
-  val factorial: BigInt >--> BigInt =
-    `if`(isZero) {
-      one
-    } `else` {
-      factorialOfNonZero
-    }
-
-  // ...  
-```
-
-`factorial` above uses 
-
-  - the `` `if`(...) { ... } `else` { ... } `` program template capability of `trait Condition`.
-  - the atomic program fragment `isZero`
-  - the atomic program fragment `one`
-  - the composite program fragment `factorialOfNonZero`
-
-where
-
-```scala
-  val isZero: BigInt >--> Boolean =
-    function(isZeroFunction)
-
-  val isZeroFunction: BigInt => Boolean = { i =>
-    i == 0
-  }
-
-  def one[Z]: Z >--> BigInt =
-    function(oneFunction)
-
-  def oneFunction[Z]: Z => BigInt = { z =>
-    1
-  }
-```
-
-and
-
-```scala
-  val factorialOfNonZero: BigInt >--> BigInt =
-    `let` {
-      subtractOneAndThenFactorial
-    } `in` {
-      multiply
-    }  
-```
-
-`factorialOfNonZero` above uses 
-
-  - the `` `let` { ... } `in` { ... } `` program template capability of `trait Construction`.
-  - the atomic program fragment `multiply`
-  - the composite program fragment `subtractOneAndThenFactorial`
-
-where
-
-```scala
-  val multiply: (BigInt && BigInt) >--> BigInt =
-    function(multiplyFunction)
-
-  val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
-    i * j
-  }    
-```
-
-and
-
-```scala
-  val subtractOneAndThenFactorial: BigInt >--> BigInt =
-    subtractOne >-->
-      factorial    
-```
-
-`subtractOneAndThenFactorial` above uses 
-
-  - the `>-->` program template capability of `trait Composition` (more precisely, of `implicit class CompositionOperator`).
-  - the atomic program fragment `subtractOne`
-  - *recursively*, `factorial` *itself* as a program fragment
-
-where
-
-```scala
-  val subtractOne: BigInt >--> BigInt =
-    function(subtractOneFunction)
-
-  val subtractOneFunction: BigInt => BigInt = { i =>
-    i - 1
-  }   
-```
-
 #### **about the power of expression of `` `let` { ... } `in` { ... } ``**
 
 `product[Z, Y, X]` can be defined in terms of `` `let` { ... } `in` { ... } ``.
@@ -1473,7 +1367,7 @@ For example
   - in the composition `` `(y||x)>-->y` >--> `y>-->z` ``, the matching `y`'s reflect the type `Y` involved, 
   - In the composition `` `(y||x)>-->x` >--> `x>-->z` ``, the matching `x`'s reflect the type `X` involved.
 
-#### **pointfree programming challenge**
+#### **Pointfree programming challenge**
 
 One challenge that comes with pointfree programming is getting the *necessary arguments* out of *all arguments*. 
 One way to deal with this challenge is to keep programs, and therefore, the arguments that come with them, relatively small. 
@@ -1483,6 +1377,271 @@ After all, small program fragments can be combined to obtain larger ones by plug
 [*Erik Meijer*](https://en.wikipedia.org/wiki/Erik_Meijer_(computer_scientist)) refers to this programming paradigm in a somewhat funny way as *good programmers write baby-code.* 
 Erik Meijer is so famous that he does not need an introduction. 
 I was very lucky to be able to do research with him, on monads and related stuff, at the Univeristy of Utrecht back in the ninetees.
+
+#### **formal top-down explanantion of `factorial`**
+  
+Below is a *formal top-down explanation* of the `factorial` program description using the programming capabilities defined so far.
+
+```scala
+package demo
+
+import pdbp.types.product.productType._
+
+import pdbp.utils.productUtils._
+
+import pdbp.program.Program
+import pdbp.program.compositionOperator._
+
+class FactorialTopDown[>-->[- _, + _]: Program] {
+
+  import implicitly._
+
+  val factorial: BigInt >--> BigInt =
+    `if`(isZero) {
+      one
+    } `else` {
+      factorialOfNonZero
+    }
+
+  // ...  
+```
+
+`factorial` above uses 
+
+  - the `` `if`(...) { ... } `else` { ... } `` program template capability of `trait Condition`.
+  - the atomic program fragment `isZero`
+  - the atomic program fragment `one`
+  - the composite program fragment `factorialOfNonZero`
+
+where
+
+```scala
+  val isZero: BigInt >--> Boolean =
+    function(isZeroFunction)
+
+  val isZeroFunction: BigInt => Boolean = { i =>
+    i == 0
+  }
+
+  def one[Z]: Z >--> BigInt =
+    function(oneFunction)
+
+  def oneFunction[Z]: Z => BigInt = { z =>
+    1
+  }
+```
+
+and
+
+```scala
+  val factorialOfNonZero: BigInt >--> BigInt =
+    `let` {
+      subtractOneAndThenFactorial
+    } `in` {
+      multiply
+    }  
+```
+
+`factorialOfNonZero` above uses 
+
+  - the `` `let` { ... } `in` { ... } `` program template capability of `trait Construction`.
+  - the atomic program fragment `multiply`
+  - the composite program fragment `subtractOneAndThenFactorial`
+
+where
+
+```scala
+  val multiply: (BigInt && BigInt) >--> BigInt =
+    function(multiplyFunction)
+
+  val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
+    i * j
+  }    
+```
+
+and
+
+```scala
+  val subtractOneAndThenFactorial: BigInt >--> BigInt =
+    subtractOne >-->
+      factorial    
+```
+
+`subtractOneAndThenFactorial` above uses 
+
+  - the `>-->` program template capability of `trait Composition` (more precisely, of `implicit class CompositionOperator`).
+  - the atomic program fragment `subtractOne`
+  - *recursively*, `factorial` *itself* as a program fragment
+
+where
+
+```scala
+  val subtractOne: BigInt >--> BigInt =
+    function(subtractOneFunction)
+
+  val subtractOneFunction: BigInt => BigInt = { i =>
+    i - 1
+  }   
+```
+
+### **`factorial` revisited**
+
+Below is, again, the code of `factorial`
+
+```scala
+package examples.program
+
+import pdbp.types.product.productType._
+
+import pdbp.program.Program
+
+import pdbp.program.compositionOperator._
+
+import examples.utils.functionUtils._
+
+class Factorial[>-->[- _, + _]: Program] {
+
+  import implicitly._
+
+  val factorial: BigInt >--> BigInt =
+    `if`(isZero) {
+      one
+    } `else` {
+      `let` {
+        subtractOne >-->
+          factorial
+      } `in` {
+        multiply
+      }
+    }
+
+  val isZero: BigInt >--> Boolean =
+    function(isZeroFunction)
+
+  val subtractOne: BigInt >--> BigInt =
+    function(subtractOneFunction)
+
+  val multiply: (BigInt && BigInt) >--> BigInt =
+    function(multiplyFunction)
+
+  def one[Z]: Z >--> BigInt =
+    function(oneFunction)
+
+  // ...  
+    
+}
+```
+
+### **main programs**
+
+Recall that programs have type `Z >--> Y` for types `Z` and `Y`.
+
+For example: `factorial` above has type `BigInt >--> BigInt`.
+
+A *main program* has type `Unit >--> Unit`.
+
+If
+
+ - `producer` is a *producer program* of type `Unit >--> Z`,
+ - `program` is a *program* of type `Z >--> Y`,
+ - `consumer` is a *consumer program* of type `Y >--> Unit`,
+ - 
+then 
+
+ - `producer >--> program >--> consumer` is a main program.
+
+We also simply refer to 
+
+  - a producer program as a *producer*,
+  - a consumer program as a *consumer*.
+
+### **`factorialMain` using an effectful producer and consumer**
+
+Consider
+
+```scala
+package examples.program
+
+// ...
+import pdbp.utils.effectfulUtils._
+// ...
+
+class Factorial[>-->[- _, + _]: Program] {
+
+  // ...
+
+  def effectfulReadIntFromConsole(message: String): Unit >--> BigInt =
+    function(effectfulReadIntFromConsoleFunction(message))
+
+  def effectfulWriteToConsole[Y](message: String): Y >--> Unit =
+    function(effectfulWriteToConsoleFunction(message))
+
+  val producer: Unit >--> BigInt =
+    effectfulReadIntFromConsole("please type an integer")  
+
+  val consumer: BigInt >--> Unit =
+    effectfulWriteToConsole("the factorial value of the integer is")
+
+  val factorialMain: Unit >--> Unit =
+    producer >-->
+      factorial >-->
+      consumer
+
+}
+```
+
+where
+
+```scala
+package pdbp.utils
+
+import scala.io.StdIn.readInt
+
+object effectfulUtils {
+
+  def effectfulReadIntFromConsoleFunction(message: String): Unit => BigInt = { _ =>
+    println(s"$message")
+    val i = BigInt(readInt())
+    i
+  }
+
+  def effectfulWriteToConsoleFunction[Y](message: String): Y => Unit = { y =>
+    println(s"$message")
+    val u = println(s"$y")
+    u
+  }
+
+}
+```
+
+Both the producer and consumer above are *effectful*.
+They *execute effects* in an *impure* way.
+
+  - the function `effectfulReadIntFromConsoleFunction` that is used by `effectfulReadIntFromConsole` is not pure 
+    - it executes the `println("message")` and `readInt()` effects in an impure way
+  - the function `effectfulWriteToConsoleFunction` that is used by `effectfulWriteToConsole` is not pure
+    - it executes the `println("message")` and `println(s"$y")` effects in an impure way
+
+Using the the producer and consumer above we can now define `factorialMain`
+
+```scala
+package examples.program
+
+// ...
+
+class Factorial[>-->[- _, + _]: Program] {
+
+  // ...
+
+  val factorialMain: Unit >--> Unit =
+    producer >-->
+      factorial >-->
+      consumer
+
+}
+```
+
+Note that `effectfulReadIntFromConsole` resp. `effectfulWriteToConsole` should (and will) be replaced by an *effectfree* producer resp. consumer that *describes effects* in an *pure* way rather than executing them in an impure way.
 
 # **Appendices**
 

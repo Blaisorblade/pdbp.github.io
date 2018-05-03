@@ -17,13 +17,25 @@ import pdbp.program.Program
 
 import pdbp.program.compositionOperator._
 
+import pdbp.utils.effectfulUtils._
+
 import examples.utils.functionUtils._
 
 class Factorial[>-->[- _, + _]: Program] {
 
-  val implicitProgram = implicitly[Program[>-->]]
+  import implicitly._
 
-  import implicitProgram._
+  val factorial: BigInt >--> BigInt =
+    `if`(isZero) {
+      one
+    } `else` {
+      `let` {
+        subtractOne >-->
+          factorial
+      } `in` {
+        multiply
+      }
+    }
 
   val isZero: BigInt >--> Boolean =
     function(isZeroFunction)
@@ -37,16 +49,21 @@ class Factorial[>-->[- _, + _]: Program] {
   def one[Z]: Z >--> BigInt =
     function(oneFunction)
 
-  val factorial: BigInt >--> BigInt =
-    `if`(isZero) {
-      one
-    } `else` {
-      `let` {
-        subtractOne >-->
-          factorial
-      } `in` {
-        multiply
-      }
-    }
+  def effectfulReadIntFromConsole(message: String): Unit >--> BigInt =
+    function(effectfulReadIntFromConsoleFunction(message))
+
+  def effectfulWriteToConsole[Y](message: String): Y >--> Unit =
+    function(effectfulWriteToConsoleFunction(message))
+
+  val producer: Unit >--> BigInt =
+    effectfulReadIntFromConsole("please type an integer")  
+
+  val consumer: BigInt >--> Unit =
+    effectfulWriteToConsole("the factorial value of the integer is")
+
+  val factorialMain: Unit >--> Unit =
+    producer >-->
+      factorial >-->
+      consumer
 
 }
