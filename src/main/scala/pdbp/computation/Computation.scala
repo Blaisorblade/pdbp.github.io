@@ -18,4 +18,6 @@ import pdbp.program.Program
 private[pdbp] trait Computation[M[+ _]]
     extends Resulting[M]
     with Binding[M]
+    with Lifting[M]
+    with Sequencing[M]
     with Program[Kleisli[M]]

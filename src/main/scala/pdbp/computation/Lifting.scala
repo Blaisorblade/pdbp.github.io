@@ -1,4 +1,4 @@
-package pdbp.utils
+package pdbp.computation
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,21 +11,4 @@ package pdbp.utils
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import scala.io.StdIn.readInt
-
-object effectfulUtils {
-
-  def effectfulReadIntFromConsoleFunction(message: String): Unit => BigInt = {
-    _ =>
-      println(s"$message")
-      val i = BigInt(readInt())
-      i
-  }
-
-  def effectfulWriteToConsoleFunction[Y](message: String): Y => Unit = { y =>
-    println(s"$message")
-    val u = println(s"$y")
-    u
-  }
-
-}
+private[pdbp] trait Lifting[M[+ _]]

@@ -183,8 +183,8 @@ import pdbp.program.Program
 private[pdbp] trait Computation[M[+ _]]
     extends Resulting[M]
     with Binding[M]
-    with Program[[-Z, + Y] => Z => M[Y]]
     // ...
+    with Program[[-Z, + Y] => Z => M[Y]]
 ```
 `trait Computation` closely resembles *monads*.
 
@@ -267,6 +267,7 @@ import pdbp.program.Program
 private[pdbp] trait Computation[M[+ _]]
     extends Resulting[M]
     with Binding[M]
+    // ...
     with Program[Kleisli[M]]
 ```  
 
@@ -502,7 +503,7 @@ From now on this document contains a lot of code.
 When reading it in sequential order, you will often be confronted with code that has not been explained yet. 
 Do not worry, the code will be explained in the paragraph immediately below it. 
 
-### **`Program`**
+### **Explaining `trait Program`**
 
 Consider
 
@@ -557,9 +558,10 @@ We use
  - parameter and return if we want to be explicit about being at the delaration (or definition) site.
 
 We use
+
  - argument and result if we want to be explicit about being at the usage site.
 
-We also use argument and result as default. 
+We also use argument and result as a default. 
 
 #### **Variance**
 
@@ -586,7 +588,7 @@ package pdbp.program
 
 trait Function[>-->[- _, + _]] {
 
-  def function[Z, Y](`z=>y`: Z => Y): Z >--> Y
+  def function[Z, Y]: (Z => Y) => Z >--> Y
 
   // ...
 
@@ -687,7 +689,7 @@ You may have doubts about the usefulness of a trivial program like`` `z>-->z` ``
 It turns out that, when defining more complex composite programs, obtained by plugging program components, into program templates, replacing one or more of the components, by `` `z>-->z` `` results in interesting programs of their own.
 
 In what follows we also refer to programs `` function(`z=>y`) `` as *atomic program fragments*. 
-In `PDBP` pure functions are atomic building blocks. 
+In `PDBP` pure functions are atomic program building blocks. 
 It is up to you to define the *complexity* of the functions `` `z=>y` ``.
 
 For example, `factorial` might as wel have been defined as follows
@@ -1642,6 +1644,116 @@ class Factorial[>-->[- _, + _]: Program] {
 ```
 
 Note that `effectfulReadIntFromConsole` resp. `effectfulWriteToConsole` should (and will) be replaced by an *effectfree* producer resp. consumer that *describes effects* in an *pure* way rather than executing them in an impure way.
+
+## **Explaining `trait Computation`**
+
+### **Explaining `trait Computation`**
+
+Consider
+
+```scala
+package pdbp.computation
+
+import pdbp.types.kleisli.kleisliFunctionType.Kleisli
+
+import pdbp.program.Program
+
+private[pdbp] trait Computation[M[+ _]]
+    extends Resulting[M]
+    with Binding[M]
+    with Lifting[M]
+    with Sequencing[M]
+    with Program[Kleisli[M]]
+```
+where
+
+```scala
+private[pdbp] trait Resulting[M]
+
+private[pdbp] trait Binding[M]
+
+private[pdbp] trait Lifting[M]
+
+private[pdbp] trait Sequencing[M]
+```
+
+belong to the same `package pdbp.computation`.
+
+`trait Computation` is a *type class* that will gradually be explained later in this section. 
+`trait Computation` *declares* the *computational capabilities* of *computation descriptions*. 
+
+We often write *computation* instead of *computation description*.
+
+Note that we were a bit sloppy by not showing `[M[+ _]]`.
+
+`trait Resulting`, `trait Binding` and `trait Lifting` will be explained later in this section. 
+`trait Sequencing` will be explained later in this document. 
+
+Note that, again, we were a bit sloppy by not showing `[M]`.
+
+The programming capabilities of `Resulting` and `Binding` correspond to *monads*. 
+
+A computation is an `object` of type `M[Z]`, where
+
+ - `M` is a *unary type constructor*,
+ - `Z` is the *return* (or *result*) type of `M`.
+
+We use
+
+ - return if we want to be explicit about being at the delaration (or definition) site.
+
+We use
+
+ - result if we want to be explicit about being at the usage site.
+
+We also use result as a default. 
+
+#### **Variance**
+
+Note that `M` is
+
+ - *covariant* in its result type.
+
+### **Explaining `trait Resulting`**
+
+Consider
+
+```scala
+package pdbp.computation
+
+private[pdbp] trait Resulting[M[+ _]] {
+
+  private[pdbp] def result[Z]: Z => M[Z]
+
+}
+```
+
+`result(ez)` is a computation that is a *pure expression* `ez`. 
+It is supposed to do nothing else than yielding the result `ez` of type `Z`.
+
+### **Explaining `trait Binding`**
+
+Consider
+
+```scala
+package pdbp.computation
+
+private[pdbp] trait Binding[M[+ _]] {
+
+  private[pdbp] def bind[Z, Y](mz: M[Z], `z=>my`: => Z => M[Y]): M[Y]
+
+}
+```
+
+Think of `` `z=>my` `` as a *computation execution continuation template* or, *expression evaluation continuation template*, or simply, *computation template* or *expression template* and of `mz` as a *computation fragment* or *expression fragment* (a.k.a. *sub-expression*).
+
+`` bind(mz, `z=>my`) `` is function that *binds* `mz` to `z=>my`.
+
+If the computation `mz` yields a result of type Z, then that result serves as an argument for the subsequent function `z=>my` which transforms it to a computation that yields a result of type Y.
+
+In what follows we also refer to computations `result(ez)` as *atomic computation fragments*. 
+In `PDBP` pure expressions are atomic computation building blocks. 
+It is up to you to define the *complexity* of the expressions `ez`.
 
 # **Appendices**
 

@@ -56,7 +56,7 @@ class Factorial[>-->[- _, + _]: Program] {
     function(effectfulWriteToConsoleFunction(message))
 
   val producer: Unit >--> BigInt =
-    effectfulReadIntFromConsole("please type an integer")  
+    effectfulReadIntFromConsole("please type an integer")
 
   val consumer: BigInt >--> Unit =
     effectfulWriteToConsole("the factorial value of the integer is")

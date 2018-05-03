@@ -21,7 +21,7 @@ import pdbp.utils.productAndSumUtils._
 
 trait Function[>-->[- _, + _]] {
 
-  def function[Z, Y](`z=>y`: Z => Y): Z >--> Y
+  def function[Z, Y]: (Z => Y) => Z >--> Y
 
   def `z>-->z`[Z]: Z >--> Z =
     function(`z=>z`)
@@ -36,7 +36,7 @@ trait Function[>-->[- _, + _]] {
     function(`(z&&y)=>y`)
 
   def `(z&&y&&x)>-->(y&&x)`[Z, Y, X]: (Z && Y && X) >--> (Y && X) =
-    function(`(z&&y&&x)=>(y&&x)`)    
+    function(`(z&&y&&x)=>(y&&x)`)
 
   def `(y||x)>-->(y||x)`[Y, X]: (Y || X) >--> (Y || X) =
     function(`(y||x)=>(y||x)`)
@@ -51,7 +51,7 @@ trait Function[>-->[- _, + _]] {
     function(`(y||x)=>y`)
 
   def `(y||x)>-->x`[Y, X]: (Y || X) >--> X =
-    function(`(y||x)=>x`)    
+    function(`(y||x)=>x`)
 
   def `(y||x)>-->b`[Y, X]: (Y || X) >--> Boolean =
     function(`(y||x)=>b`)

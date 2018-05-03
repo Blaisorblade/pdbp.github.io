@@ -41,6 +41,6 @@ object sumUtils {
     foldSum[Y, Y, X](y => y, _ => ???)
 
   def `(y||x)=>x`[Y, X]: (Y || X) => X =
-    foldSum[X, Y, X](_ => ???, x => x)  
+    foldSum[X, Y, X](_ => ???, x => x)
 
 }
