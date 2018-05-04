@@ -164,7 +164,9 @@ In a way programs generalize *functions*.
  - A function transforms *function arguments* to yield a *function result*. 
  - A program also, *somehow*, transforms *program arguments* to yield a *program result*. 
 
-When there is no danger of confusion we are simply write *arguments* and *result*, not mentioning *function* or *program*.
+When there is no danger of confusion 
+  - we simply write *arguments* and *result*, not mentioning *function* or *program*,
+  - we simply say that a function transforms an argument to a result.
 
 To finish
 
@@ -208,7 +210,9 @@ In a way computations generalize *expressions*.
  - An expression *evaluation* yields an *expression result*. 
  - A computation *execution* also, *somehow*, yields a *computation result*.
 
-When there is no danger of confusion we are simply write *result*, not mentioning *expression* or *computation*.
+When there is no danger of confusion 
+  - we simply write *result*, not mentioning *expression* or *computation*,
+  - we simply say that a computation has a result.
 
 To finish
 
@@ -575,9 +579,11 @@ Note that `>-->` is
 This *variance* property of `>-->` is related to two *principles* that are known as
 
  - the [*Liskov Substitution Principle*](https://en.wikipedia.org/wiki/Liskov_substitution_principle) which, roughly speaking, states
-   - *require less* and *provide more*, 
+   - *require less*,
+   - *provide more*, 
  - the [*Internet Robustness Principle*](https://en.wikipedia.org/wiki/Robustness_principle) which, roughly speaking, states 
-   - *be conservative in what you send* and *be liberal in what you receive*.
+   - *be conservative in what you send*,
+   - *be liberal in what you receive*.
 
 ### **Explaining `trait Function`**
 
@@ -595,7 +601,7 @@ trait Function[>-->[- _, + _]] {
 }
 ```
 
-`` function(`z=>y`) `` is a program that is a *pure function* `` `z=>y` ``. 
+Think of `` function(`z=>y`) `` as a program that is a *pure function* `` `z=>y` ``. 
 It is supposed to do nothing else than transforming an argument `z` of type `Z` to a yield a result `` y == `z=>y`(z) `` of type `Y`.
 
 For *generic function names*, we use *mixed alphabetic and symbolic characters within backticks*, like `` `z=>y` `` to, hopefully, improve readability. 
@@ -767,7 +773,11 @@ trait Composition[>-->[- _, + _]] {
 
 }
 ```
-Think of `compose` as a program template and of `` `z>-->y` `` and `` `y>-->x` `` as program fragments.
+Think of `compose` as a *program template* and of `` `z>-->y` `` and `` `y>-->x` `` as *program fragments*.
+
+Translated to functions:
+
+Think of `compose` as a *function template* (a.k.a. *higher order function*) and of `` `z>-->y` `` and `` `y>-->x` `` as *function fragments* (a.k.a. *function arguments*).
 
 `` composition(`z>-->y`, `y>-->x`) `` is the *sequential composition* of `` `z>-->y` `` and `` `y>-->x` ``. 
 
@@ -1665,6 +1675,7 @@ private[pdbp] trait Computation[M[+ _]]
     with Sequencing[M]
     with Program[Kleisli[M]]
 ```
+
 where
 
 ```scala
@@ -1691,7 +1702,7 @@ Note that we were a bit sloppy by not showing `[M[+ _]]`.
 
 Note that, again, we were a bit sloppy by not showing `[M]`.
 
-The programming capabilities of `Resulting` and `Binding` correspond to *monads*. 
+The computational capabilities of `Resulting` and `Binding` correspond to *monads*. 
 
 A computation is an `object` of type `M[Z]`, where
 
@@ -1708,11 +1719,27 @@ We use
 
 We also use result as a default. 
 
+#### **`PDBP` library users versus `PDBP` library developers**
+
+Note that all computational capabilities are defined as `private [pdbp]`. 
+
+We do not want to expose pointful capabilies to the *users* of the `PDBP` library. 
+We only expose pointfree capabilities to the users of the `PDBP` library. 
+It is convenient to have pointful capabilies available for the *developers* of the `PDBP` library. 
+It is also *simpler* (not necessarily *easier*, though) to define `Computation` instances since `Computation` has less undefined declared capabilities than `Program`.
+
 #### **Variance**
 
 Note that `M` is
 
  - *covariant* in its result type.
+
+This *variance* property of `M` is related to two principles that are known as
+
+ - the [*Liskov Substitution Principle*](https://en.wikipedia.org/wiki/Liskov_substitution_principle) which, roughly speaking, states, among others
+   - *provide more*, 
+ - the [*Internet Robustness Principle*](https://en.wikipedia.org/wiki/Robustness_principle) which, roughly speaking, states, among others 
+   - *be liberal in what you receive*.
 
 ### **Explaining `trait Resulting`**
 
@@ -1728,8 +1755,8 @@ private[pdbp] trait Resulting[M[+ _]] {
 }
 ```
 
-`result(ez)` is a computation that is a *pure expression* `ez`. 
-It is supposed to do nothing else than yielding the result `ez` of type `Z`.
+Think of `result(ez)` ias a computation that is a *pure expression* `ez`. 
+It is supposed to do nothing else than evaluating the expression `ez` to a yield a result of type `Z`.
 
 ### **Explaining `trait Binding`**
 
@@ -1745,7 +1772,11 @@ private[pdbp] trait Binding[M[+ _]] {
 }
 ```
 
-Think of `` `z=>my` `` as a *computation execution continuation template* or, *expression evaluation continuation template*, or simply, *computation template* or *expression template* and of `mz` as a *computation fragment* or *expression fragment* (a.k.a. *sub-expression*).
+Think of `` `z=>my` `` as a *computation execution continuation template* or simply, *computation template* and of `mz` as a *computation fragment* (a.k.a. *sub-computation*).
+
+Translated to expressions:
+
+Think of `` `z=>my` `` as an *expression evaluation continuation template*, or simply, *expression template* and of `mz` as an *expression fragment* (a.k.a. *sub-expression*).
 
 `` bind(mz, `z=>my`) `` is function that *binds* `mz` to `z=>my`.
 
@@ -1754,6 +1785,221 @@ If the computation `mz` yields a result of type Z, then that result serves as an
 In what follows we also refer to computations `result(ez)` as *atomic computation fragments*. 
 In `PDBP` pure expressions are atomic computation building blocks. 
 It is up to you to define the *complexity* of the expressions `ez`.
+
+### **Explaining `trait Lifting`**
+
+Consider
+
+```scala
+package pdbp.computation
+
+private[pdbp] trait Lifting[M[+ _]]
+    extends ObjectLifting[M]
+    with FunctionLifting[M]
+    with OperatorLifting[M]
+```
+
+where
+
+```scala
+private[pdbp] trait ObjectLifting[M]
+
+private[pdbp] trait FunctionLifting[M]
+
+private[pdbp] trait OperatorLifting[M]
+```
+
+belong to the same `package pdbp.computation`.
+
+`trait Lifting` is a type class that will gradually be explained later in this section. 
+`trait Lifting` declares the *lifting capabilities* of computation descriptions. 
+
+Note that we were a bit sloppy by not showing `[M[+ _]]`.
+
+The lifting capabilities of `Lifting` correspond to *applicatives* (a.k.a. *idioms*).
+
+`trait ObjectLifting`, `trait FunctionLifting` and `trait OperatorLifting` will be explained later in this section. 
+
+Note that, again, we were a bit sloppy by not showing `[M]`.
+
+#### **Explaining `trait ObjectLifting`**
+
+Consider
+
+```scala
+package pdbp.computation
+
+private[pdbp] trait ObjectLifting[M[+ _]] {
+
+  private[pdbp] def liftObject[Z](z: Z): M[Z]
+
+}
+```
+
+`liftObject` is a function that *lifts* an *object* `z` to a *computation* with result `z`.
+
+#### **Explaining `trait FunctionLifting`**
+
+Consider
+
+```scala
+package pdbp.computation
+
+private[pdbp] trait FunctionLifting[M[+ _]] {
+
+  private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y]
+
+}
+```
+
+`liftFunction` is a function that *lifts* an *object-level function* to a *computation-level function*.
+
+#### **Explaining `trait OperatorLifting`**
+
+Consider
+
+```scala
+import pdbp.types.product.productType._
+
+private[pdbp] trait OperatorLifting[M[+ _]] {
+
+  private[pdbp] def liftOperator[Z, Y, X](
+      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X]
+}
+```
+
+`liftOperator` is a function that *lifts* an *object-level operator* to a *computation-level operator*.
+
+#### **Explaining `trait Lifting` revisited**
+
+Consider
+
+```scala
+package pdbp.computation
+
+import pdbp.types.product.productType._
+
+import pdbp.utils.productUtils._
+
+private[pdbp] trait Lifting[M[+ _]]
+    extends ObjectLifting[M]
+    with FunctionLifting[M]
+    with OperatorLifting[M] {
+
+  private[pdbp] def liftedAnd[Z, Y]: (M[Z] && M[Y]) => M[Z && Y] =
+    liftOperator(`(z&&y)=>(z&&y)`)
+
+  private[pdbp] def liftedApply[Z, Y]: (M[Z => Y] && M[Z]) => M[Y] =
+    liftOperator(`((z=>y)&&z)=>y`)
+
+  private[pdbp] override def liftFunction[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y] =
+    liftedApply(liftObject(`z=>y`), _)
+
+  private[pdbp] def lift0[Z](z: Z) =
+    liftObject(z)
+
+  private[pdbp] def lift1[Z, Y](z: Z)(`z=>y`: Z => Y): M[Z] => M[Y] =
+    liftFunction(`z=>y`)
+
+  private[pdbp] def lift2[Z, Y, X](
+      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] =
+    liftOperator(`(z&&y)=>x`)  
+
+  private[pdbp] def lift3[Z, Y, X, W](`(z&&y&&x)=>w`: (Z && Y && X) => W)
+    : (M[Z] && M[Y] && M[X]) => M[W] =
+    `(z=>x)=>(z&&y)=>(x&&y)`(liftedAnd) andThen liftOperator(`(z&&y&&x)=>w`)
+
+  // ...
+
+}
+```
+
+`Lifting` comes with some other interesting computational capabilities.
+
+  - `liftedAnd`, defined in terms of `liftOperator`
+
+where
+
+ - `` `(z&&y)=>(z&&y)` ``
+
+is the program you expect.
+
+```scala
+package pdbp.utils
+
+// ...
+
+object productUtils {
+
+  // ...
+
+  def `(z&&y)=>(z&&y)`[Z, Y]: (Z && Y) => (Z && Y) = { `z&&y` =>
+    `z&&y`
+  }
+
+  // ...      
+
+}
+```
+
+  - `liftedApply`, defined in terms of `liftOperator`
+
+where
+
+ - `` `((z=>y)&&z)=>y` ``
+
+is the program you expect.
+
+```scala
+package pdbp.utils
+
+// ...
+
+object productUtils {
+
+  // ...
+
+  def `((z=>y)&&z)=>y`[Z, Y]: ((Z => Y) && Z) => Y = { (`z=>y`, z) =>
+    `z=>y`(z)
+  }
+
+  // ...     
+
+}
+```
+
+`liftFunction` can be defined in terms of `liftObject` and `liftedApply` (and therefore in terms of `liftObject` and `liftOperator`).
+
+Lifting does not stop with objects (`lift0`), unary functions (`lift1`) and binary operators (`lift2`).
+It is possible to define lifting for ternary operators (`lift3`) and so on ... .
+
+  - `lift3` is defined in terms of `liftOperator` and `liftedAnd`
+
+where
+
+ - `` `(z=>x)=>(z&&y)=>(x&&y)` ``
+
+is the program you expect.
+
+```scala
+package pdbp.utils
+
+// ...
+
+object productUtils {
+
+  // ...
+
+  def `(z=>x)=>(z&&y)=>(x&&y)`[Z, Y, X]: (Z => X) => (Z && Y) => (X && Y) = {
+    `z=>x` => (z, y) =>
+      (`z=>x`(z), y)
+  }
+
+  // ...     
+
+}
+
+
 
 # **Appendices**
 

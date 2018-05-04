@@ -31,4 +31,17 @@ object productUtils {
     case ((_, y), x) => (y, x)
   }
 
+  def `(z&&y)=>(z&&y)`[Z, Y]: (Z && Y) => (Z && Y) = { `z&&y` =>
+    `z&&y`
+  }
+
+  def `((z=>y)&&z)=>y`[Z, Y]: ((Z => Y) && Z) => Y = { (`z=>y`, z) =>
+    `z=>y`(z)
+  }
+
+  def `(z=>x)=>(z&&y)=>(x&&y)`[Z, Y, X]: (Z => X) => (Z && Y) => (X && Y) = {
+    `z=>x` => (z, y) =>
+      (`z=>x`(z), y)
+  }      
+
 }
