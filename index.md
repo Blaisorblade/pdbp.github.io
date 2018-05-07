@@ -579,11 +579,11 @@ Note that `>-->` is
 This *variance* property of `>-->` is related to two *principles* that are known as
 
  - the [*Liskov Substitution Principle*](https://en.wikipedia.org/wiki/Liskov_substitution_principle) which, roughly speaking, states
-   - *require less*,
+   - *impose less*,
    - *provide more*, 
  - the [*Internet Robustness Principle*](https://en.wikipedia.org/wiki/Robustness_principle) which, roughly speaking, states 
-   - *be conservative in what you send*,
-   - *be liberal in what you receive*.
+   - *be liberal in what you receive*,
+   - *be generous in what you send*.
 
 ### **Explaining `trait Function`**
 
@@ -1739,7 +1739,7 @@ This *variance* property of `M` is related to two principles that are known as
  - the [*Liskov Substitution Principle*](https://en.wikipedia.org/wiki/Liskov_substitution_principle) which, roughly speaking, states, among others
    - *provide more*, 
  - the [*Internet Robustness Principle*](https://en.wikipedia.org/wiki/Robustness_principle) which, roughly speaking, states, among others 
-   - *be liberal in what you receive*.
+   - *be generous in what you send*.
 
 ### **Explaining `trait Resulting`**
 
@@ -2553,7 +2553,7 @@ We can now use the bag meaning of values contained in a box
   def usingBagMeaningOfValuesContainedInBox: Unit = {
 
     import someValuesContainedInBox._
-    import bagMeaningOfBox._
+    import bagMeaningOfBox.meaning
 
     println(meaning(containedZero))
     println(meaning(containedTrue))
@@ -2571,7 +2571,7 @@ We can now use the box meaning of values contained in a box
   def usingBoxMeaningOfValuesContainedInBox: Unit = {
 
     import someValuesContainedInBox._
-    import boxMeaningOfBox._
+    import boxMeaningOfBox.meaning
 
     println(meaning(containedZero))
     println(meaning(containedTrue))
@@ -2589,7 +2589,7 @@ We can now use the cap meaning of values contained in a box
   def usingCapMeaningOfValuesContainedInBox: Unit = {
 
     import someValuesContainedInBox._
-    import capMeaningOfBox._
+    import capMeaningOfBox.meaning
 
     println(meaning(containedZero))
     println(meaning(containedTrue))
@@ -2607,7 +2607,7 @@ We can now use the box meaning of values contained in a box
   def usingFezMeaningOfValuesContainedInBox: Unit = {
 
     import someValuesContainedInBox._
-    import fezMeaningOfBox._
+    import fezMeaningOfBox.meaning
 
     println(meaning(containedZero))
     println(meaning(containedTrue))
@@ -2625,7 +2625,7 @@ We can now use the box meaning of values covered by a cap
   def usingBoxMeaningOfValuesCoveredByCap: Unit = {
 
     import someValuesCoveredByCap._
-    import boxMeaningOfCap._
+    import boxMeaningOfCap.meaning
 
     println(meaning(coveredZero))
     println(meaning(coveredTrue))
@@ -2643,7 +2643,7 @@ We can now use the bag meaning of values covered by a cap
   def usingBagMeaningOfValuesCoveredByCap: Unit = {
 
     import someValuesCoveredByCap._
-    import bagMeaningOfCap._
+    import bagMeaningOfCap.meaning
 
     println(meaning(coveredZero))
     println(meaning(coveredTrue))

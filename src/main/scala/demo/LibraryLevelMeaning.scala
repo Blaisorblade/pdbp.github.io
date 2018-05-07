@@ -98,7 +98,7 @@ object LibraryLevelMeaning {
   def usingBagMeaningOfValuesContainedInBox: Unit = {
 
     import someValuesContainedInBox._
-    import bagMeaningOfBox._
+    import bagMeaningOfBox.meaning
 
     println(meaning(containedZero))
     println(meaning(containedTrue))
@@ -108,7 +108,7 @@ object LibraryLevelMeaning {
   def usingBoxMeaningOfValuesContainedInBox: Unit = {
 
     import someValuesContainedInBox._
-    import boxMeaningOfBox._
+    import boxMeaningOfBox.meaning
 
     println(meaning(containedZero))
     println(meaning(containedTrue))
@@ -118,7 +118,7 @@ object LibraryLevelMeaning {
   def usingCapMeaningOfValuesContainedInBox: Unit = {
 
     import someValuesContainedInBox._
-    import capMeaningOfBox._
+    import capMeaningOfBox.meaning
 
     println(meaning(containedZero))
     println(meaning(containedTrue))
@@ -128,7 +128,7 @@ object LibraryLevelMeaning {
   def usingFezMeaningOfValuesContainedInBox: Unit = {
 
     import someValuesContainedInBox._
-    import fezMeaningOfBox._
+    import fezMeaningOfBox.meaning
 
     println(meaning(containedZero))
     println(meaning(containedTrue))
@@ -138,7 +138,7 @@ object LibraryLevelMeaning {
   def usingBoxMeaningOfValuesCoveredByCap: Unit = {
 
     import someValuesCoveredByCap._
-    import boxMeaningOfCap._
+    import boxMeaningOfCap.meaning
 
     println(meaning(coveredZero))
     println(meaning(coveredTrue))
@@ -148,7 +148,7 @@ object LibraryLevelMeaning {
   def usingBagMeaningOfValuesCoveredByCap: Unit = {
 
     import someValuesCoveredByCap._
-    import bagMeaningOfCap._
+    import bagMeaningOfCap.meaning
 
     println(meaning(coveredZero))
     println(meaning(coveredTrue))
