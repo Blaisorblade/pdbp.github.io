@@ -1,4 +1,4 @@
-package pdbp.types.kleisli
+package pdbp.demo.types.kleisli
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,8 +11,8 @@ package pdbp.types.kleisli
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-object kleisliFunctionType {
+object kleisliComputationType {
 
-  type Kleisli[M[+ _]] = [-Z, + Y] => Z => M[Y]
+  type Kleisli[>-->[- _, + _]] = [+Y] => Unit >--> Y
 
 }

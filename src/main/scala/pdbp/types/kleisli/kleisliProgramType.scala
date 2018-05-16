@@ -1,4 +1,4 @@
-package pdbp.utils
+package pdbp.types.kleisli
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,18 +11,8 @@ package pdbp.utils
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-object functionUtils {
+object kleisliProgramType {
 
-  def `z=>z`[Z]: Z => Z = { z =>
-    z
-  }
-
-  def `z=>u`[Z]: Z => Unit = { z =>
-    ()
-  }
-
-  def `z=>(y=>z)`[Z, Y]: Z => Y => Z = { z => y =>
-    z
-  }
+  type Kleisli[M[+ _]] = [-Z, + Y] => Z => M[Y]
 
 }

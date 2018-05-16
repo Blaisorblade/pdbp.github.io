@@ -243,7 +243,7 @@ But
 
 The `PDBP` library goes for programming monads in a pointfree style using Kleisli categories.
 
-### **Introducing `type Kleisli`**
+### **Introducing `type Kleisli` for programs**
 
 The `with Program[[-Z, + Y] => Z => M[Y]]` part of `trait Computation`, which states that computations have more power of expression than programs, is a bit verbose.
 
@@ -252,7 +252,7 @@ Using the *type alias* `type Kleisli` below
 ```scala
 package pdbp.types.kleisli
 
-object kleisliFunctionType {
+object kleisliProgramType {
 
   type Kleisli[M[+ _]] = [-Z, + Y] => Z => M[Y]
 
@@ -264,7 +264,7 @@ object kleisliFunctionType {
 ```scala
 package pdbp.computation
 
-import pdbp.types.kleisli.kleisliFunctionType.Kleisli
+import pdbp.types.kleisli.kleisliProgramType.Kleisli
 
 import pdbp.program.Program
 
@@ -273,7 +273,9 @@ private[pdbp] trait Computation[M[+ _]]
     with Binding[M]
     // ...
     with Program[Kleisli[M]]
-```  
+``` 
+
+A program of type `Kleisli[M]` is referred to as a *Kleisli program*. 
 
 #### **About functions and expressions (for those who are a bit impatient)**
 
@@ -1664,7 +1666,7 @@ Consider
 ```scala
 package pdbp.computation
 
-import pdbp.types.kleisli.kleisliFunctionType.Kleisli
+import pdbp.types.kleisli.kleisliProgramType.Kleisli
 
 import pdbp.program.Program
 
@@ -1755,8 +1757,8 @@ private[pdbp] trait Resulting[M[+ _]] {
 }
 ```
 
-Think of `result(ez)` ias a computation that is a *pure expression* `ez`. 
-It is supposed to do nothing else than evaluating the expression `ez` to a yield a result of type `Z`.
+Think of `result(ez)` as a computation that is a *pure expression* `ez`. 
+*Executing* `result(ez)` is supposed to do nothing else than *evaluating* the expression `ez` to a yield a result of type `Z`.
 
 ### **Explaining `trait Binding`**
 
@@ -1998,8 +2000,232 @@ object productUtils {
   // ...     
 
 }
+```
 
+#### **Defining lifting capabilities in terms of computational capabilities**
 
+The lifting capabilities `liftObject`, `liftFunction` and `liftOperator` can be defined in terms of the computational capabilities `bind` and `result`.
+
+```scala
+package pdbp.computation
+
+import pdbp.types.product.productType._
+
+// ...
+
+private[pdbp] trait Computation[M[+ _]]
+    extends Resulting[M]
+    with Binding[M]
+    with Lifting[M]
+    with Sequencing[M]
+    with Program[Kleisli[M]] {
+
+  override private[pdbp] def liftObject[Z](z: Z): M[Z] =
+    result(z)
+
+  override private[pdbp] def liftFunction[Z, Y](
+      `z=>y`: Z => Y): M[Z] => M[Y] = { mz =>
+    bind(mz, z => result(`z=>y`(z)))
+  }
+
+  override private[pdbp] def liftOperator[Z, Y, X](
+      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] = { (mz, my) =>
+    bind(mz, z => bind(my, y => result(`(z&&y)=>x`(z, y))))
+  }
+
+  // ...
+
+}  
+```
+
+#### **Defining programming capabilities in terms of computational capabilities**
+
+The programming capabilities `function`, `compose`, `product` and `sum` can be defined in terms of the computational capabilities `bind` and `result`.
+
+```scala
+package pdbp.computation
+
+// ...
+
+import pdbp.types.sum.sumType._
+
+import pdbp.utils.sumUtils._
+
+// ...
+
+private[pdbp] trait Computation[M[+ _]]
+    extends Resulting[M]
+    with Binding[M]
+    with Lifting[M]
+    with Sequencing[M]
+    with Program[Kleisli[M]] {
+
+  private type `=>M` = Kleisli[M]
+
+  override def function[Z, Y]: (Z => Y) => Z `=>M` Y = { `z=>y` => z =>
+    result(`z=>y`(z))
+  }
+
+  override def compose[Z, Y, X](`z=>my`: Z `=>M` Y,
+                                `y=>mx`: => Y `=>M` X): Z `=>M` X = { z =>
+    bind(`z=>my`(z), `y=>mx`)
+  }
+
+  override def product[Z, Y, X](`z=>my`: Z `=>M` Y,
+                                `z=>mx`: => Z `=>M` X): Z `=>M` (Y && X) = {
+    z =>
+      bind(`z=>my`(z), y => bind(`z=>mx`(z), x => result(y, x)))
+  }
+
+  override def sum[Z, Y, X](`y=>mz`: => Y `=>M` Z,
+                            `x=>mz`: => X `=>M` Z): (Y || X) `=>M` Z =
+    foldSum(`y=>mz`, `x=>mz`)
+
+}
+```
+
+#### **Explaining `trait Applying`**
+
+Consider 
+
+```scala
+package pdbp.demo.program
+
+import pdbp.types.product.productType._
+
+private[pdbp] trait Applying[>-->[- _, + _]] {
+
+  private[pdbp] def apply[Z, Y]: (Z && (Z >--> Y)) >--> Y
+
+}
+```
+
+Think of `apply` as a program that *applies* a program of type `Z >--> Y` to an argument of type `Z`.
+It transforms the argument of type `Z` to yield a result of type `Y`.
+
+#### **Augmenting computational capabilities with applying capabilities**
+
+Computational capabilities can, trivially, be augmented with with applying capabilities.
+
+```scala
+package pdbp.computation
+
+// ...
+
+private[pdbp] trait Computation[M[+ _]]
+    extends Resulting[M]
+    with Binding[M]
+    with Lifting[M]
+    with Sequencing[M]
+    with Program[Kleisli[M]] 
+    with Applying[Kleisli[M]] {
+
+  // ...
+
+  private[pdbp] def apply[Z, Y]: (Z && (Z `=>M` Y)) `=>M` Y = { (z, `z=>my`) =>
+    `z=>my`(z)
+  }    
+
+}
+```
+
+#### **Introducing `type Kleisli` for computations**
+
+Consider
+
+```scala
+package pdbp.demo.types.kleisli
+
+object kleisliComputationType {
+
+  type Kleisli[>-->[- _, + _]] = [+Y] => Unit >--> Y
+
+}
+```
+
+A computation of type `Kleisli[>-->]` is referred to as a *Kleisli computation*. 
+
+#### **Defining computational capabilities in terms of programming and applying capabilities**
+
+The computational capabilities `result` and `bind` can be defined in terms the of the programming capabilities `function` and `compose`, `product` and `apply`.
+
+```scala
+package pdbp.demo.program
+
+import pdbp.program.Program
+
+import pdbp.computation.Resulting
+import pdbp.computation.Binding
+
+import pdbp.demo.types.kleisli.kleisliComputationType._
+
+private[pdbp] trait ProgramWithApplying[>-->[- _, + _]]
+    extends Program[>-->]
+    with Applying[>-->] 
+    with Resulting[Kleisli[>-->]]
+    with Binding[Kleisli[>-->]] {
+
+  private type M = Kleisli[>-->]
+
+  override private[pdbp] def result[Z]: Z => M[Z] =
+    `z=>(u>-->z)`
+      
+  override private[pdbp] def bind[Z, Y](mz: M[Z], `z=>my`: => Z => M[Y]): M[Y] =
+    compose(mz, compose(product(`z>-->u`, function(`z=>my`)), apply))
+
+}
+```
+
+where
+
+ - `` `z=>(u>-->z)` ``,
+ - `` `z>-->u` ``
+
+are the programs you expect.
+
+```scala
+package pdbp.program
+
+// ...
+
+trait Function[>-->[- _, + _]] {
+
+  // ...
+
+  def `z>-->u`[Z]: Z >--> Unit =
+    function(`z=>u`)  
+
+  def `z=>(y>-->z)`[Z, Y]: Z => (Y >--> Z) = { z =>
+    function(`z=>(y=>z)`(z))
+  }
+
+  def `z=>(u>-->z)`[Z]: Z => (Unit >--> Z) =
+    `z=>(y>-->z)`[Z, Unit]  
+
+  // ...
+
+}  
+```
+
+where
+
+```scala
+package pdbp.utils
+
+object functionUtils {
+
+  // ...
+
+  def `z=>u`[Z]: Z => Unit = { z =>
+    ()
+  }
+
+  def `z=>(y=>z)`[Z, Y]: Z => Y => Z = { z => y =>
+    z
+  }
+
+}
+```
 
 # **Appendices**
 

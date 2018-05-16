@@ -1,4 +1,4 @@
-package pdbp.utils
+package pdbp.program
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,18 +11,10 @@ package pdbp.utils
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-object functionUtils {
+import pdbp.types.product.productType._
 
-  def `z=>z`[Z]: Z => Z = { z =>
-    z
-  }
+private[pdbp] trait Applying[>-->[- _, + _]] {
 
-  def `z=>u`[Z]: Z => Unit = { z =>
-    ()
-  }
-
-  def `z=>(y=>z)`[Z, Y]: Z => Y => Z = { z => y =>
-    z
-  }
+  private[pdbp] def apply[Z, Y]: (Z && (Z >--> Y)) >--> Y
 
 }
