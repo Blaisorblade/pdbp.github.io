@@ -146,7 +146,7 @@ All it's capabilities are `public`, the default in `Dotty`.
 Below is a `factorial` program written using `trait Program`'s API .
 
 ```scala
-  val factorial: BigInt >--> BigInt =
+  lazy val factorial: BigInt >--> BigInt =
     `if`(isZero) {
       one
     } `else` {
@@ -315,7 +315,7 @@ Of course, elegance of use is a highly subjective concept.
 Consider, again, the program description of `factorial`
 
 ```scala
-  val factorial: BigInt >--> BigInt =
+  lazy val factorial: BigInt >--> BigInt =
     `if`(isZero) {
       one
     } `else` {
@@ -401,7 +401,7 @@ Exploiting the *flexibility* that comes with this difference is one of the most 
 Consider, again, the `factorial` program below.
 
 ```scala
-  val factorial: BigInt >--> BigInt =
+  lazy val factorial: BigInt >--> BigInt =
     `if`(isZero) {
       one
     } `else` {
@@ -1503,7 +1503,7 @@ where
 Below is, again, the code of `factorial`
 
 ```scala
-package examples.program
+package examples.programs
 
 import pdbp.types.product.productType._
 
@@ -1517,7 +1517,9 @@ class Factorial[>-->[- _, + _]: Program] {
 
   import implicitly._
 
-  val factorial: BigInt >--> BigInt =
+  import examples._
+
+  private[programs] lazy val factorial: BigInt >--> BigInt =
     `if`(isZero) {
       one
     } `else` {
@@ -1529,16 +1531,16 @@ class Factorial[>-->[- _, + _]: Program] {
       }
     }
 
-  val isZero: BigInt >--> Boolean =
+  private[programs] val isZero: BigInt >--> Boolean =
     function(isZeroFunction)
 
-  val subtractOne: BigInt >--> BigInt =
+  private[programs] val subtractOne: BigInt >--> BigInt =
     function(subtractOneFunction)
 
-  val multiply: (BigInt && BigInt) >--> BigInt =
+  private[programs] val multiply: (BigInt && BigInt) >--> BigInt =
     function(multiplyFunction)
 
-  def one[Z]: Z >--> BigInt =
+  private[programs] def one[Z]: Z >--> BigInt =
     function(oneFunction)
 
   // ...  
@@ -1560,7 +1562,7 @@ If
  - `program` is a *program* of type `Z >--> Y`,
  - `consumer` is a *consumer program* of type `Y >--> Unit`,
  - 
-then 
+then rogram
 
  - `producer >--> program >--> consumer` is a main program.
 
@@ -1574,7 +1576,7 @@ We also simply refer to
 Consider
 
 ```scala
-package examples.program
+package examples.programs
 
 // ...
 import pdbp.utils.effectfulUtils._
@@ -1584,16 +1586,16 @@ class Factorial[>-->[- _, + _]: Program] {
 
   // ...
 
-  def effectfulReadIntFromConsole(message: String): Unit >--> BigInt =
+  private[programs] def effectfulReadIntFromConsole(message: String): Unit >--> BigInt =
     function(effectfulReadIntFromConsoleFunction(message))
 
-  def effectfulWriteToConsole[Y](message: String): Y >--> Unit =
+  private[programs] def effectfulWriteToConsole[Y](message: String): Y >--> Unit =
     function(effectfulWriteToConsoleFunction(message))
 
-  val producer: Unit >--> BigInt =
-    effectfulReadIntFromConsole("please type an integer")  
+  private[programs] val producer: Unit >--> BigInt =
+    effectfulReadIntFromConsole("please type an integer")
 
-  val consumer: BigInt >--> Unit =
+  private[programs] val consumer: BigInt >--> Unit =
     effectfulWriteToConsole("the factorial value of the integer is")
 
   val factorialMain: Unit >--> Unit =
@@ -1639,7 +1641,7 @@ They *execute effects* in an *impure* way.
 Using the the producer and consumer above we can now define `factorialMain`
 
 ```scala
-package examples.program
+package examples.programs
 
 // ...
 
@@ -1872,7 +1874,7 @@ private[pdbp] trait OperatorLifting[M[+ _]] {
 
 `liftOperator` is a function that *lifts* an *object-level operator* to a *computation-level operator*.
 
-#### **Explaining `trait Lifting` revisited**
+### **Explaining `trait Lifting` revisited**
 
 Consider
 
@@ -2002,6 +2004,8 @@ object productUtils {
 }
 ```
 
+### **Defining lifting and programming capabilities in terms of computational capabilities**
+
 #### **Defining lifting capabilities in terms of computational capabilities**
 
 The lifting capabilities `liftObject`, `liftFunction` and `liftOperator` can be defined in terms of the computational capabilities `bind` and `result`.
@@ -2083,6 +2087,8 @@ private[pdbp] trait Computation[M[+ _]]
 
 }
 ```
+
+### **Defining computational capabilities in terms of programming and applying capabilities**
 
 #### **Explaining `trait Applying`**
 
@@ -2226,6 +2232,173 @@ object functionUtils {
 
 }
 ```
+
+## **Active program instance**
+
+### **Introducing `activeTypes`**
+
+The simplest computation instance (and corresponding program instance) one can probably think of is the *active* instance (we use active as opposed to *reactive*) as defined below
+
+```scala
+package pdbp.program.instances.active
+
+import pdbp.types.active.activeTypes._
+
+import pdbp.utils.functionUtils._
+
+import pdbp.program.Program
+
+import pdbp.computation.Computation
+
+object activeProgram extends Computation[Active] with Program[`=>A`] {
+
+  override private[pdbp] def result[Z]: Z => Active[Z] = `z=>az`
+
+  override private[pdbp] def bind[Z, Y](
+      az: Active[Z],
+      `z=>ay`: => (Z => Active[Y])): Active[Y] = {
+    `z=>ay`(az)
+  }
+
+}
+```
+
+where the types `Active` and `` `=>A` `` involved are defined as follows
+
+```scala
+package pdbp.types.active
+
+import pdbp.types.kleisli.kleisliProgramType._
+
+object activeTypes {
+
+  type Active[+Z] = Z
+
+  type `=>A` = Kleisli[Active]
+
+}
+```
+
+and where
+
+  - `` `z=>az` ``
+
+is the program you expect
+
+```scala
+package pdbp.utils
+
+import pdbp.types.active.activeTypes._
+
+object functionUtils {
+
+  // ...
+
+  def `z=>az`[Z]: Z => Active[Z] = { z =>
+    z
+  }
+
+}
+```
+
+### **`implicit` active program instance**
+
+Let's move on and define an `implicit val` that we can use for dependecy injection by `import` later on.
+
+```scala
+package pdbp.program.implicits.active
+
+import pdbp.program.instances.active.activeProgram
+
+object implicits {
+
+  implicit val implicitActiveProgram: activeProgram.type = activeProgram
+
+}
+```
+
+## **Running `factorialMain`**
+
+### **Defining`factorialObject`**
+
+Consider
+
+```scala
+package objects.active
+
+import pdbp.types.active.activeTypes._
+
+import pdbp.program.implicits.active.implicits
+import implicits.implicitActiveProgram
+
+import examples.program.Factorial
+
+object factorialObject extends Factorial[`=>A`]()
+```
+
+The definition of `factorialObject` uses dependecy injection by `import` (`import implicits.implicitActiveProgram`) to bring an `implicit val` (`implicitActiveProgram`) in scope to `extend` the *type class* `class Factorial`.
+
+### **Defining `factorialMain`**
+
+Consider
+
+```scala
+package examples.main.active
+
+import examples.objects.active.factorialObject
+import factorialObject.factorialMain
+
+object FactorialMain {
+
+  def main(args: Array[String]): Unit = {
+
+    factorialMain(())
+
+  }
+
+}
+```
+
+The definition of `FactorialMain` uses dependecy injection by `import` (`import factorialObject.factorialMain`) to bring `factorialMain` in scope.
+
+### **Running `factorialMain` using `activeProgram`**
+
+Ok, so let's run our program.
+
+Let's try `10`.
+
+```scala
+[info] Running examples.main.active.FactorialMain
+please type an integer
+10
+the factorial value of the integer is
+3628800
+```
+
+Let's try `100`.
+
+```scala
+[info] Running examples.main.active.FactorialMain
+please type an integer
+100
+the factorial value of the integer is
+93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
+```
+
+Let's try `1000`.
+
+```scala
+[info] Running examples.main.active.FactorialMain
+please type an integer
+1000
+[error] (run-main-0) java.lang.StackOverflowError
+java.lang.StackOverflowError
+```
+
+We have a problem here. 
+The active program instance *is not stack safe*. 
+The good news is that the active instance is just one way to define a (in this case *language level*) *meaning* for the factorial *description*.
+
 
 
 # **Appendices**

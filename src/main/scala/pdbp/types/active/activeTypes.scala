@@ -1,4 +1,4 @@
-package pdbp.utils
+package pdbp.types.active
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,24 +11,12 @@ package pdbp.utils
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.activeTypes._
+import pdbp.types.kleisli.kleisliProgramType._
 
-object functionUtils {
+object activeTypes {
 
-  def `z=>z`[Z]: Z => Z = { z =>
-    z
-  }
+  type Active[+Z] = Z
 
-  def `z=>u`[Z]: Z => Unit = { z =>
-    ()
-  }
-
-  def `z=>(y=>z)`[Z, Y]: Z => Y => Z = { z => y =>
-    z
-  }
-
-  def `z=>az`[Z]: Z => Active[Z] = { z =>
-    z
-  }
+  type `=>A` = Kleisli[Active]
 
 }

@@ -1,4 +1,4 @@
-package examples.program
+package examples.programs
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -21,11 +21,13 @@ import pdbp.utils.effectfulUtils._
 
 import examples.utils.functionUtils._
 
-class Factorial[>-->[- _, + _]: Program] {
+trait Factorial[>-->[- _, + _]: Program] {
 
   import implicitly._
 
-  val factorial: BigInt >--> BigInt =
+  import examples._
+
+  private[programs] lazy val factorial: BigInt >--> BigInt =
     `if`(isZero) {
       one
     } `else` {
@@ -37,28 +39,28 @@ class Factorial[>-->[- _, + _]: Program] {
       }
     }
 
-  val isZero: BigInt >--> Boolean =
+  private[programs] val isZero: BigInt >--> Boolean =
     function(isZeroFunction)
 
-  val subtractOne: BigInt >--> BigInt =
+  private[programs] val subtractOne: BigInt >--> BigInt =
     function(subtractOneFunction)
 
-  val multiply: (BigInt && BigInt) >--> BigInt =
+  private[programs] val multiply: (BigInt && BigInt) >--> BigInt =
     function(multiplyFunction)
 
-  def one[Z]: Z >--> BigInt =
+  private[programs] def one[Z]: Z >--> BigInt =
     function(oneFunction)
 
-  def effectfulReadIntFromConsole(message: String): Unit >--> BigInt =
+  private[programs] def effectfulReadIntFromConsole(message: String): Unit >--> BigInt =
     function(effectfulReadIntFromConsoleFunction(message))
 
-  def effectfulWriteToConsole[Y](message: String): Y >--> Unit =
+  private[programs] def effectfulWriteToConsole[Y](message: String): Y >--> Unit =
     function(effectfulWriteToConsoleFunction(message))
 
-  val producer: Unit >--> BigInt =
+  private[programs] val producer: Unit >--> BigInt =
     effectfulReadIntFromConsole("please type an integer")
 
-  val consumer: BigInt >--> Unit =
+  private[programs] val consumer: BigInt >--> Unit =
     effectfulWriteToConsole("the factorial value of the integer is")
 
   val factorialMain: Unit >--> Unit =

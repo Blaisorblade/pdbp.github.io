@@ -1,4 +1,4 @@
-package pdbp.utils
+package pdbp.program.instances.active
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -13,22 +13,20 @@ package pdbp.utils
 
 import pdbp.types.active.activeTypes._
 
-object functionUtils {
+import pdbp.utils.functionUtils._
 
-  def `z=>z`[Z]: Z => Z = { z =>
-    z
-  }
+import pdbp.program.Program
 
-  def `z=>u`[Z]: Z => Unit = { z =>
-    ()
-  }
+import pdbp.computation.Computation
 
-  def `z=>(y=>z)`[Z, Y]: Z => Y => Z = { z => y =>
-    z
-  }
+object activeProgram extends Computation[Active] with Program[`=>A`] {
 
-  def `z=>az`[Z]: Z => Active[Z] = { z =>
-    z
+  override private[pdbp] def result[Z]: Z => Active[Z] = `z=>az`
+
+  override private[pdbp] def bind[Z, Y](
+      az: Active[Z],
+      `z=>ay`: => (Z => Active[Y])): Active[Y] = {
+    `z=>ay`(az)
   }
 
 }

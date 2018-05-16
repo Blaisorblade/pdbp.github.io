@@ -5,6 +5,7 @@ echo "!!! preprocessing with sed !!!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
 sed -i "s/type Kleisli/\/\/type Kleisli/g" ./src/main/scala/pdbp/types/kleisli/kleisliProgramType.scala
+sed -i "s/trait Factorial/class Factorial/g" ./src/main/scala/examples/programs/Factorial.scala
 
 # appendices
 
@@ -27,6 +28,8 @@ echo "!!!!!!!!!!!!!!!!!!"
 
 echo ./src/main/scala/pdbp/types/kleisli/kleisliProgramType.scala
 scalafmt ./src/main/scala/pdbp/types/kleisli/kleisliProgramType.scala
+echo ./src/main/scala/examples/programs/Factorial.scala
+scalafmt ./src/main/scala/examples/programs/Factorial.scala
 
 # appendices
 
@@ -46,6 +49,7 @@ echo "!!! postprocessing with sed !!!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
 sed -i "s/\/\/type Kleisli/type Kleisli/g" ./src/main/scala/pdbp/types/kleisli/kleisliProgramType.scala
+sed -i "s/class Factorial/trait Factorial/g" ./src/main/scala/examples/programs/Factorial.scala
 
 # appendices
 

@@ -1,4 +1,4 @@
-package pdbp.utils
+package examples.objects.active
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -13,22 +13,9 @@ package pdbp.utils
 
 import pdbp.types.active.activeTypes._
 
-object functionUtils {
+import pdbp.program.implicits.active.implicits
+import implicits.implicitActiveProgram
 
-  def `z=>z`[Z]: Z => Z = { z =>
-    z
-  }
+import examples.programs.Factorial
 
-  def `z=>u`[Z]: Z => Unit = { z =>
-    ()
-  }
-
-  def `z=>(y=>z)`[Z, Y]: Z => Y => Z = { z => y =>
-    z
-  }
-
-  def `z=>az`[Z]: Z => Active[Z] = { z =>
-    z
-  }
-
-}
+object factorialObject extends Factorial[`=>A`]()

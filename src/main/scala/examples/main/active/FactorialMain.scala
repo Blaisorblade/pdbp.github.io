@@ -1,4 +1,4 @@
-package pdbp.utils
+package examples.main.active
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,24 +11,15 @@ package pdbp.utils
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.activeTypes._
+import examples.objects.active.factorialObject
+import factorialObject.factorialMain
 
-object functionUtils {
+object FactorialMain {
 
-  def `z=>z`[Z]: Z => Z = { z =>
-    z
-  }
+  def main(args: Array[String]): Unit = {
 
-  def `z=>u`[Z]: Z => Unit = { z =>
-    ()
-  }
+    factorialMain(())
 
-  def `z=>(y=>z)`[Z, Y]: Z => Y => Z = { z => y =>
-    z
-  }
-
-  def `z=>az`[Z]: Z => Active[Z] = { z =>
-    z
   }
 
 }
