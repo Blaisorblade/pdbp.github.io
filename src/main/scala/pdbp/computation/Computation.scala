@@ -64,7 +64,7 @@ private[pdbp] trait Computation[M[+ _]]
                             `x=>mz`: => X `=>M` Z): (Y || X) `=>M` Z =
     foldSum(`y=>mz`, `x=>mz`) 
 
-  private[pdbp] def apply[Z, Y]: (Z && (Z `=>M` Y)) `=>M` Y = { (z, `z=>my`) =>
+  override private[pdbp] def apply[Z, Y]: (Z && (Z `=>M` Y)) `=>M` Y = { (z, `z=>my`) =>
     `z=>my`(z)
   }       
 

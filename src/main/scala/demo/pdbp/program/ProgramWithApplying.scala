@@ -34,3 +34,4 @@ private[pdbp] trait ProgramWithApplying[>-->[- _, + _]]
     compose(mz, compose(product(`z>-->u`, function(`z=>my`)), apply))
 
 }
+
