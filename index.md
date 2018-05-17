@@ -2399,8 +2399,6 @@ We have a problem here.
 The active program instance *is not stack safe*. 
 The good news is that the active instance is just one way to define a (in this case *language level*) *meaning* for the factorial *description*.
 
-
-
 # **Appendices**
 
 ## **AppendixFunctionsAndExpressions**

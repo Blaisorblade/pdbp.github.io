@@ -1,4 +1,4 @@
-package examples.main.active
+package pdbp.computation.meaning.instances.ofActive.active
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,15 +11,17 @@ package examples.main.active
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import examples.objects.active.factorialObject
-import factorialObject.factorialMain
+import pdbp.types.active.activeTypes._
 
-object FactorialMain {
+import pdbp.program.implicits.active.implicits.implicitActiveProgram
 
-  def main(args: Array[String]): Unit = {
+import pdbp.program.meaning.ProgramMeaning
 
-    factorialMain(())
+import pdbp.computation.meaning.ComputationMeaning
 
-  }
+import pdbp.computation.meaning.instances.ofActive.MeaningOfActive
 
-}
+object activeMeaningOfActive
+    extends MeaningOfActive[Active]()
+    with ComputationMeaning[Active, Active]()
+    with ProgramMeaning[`=>A`, `=>A`]()
