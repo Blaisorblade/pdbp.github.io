@@ -1,4 +1,4 @@
-package examples.programs.effectfulReadingAndWriting
+package examples.mainPrograms.effectfulReadingAndWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,19 +11,15 @@ package examples.programs.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.product.productType._
-
 import pdbp.program.Program
 
 import pdbp.program.compositionOperator._
 
 import pdbp.utils.effectfulUtils._
 
-import examples.utils.functionUtils._
+import examples.programs.Factorial
 
-import examples.programs.FactorialTrait
-
-trait FactorialMainTrait[>-->[- _, + _]: Program] extends FactorialTrait[>-->] {
+trait FactorialMain[>-->[- _, + _]: Program] {
 
   import implicitly._
 
@@ -39,7 +35,11 @@ trait FactorialMainTrait[>-->[- _, + _]: Program] extends FactorialTrait[>-->] {
   private val consumer: BigInt >--> Unit =
     effectfulWriteToConsole("the factorial value of the integer is")
 
-  val factorialMain: Unit >--> Unit =
+  private val factorialInstance = new Factorial[>-->]
+
+  import factorialInstance.factorial
+
+  val mainFactorial: Unit >--> Unit =
     producer >-->
       factorial >-->
       consumer

@@ -27,7 +27,7 @@ private[pdbp] trait Computation[M[+ _]]
     with Binding[M]
     with Lifting[M]
     with Sequencing[M]
-    with Program[Kleisli[M]] 
+    with Program[Kleisli[M]]
     with Applying[Kleisli[M]] {
 
   override private[pdbp] def liftObject[Z](z: Z): M[Z] =
@@ -62,10 +62,11 @@ private[pdbp] trait Computation[M[+ _]]
 
   override def sum[Z, Y, X](`y=>mz`: => Y `=>M` Z,
                             `x=>mz`: => X `=>M` Z): (Y || X) `=>M` Z =
-    foldSum(`y=>mz`, `x=>mz`) 
+    foldSum(`y=>mz`, `x=>mz`)
 
-  override private[pdbp] def apply[Z, Y]: (Z && (Z `=>M` Y)) `=>M` Y = { (z, `z=>my`) =>
-    `z=>my`(z)
-  }       
+  override private[pdbp] def apply[Z, Y]: (Z && (Z `=>M` Y)) `=>M` Y = {
+    (z, `z=>my`) =>
+      `z=>my`(z)
+  }
 
 }

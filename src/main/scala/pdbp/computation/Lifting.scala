@@ -20,14 +20,16 @@ private[pdbp] trait Lifting[M[+ _]]
     with FunctionLifting[M]
     with OperatorLifting[M] {
 
+  private[pdbp] override def liftFunction[Z, Y](
+      `z=>y`: Z => Y): M[Z] => M[Y] = { mz =>
+    liftedApply(liftObject(`z=>y`), mz)
+  }
+
   private[pdbp] def liftedAnd[Z, Y]: (M[Z] && M[Y]) => M[Z && Y] =
     liftOperator(`(z&&y)=>(z&&y)`)
 
   private[pdbp] def liftedApply[Z, Y]: (M[Z => Y] && M[Z]) => M[Y] =
     liftOperator(`((z=>y)&&z)=>y`)
-
-  private[pdbp] override def liftFunction[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y] =
-    liftedApply(liftObject(`z=>y`), _)
 
   private[pdbp] def lift0[Z](z: Z) =
     liftObject(z)
@@ -39,8 +41,8 @@ private[pdbp] trait Lifting[M[+ _]]
       `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] =
     liftOperator(`(z&&y)=>x`)
 
-  private[pdbp] def lift3[Z, Y, X, W](`(z&&y&&x)=>w`: (Z && Y && X) => W)
-    : (M[Z] && M[Y] && M[X]) => M[W] =
+  private[pdbp] def lift3[Z, Y, X, W](
+      `(z&&y&&x)=>w`: (Z && Y && X) => W): (M[Z] && M[Y] && M[X]) => M[W] =
     `(z=>x)=>(z&&y)=>(x&&y)`(liftedAnd) andThen liftOperator(`(z&&y&&x)=>w`)
 
   // ...

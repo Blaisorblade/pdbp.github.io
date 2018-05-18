@@ -8,12 +8,18 @@ for f in $(find . -name "*.scala")
 do
 echo $f
 if [[ "$f" == "./src/main/scala/pdbp/types/kleisli/kleisliProgramType.scala" || 
-      "$f" == "./src/main/scala/examples/programs/Factorial.scala" ||
+
+      "$f" == "./src/main/scala/examples/mainPrograms/effectfulReadingAndWriting/FactorialMain.scala" ||
+      "$f" == "./src/main/scala/pdbp/program/meaning/ProgramMeaning.scala" ||
+      "$f" == "./src/main/scala/pdbp/computation/meaning/ComputationMeaning.scala" ||
+      "$f" == "./src/main/scala/pdbp/computation/meaning/instances/ofActive/MeaningOfActive.scala" ||
+      
+      "$f" == "./src/main/scala/pdbp/demo/types/kleisli/kleisliComputationType.scala" ||
+
       "$f" == "./src/main/scala/demo/DefiningDescriptions.scala" ||
       "$f" == "./src/main/scala/demo/LibraryLevelMeaning.scala" ||
       "$f" == "./src/main/scala/demo/ProductInTermsOfLetAndIn.scala" ||
-      "$f" == "./src/main/scala/demo/SumInTermsOfIfAndElse.scala"  ||
-      "$f" == "./src/main/scala/pdbp/demo/types/kleisli/kleisliComputationType.scala" ]]
+      "$f" == "./src/main/scala/demo/SumInTermsOfIfAndElse.scala" ]]
 then
   echo "skipping"
 else

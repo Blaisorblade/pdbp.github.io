@@ -27,7 +27,7 @@ trait MeaningOfActive[T[+ _]: Resulting] extends ComputationMeaning[Active, T] {
         val implicitlyResulting = implicitly[Resulting[T]]
         import implicitlyResulting._
         result(az)
-      }  
+      }
     }
 
 }

@@ -17,25 +17,11 @@ import pdbp.program.Program
 
 import pdbp.program.compositionOperator._
 
-import pdbp.utils.effectfulUtils._
-
 import examples.utils.functionUtils._
 
-trait FactorialTrait[>-->[- _, + _]: Program] {
+class Factorial[>-->[- _, + _]: Program] {
 
   import implicitly._
-
-  private[programs] lazy val factorial: BigInt >--> BigInt =
-    `if`(isZero) {
-      one
-    } `else` {
-      `let` {
-        subtractOne >-->
-          factorial
-      } `in` {
-        multiply
-      }
-    }
 
   private val isZero: BigInt >--> Boolean =
     function(isZeroFunction)
@@ -48,5 +34,17 @@ trait FactorialTrait[>-->[- _, + _]: Program] {
 
   private def one[Z]: Z >--> BigInt =
     function(oneFunction)
+
+  lazy val factorial: BigInt >--> BigInt =
+    `if`(isZero) {
+      one
+    } `else` {
+      `let` {
+        subtractOne >-->
+          factorial
+      } `in` {
+        multiply
+      }
+    }
 
 }

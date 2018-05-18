@@ -9,8 +9,10 @@ I worked as a
 I am retired now.
 
 I am having fun with my wife Maritza
-  - cycling with our race bicycles (climbing mountains, ...),
-  - gardening in our green house (lettuce, cauliflower, tomato, bell pepper, ...).
+  - cycling with our race bicycles
+    - climbing mountains, ... ,
+  - gardening in our green house
+    - lettuce, cauliflower, tomato, bell pepper, ... .
 
 Below is a link to picture, taken by a friend, of me and my wife, cycling in the French Alps.
 
@@ -20,14 +22,15 @@ Below is a link to picture of a radish I picked out of my greenhouse 5 minutes a
 
 [Radish](./pictures/Radijs.png)
 
-As a hobby I am having fun
-  - programming (bridging the gap between mathematical theory and programming practice).
+As a hobby I am still having fun
+  - programming 
+    - bridging the gap between mathematical theory and programming practice.
 
 I hope you enjoy the document below.
 
 All comments are welcome at [ pdbp.blog at gmail.com ].
 
-## **Warning**
+## **Warning**      
 
 First, let me be clear about the following
  - both this document and the library it describes are opiniated.
@@ -68,13 +71,16 @@ The `FP` forms are
  - *Composition*
  - *Construction*
  - *Condition*
+  
+and
+
  - *Aggregation*
 
-#### **Templates and fragments**
+#### **About the first four forms**
 
 Think of the first four forms as *program templates* and programs transformed by them as *program fragments*, or *program components*, that can be plugged into them to obtain *composite programs*.
 
-#### **Note**
+#### **About the last fifth form**
 
 `FP` does not really have an *Aggregation* form. 
 It does have *sequences of objects* and it is possible to define `FP` programs that *aggregate* sequences of objects to an object.
@@ -101,12 +107,12 @@ Below is the logo of the library
 
 ### **Objects and values**
 
-In `Dotty`, everything is an object.
+In `Dotty`, every *value* is an *object*.
 From now on, when dealing with `Dotty`, we use *object* and *value* interchangably.
 
 ### **Introducing `trait Program`**
 
-The main `Dotty` *type class* of the `PDBP` library is `trait Program`.
+The main *type class* of the `PDBP` library is `trait Program`.
 
 ```scala
 package pdbp.program
@@ -175,7 +181,7 @@ To finish
 
 ### **Introducing `trait Computation`**
 
-Another important `Dotty` type class of the `PDBP` library is `trait Computation`.
+Another important type class of the `PDBP` library is `trait Computation`.
 
 ```scala
 package pdbp.computation
@@ -221,7 +227,7 @@ To finish
 
 ### **Power of expression**
 
-In 2008, Conor McBride and Ross Paterson described *applicatives* (a.k.a. *idioms*) and used them in `Haskell` in 
+In 2008, Conor McBride and Ross Paterson described *applicatives* (a.k.a. *idioms*) and used applicatives in `Haskell` in 
 [*Applicative programming with effects*](http://www.staff.city.ac.uk/~ross/papers/Applicative.pdf).
 
 In 2008, Sam Lindley, Philip Wadler and Jeremy Yallop compared the *power of expression* of monads, arrows and idioms in 
@@ -310,7 +316,7 @@ By using a *domain specific language for the domain of programs*, program descri
 
 Of course, elegance of use is a highly subjective concept. 
 
-#### **informal explanantion of `factorial`**
+#### **informal description of `factorial`**
 
 Consider, again, the program description of `factorial`
 
@@ -328,10 +334,10 @@ Consider, again, the program description of `factorial`
     }
 ```
 
-Below is an *informal explanation* of the *program fragments* of the `factorial` program description above
+Below is an *informal description* of the program fragments of the `factorial` program description above
 
  - `isZero` is a program description of type `BigInt >--> Boolean`
-   - think of `isZero` as a *predicate* that transforms its argument to yield the result `true` if it is equal to `0` and to yield the result`false` otherwise,
+   - think of `isZero` as a *predicate* (`Boolean`-valued function) that transforms its argument to yield the result `true` if it is equal to `0` and to yield the result`false` otherwise,
  - `one` is a program description of type `BigInt >--> BigInt`
    - think of `one` as a *constant function* that transforms its argument to yield the result `1`,
  - `subtractOne` is a program description of type `BigInt >--> BigInt`
@@ -346,9 +352,9 @@ Note that
 
 Also note that
 
-  - actually, `one` is a *generic* program description of type `Z >--> BigInt` *for all* `Z`
+  - `one` is a *generic* program description of type `Z >--> BigInt` *for all* `Z`
 
-Below is an *informal explanation* of the *program templates* of the `factorial` program description above
+Below is an informal description of the program templates of the `factorial` program description above
 
  - `first >--> second`  is part of the `Dotty` program description DSL related to `Composition`
    - think of `first` as a *first* function that transforms an argument and `second`as a *second* function that transforms the result yielded by the first function,
@@ -356,7 +362,7 @@ Below is an *informal explanation* of the *program templates* of the `factorial`
    - note that `let` and `in` are between *backticks*,
    - think of `constructNew` as a function that *constructs* a *new* value using the *current* one,
    - think of `useBothNewAndCurrent` as a function that uses both the *new* value and the *current* value, 
-   - together, the new value and the old current value become the new current value,
+     - together, the new value and the old current value become the new current value,
  - `` `if`(predicate) { trueCase } `else` { falseCase } `` is part of the `Dotty` program description DSL related to `Condition`
    - note that `if` and `else` are between *backticks*,
    - think of `predicate` as a *predicate* (`Boolean`-valued function) that tests the current value,
@@ -367,13 +373,14 @@ Agreed, at first sight the pointfree `factorial` code above may seem a bit abstr
 
 Agreed, we explained the pointfree code above in a pointful way.
 
-Once you get used to
+But,
+
+once you get used to
  - ` ... >--> ... `, 
  - `` `if`(...) { ... } `else` { ... } ``,  
  - `` `let` { ... } `in` { ... } ``. 
 
 you will, hopefully, start appreciating the power of expression and elegance of use of pointfree code.
-
 
 ### **`FP` versus `PDBP`**
 
@@ -415,7 +422,7 @@ Consider, again, the `factorial` program below.
 ```
 
 Note that `factorial` is a *recursive* program description.
-It can be given both a *stack unsafe* meaning and a *stack safe* meaning.
+It can be given both a *stack unsafe* (*non tail recursive*) meaning and a *stack safe* (*tail recursive*) meaning.
 The stack safe meaning simply uses the *heap* instead of the *stack*.
 
 #### **About meanings (for those who are a bit impatient)**
@@ -429,12 +436,10 @@ The stack safe meaning simply uses the *heap* instead of the *stack*.
  - in `FP`
    - the amount of forms of the language is fixed.
  - in `PDBP`
-   - the type class `trait Program` can be extended.
+   - the type class `trait Program` can be extended by mixing-in extra `traits`'s.
 
 Extra programming capabilities can be added such as
 
- - input reading
- - output writing
  - state manipulation
  - failure handling
  - latency handling (using parallelism)
@@ -442,6 +447,11 @@ Extra programming capabilities can be added such as
  - ...
 
 #### **I/O**
+
+Also programming capabilities can be added related to
+
+ - input reading
+ - output writing
 
  - in `FP`
    - input and output are *effectful*, they *execute effects* in an *impure* way.
@@ -501,7 +511,7 @@ To finish, we claim that
 
 Hopefully, the statements above sound exiting to both programmers with and programmers without a background in computer science.
 
-## **Explaining `trait Program`**
+## **Describing `trait Program`**
 
 ### **Warning**
 
@@ -509,7 +519,7 @@ From now on this document contains a lot of code.
 When reading it in sequential order, you will often be confronted with code that has not been explained yet. 
 Do not worry, the code will be explained in the paragraph immediately below it. 
 
-### **Explaining `trait Program`**
+### **Describing `trait Program`**
 
 Consider
 
@@ -559,15 +569,15 @@ A program is an `object` of type `Z >--> Y`, where
  - `Z` is the *parameter* (or *argument*) type of `>-->`,
  - `Y` is the *return* (or *result*) type of `>-->`.
 
-We use
+We write
 
- - parameter and return if we want to be explicit about being at the delaration (or definition) site.
+ - parameter and return if we want to be explicit about being at the *delaration* (or *definition*) site.
 
-We use
+We write
 
- - argument and result if we want to be explicit about being at the usage site.
+ - argument and result if we want to be explicit about being at the *usage* site.
 
-We also use argument and result as a default. 
+We also write argument and result as a default. 
 
 #### **Variance**
 
@@ -587,7 +597,7 @@ This *variance* property of `>-->` is related to two *principles* that are known
    - *be liberal in what you receive*,
    - *be generous in what you send*.
 
-### **Explaining `trait Function`**
+### **Describing `trait Function`**
 
 Consider
 
@@ -608,7 +618,7 @@ It is supposed to do nothing else than transforming an argument `z` of type `Z` 
 
 For *generic function names*, we use *mixed alphabetic and symbolic characters within backticks*, like `` `z=>y` `` to, hopefully, improve readability. 
 We agree that this is a somewhat unusual naming convention.
-We know programers who hate it, we know programmers who love it. 
+We know programers who *hate* it, we know programmers who *love* it. 
  
 Let's explain the reason of this naming convention with some examples that are special cases of [Theorems for free!](http://homepages.inf.ed.ac.uk/wadler/papers/free/free.dvi), as explained by Philip Wadler.
 
@@ -674,8 +684,6 @@ We defined `` `z>-->z` `` in terms of `function` and `` `z=>z` `` where
   - `` `z=>z` `` 
 
 is the function you expect.
-
-The function is defined below
 
 ```scala
 package pdbp.utils
@@ -759,10 +767,10 @@ where
 }
 ```
 
-If we define the program description `factorial` as `function(factorialFunction)`,
+If we describe `factorial` as `function(factorialFunction)`,
 then we have less flexibility for giving a meaning to it.
 
-### **Explaining `trait Composition`**
+### **Describing `trait Composition`**
 
 Consider
 
@@ -775,11 +783,12 @@ trait Composition[>-->[- _, + _]] {
 
 }
 ```
-Think of `compose` as a *program template* and of `` `z>-->y` `` and `` `y>-->x` `` as *program fragments*.
+
+Think of `compose` as a program template and of `` `z>-->y` `` and `` `y>-->x` `` as program fragments.
 
 Translated to functions:
 
-Think of `compose` as a *function template* (a.k.a. *higher order function*) and of `` `z>-->y` `` and `` `y>-->x` `` as *function fragments* (a.k.a. *function arguments*).
+Think of `compose` as a function template (a.k.a. higher order function) and of `` `z>-->y` `` and `` `y>-->x` `` as function fragments (a.k.a. function arguments).
 
 `` composition(`z>-->y`, `y>-->x`) `` is the *sequential composition* of `` `z>-->y` `` and `` `y>-->x` ``. 
 
@@ -788,6 +797,8 @@ then that result serves as an argument for the *subsequent* program `` `y>-->x` 
 
 Note that `` `y>-->x` `` is a *call-by-name parameter*.
 If program `` `z>-->y` `` fails to yield a result, then program `` `y>-->x` `` is not used.  
+
+Note that, preferably, `` `y>-->x` `` would be a *lazy parameter* (one of the possible language extensions of `Dotty`).
 
 Consider
 
@@ -815,9 +826,10 @@ The type constructor `>-->` is declared to implicitly have the programming capab
 `` /* ... */ >--> /* ... */ `` is a first example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
 
 It should not come as a surprise that 
+
   - `` `z>-->y` >--> `y>-->x` `` has type `Z >--> X`.
 
-### **Explaining `trait Construction`**
+### **Describing `trait Construction`**
 
 Consider
 
@@ -874,8 +886,6 @@ and where
  - `` `(z&&y)>-->y` ``
 
 are the programs you expect.
-
-The programs are defined below
 
 ```scala
 package pdbp.program
@@ -941,16 +951,21 @@ Programs are objects of type `Z >--> Y`.
 
 It may look as if programs can have only *one* argument resp. result.
 
-Think of one object of type `Y && X` as two objects, more precisely, both an object of type `Y` and an object of type `X`. This is the way the `PDBP` library deals with *two* arguments resp. results.
+Think of *one* object of type `Y && X` as two objects, one object of type `Y` and one object of type `X`. 
+This is the way the `PDBP` library deals with *two* arguments resp. results.
+
+Note that `Dotty` can also deal with many arguments the normal way using *argument lists*.
 
 The `PDBP` library deals with *many* arguments resp. results using *nested tuples*
 
   - `Z && Y` for two of them,
-  - `Z && (Y && X)` for three of them,
-  - `Z && (Y && (X && W)` for four of them,
+  - `Z && Y && X` for three of them,
+  - `Z && Y && X && W` for four of them,
   - ...  
 
-### **Explaining `trait Construction` continued**
+Note that `&&` associates to the right, so, for example, `Z && Y && X` is the same type as the nested tuple `(Z && Y) && X`.
+
+### **Describing `trait Construction` continued**
 
 `trait Construction` has three other members
 
@@ -998,10 +1013,11 @@ The type constructor `>-->` is declared to implicitly have the programming capab
 `` /* ... */ & /* ... */ `` and `` /* ... */ && /* ... */ `` are a third and fourth example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
 
 It should not come as a surprise that 
+
   - `` `z>-->y` & `z>-->x` `` has type `Z >--> (Y && X)`,
   - `` `z>-->y` && `x>-->w` `` has type `(Z && X) >--> (Y && W)`.
 
-### **Explaining `trait Condition`**
+### **Describing `trait Condition`**
 
 Consider 
 
@@ -1074,9 +1090,8 @@ and where
 
 are the programs you expect. 
 
-Agreed, `` `(w&&b)>-->(w||w)` `` is actually one of the two programs you expect. It is the one where `true` corresponds to `Left` and  `false` corresponds to `Right`.
-
-The programs are defined below
+Agreed, `` `(w&&b)>-->(w||w)` `` is one of the two programs you expect. 
+It is the one where `true` corresponds to `Left` and  `false` corresponds to `Right`.
 
 ```scala
 package pdbp.program
@@ -1159,15 +1174,15 @@ object productAndSumUtils {
 
 Think of `sum` as a program template and of `` `y>-->z` `` and `` `x>-->z` `` as program fragments.
 
-`` sum(`y>-->z`, `x>-->z`) `` uses a *"left or right" condition* to behave either as `` `y>-->z` `` or as `` `x>-->z` ``.
+`` sum(`y>-->z`, `x>-->z`) `` uses a *"left or right" condition* to let either `` `y>-->z` `` or `` `x>-->z` `` take over control.
 
-### **Explaining `trait Condition` continued**
+### **Describing `trait Condition` continued**
 
 `trait Condition` has three other members
 
  - `sum[Z, Y, X, W]` is a more complex version of `sum[Z, Y, X]`,
  - `or[Z, X, Y, W]` is yet another more complex version of `sum[Z, Y, X]`,
- - `` `if`[W, Z] `` has a parameter that is a program that has a result of type `Boolean` that is used to behave either as the parameter of `apply` or as the parameter of `` `else` ``.
+ - `` `if`[W, Z] `` has a parameter that is a program that has a result of type `Boolean` that is used to let either the program parameter of `apply` or the program parameter of `` `else` `` take over control.
 
 Note that
 
@@ -1178,7 +1193,7 @@ Note that
 
 `` `if`(/* ... */) { /* ... */ } `else` { /* ... */ } `` is a fifth example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
 
-#### **about the power of expression of `` `let` { ... } `in` { ... } ``**
+#### **About the power of expression of `` `let` { ... } `in` { ... } ``**
 
 `product[Z, Y, X]` can be defined in terms of `` `let` { ... } `in` { ... } ``.
 
@@ -1224,8 +1239,6 @@ where
  
 is the program you expect.
 
-The program is defined below
-
 ```scala
 package pdbp.program
 
@@ -1261,9 +1274,13 @@ object productUtils {
 }
 ```
 
-The definition of `product` is an example of a recurring theme of the `PDBP` library: defining a program description, or programming capability, often boils down to a *getting the types right puzzle*. Often there is only one meaningful way to get them right. Let's have a look at some of the details of the puzzle for this definition`.
+The definition of `product` is an example of a recurring theme of the `PDBP` library: defining a program description, or programming capability, often boils down to a *getting the types right puzzle*. 
+Often there is only one meaningful way to get them right. 
+Let's have a look at some of the details of the puzzle for this definition`.
 
-The outer `` `let` `` creates, using `` `z>-->y` ``, a new argument of type `Y` for the outer `` `in` `` which, as a consequence, has an argument of type `Z && Y` available, representing two arguments, one of type `Z` and one of type `Y`. The main difference between `` `let` `` and `compose` is that `` `let` `` does *not* loose the original argument of type `Z`. 
+The outer `` `let` `` creates, using `` `z>-->y` ``, a new argument of type `Y` for the outer `` `in` `` which, as a consequence, has an argument of type `Z && Y` available, representing two arguments, one of type `Z` and one of type `Y`. 
+
+The main difference between `` `let` `` and `compose` is that `` `let` `` does *not* loose the original argument of type `Z`. 
 
 The inner `` `let` `` of the outer `` `in` `` creates, using `` `(z&&y)>-->z` >--> `z>-->x` ``, the composition of `` `(z&&y)>-->z` `` and `` `z>-->x` ``, a new argument of type `X` for the inner `` `in` ``  of the outer `` `in` `` which, as a consequence, has an argument of type `Z && Y && X` available, representing three arguments, one of type `Z`, one of type `Y`, and one of type `X`. 
 
@@ -1275,7 +1292,7 @@ For example
   - in the composition `` `(z&&y)>-->z` >--> `z>-->x` ``, the matching `z`'s reflect the type `Z` involved,
   - in the name `` `(z&&y&&x)>-->(y&&x)` ``, both `(z&&y&&x)` and `(y&&x)` reflect the types `(Z && Y && X)` and `(Y && X)` involved. 
 
-#### **about the power of expression of `` `if`(...) { ... } `else` { ... }``**
+#### **About the power of expression of `` `if`(...) { ... } `else` { ... }``**
 
 `sum[Z, Y, X]` can be defined in terms of `` `if`(...) { ... } `else` { ... }``.
 
@@ -1318,9 +1335,8 @@ where
  
 are the programs you expect.
 
-Agreed, `` `(y||x)>-->b` `` is actually one of the two programs you expect. It is the one where `true` corresponds to `Left` and  `false` corresponds to `Right`.
-
-The programs are defined below
+Agreed, `` `(y||x)>-->b` `` is one of the two programs you expect. 
+It is the one where `true` corresponds to `Left` and  `false` corresponds to `Right`.
 
 ```scala
 package pdbp.utils
@@ -1386,15 +1402,16 @@ For example
 One challenge that comes with pointfree programming is getting the *necessary arguments* out of *all arguments*. 
 One way to deal with this challenge is to keep programs, and therefore, the arguments that come with them, relatively small. 
 
-After all, small program fragments can be combined to obtain larger ones by plugging them into program templates.
+After all, small program components can be combined to obtain larger ones by plugging them into program templates.
 
-[*Erik Meijer*](https://en.wikipedia.org/wiki/Erik_Meijer_(computer_scientist)) refers to this programming paradigm in a somewhat funny way as *good programmers write baby-code.* 
+[*Erik Meijer*](https://en.wikipedia.org/wiki/Erik_Meijer_(computer_scientist)) refers to this programming paradigm in a somewhat funny way as *good programmers write baby-code*. 
+
 Erik Meijer is so famous that he does not need an introduction. 
 I was very lucky to be able to do research with him, on monads and related stuff, at the Univeristy of Utrecht back in the ninetees.
 
-#### **formal top-down explanantion of `factorial`**
+#### **Formal top-down description of `factorial`**
   
-Below is a *formal top-down explanation* of the `factorial` program description using the programming capabilities defined so far.
+Below is a *formal top-down description* of the `factorial` program description using the programming capabilities defined so far.
 
 ```scala
 package demo
@@ -1517,9 +1534,19 @@ class Factorial[>-->[- _, + _]: Program] {
 
   import implicitly._
 
-  import examples._
+  private val isZero: BigInt >--> Boolean =
+    function(isZeroFunction)
 
-  private[programs] lazy val factorial: BigInt >--> BigInt =
+  private val subtractOne: BigInt >--> BigInt =
+    function(subtractOneFunction)
+
+  private val multiply: (BigInt && BigInt) >--> BigInt =
+    function(multiplyFunction)
+
+  private def one[Z]: Z >--> BigInt =
+    function(oneFunction)
+
+  lazy val factorial: BigInt >--> BigInt =
     `if`(isZero) {
       one
     } `else` {
@@ -1531,20 +1558,6 @@ class Factorial[>-->[- _, + _]: Program] {
       }
     }
 
-  private[programs] val isZero: BigInt >--> Boolean =
-    function(isZeroFunction)
-
-  private[programs] val subtractOne: BigInt >--> BigInt =
-    function(subtractOneFunction)
-
-  private[programs] val multiply: (BigInt && BigInt) >--> BigInt =
-    function(multiplyFunction)
-
-  private[programs] def one[Z]: Z >--> BigInt =
-    function(oneFunction)
-
-  // ...  
-    
 }
 ```
 
@@ -1552,7 +1565,7 @@ class Factorial[>-->[- _, + _]: Program] {
 
 Recall that programs have type `Z >--> Y` for types `Z` and `Y`.
 
-For example: `factorial` above has type `BigInt >--> BigInt`.
+For example: `factorial` has type `BigInt >--> BigInt`.
 
 A *main program* has type `Unit >--> Unit`.
 
@@ -1561,8 +1574,8 @@ If
  - `producer` is a *producer program* of type `Unit >--> Z`,
  - `program` is a *program* of type `Z >--> Y`,
  - `consumer` is a *consumer program* of type `Y >--> Unit`,
- - 
-then rogram
+
+then
 
  - `producer >--> program >--> consumer` is a main program.
 
@@ -1571,34 +1584,42 @@ We also simply refer to
   - a producer program as a *producer*,
   - a consumer program as a *consumer*.
 
-### **`factorialMain` using an effectful producer and consumer**
+### **Describing `mainFactorial` using an effectful `producer` and `consumer`**
 
 Consider
 
 ```scala
-package examples.programs
+package examples.mainPrograms.effectfulReadingAndWriting
 
-// ...
+import pdbp.program.Program
+
+import pdbp.program.compositionOperator._
+
 import pdbp.utils.effectfulUtils._
-// ...
 
-class Factorial[>-->[- _, + _]: Program] {
+import examples.programs.Factorial
 
-  // ...
+trait FactorialMain[>-->[- _, + _]: Program] {
 
-  private[programs] def effectfulReadIntFromConsole(message: String): Unit >--> BigInt =
+  import implicitly._
+
+  private def effectfulReadIntFromConsole(message: String): Unit >--> BigInt =
     function(effectfulReadIntFromConsoleFunction(message))
 
-  private[programs] def effectfulWriteToConsole[Y](message: String): Y >--> Unit =
+  private def effectfulWriteToConsole[Y](message: String): Y >--> Unit =
     function(effectfulWriteToConsoleFunction(message))
 
-  private[programs] val producer: Unit >--> BigInt =
+  private val producer: Unit >--> BigInt =
     effectfulReadIntFromConsole("please type an integer")
 
-  private[programs] val consumer: BigInt >--> Unit =
+  private val consumer: BigInt >--> Unit =
     effectfulWriteToConsole("the factorial value of the integer is")
 
-  val factorialMain: Unit >--> Unit =
+  private val factorialInstance = new Factorial[>-->]
+
+  import factorialInstance.factorial
+
+  val mainFactorial: Unit >--> Unit =
     producer >-->
       factorial >-->
       consumer
@@ -1630,38 +1651,29 @@ object effectfulUtils {
 }
 ```
 
-Both the producer and consumer above are *effectful*.
-They *execute effects* in an *impure* way.
+We have a problem here.
 
+Both `producer` and `consumer` above are *effectful*.
+  - they *execute effects* in an *impure* way.
+
+More percisely,
   - the function `effectfulReadIntFromConsoleFunction` that is used by `effectfulReadIntFromConsole` is not pure 
-    - it executes the `println("message")` and `readInt()` effects in an impure way
+    - it executes the effects `println("message")` and `readInt()` in an impure way,
   - the function `effectfulWriteToConsoleFunction` that is used by `effectfulWriteToConsole` is not pure
-    - it executes the `println("message")` and `println(s"$y")` effects in an impure way
+    - it executes the effects `println("message")` and `println(s"$y")` in an impure way.
 
-Using the the producer and consumer above we can now define `factorialMain`
+Both `producer` and `consumer` above should will be replaced by *effectfree* ones. 
+  - they will *describe effects* in an *pure* way.
 
-```scala
-package examples.programs
+More precisely
+  - we will extend the programming DSL with the capability to *read input*
+    - as such reading will describe effects in a pure way,
+  - we will extend the programming DSL with the capability to *write output*
+    - as such reading will describe effects in a pure way.
 
-// ...
+## **Describing `trait Computation`**
 
-class Factorial[>-->[- _, + _]: Program] {
-
-  // ...
-
-  val factorialMain: Unit >--> Unit =
-    producer >-->
-      factorial >-->
-      consumer
-
-}
-```
-
-Note that `effectfulReadIntFromConsole` resp. `effectfulWriteToConsole` should (and will) be replaced by an *effectfree* producer resp. consumer that *describes effects* in an *pure* way rather than executing them in an impure way.
-
-## **Explaining `trait Computation`**
-
-### **Explaining `trait Computation`**
+### **Describing `trait Computation`**
 
 Consider
 
@@ -1694,7 +1706,7 @@ private[pdbp] trait Sequencing[M]
 
 belong to the same `package pdbp.computation`.
 
-`trait Computation` is a *type class* that will gradually be explained later in this section. 
+`trait Computation` is a *type class* that will gradually be explained later in this document. 
 `trait Computation` *declares* the *computational capabilities* of *computation descriptions*. 
 
 We often write *computation* instead of *computation description*.
@@ -1713,23 +1725,23 @@ A computation is an `object` of type `M[Z]`, where
  - `M` is a *unary type constructor*,
  - `Z` is the *return* (or *result*) type of `M`.
 
-We use
+We write
 
  - return if we want to be explicit about being at the delaration (or definition) site.
 
-We use
+We write
 
  - result if we want to be explicit about being at the usage site.
 
-We also use result as a default. 
+We also write result as a default. 
 
 #### **`PDBP` library users versus `PDBP` library developers**
 
 Note that all computational capabilities are defined as `private [pdbp]`. 
 
-We do not want to expose pointful capabilies to the *users* of the `PDBP` library. 
-We only expose pointfree capabilities to the users of the `PDBP` library. 
-It is convenient to have pointful capabilies available for the *developers* of the `PDBP` library. 
+We do not want to expose the pointful computational capabilies to the *users* of the `PDBP` library. 
+We only expose pointfree programming capabilities to the users of the `PDBP` library. 
+It is convenient to have pointful computational capabilies available for the *developers* of the `PDBP` library. 
 It is also *simpler* (not necessarily *easier*, though) to define `Computation` instances since `Computation` has less undefined declared capabilities than `Program`.
 
 #### **Variance**
@@ -1745,7 +1757,7 @@ This *variance* property of `M` is related to two principles that are known as
  - the [*Internet Robustness Principle*](https://en.wikipedia.org/wiki/Robustness_principle) which, roughly speaking, states, among others 
    - *be generous in what you send*.
 
-### **Explaining `trait Resulting`**
+### **Describing `trait Resulting`**
 
 Consider
 
@@ -1762,7 +1774,7 @@ private[pdbp] trait Resulting[M[+ _]] {
 Think of `result(ez)` as a computation that is a *pure expression* `ez`. 
 *Executing* `result(ez)` is supposed to do nothing else than *evaluating* the expression `ez` to a yield a result of type `Z`.
 
-### **Explaining `trait Binding`**
+### **Describing `trait Binding`**
 
 Consider
 
@@ -1776,11 +1788,11 @@ private[pdbp] trait Binding[M[+ _]] {
 }
 ```
 
-Think of `` `z=>my` `` as a *computation execution continuation template* or simply, *computation template* and of `mz` as a *computation fragment* (a.k.a. *sub-computation*).
+Think of `` `z=>my` `` as a *computation execution continuation template* or, simply, *computation template*, and of `mz` as a *computation fragment* (a.k.a. *sub-computation*).
 
 Translated to expressions:
 
-Think of `` `z=>my` `` as an *expression evaluation continuation template*, or simply, *expression template* and of `mz` as an *expression fragment* (a.k.a. *sub-expression*).
+Think of `` `z=>my` `` as an *expression evaluation continuation template*, or, simply, *expression template*, and of `mz` as an *expression fragment* (a.k.a. *sub-expression*).
 
 `` bind(mz, `z=>my`) `` is function that *binds* `mz` to `z=>my`.
 
@@ -1790,7 +1802,78 @@ In what follows we also refer to computations `result(ez)` as *atomic computatio
 In `PDBP` pure expressions are atomic computation building blocks. 
 It is up to you to define the *complexity* of the expressions `ez`.
 
-### **Explaining `trait Lifting`**
+For example, the sum of the squares of two numbers can be defined in many ways.
+
+```scala
+package demo
+
+import demo.resulting._
+import demo.bindingOperator._
+
+object SumOfSquaresAsExpression {
+
+  def sumOfSquares01(z: Double, y: Double) =
+    result(z * z + y * y)
+
+  def sumOfSquares02(z: Double, y: Double) =
+    z * z bind { zSquare =>
+      y * y bind { ySquare =>
+        result(zSquare + ySquare)
+      }
+    }
+
+  def sumOfSquares03(z: Double, y: Double) =
+    z * z bind { zSquare =>
+      y * y bind { ySquare =>
+        zSquare + ySquare bind { zSquare_plus_ySquare =>
+          result(zSquare_plus_ySquare)
+        }
+      }
+    }
+
+  def main(args: Array[String]): Unit = {
+    println(sumOfSquares01(3.0, 4.0))
+    println(sumOfSquares02(3.0, 4.0))
+    println(sumOfSquares03(3.0, 4.0))
+
+  }
+
+}
+```
+
+where
+
+```scala
+package demo
+
+object resulting {
+
+  def result[Z]: Z => Z = identity
+
+}
+```
+
+and
+
+```scala
+package demo
+
+object bindingOperator {
+
+  implicit class BindingOperator[Z](z: Z) {
+
+    def bind[Y](`z=>y`: Z => Y) = `z=>y` apply z
+
+  }
+
+}
+```
+
+  - `sumOfSquares01` uses `result` one time,
+  - `sumOfSquares02` uses `result` one time and `bind` two times,
+  - `sumOfSquares03` uses `result` one time and `bind` three times.
+
+### **Describing `trait Lifting`**
 
 Consider
 
@@ -1816,7 +1899,7 @@ private[pdbp] trait OperatorLifting[M]
 belong to the same `package pdbp.computation`.
 
 `trait Lifting` is a type class that will gradually be explained later in this section. 
-`trait Lifting` declares the *lifting capabilities* of computation descriptions. 
+`trait Lifting` declares the *lifting capabilities* of computations. 
 
 Note that we were a bit sloppy by not showing `[M[+ _]]`.
 
@@ -1826,7 +1909,7 @@ The lifting capabilities of `Lifting` correspond to *applicatives* (a.k.a. *idio
 
 Note that, again, we were a bit sloppy by not showing `[M]`.
 
-#### **Explaining `trait ObjectLifting`**
+#### **Describing `trait ObjectLifting`**
 
 Consider
 
@@ -1842,7 +1925,7 @@ private[pdbp] trait ObjectLifting[M[+ _]] {
 
 `liftObject` is a function that *lifts* an *object* `z` to a *computation* with result `z`.
 
-#### **Explaining `trait FunctionLifting`**
+#### **Describing `trait FunctionLifting`**
 
 Consider
 
@@ -1858,7 +1941,7 @@ private[pdbp] trait FunctionLifting[M[+ _]] {
 
 `liftFunction` is a function that *lifts* an *object-level function* to a *computation-level function*.
 
-#### **Explaining `trait OperatorLifting`**
+#### **Describing `trait OperatorLifting`**
 
 Consider
 
@@ -1874,7 +1957,7 @@ private[pdbp] trait OperatorLifting[M[+ _]] {
 
 `liftOperator` is a function that *lifts* an *object-level operator* to a *computation-level operator*.
 
-### **Explaining `trait Lifting` revisited**
+### **Describing `trait Lifting` revisited**
 
 Consider
 
@@ -1926,7 +2009,7 @@ where
 
  - `` `(z&&y)=>(z&&y)` ``
 
-is the program you expect.
+is the function you expect.
 
 ```scala
 package pdbp.utils
@@ -1952,7 +2035,7 @@ where
 
  - `` `((z=>y)&&z)=>y` ``
 
-is the program you expect.
+is the function you expect.
 
 ```scala
 package pdbp.utils
@@ -1971,8 +2054,6 @@ object productUtils {
 
 }
 ```
-
-`liftFunction` can be defined in terms of `liftObject` and `liftedApply` (and therefore in terms of `liftObject` and `liftOperator`).
 
 Lifting does not stop with objects (`lift0`), unary functions (`lift1`) and binary operators (`lift2`).
 It is possible to define lifting for ternary operators (`lift3`) and so on ... .
@@ -2003,6 +2084,30 @@ object productUtils {
 
 }
 ```
+
+Note that `liftFunction` can be defined in terms of `liftObject` and `liftedApply` (and therefore in terms of `liftObject` and `liftOperator`).
+
+```scala
+package pdbp.computation
+
+// ...
+
+private[pdbp] trait Lifting[M[+ _]]
+    extends ObjectLifting[M]
+    with FunctionLifting[M]
+    with OperatorLifting[M] {
+
+    private[pdbp] override def liftFunction[Z, Y](
+      `z=>y`: Z => Y): M[Z] => M[Y] = { mz =>
+    liftedApply(liftObject(`z=>y`), mz)
+  }
+
+  // ...
+
+}
+```
+
+# UNTIL HERE
 
 ### **Defining lifting and programming capabilities in terms of computational capabilities**
 
@@ -2090,7 +2195,7 @@ private[pdbp] trait Computation[M[+ _]]
 
 ### **Defining computational capabilities in terms of programming and applying capabilities**
 
-#### **Explaining `trait Applying`**
+#### **Describing `trait Applying`**
 
 Consider 
 
@@ -2233,9 +2338,13 @@ object functionUtils {
 }
 ```
 
+## **Language level meanings**
+
+*Language level meanings* are defined using instances of `trait Program`. 
+
 ## **Active program instance**
 
-### **Introducing `activeTypes`**
+### **Describing `activeProgram`**
 
 The simplest computation instance (and corresponding program instance) one can probably think of is the *active* instance (we use active as opposed to *reactive*) as defined below
 
@@ -2303,7 +2412,7 @@ object functionUtils {
 
 ### **`implicit` active program instance**
 
-Let's move on and define an `implicit val` that we can use for dependecy injection by `import` later on.
+Let's move on and define an `implicit val` that we can use later on for doing dependecy injection by `import`.
 
 ```scala
 package pdbp.program.implicits.active
@@ -2317,28 +2426,31 @@ object implicits {
 }
 ```
 
-## **Running `factorialMain`**
+## **Running `mainFactorial` using an effectful `producer` and `consumer` and `activeProgram`**
 
-### **Defining`factorialObject`**
+### **Defining `factorialMain` to give a language level meaning to `mainFactorial`**
 
 Consider
 
 ```scala
-package objects.active
+package examples.objects.active.effectfulReadingAndWriting
 
 import pdbp.types.active.activeTypes._
 
 import pdbp.program.implicits.active.implicits
 import implicits.implicitActiveProgram
 
-import examples.program.Factorial
+import examples.mainPrograms.effectfulReadingAndWriting.FactorialMain
 
-object factorialObject extends Factorial[`=>A`]()
+object factorialMain extends FactorialMain[`=>A`]()
 ```
 
-The definition of `factorialObject` uses dependecy injection by `import` (`import implicits.implicitActiveProgram`) to bring an `implicit val` (`implicitActiveProgram`) in scope to `extend` the *type class* `class Factorial`.
+The definition of `factorialMain` uses dependecy injection by `import` (`import implicits.implicitActiveProgram`) to bring an `implicit val` (`implicitActiveProgram`) in scope to `extend` the *type class* `trait FactorialMain[>-->]` using `` FactorialMain[`=>A`] ``.
 
-### **Defining `factorialMain`**
+  - `factorialMain.factorialInstance.factorial` is an active, language level meaning of the description `factorial` in `trait Factorial`.
+  - `factorialMain.mainFactorial` is an active, language level meaning of the description `mainFactorial` in `trait FactorialMain`.
+
+### **Defining `FactorialMain`**
 
 Consider
 
@@ -2346,22 +2458,31 @@ Consider
 package examples.main.active
 
 import examples.objects.active.factorialObject
-import factorialObject.factorialMain
+import factorialObject.mainFactorial
 
 object FactorialMain {
 
   def main(args: Array[String]): Unit = {
 
-    factorialMain(())
+    mainFactorial(())
 
   }
 
 }
 ```
 
-The definition of `FactorialMain` uses dependecy injection by `import` (`import factorialObject.factorialMain`) to bring `factorialMain` in scope.
+The definition of `FactorialMain` uses dependecy injection by `import` (`import factorialObject.mainFactorial`) to bring `mainFactorial` in scope.
 
-### **Running `factorialMain` using `activeProgram`**
+`mainFactorial` has type 
+
+  - `` Unit `=>A` Unit ``, which is type
+  - `Unit => Active[Unit]`, which is type
+  - `Unit => Unit`
+
+It suffuces to evaluate `mainFactorial(())` to run `mainFactorial`.
+
+
+### **Running `mainFactorial` using `activeProgram`**
 
 Ok, so let's run our program.
 
@@ -2396,8 +2517,18 @@ java.lang.StackOverflowError
 ```
 
 We have a problem here. 
-The active program instance *is not stack safe*. 
-The good news is that the active instance is just one way to define a (in this case *language level*) *meaning* for the factorial *description*.
+The language level meaning `factorialMain.factorialInstance.factorial` above of the `factorial` description is *not tail recursive*. 
+  - it uses the *stack* which overflows for the argument `1000`.
+ 
+The good news is that it is just one language level meaning of that description.
+
+The language level meaning `factorialMain.factorialInstance.factorial` above should (and will) be replaced by a *tail recursive* one. 
+  - it uses the *heap* which does not run out of memory for the argument `1000`.
+
+## **Library level meanings**
+
+*Language level meanings* are defined using *natural transformations*.
+
 
 # **Appendices**
 

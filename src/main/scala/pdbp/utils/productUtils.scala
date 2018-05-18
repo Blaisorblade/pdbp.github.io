@@ -42,6 +42,6 @@ object productUtils {
   def `(z=>x)=>(z&&y)=>(x&&y)`[Z, Y, X]: (Z => X) => (Z && Y) => (X && Y) = {
     `z=>x` => (z, y) =>
       (`z=>x`(z), y)
-  }      
+  }
 
 }

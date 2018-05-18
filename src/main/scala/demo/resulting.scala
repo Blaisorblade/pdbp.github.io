@@ -1,4 +1,4 @@
-package examples.objects.active.effectfulReadingAndWriting
+package demo
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,15 +11,8 @@ package examples.objects.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.activeTypes._
+object resulting {
 
-import pdbp.program.implicits.active.implicits
-import implicits.implicitActiveProgram
+  def result[Z]: Z => Z = identity
 
-import examples.programs.FactorialTrait
-
-import examples.programs.effectfulReadingAndWriting.FactorialMainTrait
-
-object factorialMainObject
-    extends FactorialMainTrait[`=>A`]()
-    with FactorialTrait[`=>A`]()
+}

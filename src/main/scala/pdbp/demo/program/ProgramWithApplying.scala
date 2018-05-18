@@ -21,7 +21,7 @@ import pdbp.demo.types.kleisli.kleisliComputationType._
 
 private[pdbp] trait ProgramWithApplying[>-->[- _, + _]]
     extends Program[>-->]
-    with Applying[>-->] 
+    with Applying[>-->]
     with Resulting[Kleisli[>-->]]
     with Binding[Kleisli[>-->]] {
 
@@ -29,9 +29,8 @@ private[pdbp] trait ProgramWithApplying[>-->[- _, + _]]
 
   override private[pdbp] def result[Z]: Z => M[Z] =
     `z=>(u>-->z)`
-      
+
   override private[pdbp] def bind[Z, Y](mz: M[Z], `z=>my`: => Z => M[Y]): M[Y] =
     compose(mz, compose(product(`z>-->u`, function(`z=>my`)), apply))
 
 }
-

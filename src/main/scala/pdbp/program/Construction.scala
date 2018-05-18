@@ -49,7 +49,7 @@ object constructionOperators {
     // import implicitly._
 
     val implicitlyConstruction = implicitly[Construction[>-->]]
-    import implicitlyConstruction._  
+    import implicitlyConstruction._
 
     def &[ZZ <: Z, X](`zz>-->x`: => ZZ >--> X) =
       product(`z>-->y`, `zz>-->x`)

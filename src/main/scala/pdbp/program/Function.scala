@@ -27,14 +27,14 @@ trait Function[>-->[- _, + _]] {
     function(`z=>z`)
 
   def `z>-->u`[Z]: Z >--> Unit =
-    function(`z=>u`)  
+    function(`z=>u`)
 
   def `z=>(y>-->z)`[Z, Y]: Z => (Y >--> Z) = { z =>
     function(`z=>(y=>z)`(z))
-  }   
+  }
 
   def `z=>(u>-->z)`[Z]: Z => (Unit >--> Z) =
-    `z=>(y>-->z)`[Z, Unit]     
+    `z=>(y>-->z)`[Z, Unit]
 
   def `(y&&x)>-->(y&&x)`[Y, X]: (Y && X) >--> (Y && X) =
     function(`(y&&x)=>(y&&x)`)
