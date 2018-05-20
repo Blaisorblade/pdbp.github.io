@@ -39,9 +39,11 @@ object productUtils {
     `z=>y`(z)
   }
 
-  def `(z=>x)=>(z&&y)=>(x&&y)`[Z, Y, X]: (Z => X) => (Z && Y) => (X && Y) = {
-    `z=>x` => (z, y) =>
-      (`z=>x`(z), y)
+  def `((mz&&my)=>m(z&&y)))=>((mz&&my)&&mx)=>m(z&&y)&&mx`[M[+ _], Z, Y, X]
+    : (((M[Z] && M[Y]) => M[Z && Y])) => (
+        M[Z] && M[Y] && M[X]) => M[Z && Y] && M[X] = {
+    `(mz&&my)=>m(z&&y)` => (`mz&&my`, mx) =>
+      (`(mz&&my)=>m(z&&y)`(`mz&&my`), mx)
   }
 
 }

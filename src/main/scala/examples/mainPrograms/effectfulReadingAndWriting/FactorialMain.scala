@@ -35,9 +35,9 @@ trait FactorialMain[>-->[- _, + _]: Program] {
   private val consumer: BigInt >--> Unit =
     effectfulWriteToConsole("the factorial value of the integer is")
 
-  private val factorialInstance = new Factorial[>-->]
+  private object factorialObject extends Factorial[>-->]
 
-  import factorialInstance.factorial
+  import factorialObject.factorial
 
   val mainFactorial: Unit >--> Unit =
     producer >-->

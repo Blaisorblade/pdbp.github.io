@@ -13,6 +13,10 @@ package pdbp.computation
 
 private[pdbp] trait FunctionLifting[M[+ _]] {
 
-  private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y]
+  private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y] =
+    lift1(`z=>y`)
+
+  private[pdbp] def lift1[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y] =
+    lift1(`z=>y`)
 
 }

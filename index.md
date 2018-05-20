@@ -1615,9 +1615,9 @@ trait FactorialMain[>-->[- _, + _]: Program] {
   private val consumer: BigInt >--> Unit =
     effectfulWriteToConsole("the factorial value of the integer is")
 
-  private val factorialInstance = new Factorial[>-->]
+  private object factorialObject extends Factorial[>-->]
 
-  import factorialInstance.factorial
+  import factorialObject.factorial
 
   val mainFactorial: Unit >--> Unit =
     producer >-->
@@ -1918,12 +1918,16 @@ package pdbp.computation
 
 private[pdbp] trait ObjectLifting[M[+ _]] {
 
-  private[pdbp] def liftObject[Z](z: Z): M[Z]
+  private[pdbp] def liftObject[Z](z: Z): M[Z] =
+    lift0(z)
+
+  private[pdbp] def lift0[Z](z: Z): M[Z] =
+    liftObject(z)
 
 }
 ```
 
-`liftObject` is a function that *lifts* an *object* `z` to a *computation* with result `z`.
+`liftObject` and it's alias `lift0` are functions that *lift* an *object* `z` to a *computation* with result `z`.
 
 #### **Describing `trait FunctionLifting`**
 
@@ -1934,12 +1938,16 @@ package pdbp.computation
 
 private[pdbp] trait FunctionLifting[M[+ _]] {
 
-  private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y]
+  private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y] =
+    lift1(`z=>y`)
+
+  private[pdbp] def lift1[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y] =
+    lift1(`z=>y`)
 
 }
 ```
 
-`liftFunction` is a function that *lifts* an *object-level function* to a *computation-level function*.
+`liftFunction` and it's alias `lift1` are functions that *lift* an *object-level function* to a *computation-level function*.
 
 #### **Describing `trait OperatorLifting`**
 
@@ -1948,14 +1956,22 @@ Consider
 ```scala
 import pdbp.types.product.productType._
 
+import pdbp.types.product.productType._
+
 private[pdbp] trait OperatorLifting[M[+ _]] {
 
   private[pdbp] def liftOperator[Z, Y, X](
-      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X]
+      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] =
+    lift2(`(z&&y)=>x`)
+
+  private[pdbp] def lift2[Z, Y, X](
+      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] =
+    liftOperator(`(z&&y)=>x`)
+
 }
 ```
 
-`liftOperator` is a function that *lifts* an *object-level operator* to a *computation-level operator*.
+`liftOperator` and it's alias `lift2` are functions that *lift* an *object-level operator* to a *computation-level operator*.
 
 ### **Describing `trait Lifting` revisited**
 
@@ -1979,24 +1995,17 @@ private[pdbp] trait Lifting[M[+ _]]
   private[pdbp] def liftedApply[Z, Y]: (M[Z => Y] && M[Z]) => M[Y] =
     liftOperator(`((z=>y)&&z)=>y`)
 
-  private[pdbp] override def liftFunction[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y] =
-    liftedApply(liftObject(`z=>y`), _)
-
-  private[pdbp] def lift0[Z](z: Z) =
-    liftObject(z)
-
-  private[pdbp] def lift1[Z, Y](z: Z)(`z=>y`: Z => Y): M[Z] => M[Y] =
-    liftFunction(`z=>y`)
-
-  private[pdbp] def lift2[Z, Y, X](
-      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] =
-    liftOperator(`(z&&y)=>x`)  
-
-  private[pdbp] def lift3[Z, Y, X, W](`(z&&y&&x)=>w`: (Z && Y && X) => W)
-    : (M[Z] && M[Y] && M[X]) => M[W] =
-    `(z=>x)=>(z&&y)=>(x&&y)`(liftedAnd) andThen liftOperator(`(z&&y&&x)=>w`)
+  private[pdbp] def lift3[Z, Y, X, W](
+      `(z&&y&&x)=>w`: (Z && Y && X) => W): (M[Z] && M[Y] && M[X]) => M[W] =
+    `((mz&&my)=>m(z&&y)))=>((mz&&my)&&mx)=>m(z&&y)&&mx`(liftedAnd) andThen liftOperator(
+      `(z&&y&&x)=>w`)
 
   // ...
+
+  private[pdbp] override def liftFunction[Z, Y](
+      `z=>y`: Z => Y): M[Z] => M[Y] = { mz =>
+    liftedApply(liftObject(`z=>y`), mz)
+  }  
 
 }
 ```
@@ -2056,13 +2065,13 @@ object productUtils {
 ```
 
 Lifting does not stop with objects (`lift0`), unary functions (`lift1`) and binary operators (`lift2`).
-It is possible to define lifting for ternary operators (`lift3`) and so on ... .
+It is possible to define lifting for ternary operators and so on ... .
 
   - `lift3` is defined in terms of `liftOperator` and `liftedAnd`
 
 where
 
- - `` `(z=>x)=>(z&&y)=>(x&&y)` ``
+ - `` `((mz&&my)=>m(z&&y)))=>((mz&&my)&&mx)=>m(z&&y)&&mx` ``
 
 is the program you expect.
 
@@ -2075,9 +2084,11 @@ object productUtils {
 
   // ...
 
-  def `(z=>x)=>(z&&y)=>(x&&y)`[Z, Y, X]: (Z => X) => (Z && Y) => (X && Y) = {
-    `z=>x` => (z, y) =>
-      (`z=>x`(z), y)
+  def `((mz&&my)=>m(z&&y)))=>((mz&&my)&&mx)=>m(z&&y)&&mx`[M[+ _], Z, Y, X]
+    : (((M[Z] && M[Y]) => M[Z && Y])) => (
+        M[Z] && M[Y] && M[X]) => M[Z && Y] && M[X] = {
+    `(mz&&my)=>m(z&&y)` => (`mz&&my`, mx) =>
+      (`(mz&&my)=>m(z&&y)`(`mz&&my`), mx)
   }
 
   // ...     
@@ -2085,7 +2096,8 @@ object productUtils {
 }
 ```
 
-Note that `liftFunction` can be defined in terms of `liftObject` and `liftedApply` (and therefore in terms of `liftObject` and `liftOperator`).
+Note that `liftFunction` can be defined in terms of `liftObject` and `liftedApply`.
+
 
 ```scala
 package pdbp.computation
@@ -2097,23 +2109,24 @@ private[pdbp] trait Lifting[M[+ _]]
     with FunctionLifting[M]
     with OperatorLifting[M] {
 
-    private[pdbp] override def liftFunction[Z, Y](
+  // ...
+  
+  private[pdbp] override def liftFunction[Z, Y](
       `z=>y`: Z => Y): M[Z] => M[Y] = { mz =>
     liftedApply(liftObject(`z=>y`), mz)
   }
 
-  // ...
-
 }
 ```
 
-# UNTIL HERE
+This implies that `liftFunction` can be defined in terms of `liftObject` and `liftOperator`,
+which implies that `lift1` can be defined in terms of `lift0` and `lift2`.
 
 ### **Defining lifting and programming capabilities in terms of computational capabilities**
 
 #### **Defining lifting capabilities in terms of computational capabilities**
 
-The lifting capabilities `liftObject`, `liftFunction` and `liftOperator` can be defined in terms of the computational capabilities `bind` and `result`.
+The lifting capabilities `lift0`, `lift1`, `lift2`, `lift3`, ... , can be defined in terms of the computational capabilities `bind` and `result`.
 
 ```scala
 package pdbp.computation
@@ -2129,17 +2142,25 @@ private[pdbp] trait Computation[M[+ _]]
     with Sequencing[M]
     with Program[Kleisli[M]] {
 
-  override private[pdbp] def liftObject[Z](z: Z): M[Z] =
+  override private[pdbp] def lift0[Z](z: Z): M[Z] =
     result(z)
 
-  override private[pdbp] def liftFunction[Z, Y](
-      `z=>y`: Z => Y): M[Z] => M[Y] = { mz =>
-    bind(mz, z => result(`z=>y`(z)))
+  override private[pdbp] def lift1[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y] = {
+    case mz =>
+      bind(mz, z => result(`z=>y`(z)))
   }
 
-  override private[pdbp] def liftOperator[Z, Y, X](
-      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] = { (mz, my) =>
-    bind(mz, z => bind(my, y => result(`(z&&y)=>x`(z, y))))
+  override private[pdbp] def lift2[Z, Y, X](
+      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] = {
+    case (mz, my) =>
+      bind(mz, z => bind(my, y => result(`(z&&y)=>x`(z, y))))
+  }
+
+  override private[pdbp] def lift3[Z, Y, X, W](
+      `(z&&y&&x)=>w`: (Z && Y && X) => W): (M[Z] && M[Y] && M[X]) => M[W] = {
+    case ((mz, my), mx) =>
+      bind(mz,
+           z => bind(my, y => bind(mx, x => result(`(z&&y&&x)=>w`((z, y), x)))))
   }
 
   // ...
@@ -2233,9 +2254,10 @@ private[pdbp] trait Computation[M[+ _]]
 
   // ...
 
-  private[pdbp] def apply[Z, Y]: (Z && (Z `=>M` Y)) `=>M` Y = { (z, `z=>my`) =>
-    `z=>my`(z)
-  }    
+  override private[pdbp] def apply[Z, Y]: (Z && (Z `=>M` Y)) `=>M` Y = {
+    (z, `z=>my`) =>
+      `z=>my`(z)
+  }   
 
 }
 ```
@@ -2255,6 +2277,7 @@ object kleisliComputationType {
 ```
 
 A computation of type `Kleisli[>-->]` is referred to as a *Kleisli computation*. 
+Think of it as a program without arguments.
 
 #### **Defining computational capabilities in terms of programming and applying capabilities**
 
@@ -2338,15 +2361,17 @@ object functionUtils {
 }
 ```
 
-## **Language level meanings**
+## **Language level meaning of programs**
 
-*Language level meanings* are defined using instances of `trait Program`. 
+So far we have *defined* program descriptions using the *declared* programming capabilities of `trait Program`.
 
-## **Active program instance**
+Program descriptions can be given a *language level meaning* by *defining* the programming capabilities of `trait Program` in a program `object`. 
+
+Not that the programming capabilities of `trait Program` can be defined by defining the computational capabilities of `trait Computation`in a computation `object`.
 
 ### **Describing `activeProgram`**
 
-The simplest computation instance (and corresponding program instance) one can probably think of is the *active* instance (we use active as opposed to *reactive*) as defined below
+The simplest computation `object` (and corresponding program `object`) one can probably think of is the *active* one (we use active as opposed to *reactive*) defined below
 
 ```scala
 package pdbp.program.instances.active
@@ -2372,7 +2397,7 @@ object activeProgram extends Computation[Active] with Program[`=>A`] {
 }
 ```
 
-where the types `Active` and `` `=>A` `` involved are defined as follows
+where the types `Active` and `` `=>A` `` are defined as follows
 
 ```scala
 package pdbp.types.active
@@ -2410,7 +2435,7 @@ object functionUtils {
 }
 ```
 
-### **`implicit` active program instance**
+### **Describing `implicitActiveProgram`**
 
 Let's move on and define an `implicit val` that we can use later on for doing dependecy injection by `import`.
 
@@ -2426,9 +2451,9 @@ object implicits {
 }
 ```
 
-## **Running `mainFactorial` using an effectful `producer` and `consumer` and `activeProgram`**
+## **Running main programs**
 
-### **Defining `factorialMain` to give a language level meaning to `mainFactorial`**
+### **Running `mainFactorial` using an effectful `producer` and `consumer` and `activeProgram`**
 
 Consider
 
@@ -2445,14 +2470,12 @@ import examples.mainPrograms.effectfulReadingAndWriting.FactorialMain
 object factorialMain extends FactorialMain[`=>A`]()
 ```
 
-The definition of `factorialMain` uses dependecy injection by `import` (`import implicits.implicitActiveProgram`) to bring an `implicit val` (`implicitActiveProgram`) in scope to `extend` the *type class* `trait FactorialMain[>-->]` using `` FactorialMain[`=>A`] ``.
+The definition of `factorialMain` uses dependecy injection by `import` (`import implicits.implicitActiveProgram`) to bring an `implicit val` (`implicitActiveProgram` in scope to `extend` the *type class* `FactorialMain[>-->]` using `` FactorialMain[`=>A`] ``.
 
-  - `factorialMain.factorialInstance.factorial` is an active, language level meaning of the description `factorial` in `trait Factorial`.
-  - `factorialMain.mainFactorial` is an active, language level meaning of the description `mainFactorial` in `trait FactorialMain`.
+  - `factorialMain.factorialObject.factorial` is an active, language level meaning of the program description `factorial` in `trait Factorial`.
+  - `factorialMain.mainFactorial` is an active, language level meaning of the main program description `mainFactorial` in `trait FactorialMain`.
 
-### **Defining `FactorialMain`**
-
-Consider
+We can now finally define `main` in `object FactorialMain`
 
 ```scala
 package examples.main.active
@@ -2473,18 +2496,16 @@ object FactorialMain {
 
 The definition of `FactorialMain` uses dependecy injection by `import` (`import factorialObject.mainFactorial`) to bring `mainFactorial` in scope.
 
-`mainFactorial` has type 
+Note that `mainFactorial` has
 
-  - `` Unit `=>A` Unit ``, which is type
-  - `Unit => Active[Unit]`, which is type
-  - `Unit => Unit`
+  - type `` Unit `=>A` Unit ``, which is
+  - type `Unit => Active[Unit]`, which is
+  - type `Unit => Unit`
 
 It suffuces to evaluate `mainFactorial(())` to run `mainFactorial`.
 
 
-### **Running `mainFactorial` using `activeProgram`**
-
-Ok, so let's run our program.
+Ok, so let's use `main` in `object FactorialMain`.
 
 Let's try `10`.
 
@@ -2517,18 +2538,20 @@ java.lang.StackOverflowError
 ```
 
 We have a problem here. 
-The language level meaning `factorialMain.factorialInstance.factorial` above of the `factorial` description is *not tail recursive*. 
-  - it uses the *stack* which overflows for the argument `1000`.
+
+The language level meaning `factorialMain.factorialObject.factorial` above of the `factorial` description is *not tail recursive*. 
+  - it is not stack safe: it uses the *stack* which overflows for the argument `1000`.
  
 The good news is that it is just one language level meaning of that description.
 
-The language level meaning `factorialMain.factorialInstance.factorial` above should (and will) be replaced by a *tail recursive* one. 
-  - it uses the *heap* which does not run out of memory for the argument `1000`.
+The language level meaning `factorialMain.factorialObject.factorial` above should (and will) be replaced by a *tail recursive* one. 
+  - it is stack safe: it uses the *heap* which does not run out of memory for the argument `1000`.
 
-## **Library level meanings**
+## **Library level meaning of programs**
 
-*Language level meanings* are defined using *natural transformations*.
+Language level meanings can be transformed to *library level meanings* using *natural transformations*.
 
+# UNTIL HERE
 
 # **Appendices**
 

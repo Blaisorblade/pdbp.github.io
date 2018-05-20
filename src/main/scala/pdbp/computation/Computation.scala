@@ -16,7 +16,6 @@ import pdbp.types.kleisli.kleisliProgramType.Kleisli
 import pdbp.types.product.productType._
 import pdbp.types.sum.sumType._
 
-// import pdbp.utils.productUtils._
 import pdbp.utils.sumUtils._
 
 import pdbp.program.Program
@@ -30,18 +29,28 @@ private[pdbp] trait Computation[M[+ _]]
     with Program[Kleisli[M]]
     with Applying[Kleisli[M]] {
 
-  override private[pdbp] def liftObject[Z](z: Z): M[Z] =
+  override private[pdbp] def lift0[Z](z: Z): M[Z] =
     result(z)
 
-  override private[pdbp] def liftFunction[Z, Y](
-      `z=>y`: Z => Y): M[Z] => M[Y] = { mz =>
-    bind(mz, z => result(`z=>y`(z)))
+  override private[pdbp] def lift1[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y] = {
+    case mz =>
+      bind(mz, z => result(`z=>y`(z)))
   }
 
-  override private[pdbp] def liftOperator[Z, Y, X](
-      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] = { (mz, my) =>
-    bind(mz, z => bind(my, y => result(`(z&&y)=>x`(z, y))))
+  override private[pdbp] def lift2[Z, Y, X](
+      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] = {
+    case (mz, my) =>
+      bind(mz, z => bind(my, y => result(`(z&&y)=>x`(z, y))))
   }
+
+  override private[pdbp] def lift3[Z, Y, X, W](
+      `(z&&y&&x)=>w`: (Z && Y && X) => W): (M[Z] && M[Y] && M[X]) => M[W] = {
+    case ((mz, my), mx) =>
+      bind(mz,
+           z => bind(my, y => bind(mx, x => result(`(z&&y&&x)=>w`((z, y), x)))))
+  }
+
+  // ...
 
   private type `=>M` = Kleisli[M]
 

@@ -13,6 +13,10 @@ package pdbp.computation
 
 private[pdbp] trait ObjectLifting[M[+ _]] {
 
-  private[pdbp] def liftObject[Z](z: Z): M[Z]
+  private[pdbp] def liftObject[Z](z: Z): M[Z] =
+    lift0(z)
+
+  private[pdbp] def lift0[Z](z: Z): M[Z] =
+    liftObject(z)
 
 }

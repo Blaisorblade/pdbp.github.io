@@ -16,6 +16,11 @@ import pdbp.types.product.productType._
 private[pdbp] trait OperatorLifting[M[+ _]] {
 
   private[pdbp] def liftOperator[Z, Y, X](
-      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X]
+      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] =
+    lift2(`(z&&y)=>x`)
+
+  private[pdbp] def lift2[Z, Y, X](
+      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] =
+    liftOperator(`(z&&y)=>x`)
 
 }
