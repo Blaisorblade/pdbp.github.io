@@ -24,8 +24,7 @@ trait MeaningOfActive[T[+ _]: Resulting] extends ComputationMeaning[Active, T] {
   override private[pdbp] val computationMeaning: Active `~C~>` T =
     new `~C~>` {
       override private[pdbp] def apply[Z](az: Active[Z]): T[Z] = {
-        val implicitlyResulting = implicitly[Resulting[T]]
-        import implicitlyResulting._
+        import implicitly._
         result(az)
       }
     }

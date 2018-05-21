@@ -2361,13 +2361,21 @@ object functionUtils {
 }
 ```
 
-## **Language level meaning of programs**
+## **Language level meaning**
+
+### **Language level meaning of programs**
 
 So far we have *defined* program descriptions using the *declared* programming capabilities of `trait Program`.
 
 Program descriptions can be given a *language level meaning* by *defining* the programming capabilities of `trait Program` in a program `object`. 
 
-Not that the programming capabilities of `trait Program` can be defined by defining the computational capabilities of `trait Computation`in a computation `object`.
+### **Language level meaning of computations**
+
+So far we have *defined* program descriptions using the *declared* programming capabilities of `trait Computation`.
+
+Computation descriptions can be given a *language level meaning* by *defining* the computational capabilities of `trait Computation` in a program `object`. 
+
+Note that the programming capabilities of `trait Program` can be defined by defining the computational capabilities of `trait Computation`in a computation `object`.
 
 ### **Describing `activeProgram`**
 
@@ -2451,7 +2459,7 @@ object implicits {
 }
 ```
 
-## **Running main programs**
+## **Running main programs (language level meaning)**
 
 ### **Running `mainFactorial` using an effectful `producer` and `consumer` and `activeProgram`**
 
@@ -2547,11 +2555,203 @@ The good news is that it is just one language level meaning of that description.
 The language level meaning `factorialMain.factorialObject.factorial` above should (and will) be replaced by a *tail recursive* one. 
   - it is stack safe: it uses the *heap* which does not run out of memory for the argument `1000`.
 
-## **Library level meaning of programs**
+## **Library level meaning**
 
-Language level meanings can be transformed to *library level meanings* using *natural transformations*.
+### **Library level meaning of programs**
 
-# UNTIL HERE
+Language level meanings of programs can be given a *library level meaning* using *program transformations*.
+
+```scala
+package pdbp.transformation.program
+
+trait `~P~>`[`>-F->`[- _, + _], `>-T->`[- _, + _]] {
+
+  def apply[Z, Y](`z>-f->y`: Z `>-F->` Y): Z `>-T->` Y
+
+}
+```
+
+as follows
+
+```scala
+package pdbp.program.meaning
+
+import pdbp.program.Program
+
+import pdbp.transformation.program.`~P~>`
+
+trait ProgramMeaning[`>-FP->`[- _, + _]: Program, `>-T->`[- _, + _]] {
+
+  val programMeaning: `>-FP->` `~P~>` `>-T->`
+
+}
+```
+
+### **Library level meaning of computations**
+
+Language level meanings of computations can be given a *library level meaning* using *computation transformations*.
+
+```scala
+package pdbp.transformation.computation
+
+private[pdbp] trait `~C~>`[F[+ _], T[+ _]] {
+
+  private[pdbp] def apply[Z](fz: F[Z]): T[Z]
+
+}
+```
+
+as follows
+
+```scala
+package pdbp.computation.meaning
+
+import pdbp.types.kleisli.kleisliProgramType._
+
+import pdbp.transformation.computation.`~C~>`
+
+import pdbp.computation.Computation
+
+import pdbp.program.meaning.ProgramMeaning
+
+private[pdbp] trait ComputationMeaning[FM[+ _]: Computation, T[+ _]]
+    extends ProgramMeaning[Kleisli[FM], Kleisli[T]] {
+
+  private[pdbp] val computationMeaning: FM `~C~>` T
+
+  // ...
+
+}
+```
+
+#### **Defining library level meaning of programs in terms of library level meaning of computations**
+
+The library level meaning of programs `programMeaning` can be defined in terms of the library level meaning of computations `computationMeaning`.
+
+```scala
+package pdbp.computation.meaning
+
+// ...
+
+import pdbp.transformation.program.`~P~>`
+
+// ...
+
+private[pdbp] trait ComputationMeaning[FM[+ _]: Computation, T[+ _]]
+    extends ProgramMeaning[Kleisli[FM], Kleisli[T]] {
+
+  // ...
+
+  private type `=>FM` = Kleisli[FM]
+
+  private type `=>T` = Kleisli[T]
+
+  override val programMeaning: `=>FM` `~P~>` `=>T` = new `~P~>` {
+    override def apply[Z, Y](`z=>fmy`: Z `=>FM` Y) = { z =>
+      computationMeaning(`z=>fmy`(z))
+    }
+  }
+
+}
+```
+
+### **Describing `activeMeaningOfActive`**
+
+The simplest computation meaning `object` (and corresponding program meaning `object`) one can probably think of is the *active meaning of active* one defined below
+
+```scala
+package pdbp.computation.meaning.instances.ofActive.active
+
+import pdbp.types.active.activeTypes._
+
+import pdbp.program.implicits.active.implicits.implicitActiveProgram
+
+import pdbp.program.meaning.ProgramMeaning
+
+import pdbp.computation.meaning.ComputationMeaning
+
+import pdbp.computation.meaning.instances.ofActive.MeaningOfActive
+
+object activeMeaningOfActive
+    extends MeaningOfActive[Active]()
+    with ComputationMeaning[Active, Active]()
+    with ProgramMeaning[`=>A`, `=>A`]()
+```
+
+where `MeaningOfActive` defines a computation meaning of `Active` for any type constructor `T` with resulting capability.
+
+```scala
+package pdbp.computation.meaning.instances.ofActive
+
+import pdbp.types.active.activeTypes._
+
+import pdbp.computation.Resulting
+
+import pdbp.transformation.computation.`~C~>`
+
+import pdbp.computation.meaning.ComputationMeaning
+
+trait MeaningOfActive[T[+ _]: Resulting] extends ComputationMeaning[Active, T] {
+
+  override private[pdbp] val computationMeaning: Active `~C~>` T =
+    new `~C~>` {
+      override private[pdbp] def apply[Z](az: Active[Z]): T[Z] = {
+        import implicitly._
+        result(az)
+      }
+    }
+
+}
+```
+
+## **Running main programs (library level meaning)**
+
+### **Running `mainFactorial` using an effectful `producer` and `consumer`, `activeProgram` and `activeMeaningOfActive`**
+
+We can now finally define `main` in `object FactorialMain`
+
+```scala
+package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
+
+import examples.objects.active.effectfulReadingAndWriting.factorialMain
+import factorialMain.mainFactorial
+
+import pdbp.computation.meaning.instances.ofActive.active.activeMeaningOfActive
+import activeMeaningOfActive.programMeaning
+
+object FactorialMain {
+
+  def main(args: Array[String]): Unit = {
+
+    programMeaning(mainFactorial)(())
+
+  }
+
+}
+```
+
+The definition of `FactorialMain` also uses dependecy injection by `import` (`import activeMeaningOfActive.programMeaning`) to bring `programMeaning` in scope.
+
+Note that `programMeaning(mainFactorial)` has
+
+  - type `` Unit `=>A` Unit ``, which is
+  - type `Unit => Active[Unit]`, which is
+  - type `Unit => Unit`
+
+It suffuces to evaluate `programMeaning(mainFactorial)(())` to run `mainFactorial`.
+
+
+Ok, so let's use `main` in `object FactorialMain`.
+
+Let's try `10`.
+
+```scala
+[info] Running examples.main.meaning.ofActive.active.effectfulReadingAndWriting.FactorialMain
+please type an integer
+10
+the factorial value of the integer is
+3628800
+```
 
 # **Appendices**
 

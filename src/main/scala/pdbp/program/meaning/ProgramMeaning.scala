@@ -15,8 +15,8 @@ import pdbp.program.Program
 
 import pdbp.transformation.program.`~P~>`
 
-trait ProgramMeaning[`>-fp->`[- _, + _]: Program, `>-t->`[- _, + _]] {
+trait ProgramMeaning[`>-FP->`[- _, + _]: Program, `>-T->`[- _, + _]] {
 
-  val programMeaning: `>-fp->` `~P~>` `>-t->`
+  val programMeaning: `>-FP->` `~P~>` `>-T->`
 
 }
