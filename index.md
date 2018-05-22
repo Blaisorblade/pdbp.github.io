@@ -2478,7 +2478,10 @@ import examples.mainPrograms.effectfulReadingAndWriting.FactorialMain
 object factorialMain extends FactorialMain[`=>A`]()
 ```
 
-The definition of `factorialMain` uses dependecy injection by `import` (`import implicits.implicitActiveProgram`) to bring an `implicit val` (`implicitActiveProgram` in scope to `extend` the *type class* `FactorialMain[>-->]` using `` FactorialMain[`=>A`] ``.
+The definition of `factorialMain` uses dependecy injection by `import` 
+  - `import implicits.implicitActiveProgram` to bring an `implicit val` (`implicitActiveProgram` in scope to `extend` the *type class* `FactorialMain[>-->]` using `` FactorialMain[`=>A`] ``.
+
+Not that
 
   - `factorialMain.factorialObject.factorial` is an active, language level meaning of the program description `factorial` in `trait Factorial`.
   - `factorialMain.mainFactorial` is an active, language level meaning of the main program description `mainFactorial` in `trait FactorialMain`.
@@ -2502,7 +2505,8 @@ object FactorialMain {
 }
 ```
 
-The definition of `FactorialMain` uses dependecy injection by `import` (`import factorialObject.mainFactorial`) to bring `mainFactorial` in scope.
+The definition of `FactorialMain` uses dependecy injection by `import`
+ -`import factorialObject.mainFactorial`) to bring `mainFactorial` in scope.
 
 Note that `mainFactorial` has
 
@@ -2678,7 +2682,7 @@ object activeMeaningOfActive
     with ProgramMeaning[`=>A`, `=>A`]()
 ```
 
-where `MeaningOfActive` defines a computation meaning of `Active` for any type constructor `T` with resulting capability.
+where `MeaningOfActive` defines a computation meaning of `Active` for any type constructor `T` with the `Resulting` computational capability.
 
 ```scala
 package pdbp.computation.meaning.instances.ofActive
@@ -2706,7 +2710,7 @@ trait MeaningOfActive[T[+ _]: Resulting] extends ComputationMeaning[Active, T] {
 
 ## **Running main programs (library level meaning)**
 
-### **Running `mainFactorial` using an effectful `producer` and `consumer`, `activeProgram` and `activeMeaningOfActive`**
+### **Running `mainFactorial` using an effectful `producer` and `consumer` and`activeMeaningOfActive`**
 
 We can now finally define `main` in `object FactorialMain`
 
@@ -2730,7 +2734,9 @@ object FactorialMain {
 }
 ```
 
-The definition of `FactorialMain` also uses dependecy injection by `import` (`import activeMeaningOfActive.programMeaning`) to bring `programMeaning` in scope.
+The definition of `FactorialMain` also uses dependecy injection by `import` 
+ -`import factorialObject.mainFactorial`) to bring `mainFactorial` in scope,
+ - `import activeMeaningOfActive.programMeaning` to bring `programMeaning` in scope.
 
 Note that `programMeaning(mainFactorial)` has
 
