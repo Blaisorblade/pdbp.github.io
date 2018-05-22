@@ -15,27 +15,27 @@ import pdbp.types.product.productType._
 
 import pdbp.utils.productUtils._
 
-private[pdbp] trait Lifting[M[+ _]]
-    extends ObjectLifting[M]
-    with FunctionLifting[M]
-    with OperatorLifting[M] {
+private[pdbp] trait Lifting[C[+ _]]
+    extends ObjectLifting[C]
+    with FunctionLifting[C]
+    with OperatorLifting[C] {
 
-  private[pdbp] def liftedAnd[Z, Y]: (M[Z] && M[Y]) => M[Z && Y] =
+  private[pdbp] def liftedAnd[Z, Y]: (C[Z] && C[Y]) => C[Z && Y] =
     liftOperator(`(z&&y)=>(z&&y)`)
 
-  private[pdbp] def liftedApply[Z, Y]: (M[Z => Y] && M[Z]) => M[Y] =
+  private[pdbp] def liftedApply[Z, Y]: (C[Z => Y] && C[Z]) => C[Y] =
     liftOperator(`((z=>y)&&z)=>y`)
 
   private[pdbp] def lift3[Z, Y, X, W](
-      `(z&&y&&x)=>w`: (Z && Y && X) => W): (M[Z] && M[Y] && M[X]) => M[W] =
-    `((mz&&my)=>m(z&&y)))=>((mz&&my)&&mx)=>m(z&&y)&&mx`(liftedAnd) andThen liftOperator(
+      `(z&&y&&x)=>w`: (Z && Y && X) => W): (C[Z] && C[Y] && C[X]) => C[W] =
+    `((cz&&cy)=>c(z&&y)))=>((cz&&cy)&&cx)=>c(z&&y)&&cx`(liftedAnd) andThen liftOperator(
       `(z&&y&&x)=>w`)
 
   // ...
 
   private[pdbp] override def liftFunction[Z, Y](
-      `z=>y`: Z => Y): M[Z] => M[Y] = { mz =>
-    liftedApply(liftObject(`z=>y`), mz)
+      `z=>y`: Z => Y): C[Z] => C[Y] = { cz =>
+    liftedApply(liftObject(`z=>y`), cz)
   }  
 
 }

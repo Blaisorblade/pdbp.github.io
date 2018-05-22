@@ -11,8 +11,8 @@ package pdbp.computation
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-private[pdbp] trait Binding[M[+ _]] {
+private[pdbp] trait Binding[C[+ _]] {
 
-  private[pdbp] def bind[Z, Y](mz: M[Z], `z=>my`: => Z => M[Y]): M[Y]
+  private[pdbp] def bind[Z, Y](cz: C[Z], `z=>cy`: => Z => C[Y]): C[Y]
 
 }

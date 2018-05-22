@@ -11,12 +11,12 @@ package pdbp.computation
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-private[pdbp] trait FunctionLifting[M[+ _]] {
+private[pdbp] trait FunctionLifting[C[+ _]] {
 
-  private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y] =
+  private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): C[Z] => C[Y] =
     lift1(`z=>y`)
 
-  private[pdbp] def lift1[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y] =
+  private[pdbp] def lift1[Z, Y](`z=>y`: Z => Y): C[Z] => C[Y] =
     lift1(`z=>y`)
 
 }

@@ -39,11 +39,11 @@ object productUtils {
     `z=>y`(z)
   }
 
-  def `((mz&&my)=>m(z&&y)))=>((mz&&my)&&mx)=>m(z&&y)&&mx`[M[+ _], Z, Y, X]
-    : (((M[Z] && M[Y]) => M[Z && Y])) => (
-        M[Z] && M[Y] && M[X]) => M[Z && Y] && M[X] = {
-    `(mz&&my)=>m(z&&y)` => (`mz&&my`, mx) =>
-      (`(mz&&my)=>m(z&&y)`(`mz&&my`), mx)
+  def `((cz&&cy)=>c(z&&y)))=>((cz&&cy)&&cx)=>c(z&&y)&&cx`[C[+ _], Z, Y, X]
+    : (((C[Z] && C[Y]) => C[Z && Y])) => (
+        C[Z] && C[Y] && C[X]) => C[Z && Y] && C[X] = {
+    `(cz&&cy)=>c(z&&y)` => (`cz&&cy`, cx) =>
+      (`(cz&&cy)=>c(z&&y)`(`cz&&cy`), cx)
   }
 
 }

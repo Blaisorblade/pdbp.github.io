@@ -21,17 +21,17 @@ import pdbp.computation.Computation
 
 import pdbp.program.meaning.ProgramMeaning
 
-private[pdbp] trait ComputationMeaning[FM[+ _]: Computation, T[+ _]]
-    extends ProgramMeaning[Kleisli[FM], Kleisli[T]] {
+private[pdbp] trait ComputationMeaning[FC[+ _]: Computation, T[+ _]]
+    extends ProgramMeaning[Kleisli[FC], Kleisli[T]] {
 
-  private[pdbp] val computationMeaning: FM `~C~>` T
+  private[pdbp] val computationMeaning: FC `~C~>` T
 
-  private type `=>FM` = Kleisli[FM]
+  private type `=>FC` = Kleisli[FC]
 
   private type `=>T` = Kleisli[T]
 
-  override val programMeaning: `=>FM` `~P~>` `=>T` = new `~P~>` {
-    override def apply[Z, Y](`z=>fmy`: Z `=>FM` Y) = { z =>
+  override val programMeaning: `=>FC` `~P~>` `=>T` = new `~P~>` {
+    override def apply[Z, Y](`z=>fmy`: Z `=>FC` Y) = { z =>
       computationMeaning(`z=>fmy`(z))
     }
   }

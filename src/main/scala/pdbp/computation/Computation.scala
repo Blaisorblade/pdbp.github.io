@@ -21,61 +21,61 @@ import pdbp.utils.sumUtils._
 import pdbp.program.Program
 import pdbp.program.Applying
 
-private[pdbp] trait Computation[M[+ _]]
-    extends Resulting[M]
-    with Binding[M]
-    with Lifting[M]
-    with Sequencing[M]
-    with Program[Kleisli[M]]
-    with Applying[Kleisli[M]] {
+private[pdbp] trait Computation[C[+ _]]
+    extends Resulting[C]
+    with Binding[C]
+    with Lifting[C]
+    with Sequencing[C]
+    with Program[Kleisli[C]]
+    with Applying[Kleisli[C]] {
 
-  override private[pdbp] def lift0[Z](z: Z): M[Z] =
+  override private[pdbp] def lift0[Z](z: Z): C[Z] =
     result(z)
 
-  override private[pdbp] def lift1[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y] = {
-    case mz =>
-      bind(mz, z => result(`z=>y`(z)))
+  override private[pdbp] def lift1[Z, Y](`z=>y`: Z => Y): C[Z] => C[Y] = {
+    case cz =>
+      bind(cz, z => result(`z=>y`(z)))
   }
 
   override private[pdbp] def lift2[Z, Y, X](
-      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] = {
-    case (mz, my) =>
-      bind(mz, z => bind(my, y => result(`(z&&y)=>x`(z, y))))
+      `(z&&y)=>x`: (Z && Y) => X): (C[Z] && C[Y]) => C[X] = {
+    case (cz, cy) =>
+      bind(cz, z => bind(cy, y => result(`(z&&y)=>x`(z, y))))
   }
 
   override private[pdbp] def lift3[Z, Y, X, W](
-      `(z&&y&&x)=>w`: (Z && Y && X) => W): (M[Z] && M[Y] && M[X]) => M[W] = {
-    case ((mz, my), mx) =>
-      bind(mz,
-           z => bind(my, y => bind(mx, x => result(`(z&&y&&x)=>w`((z, y), x)))))
+      `(z&&y&&x)=>w`: (Z && Y && X) => W): (C[Z] && C[Y] && C[X]) => C[W] = {
+    case ((cz, cy), cx) =>
+      bind(cz,
+           z => bind(cy, y => bind(cx, x => result(`(z&&y&&x)=>w`((z, y), x)))))
   }
 
   // ...
 
-  private type `=>M` = Kleisli[M]
+  private type `=>C` = Kleisli[C]
 
-  override def function[Z, Y]: (Z => Y) => Z `=>M` Y = { `z=>y` => z =>
+  override def function[Z, Y]: (Z => Y) => Z `=>C` Y = { `z=>y` => z =>
     result(`z=>y`(z))
   }
 
-  override def compose[Z, Y, X](`z=>my`: Z `=>M` Y,
-                                `y=>mx`: => Y `=>M` X): Z `=>M` X = { z =>
-    bind(`z=>my`(z), `y=>mx`)
+  override def compose[Z, Y, X](`z=>cy`: Z `=>C` Y,
+                                `y=>cx`: => Y `=>C` X): Z `=>C` X = { z =>
+    bind(`z=>cy`(z), `y=>cx`)
   }
 
-  override def product[Z, Y, X](`z=>my`: Z `=>M` Y,
-                                `z=>mx`: => Z `=>M` X): Z `=>M` (Y && X) = {
+  override def product[Z, Y, X](`z=>cy`: Z `=>C` Y,
+                                `z=>cx`: => Z `=>C` X): Z `=>C` (Y && X) = {
     z =>
-      bind(`z=>my`(z), y => bind(`z=>mx`(z), x => result(y, x)))
+      bind(`z=>cy`(z), y => bind(`z=>cx`(z), x => result(y, x)))
   }
 
-  override def sum[Z, Y, X](`y=>mz`: => Y `=>M` Z,
-                            `x=>mz`: => X `=>M` Z): (Y || X) `=>M` Z =
-    foldSum(`y=>mz`, `x=>mz`)
+  override def sum[Z, Y, X](`y=>cz`: => Y `=>C` Z,
+                            `x=>cz`: => X `=>C` Z): (Y || X) `=>C` Z =
+    foldSum(`y=>cz`, `x=>cz`)
 
-  override private[pdbp] def apply[Z, Y]: (Z && (Z `=>M` Y)) `=>M` Y = {
-    (z, `z=>my`) =>
-      `z=>my`(z)
+  override private[pdbp] def apply[Z, Y]: (Z && (Z `=>C` Y)) `=>C` Y = {
+    (z, `z=>cy`) =>
+      `z=>cy`(z)
   }
 
 }

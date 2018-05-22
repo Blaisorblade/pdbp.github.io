@@ -188,11 +188,11 @@ package pdbp.computation
 
 import pdbp.program.Program
 
-private[pdbp] trait Computation[M[+ _]]
-    extends Resulting[M]
-    with Binding[M]
+private[pdbp] trait Computation[C[+ _]]
+    extends Resulting[C]
+    with Binding[C]
     // ...
-    with Program[[-Z, + Y] => Z => M[Y]]
+    with Program[[-Z, + Y] => Z => C[Y]]
 ```
 `trait Computation` closely resembles *monads*.
 
@@ -251,7 +251,7 @@ The `PDBP` library goes for programming monads in a pointfree style using Kleisl
 
 ### **Introducing `type Kleisli` for programs**
 
-The `with Program[[-Z, + Y] => Z => M[Y]]` part of `trait Computation`, which states that computations have more power of expression than programs, is a bit verbose.
+The `with Program[[-Z, + Y] => Z => C[Y]]` part of `trait Computation`, which states that computations have more power of expression than programs, is a bit verbose.
 
 Using the *type alias* `type Kleisli` below
 
@@ -260,7 +260,7 @@ package pdbp.types.kleisli
 
 object kleisliProgramType {
 
-  type Kleisli[M[+ _]] = [-Z, + Y] => Z => M[Y]
+  type Kleisli[C[+ _]] = [-Z, + Y] => Z => C[Y]
 
 }
 ```
@@ -274,14 +274,14 @@ import pdbp.types.kleisli.kleisliProgramType.Kleisli
 
 import pdbp.program.Program
 
-private[pdbp] trait Computation[M[+ _]]
-    extends Resulting[M]
-    with Binding[M]
+private[pdbp] trait Computation[C[+ _]]
+    extends Resulting[C]
+    with Binding[C]
     // ...
-    with Program[Kleisli[M]]
+    with Program[Kleisli[C]]
 ``` 
 
-A program of type `Kleisli[M]` is referred to as a *Kleisli program*. 
+A program of type `Kleisli[C]` is referred to as a *Kleisli program*. 
 
 #### **About functions and expressions (for those who are a bit impatient)**
 
@@ -1684,24 +1684,24 @@ import pdbp.types.kleisli.kleisliProgramType.Kleisli
 
 import pdbp.program.Program
 
-private[pdbp] trait Computation[M[+ _]]
-    extends Resulting[M]
-    with Binding[M]
-    with Lifting[M]
-    with Sequencing[M]
-    with Program[Kleisli[M]]
+private[pdbp] trait Computation[C[+ _]]
+    extends Resulting[C]
+    with Binding[C]
+    with Lifting[C]
+    with Sequencing[C]
+    with Program[Kleisli[C]]
 ```
 
 where
 
 ```scala
-private[pdbp] trait Resulting[M]
+private[pdbp] trait Resulting[C]
 
-private[pdbp] trait Binding[M]
+private[pdbp] trait Binding[C]
 
-private[pdbp] trait Lifting[M]
+private[pdbp] trait Lifting[C]
 
-private[pdbp] trait Sequencing[M]
+private[pdbp] trait Sequencing[C]
 ```
 
 belong to the same `package pdbp.computation`.
@@ -1711,19 +1711,19 @@ belong to the same `package pdbp.computation`.
 
 We often write *computation* instead of *computation description*.
 
-Note that we were a bit sloppy by not showing `[M[+ _]]`.
+Note that we were a bit sloppy by not showing `[C[+ _]]`.
 
 `trait Resulting`, `trait Binding` and `trait Lifting` will be explained later in this section. 
 `trait Sequencing` will be explained later in this document. 
 
-Note that, again, we were a bit sloppy by not showing `[M]`.
+Note that, again, we were a bit sloppy by not showing `[C]`.
 
 The computational capabilities of `Resulting` and `Binding` correspond to *monads*. 
 
-A computation is an `object` of type `M[Z]`, where
+A computation is an `object` of type `C[Z]`, where
 
- - `M` is a *unary type constructor*,
- - `Z` is the *return* (or *result*) type of `M`.
+ - `C` is a *unary type constructor*,
+ - `Z` is the *return* (or *result*) type of `C`.
 
 We write
 
@@ -1746,11 +1746,11 @@ It is also *simpler* (not necessarily *easier*, though) to define `Computation` 
 
 #### **Variance**
 
-Note that `M` is
+Note that `C` is
 
  - *covariant* in its result type.
 
-This *variance* property of `M` is related to two principles that are known as
+This *variance* property of `C` is related to two principles that are known as
 
  - the [*Liskov Substitution Principle*](https://en.wikipedia.org/wiki/Liskov_substitution_principle) which, roughly speaking, states, among others
    - *provide more*, 
@@ -1764,9 +1764,9 @@ Consider
 ```scala
 package pdbp.computation
 
-private[pdbp] trait Resulting[M[+ _]] {
+private[pdbp] trait Resulting[C[+ _]] {
 
-  private[pdbp] def result[Z]: Z => M[Z]
+  private[pdbp] def result[Z]: Z => C[Z]
 
 }
 ```
@@ -1781,22 +1781,22 @@ Consider
 ```scala
 package pdbp.computation
 
-private[pdbp] trait Binding[M[+ _]] {
+private[pdbp] trait Binding[C[+ _]] {
 
-  private[pdbp] def bind[Z, Y](mz: M[Z], `z=>my`: => Z => M[Y]): M[Y]
+  private[pdbp] def bind[Z, Y](cz: C[Z], `z=>cy`: => Z => C[Y]): C[Y]
 
 }
 ```
 
-Think of `` `z=>my` `` as a *computation execution continuation template* or, simply, *computation template*, and of `mz` as a *computation fragment* (a.k.a. *sub-computation*).
+Think of `` `z=>cy` `` as a *computation execution continuation template* or, simply, *computation template*, and of `cz` as a *computation fragment* (a.k.a. *sub-computation*).
 
 Translated to expressions:
 
-Think of `` `z=>my` `` as an *expression evaluation continuation template*, or, simply, *expression template*, and of `mz` as an *expression fragment* (a.k.a. *sub-expression*).
+Think of `` `z=>cy` `` as an *expression evaluation continuation template*, or, simply, *expression template*, and of `cz` as an *expression fragment* (a.k.a. *sub-expression*).
 
-`` bind(mz, `z=>my`) `` is function that *binds* `mz` to `z=>my`.
+`` bind(cz, `z=>cy`) `` is function that *binds* `cz` to `z=>cy`.
 
-If the computation `mz` yields a result of type Z, then that result serves as an argument for the subsequent function `z=>my` which transforms it to a computation that yields a result of type Y.
+If the computation `cz` yields a result of type Z, then that result serves as an argument for the subsequent function `z=>cy` which transforms it to a computation that yields a result of type Y.
 
 In what follows we also refer to computations `result(ez)` as *atomic computation fragments*. 
 In `PDBP` pure expressions are atomic computation building blocks. 
@@ -1880,20 +1880,20 @@ Consider
 ```scala
 package pdbp.computation
 
-private[pdbp] trait Lifting[M[+ _]]
-    extends ObjectLifting[M]
-    with FunctionLifting[M]
-    with OperatorLifting[M]
+private[pdbp] trait Lifting[C[+ _]]
+    extends ObjectLifting[C]
+    with FunctionLifting[C]
+    with OperatorLifting[C]
 ```
 
 where
 
 ```scala
-private[pdbp] trait ObjectLifting[M]
+private[pdbp] trait ObjectLifting[C]
 
-private[pdbp] trait FunctionLifting[M]
+private[pdbp] trait FunctionLifting[C]
 
-private[pdbp] trait OperatorLifting[M]
+private[pdbp] trait OperatorLifting[C]
 ```
 
 belong to the same `package pdbp.computation`.
@@ -1901,13 +1901,13 @@ belong to the same `package pdbp.computation`.
 `trait Lifting` is a type class that will gradually be explained later in this section. 
 `trait Lifting` declares the *lifting capabilities* of computations. 
 
-Note that we were a bit sloppy by not showing `[M[+ _]]`.
+Note that we were a bit sloppy by not showing `[C[+ _]]`.
 
 The lifting capabilities of `Lifting` correspond to *applicatives* (a.k.a. *idioms*).
 
 `trait ObjectLifting`, `trait FunctionLifting` and `trait OperatorLifting` will be explained later in this section. 
 
-Note that, again, we were a bit sloppy by not showing `[M]`.
+Note that, again, we were a bit sloppy by not showing `[C]`.
 
 #### **Describing `trait ObjectLifting`**
 
@@ -1916,12 +1916,12 @@ Consider
 ```scala
 package pdbp.computation
 
-private[pdbp] trait ObjectLifting[M[+ _]] {
+private[pdbp] trait ObjectLifting[C[+ _]] {
 
-  private[pdbp] def liftObject[Z](z: Z): M[Z] =
+  private[pdbp] def liftObject[Z](z: Z): C[Z] =
     lift0(z)
 
-  private[pdbp] def lift0[Z](z: Z): M[Z] =
+  private[pdbp] def lift0[Z](z: Z): C[Z] =
     liftObject(z)
 
 }
@@ -1936,12 +1936,12 @@ Consider
 ```scala
 package pdbp.computation
 
-private[pdbp] trait FunctionLifting[M[+ _]] {
+private[pdbp] trait FunctionLifting[C[+ _]] {
 
-  private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y] =
+  private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): C[Z] => C[Y] =
     lift1(`z=>y`)
 
-  private[pdbp] def lift1[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y] =
+  private[pdbp] def lift1[Z, Y](`z=>y`: Z => Y): C[Z] => C[Y] =
     lift1(`z=>y`)
 
 }
@@ -1958,14 +1958,14 @@ import pdbp.types.product.productType._
 
 import pdbp.types.product.productType._
 
-private[pdbp] trait OperatorLifting[M[+ _]] {
+private[pdbp] trait OperatorLifting[C[+ _]] {
 
   private[pdbp] def liftOperator[Z, Y, X](
-      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] =
+      `(z&&y)=>x`: (Z && Y) => X): (C[Z] && C[Y]) => C[X] =
     lift2(`(z&&y)=>x`)
 
   private[pdbp] def lift2[Z, Y, X](
-      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] =
+      `(z&&y)=>x`: (Z && Y) => X): (C[Z] && C[Y]) => C[X] =
     liftOperator(`(z&&y)=>x`)
 
 }
@@ -1984,27 +1984,27 @@ import pdbp.types.product.productType._
 
 import pdbp.utils.productUtils._
 
-private[pdbp] trait Lifting[M[+ _]]
-    extends ObjectLifting[M]
-    with FunctionLifting[M]
-    with OperatorLifting[M] {
+private[pdbp] trait Lifting[C[+ _]]
+    extends ObjectLifting[C]
+    with FunctionLifting[C]
+    with OperatorLifting[C] {
 
-  private[pdbp] def liftedAnd[Z, Y]: (M[Z] && M[Y]) => M[Z && Y] =
+  private[pdbp] def liftedAnd[Z, Y]: (C[Z] && C[Y]) => C[Z && Y] =
     liftOperator(`(z&&y)=>(z&&y)`)
 
-  private[pdbp] def liftedApply[Z, Y]: (M[Z => Y] && M[Z]) => M[Y] =
+  private[pdbp] def liftedApply[Z, Y]: (C[Z => Y] && C[Z]) => C[Y] =
     liftOperator(`((z=>y)&&z)=>y`)
 
   private[pdbp] def lift3[Z, Y, X, W](
-      `(z&&y&&x)=>w`: (Z && Y && X) => W): (M[Z] && M[Y] && M[X]) => M[W] =
-    `((mz&&my)=>m(z&&y)))=>((mz&&my)&&mx)=>m(z&&y)&&mx`(liftedAnd) andThen liftOperator(
+      `(z&&y&&x)=>w`: (Z && Y && X) => W): (C[Z] && C[Y] && C[X]) => C[W] =
+    `((cz&&cy)=>c(z&&y)))=>((cz&&cy)&&cx)=>c(z&&y)&&cx`(liftedAnd) andThen liftOperator(
       `(z&&y&&x)=>w`)
 
   // ...
 
   private[pdbp] override def liftFunction[Z, Y](
-      `z=>y`: Z => Y): M[Z] => M[Y] = { mz =>
-    liftedApply(liftObject(`z=>y`), mz)
+      `z=>y`: Z => Y): C[Z] => C[Y] = { cz =>
+    liftedApply(liftObject(`z=>y`), cz)
   }  
 
 }
@@ -2071,7 +2071,7 @@ It is possible to define lifting for ternary operators and so on ... .
 
 where
 
- - `` `((mz&&my)=>m(z&&y)))=>((mz&&my)&&mx)=>m(z&&y)&&mx` ``
+ - `` `((cz&&cy)=>c(z&&y)))=>((cz&&cy)&&cx)=>c(z&&y)&&cx` ``
 
 is the program you expect.
 
@@ -2084,11 +2084,11 @@ object productUtils {
 
   // ...
 
-  def `((mz&&my)=>m(z&&y)))=>((mz&&my)&&mx)=>m(z&&y)&&mx`[M[+ _], Z, Y, X]
-    : (((M[Z] && M[Y]) => M[Z && Y])) => (
-        M[Z] && M[Y] && M[X]) => M[Z && Y] && M[X] = {
-    `(mz&&my)=>m(z&&y)` => (`mz&&my`, mx) =>
-      (`(mz&&my)=>m(z&&y)`(`mz&&my`), mx)
+  def `((cz&&cy)=>c(z&&y)))=>((cz&&cy)&&cx)=>c(z&&y)&&cx`[C[+ _], Z, Y, X]
+    : (((C[Z] && C[Y]) => C[Z && Y])) => (
+        C[Z] && C[Y] && C[X]) => C[Z && Y] && C[X] = {
+    `(cz&&cy)=>c(z&&y)` => (`cz&&cy`, cx) =>
+      (`(cz&&cy)=>c(z&&y)`(`cz&&cy`), cx)
   }
 
   // ...     
@@ -2104,16 +2104,16 @@ package pdbp.computation
 
 // ...
 
-private[pdbp] trait Lifting[M[+ _]]
-    extends ObjectLifting[M]
-    with FunctionLifting[M]
-    with OperatorLifting[M] {
+private[pdbp] trait Lifting[C[+ _]]
+    extends ObjectLifting[C]
+    with FunctionLifting[C]
+    with OperatorLifting[C] {
 
   // ...
   
   private[pdbp] override def liftFunction[Z, Y](
-      `z=>y`: Z => Y): M[Z] => M[Y] = { mz =>
-    liftedApply(liftObject(`z=>y`), mz)
+      `z=>y`: Z => Y): C[Z] => C[Y] = { cz =>
+    liftedApply(liftObject(`z=>y`), cz)
   }
 
 }
@@ -2135,32 +2135,32 @@ import pdbp.types.product.productType._
 
 // ...
 
-private[pdbp] trait Computation[M[+ _]]
-    extends Resulting[M]
-    with Binding[M]
-    with Lifting[M]
-    with Sequencing[M]
-    with Program[Kleisli[M]] {
+private[pdbp] trait Computation[C[+ _]]
+    extends Resulting[C]
+    with Binding[C]
+    with Lifting[C]
+    with Sequencing[C]
+    with Program[Kleisli[C]] {
 
-  override private[pdbp] def lift0[Z](z: Z): M[Z] =
+  override private[pdbp] def lift0[Z](z: Z): C[Z] =
     result(z)
 
-  override private[pdbp] def lift1[Z, Y](`z=>y`: Z => Y): M[Z] => M[Y] = {
-    case mz =>
-      bind(mz, z => result(`z=>y`(z)))
+  override private[pdbp] def lift1[Z, Y](`z=>y`: Z => Y): C[Z] => C[Y] = {
+    case cz =>
+      bind(cz, z => result(`z=>y`(z)))
   }
 
   override private[pdbp] def lift2[Z, Y, X](
-      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] = {
-    case (mz, my) =>
-      bind(mz, z => bind(my, y => result(`(z&&y)=>x`(z, y))))
+      `(z&&y)=>x`: (Z && Y) => X): (C[Z] && C[Y]) => C[X] = {
+    case (cz, cy) =>
+      bind(cz, z => bind(cy, y => result(`(z&&y)=>x`(z, y))))
   }
 
   override private[pdbp] def lift3[Z, Y, X, W](
-      `(z&&y&&x)=>w`: (Z && Y && X) => W): (M[Z] && M[Y] && M[X]) => M[W] = {
-    case ((mz, my), mx) =>
-      bind(mz,
-           z => bind(my, y => bind(mx, x => result(`(z&&y&&x)=>w`((z, y), x)))))
+      `(z&&y&&x)=>w`: (Z && Y && X) => W): (C[Z] && C[Y] && C[X]) => C[W] = {
+    case ((cz, cy), cx) =>
+      bind(cz,
+           z => bind(cy, y => bind(cx, x => result(`(z&&y&&x)=>w`((z, y), x)))))
   }
 
   // ...
@@ -2183,33 +2183,33 @@ import pdbp.utils.sumUtils._
 
 // ...
 
-private[pdbp] trait Computation[M[+ _]]
-    extends Resulting[M]
-    with Binding[M]
-    with Lifting[M]
-    with Sequencing[M]
-    with Program[Kleisli[M]] {
+private[pdbp] trait Computation[C[+ _]]
+    extends Resulting[C]
+    with Binding[C]
+    with Lifting[C]
+    with Sequencing[C]
+    with Program[Kleisli[C]] {
 
-  private type `=>M` = Kleisli[M]
+  private type `=>C` = Kleisli[C]
 
-  override def function[Z, Y]: (Z => Y) => Z `=>M` Y = { `z=>y` => z =>
+  override def function[Z, Y]: (Z => Y) => Z `=>C` Y = { `z=>y` => z =>
     result(`z=>y`(z))
   }
 
-  override def compose[Z, Y, X](`z=>my`: Z `=>M` Y,
-                                `y=>mx`: => Y `=>M` X): Z `=>M` X = { z =>
-    bind(`z=>my`(z), `y=>mx`)
+  override def compose[Z, Y, X](`z=>cy`: Z `=>C` Y,
+                                `y=>cx`: => Y `=>C` X): Z `=>C` X = { z =>
+    bind(`z=>cy`(z), `y=>cx`)
   }
 
-  override def product[Z, Y, X](`z=>my`: Z `=>M` Y,
-                                `z=>mx`: => Z `=>M` X): Z `=>M` (Y && X) = {
+  override def product[Z, Y, X](`z=>cy`: Z `=>C` Y,
+                                `z=>cx`: => Z `=>C` X): Z `=>C` (Y && X) = {
     z =>
-      bind(`z=>my`(z), y => bind(`z=>mx`(z), x => result(y, x)))
+      bind(`z=>cy`(z), y => bind(`z=>cx`(z), x => result(y, x)))
   }
 
-  override def sum[Z, Y, X](`y=>mz`: => Y `=>M` Z,
-                            `x=>mz`: => X `=>M` Z): (Y || X) `=>M` Z =
-    foldSum(`y=>mz`, `x=>mz`)
+  override def sum[Z, Y, X](`y=>cz`: => Y `=>C` Z,
+                            `x=>cz`: => X `=>C` Z): (Y || X) `=>C` Z =
+    foldSum(`y=>cz`, `x=>cz`)
 
 }
 ```
@@ -2244,19 +2244,19 @@ package pdbp.computation
 
 // ...
 
-private[pdbp] trait Computation[M[+ _]]
-    extends Resulting[M]
-    with Binding[M]
-    with Lifting[M]
-    with Sequencing[M]
-    with Program[Kleisli[M]] 
-    with Applying[Kleisli[M]] {
+private[pdbp] trait Computation[C[+ _]]
+    extends Resulting[C]
+    with Binding[C]
+    with Lifting[C]
+    with Sequencing[C]
+    with Program[Kleisli[C]] 
+    with Applying[Kleisli[C]] {
 
   // ...
 
-  override private[pdbp] def apply[Z, Y]: (Z && (Z `=>M` Y)) `=>M` Y = {
-    (z, `z=>my`) =>
-      `z=>my`(z)
+  override private[pdbp] def apply[Z, Y]: (Z && (Z `=>C` Y)) `=>C` Y = {
+    (z, `z=>cy`) =>
+      `z=>cy`(z)
   }   
 
 }
@@ -2299,13 +2299,13 @@ private[pdbp] trait ProgramWithApplying[>-->[- _, + _]]
     with Resulting[Kleisli[>-->]]
     with Binding[Kleisli[>-->]] {
 
-  private type M = Kleisli[>-->]
+  private type C = Kleisli[>-->]
 
-  override private[pdbp] def result[Z]: Z => M[Z] =
+  override private[pdbp] def result[Z]: Z => C[Z] =
     `z=>(u>-->z)`
       
-  override private[pdbp] def bind[Z, Y](mz: M[Z], `z=>my`: => Z => M[Y]): M[Y] =
-    compose(mz, compose(product(`z>-->u`, function(`z=>my`)), apply))
+  override private[pdbp] def bind[Z, Y](cz: C[Z], `z=>cy`: => Z => C[Y]): C[Y] =
+    compose(cz, compose(product(`z>-->u`, function(`z=>cy`)), apply))
 
 }
 ```
@@ -2618,10 +2618,10 @@ import pdbp.computation.Computation
 
 import pdbp.program.meaning.ProgramMeaning
 
-private[pdbp] trait ComputationMeaning[FM[+ _]: Computation, T[+ _]]
-    extends ProgramMeaning[Kleisli[FM], Kleisli[T]] {
+private[pdbp] trait ComputationMeaning[FC[+ _]: Computation, T[+ _]]
+    extends ProgramMeaning[Kleisli[FC], Kleisli[T]] {
 
-  private[pdbp] val computationMeaning: FM `~C~>` T
+  private[pdbp] val computationMeaning: FC `~C~>` T
 
   // ...
 
@@ -2641,17 +2641,17 @@ import pdbp.transformation.program.`~P~>`
 
 // ...
 
-private[pdbp] trait ComputationMeaning[FM[+ _]: Computation, T[+ _]]
-    extends ProgramMeaning[Kleisli[FM], Kleisli[T]] {
+private[pdbp] trait ComputationMeaning[FC[+ _]: Computation, T[+ _]]
+    extends ProgramMeaning[Kleisli[FC], Kleisli[T]] {
 
   // ...
 
-  private type `=>FM` = Kleisli[FM]
+  private type `=>FC` = Kleisli[FC]
 
   private type `=>T` = Kleisli[T]
 
-  override val programMeaning: `=>FM` `~P~>` `=>T` = new `~P~>` {
-    override def apply[Z, Y](`z=>fmy`: Z `=>FM` Y) = { z =>
+  override val programMeaning: `=>FC` `~P~>` `=>T` = new `~P~>` {
+    override def apply[Z, Y](`z=>fmy`: Z `=>FC` Y) = { z =>
       computationMeaning(`z=>fmy`(z))
     }
   }

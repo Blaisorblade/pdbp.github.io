@@ -11,8 +11,8 @@ package pdbp.computation
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-private[pdbp] trait Resulting[M[+ _]] {
+private[pdbp] trait Resulting[C[+ _]] {
 
-  private[pdbp] def result[Z]: Z => M[Z]
+  private[pdbp] def result[Z]: Z => C[Z]
 
 }

@@ -13,14 +13,14 @@ package pdbp.computation
 
 import pdbp.types.product.productType._
 
-private[pdbp] trait OperatorLifting[M[+ _]] {
+private[pdbp] trait OperatorLifting[C[+ _]] {
 
   private[pdbp] def liftOperator[Z, Y, X](
-      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] =
+      `(z&&y)=>x`: (Z && Y) => X): (C[Z] && C[Y]) => C[X] =
     lift2(`(z&&y)=>x`)
 
   private[pdbp] def lift2[Z, Y, X](
-      `(z&&y)=>x`: (Z && Y) => X): (M[Z] && M[Y]) => M[X] =
+      `(z&&y)=>x`: (Z && Y) => X): (C[Z] && C[Y]) => C[X] =
     liftOperator(`(z&&y)=>x`)
 
 }
