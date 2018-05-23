@@ -1,4 +1,4 @@
-package pdbp.transformation.computation
+package pdbp.computation.transformation
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,8 +11,12 @@ package pdbp.transformation.computation
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-private[pdbp] trait `~C~>`[F[+ _], T[+ _]] {
+import pdbp.natural.transformation.computation.`~C~>`
 
-  private[pdbp] def apply[Z](fz: F[Z]): T[Z]
+import pdbp.computation.Computation
+
+private[pdbp] trait ComputationTransformation[F[+ _]: Computation, T[+ _]] {
+
+  private[pdbp] def transform: F `~C~>` T
 
 }

@@ -5,11 +5,14 @@ echo "!!! preprocessing with sed !!!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
 sed -i "s/type Kleisli/\/\/type Kleisli/g" ./src/main/scala/pdbp/types/kleisli/kleisliProgramType.scala
+sed -i "s/type FreeTransformed/\/\/type FreeTransformed/g" ./src/main/scala/pdbp/computation/transformation/free/FreeTransformation.scala
 
 sed -i "s/trait FactorialMain/class FactorialMain/g" ./src/main/scala/examples/mainPrograms/effectfulReadingAndWriting/FactorialMain.scala
 sed -i "s/trait ProgramMeaning/class ProgramMeaning/g" ./src/main/scala/pdbp/program/meaning/ProgramMeaning.scala
 sed -i "s/trait ComputationMeaning/class ComputationMeaning/g" ./src/main/scala/pdbp/computation/meaning/ComputationMeaning.scala
 sed -i "s/trait MeaningOfActive/class MeaningOfActive/g" ./src/main/scala/pdbp/computation/meaning/instances/ofActive/MeaningOfActive.scala
+sed -i "s/trait ComputationTransformation/class ComputationTransformation/g" ./src/main/scala/pdbp/computation/transformation/ComputationTransformation.scala
+sed -i "s/trait FreeTransformation/class FreeTransformation/g" ./src/main/scala/pdbp/computation/transformation/free/FreeTransformation.scala
 
 # appendices
 
@@ -42,6 +45,10 @@ echo ./src/main/scala/pdbp/computation/meaning/ComputationMeaning.scala
 scalafmt ./src/main/scala/pdbp/computation/meaning/ComputationMeaning.scala
 echo ./src/main/scala/pdbp/computation/meaning/instances/ofActive/MeaningOfActive.scala
 scalafmt ./src/main/scala/pdbp/computation/meaning/instances/ofActive/MeaningOfActive.scala
+echo ./src/main/scala/pdbp/computation/transformation/ComputationTransformation.scala
+scalafmt ./src/main/scala/pdbp/computation/transformation/ComputationTransformation.scala
+echo ./src/main/scala/pdbp/computation/transformation/free/FreeComputationTransformation.scala
+scalafmt ./src/main/scala/pdbp/computation/transformation/free/FreeComputationTransformation.scala
 
 # appendices
 
@@ -62,11 +69,14 @@ echo "!!! postprocessing with sed !!!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
 sed -i "s/\/\/type Kleisli/type Kleisli/g" ./src/main/scala/pdbp/types/kleisli/kleisliProgramType.scala
+sed -i "s/type FreeTransformed/\/\/type FreeTransformed/g" ./src/main/scala/pdbp/computation/transformation/free/FreeTransformation.scala
 
 sed -i "s/class FactorialMain/trait FactorialMain/g" ./src/main/scala/examples/mainPrograms/effectfulReadingAndWriting/FactorialMain.scala
 sed -i "s/class ProgramMeaning/trait ProgramMeaning/g" ./src/main/scala/pdbp/program/meaning/ProgramMeaning.scala
 sed -i "s/class ComputationMeaning/trait ComputationMeaning/g" ./src/main/scala/pdbp/computation/meaning/ComputationMeaning.scala
 sed -i "s/class MeaningOfActive/trait MeaningOfActive/g" ./src/main/scala/pdbp/computation/meaning/instances/ofActive/MeaningOfActive.scala
+sed -i "s/class ComputationTransformation/trait ComputationTransformation/g" ./src/main/scala/pdbp/computation/transformation/ComputationTransformation.scala
+sed -i "s/class FreeTransformation/trait FreeTransformation/g" ./src/main/scala/pdbp/computation/transformation/free/FreeTransformation.scala
 
 # appendices
 

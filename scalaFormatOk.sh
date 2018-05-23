@@ -13,6 +13,8 @@ if [[ "$f" == "./src/main/scala/pdbp/types/kleisli/kleisliProgramType.scala" ||
       "$f" == "./src/main/scala/pdbp/program/meaning/ProgramMeaning.scala" ||
       "$f" == "./src/main/scala/pdbp/computation/meaning/ComputationMeaning.scala" ||
       "$f" == "./src/main/scala/pdbp/computation/meaning/instances/ofActive/MeaningOfActive.scala" ||
+      "$f" == "./src/main/scala/pdbp/computation/transformation/ComputationTransformation.scala" ||
+      "$f" == "./src/main/scala/pdbp/computation/transformation/free/FreeTransformation.scala" ||
       
       "$f" == "./src/main/scala/pdbp/demo/types/kleisli/kleisliComputationType.scala" ||
 

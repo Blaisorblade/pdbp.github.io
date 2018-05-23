@@ -15,15 +15,15 @@ import pdbp.types.active.activeTypes._
 
 import pdbp.computation.Resulting
 
-import pdbp.transformation.computation.`~C~>`
+import pdbp.natural.transformation.computation.`~C~>`
 
 import pdbp.computation.meaning.ComputationMeaning
 
-trait MeaningOfActive[T[+ _]: Resulting] extends ComputationMeaning[Active, T] {
+trait MeaningOfActive[TC[+ _]: Resulting] extends ComputationMeaning[Active, TC] {
 
-  override private[pdbp] val computationMeaning: Active `~C~>` T =
+  override private[pdbp] val computationMeaning: Active `~C~>` TC =
     new `~C~>` {
-      override private[pdbp] def apply[Z](az: Active[Z]): T[Z] = {
+      override private[pdbp] def apply[Z](az: Active[Z]): TC[Z] = {
         import implicitly._
         result(az)
       }

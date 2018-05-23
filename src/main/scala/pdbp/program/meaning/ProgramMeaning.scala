@@ -13,7 +13,7 @@ package pdbp.program.meaning
 
 import pdbp.program.Program
 
-import pdbp.transformation.program.`~P~>`
+import pdbp.natural.transformation.program.`~P~>`
 
 trait ProgramMeaning[`>-FP->`[- _, + _]: Program, `>-T->`[- _, + _]] {
 

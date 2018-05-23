@@ -2559,14 +2559,14 @@ The good news is that it is just one language level meaning of that description.
 The language level meaning `factorialMain.factorialObject.factorial` above should (and will) be replaced by a *tail recursive* one. 
   - it is stack safe: it uses the *heap* which does not run out of memory for the argument `1000`.
 
-## **Library level meaning**
+## **Natural transformations**
 
-### **Library level meaning of programs**
+Programs and computations can be *transformed* using *natural transformations*. 
 
-Language level meanings of programs can be given a *library level meaning* using *program transformations*.
+Natural *program transformations* are described below  where `F` stands for *from* and `T` stands for *to*
 
 ```scala
-package pdbp.transformation.program
+package pdbp.natural.transformation.program
 
 trait `~P~>`[`>-F->`[- _, + _], `>-T->`[- _, + _]] {
 
@@ -2575,14 +2575,28 @@ trait `~P~>`[`>-F->`[- _, + _], `>-T->`[- _, + _]] {
 }
 ```
 
-as follows
+Natural *computation transformations* are described below  where, again, `F` stands for *from* and `T` stands for *to*
+
+```scala
+package pdbp.natural.transformation.computation
+
+private[pdbp] trait `~C~>`[F[+ _], T[+ _]] {
+
+  private[pdbp] def apply[Z](fz: F[Z]): T[Z]
+
+}
+```
+
+### **Library level meaning of programs**
+
+Language level meanings of programs can be given a library level meaning as follows
 
 ```scala
 package pdbp.program.meaning
 
 import pdbp.program.Program
 
-import pdbp.transformation.program.`~P~>`
+import pdbp.natural.transformation.program.`~P~>`
 
 trait ProgramMeaning[`>-FP->`[- _, + _]: Program, `>-T->`[- _, + _]] {
 
@@ -2593,26 +2607,14 @@ trait ProgramMeaning[`>-FP->`[- _, + _]: Program, `>-T->`[- _, + _]] {
 
 ### **Library level meaning of computations**
 
-Language level meanings of computations can be given a *library level meaning* using *computation transformations*.
-
-```scala
-package pdbp.transformation.computation
-
-private[pdbp] trait `~C~>`[F[+ _], T[+ _]] {
-
-  private[pdbp] def apply[Z](fz: F[Z]): T[Z]
-
-}
-```
-
-as follows
+Language level meanings of computations can be given a library level meaning as follows
 
 ```scala
 package pdbp.computation.meaning
 
 import pdbp.types.kleisli.kleisliProgramType._
 
-import pdbp.transformation.computation.`~C~>`
+import pdbp.natural.transformation.computation.`~C~>`
 
 import pdbp.computation.Computation
 
@@ -2637,7 +2639,7 @@ package pdbp.computation.meaning
 
 // ...
 
-import pdbp.transformation.program.`~P~>`
+import pdbp.natural.transformation.program.`~P~>`
 
 // ...
 
@@ -2682,7 +2684,7 @@ object activeMeaningOfActive
     with ProgramMeaning[`=>A`, `=>A`]()
 ```
 
-where `MeaningOfActive` defines a computation meaning of `Active` for any type constructor `T` with the `Resulting` computational capability.
+where `MeaningOfActive` defines a computation meaning of `Active` for any type constructor `TC` with the `Resulting` computational capability.
 
 ```scala
 package pdbp.computation.meaning.instances.ofActive
@@ -2691,15 +2693,15 @@ import pdbp.types.active.activeTypes._
 
 import pdbp.computation.Resulting
 
-import pdbp.transformation.computation.`~C~>`
+import pdbp.natural.transformation.computation.`~C~>`
 
 import pdbp.computation.meaning.ComputationMeaning
 
-trait MeaningOfActive[T[+ _]: Resulting] extends ComputationMeaning[Active, T] {
+trait MeaningOfActive[TC[+ _]: Resulting] extends ComputationMeaning[Active, TC] {
 
-  override private[pdbp] val computationMeaning: Active `~C~>` T =
+  override private[pdbp] val computationMeaning: Active `~C~>` TC =
     new `~C~>` {
-      override private[pdbp] def apply[Z](az: Active[Z]): T[Z] = {
+      override private[pdbp] def apply[Z](az: Active[Z]): TC[Z] = {
         import implicitly._
         result(az)
       }
@@ -2710,7 +2712,7 @@ trait MeaningOfActive[T[+ _]: Resulting] extends ComputationMeaning[Active, T] {
 
 ## **Running main programs (library level meaning)**
 
-### **Running `mainFactorial` using an effectful `producer` and `consumer` and`activeMeaningOfActive`**
+### **Running `mainFactorial` using an effectful `producer` and `consumer` and `activeMeaningOfActive`**
 
 We can now finally define `main` in `object FactorialMain`
 
@@ -2758,6 +2760,173 @@ please type an integer
 the factorial value of the integer is
 3628800
 ```
+
+## **Describing `ComputationTransformation`**
+
+*Computation transformations* are defined using natural computation transformations as follows
+
+```scala
+package pdbp.computation.transformation
+
+import pdbp.natural.transformation.computation.`~C~>`
+
+import pdbp.computation.Computation
+
+private[pdbp] trait ComputationTransformation[F[+ _]: Computation, T[+ _]] {
+
+  private[pdbp] def transform: F `~C~>` T
+
+}
+```
+
+Computation transformations closely resemble *monad transformers*.
+
+Monad transformers were introduced in [Monad Transformers and Modular Interpreters](http://haskell.cs.yale.edu/wp-content/uploads/2011/02/POPL96-Modular-interpreters.pdf). 
+
+I have contributed to monad transformers myself by combining them with *catamorpisms* in [Using Catamorphisms, Subtypes and Monad Transformers for Writing Modular Functional Interpreters](http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=97555A49D9F56885C9EA225088EA73BA?doi=10.1.1.11.7093&rep=rep1&type=pdf).
+
+## **Describing `FreeTransformation`**
+
+The first computation transformer that we describe is `trait FreeTransformer`.
+
+```scala
+private[pdbp] object FreeTransformation {
+
+  sealed trait Free[C[+ _], +Z]
+
+  final case class Transform[C[+ _], +Z](cz: C[Z]) extends Free[C, Z]
+  final case class Result[C[+ _], +Z](z: Z) extends Free[C, Z]
+  final case class Bind[C[+ _], -Z, ZZ <: Z, +Y](fczz: Free[C, ZZ],
+                                                 `z=>fcy`: Z => Free[C, Y])
+      extends Free[C, Y]
+
+  type FreeTransformed[C[+ _]] = [+Z] => Free[C, Z]
+
+}
+
+import FreeTransformation._
+
+import pdbp.types.kleisli.kleisliProgramType._
+
+import pdbp.program.Program
+
+import pdbp.computation.Computation
+
+import pdbp.natural.transformation.computation.`~C~>`
+
+import pdbp.computation.transformation.ComputationTransformation
+
+private[pdbp] trait FreeTransformation[C[+ _]: Computation]
+    extends ComputationTransformation[C, FreeTransformed[C]]
+    with Computation[FreeTransformed[C]]
+    with Program[Kleisli[FreeTransformed[C]]] {
+
+  private type FTC = FreeTransformed[C]
+
+  override private[pdbp] def transform = new `~C~>` {
+    override private[pdbp] def apply[Z](cz: C[Z]): FTC[Z] = {
+      Transform(cz)
+    }
+  }
+
+  override private[pdbp] def result[Z]: Z => FTC[Z] = { z =>
+    Result(z)
+  }
+
+  override private[pdbp] def bind[Z, Y](ftcz: FTC[Z],
+                                        `z=>ftcy`: => (Z => FTC[Y])): FTC[Y] =
+    Bind(ftcz, `z=>ftcy`)
+
+}
+```
+
+`trait Free` is an *abstract data type* that has
+
+  - `case class Transform`
+
+corresponding to the member `transform` of `trait ComputationTransformation`
+
+  - `case class Result`
+  - `case class Bind` 
+
+corresponding to the members `result` and `bind` of `trait Computation`
+
+`type FreeTransformed[C]` is a *free transformed computation*. 
+
+`trait FreeTransformation` transforms 
+
+  - `FreeTransformed[C]` to a computation,
+  - `Kleisli[FreeTransformed[C]]` to a program. 
+
+The definitions of `transform`, `result` and `bind` are trivial.
+They construct a data structure on the heap.
+
+ - `transform` is defined using `Transform`,
+ - `result` is defined using `Result`,
+ - `bind` is defined using `Bind`.
+
+Think of `Free[C, Z]` as a *free computation* wrapped around `C` as described in [Data types a la carte](http://www.cs.ru.nl/~W.Swierstra/Publications/DataTypesALaCarte.pdf).
+
+The word *free* refers to the fact that a data structure built using `Result` and `Bind` can be seen as a free meaning for the computational capabilities `result` and `bind`.
+
+## **Describing `FreeTransformedMeaning`**
+
+The transformed computation meaning corresponding to the free computation transformer trait FreeTransformer` is `trait FreeTransformedMeaning`.
+
+```scala
+package pdbp.computation.meaning.free
+
+import pdbp.computation.Computation
+
+import pdbp.natural.transformation.computation.`~C~>`
+
+import pdbp.computation.transformation.free.FreeTransformation
+import pdbp.computation.transformation.free.FreeTransformation._
+
+import pdbp.computation.meaning.ComputationMeaning
+
+private[pdbp] trait FreeTransformedMeaning[FC[+ _]: Computation, T[+ _]](
+    toBeTransformedMeaning: ComputationMeaning[FC, T],
+    freeTransformation: FreeTransformation[FC])
+    extends ComputationMeaning[FreeTransformed[FC], T] {
+
+  private type FTFC = FreeTransformed[FC]
+
+  import implicitly.{result => resultFC}
+
+  import freeTransformation.{bind => bindFC}
+
+  import toBeTransformedMeaning.{computationMeaning => computationMeaningFC}
+
+  override private[pdbp] val computationMeaning: FTFC `~C~>` T =
+    new `~C~>` {
+      override private[pdbp] def apply[Z](ftfcz: FTFC[Z]): T[Z] = {
+        @annotation.tailrec
+        def tailrecFold[Z](ftfcz: FTFC[Z]): FC[Z] = ftfcz match {
+          case Result(z) =>
+            resultFC(z)
+          case Transform(fcz) =>
+            fcz
+          case Bind(Result(y), y2ftfcz) =>
+            tailrecFold(y2ftfcz(y))
+          case Bind(Bind(fcx, x2ftfcy), y2ftfcz) =>
+            tailrecFold(bindFC(fcx, { x =>
+              bindFC(x2ftfcy(x), y2ftfcz)
+            }))
+          case any =>
+            sys.error(
+              "Impossible, since, for 'FreeTransformedMeaning', 'tailrecFold' eliminates this case")
+        }
+        computationMeaningFC(tailrecFold(ftfcz))
+      }
+    }
+
+}
+```
+
+`tailrecFold`, as it's name suggests, is a *tail recursive folding* of a of free computation of type `FTFC[Z]` to a computation of type `FC[Z]` which we can be given a meaning using `computationMeaningFC`.
+
+Note that, when *pattern matching*,  we use names like `x2ftfcy` instead of `` `x=>ftfcy` ``.
 
 # **Appendices**
 

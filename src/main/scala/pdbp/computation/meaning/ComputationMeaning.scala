@@ -13,9 +13,9 @@ package pdbp.computation.meaning
 
 import pdbp.types.kleisli.kleisliProgramType._
 
-import pdbp.transformation.program.`~P~>`
+import pdbp.natural.transformation.program.`~P~>`
 
-import pdbp.transformation.computation.`~C~>`
+import pdbp.natural.transformation.computation.`~C~>`
 
 import pdbp.computation.Computation
 
