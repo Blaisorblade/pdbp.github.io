@@ -1,4 +1,4 @@
-package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
+package pdbp.types
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,18 +11,8 @@ package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import examples.objects.active.effectfulReadingAndWriting.mainFactorial
-import mainFactorial.factorialMain
+object implicitFunctionType {
 
-import pdbp.computation.meaning.instances.ofActive.active.activeMeaningOfActive
-import activeMeaningOfActive.programMeaning
-
-object FactorialMain {
-
-  def main(args: Array[String]): Unit = {
-
-    programMeaning.applyToProgram(factorialMain)(())
-
-  }
+  type `I=>`[-Z, +Y] = implicit Z => Y
 
 }

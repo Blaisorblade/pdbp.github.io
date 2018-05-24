@@ -13,9 +13,9 @@ package pdbp.computation.meaning
 
 import pdbp.types.kleisli.kleisliProgramType._
 
-import pdbp.natural.transformation.program.`~P~>`
+import pdbp.natural.transformation.binary.`~P~>`
 
-import pdbp.natural.transformation.computation.`~C~>`
+import pdbp.natural.transformation.unary.`~C~>`
 
 import pdbp.computation.Computation
 
@@ -24,16 +24,12 @@ import pdbp.program.meaning.ProgramMeaning
 private[pdbp] trait ComputationMeaning[FC[+ _]: Computation, T[+ _]]
     extends ProgramMeaning[Kleisli[FC], Kleisli[T]] {
 
-  private[pdbp] val computationMeaning: FC `~C~>` T
+  private[pdbp] lazy val computationMeaning: FC `~C~>` T
 
   private type `=>FC` = Kleisli[FC]
 
   private type `=>T` = Kleisli[T]
 
-  override val programMeaning: `=>FC` `~P~>` `=>T` = new `~P~>` {
-    override def apply[Z, Y](`z=>fmy`: Z `=>FC` Y) = { z =>
-      computationMeaning(`z=>fmy`(z))
-    }
-  }
+  override lazy val programMeaning: `=>FC` `~P~>` `=>T` = computationMeaning
 
 }

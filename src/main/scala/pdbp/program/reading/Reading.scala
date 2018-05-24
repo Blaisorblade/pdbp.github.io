@@ -1,4 +1,4 @@
-package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
+package pdbp.program.reading
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,18 +11,17 @@ package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import examples.objects.active.effectfulReadingAndWriting.mainFactorial
-import mainFactorial.factorialMain
+import pdbp.program.Function
 
-import pdbp.computation.meaning.instances.ofActive.active.activeMeaningOfActive
-import activeMeaningOfActive.programMeaning
+import pdbp.program.Composition
 
-object FactorialMain {
+trait Reading[R, >-->[- _, + _]] {
+  this: Function[>-->] & Composition[>-->] =>
 
-  def main(args: Array[String]): Unit = {
+  def `u>-->r`: Unit >--> R = `z>-->r`[Unit]
 
-    programMeaning.applyToProgram(factorialMain)(())
+  def `z>-->r`[Z]: Z >--> R = compose(`z>-->u`, `u>-->r`)
 
-  }
+  def read[Z]: Z >--> R = `z>-->r`
 
 }

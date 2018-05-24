@@ -1,4 +1,4 @@
-package pdbp.natural.transformation.program
+package pdbp.types.active.reading
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,8 +11,16 @@ package pdbp.natural.transformation.program
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-trait `~P~>`[`>-F->`[- _, + _], `>-T->`[- _, + _]] {
+import pdbp.types.kleisli.kleisliProgramType._
 
-  def apply[Z, Y](`z>-f->y`: Z `>-F->` Y): Z `>-T->` Y
+import pdbp.types.active.activeTypes._
+
+import pdbp.computation.transformation.reading.ReadingTransformation._
+
+object activeReadingTypes {
+
+  type ActiveReading[R] = ReadingTransformed[R, Active]
+
+  type `=>AR`[R] = Kleisli[ActiveReading[R]]
 
 }

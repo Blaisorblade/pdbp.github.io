@@ -1,4 +1,4 @@
-package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
+package pdbp.program.implicits.active.free
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,18 +11,11 @@ package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import examples.objects.active.effectfulReadingAndWriting.mainFactorial
-import mainFactorial.factorialMain
+import pdbp.program.instances.active.free.activeFreeProgram
 
-import pdbp.computation.meaning.instances.ofActive.active.activeMeaningOfActive
-import activeMeaningOfActive.programMeaning
+object implicits {
 
-object FactorialMain {
-
-  def main(args: Array[String]): Unit = {
-
-    programMeaning.applyToProgram(factorialMain)(())
-
-  }
+  implicit val implicitActiveFreeProgram: activeFreeProgram.type =
+    activeFreeProgram
 
 }

@@ -33,7 +33,7 @@ import pdbp.program.Program
 
 import pdbp.computation.Computation
 
-import pdbp.natural.transformation.computation.`~C~>`
+import pdbp.natural.transformation.unary.`~C~>`
 
 import pdbp.computation.transformation.ComputationTransformation
 
@@ -51,11 +51,13 @@ private[pdbp] trait FreeTransformation[C[+ _]: Computation]
   }
 
   override private[pdbp] def result[Z]: Z => FTC[Z] = { z =>
+    // println(s"Result($z)")
     Result(z)
   }
 
   override private[pdbp] def bind[Z, Y](ftcz: FTC[Z],
-                                        `z=>ftcy`: => (Z => FTC[Y])): FTC[Y] =
+                                        `z=>ftcy`: => (Z => FTC[Y])): FTC[Y] = {
     Bind(ftcz, `z=>ftcy`)
+  }  
 
 }

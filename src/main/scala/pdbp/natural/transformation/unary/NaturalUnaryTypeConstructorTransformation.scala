@@ -1,4 +1,4 @@
-package pdbp.program.meaning
+package pdbp.natural.transformation.unary
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,12 +11,25 @@ package pdbp.program.meaning
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.program.Program
+import pdbp.types.kleisli.kleisliProgramType._
 
 import pdbp.natural.transformation.binary.`~P~>`
 
-trait ProgramMeaning[`>-FP->`[- _, + _]: Program, `>-T->`[- _, + _]] {
+private[pdbp] trait `~C~>`[F[+ _], T[+ _]]
+    extends `~P~>`[Kleisli[F], Kleisli[T]] {
 
-  lazy val programMeaning: `>-FP->` `~P~>` `>-T->`
+  private[pdbp] def apply[Z](fz: F[Z]): T[Z]
+
+  private def applyToComputation[Z](fz: F[Z]): T[Z] =
+    apply(fz)
+
+  private type `=>F` = Kleisli[F]
+
+  private type `=>T` = Kleisli[T]  
+
+  override def applyToProgram[Z, Y](`z=>fy`: Z `=>F` Y): Z `=>T` Y  = { z =>
+    val fy: F[Y] = `z=>fy`(z)
+    applyToComputation(fy)
+  }
 
 }

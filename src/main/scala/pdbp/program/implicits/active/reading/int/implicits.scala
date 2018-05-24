@@ -1,4 +1,4 @@
-package examples.objects.active.effectfulReadingAndWriting
+package pdbp.program.implicits.active.reading.int
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,11 +11,11 @@ package examples.objects.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.activeTypes._
+import pdbp.program.instances.active.reading.int.activeIntReadingProgram
 
-import pdbp.program.implicits.active.implicits
-import implicits.implicitActiveProgram
+object implicits {
 
-import examples.mainPrograms.effectfulReadingAndWriting.FactorialMain
+  implicit val implicitActiveIntReadingProgram: activeIntReadingProgram.type =
+    activeIntReadingProgram
 
-object factorialMain extends FactorialMain[`=>A`]()
+}

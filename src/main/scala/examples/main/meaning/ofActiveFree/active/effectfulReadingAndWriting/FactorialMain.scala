@@ -1,4 +1,4 @@
-package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
+package examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,11 +11,11 @@ package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import examples.objects.active.effectfulReadingAndWriting.mainFactorial
+import examples.objects.active.free.effectfulReadingAndWriting.mainFactorial
 import mainFactorial.factorialMain
 
-import pdbp.computation.meaning.instances.ofActive.active.activeMeaningOfActive
-import activeMeaningOfActive.programMeaning
+import pdbp.computation.meaning.instances.ofActiveFree.active.activeMeaningOfActiveFree
+import activeMeaningOfActiveFree.programMeaning
 
 object FactorialMain {
 

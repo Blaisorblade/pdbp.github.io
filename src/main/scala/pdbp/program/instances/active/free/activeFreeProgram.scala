@@ -1,4 +1,4 @@
-package pdbp.computation.meaning.instances.ofActive
+package pdbp.program.instances.active.free
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -12,21 +12,19 @@ package pdbp.computation.meaning.instances.ofActive
 //  author        Luc Duponcheel        2017-2018
 
 import pdbp.types.active.activeTypes._
+import pdbp.types.active.free.activeFreeTypes._
 
-import pdbp.computation.Resulting
+import pdbp.program.Program
 
-import pdbp.natural.transformation.unary.`~C~>`
+import pdbp.computation.Computation
 
-import pdbp.computation.meaning.ComputationMeaning
+import pdbp.computation.transformation.ComputationTransformation
+import pdbp.computation.transformation.free.FreeTransformation
 
-trait MeaningOfActive[TR[+ _]: Resulting] extends ComputationMeaning[Active, TR] {
+import pdbp.program.implicits.active.implicits.implicitActiveProgram
 
-  override private[pdbp] lazy val computationMeaning: Active `~C~>` TR =
-    new `~C~>` {
-      override private[pdbp] def apply[Z](az: Active[Z]): TR[Z] = {
-        import implicitly._
-        result(az)
-      }
-    }
-
-}
+object activeFreeProgram
+    extends Computation[ActiveFree]
+    with Program[`=>AF`]
+    with ComputationTransformation[Active, ActiveFree]()
+    with FreeTransformation[Active]()

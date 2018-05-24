@@ -1,4 +1,4 @@
-package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
+package pdbp.types.active.free
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,18 +11,16 @@ package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import examples.objects.active.effectfulReadingAndWriting.mainFactorial
-import mainFactorial.factorialMain
+import pdbp.types.kleisli.kleisliProgramType._
 
-import pdbp.computation.meaning.instances.ofActive.active.activeMeaningOfActive
-import activeMeaningOfActive.programMeaning
+import pdbp.types.active.activeTypes._
 
-object FactorialMain {
+import pdbp.computation.transformation.free.FreeTransformation._
 
-  def main(args: Array[String]): Unit = {
+object activeFreeTypes {
 
-    programMeaning.applyToProgram(factorialMain)(())
+  type ActiveFree = FreeTransformed[Active]
 
-  }
+  type `=>AF` = Kleisli[ActiveFree]
 
 }

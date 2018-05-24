@@ -19,7 +19,7 @@ import pdbp.utils.effectfulUtils._
 
 import examples.programs.Factorial
 
-trait FactorialMain[>-->[- _, + _]: Program] {
+trait MainFactorial[>-->[- _, + _]: Program] {
 
   import implicitly._
 
@@ -39,7 +39,7 @@ trait FactorialMain[>-->[- _, + _]: Program] {
 
   import factorialObject.factorial
 
-  val mainFactorial: Unit >--> Unit =
+  val factorialMain: Unit >--> Unit =
     producer >-->
       factorial >-->
       consumer

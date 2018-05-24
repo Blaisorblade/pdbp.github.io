@@ -11,14 +11,14 @@ package examples.main.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import examples.objects.active.effectfulReadingAndWriting.factorialMain
-import factorialMain.mainFactorial
+import examples.objects.active.effectfulReadingAndWriting.mainFactorial
+import mainFactorial.factorialMain
 
 object FactorialMain {
 
   def main(args: Array[String]): Unit = {
 
-    mainFactorial(())
+    factorialMain(())
 
   }
 

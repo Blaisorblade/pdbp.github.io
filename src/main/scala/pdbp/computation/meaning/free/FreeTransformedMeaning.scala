@@ -13,7 +13,7 @@ package pdbp.computation.meaning.free
 
 import pdbp.computation.Computation
 
-import pdbp.natural.transformation.computation.`~C~>`
+import pdbp.natural.transformation.unary.`~C~>`
 
 import pdbp.computation.transformation.free.FreeTransformation
 import pdbp.computation.transformation.free.FreeTransformation._
@@ -33,15 +33,15 @@ private[pdbp] trait FreeTransformedMeaning[FC[+ _]: Computation, T[+ _]](
 
   import toBeTransformedMeaning.{computationMeaning => computationMeaningFC}
 
-  override private[pdbp] val computationMeaning: FTFC `~C~>` T =
+  override private[pdbp] lazy val computationMeaning: FTFC `~C~>` T =
     new `~C~>` {
       override private[pdbp] def apply[Z](ftfcz: FTFC[Z]): T[Z] = {
         @annotation.tailrec
         def tailrecFold(ftfcz: FTFC[Z]): FC[Z] = ftfcz match {
-          case Result(z) =>
-            resultFC(z)
           case Transform(fcz) =>
             fcz
+          case Result(z) =>
+            resultFC(z)
           case Bind(Result(y), y2ftfcz) =>
             tailrecFold(y2ftfcz(y))
           case Bind(Bind(fcx, x2ftfcy), y2ftfcz) =>
