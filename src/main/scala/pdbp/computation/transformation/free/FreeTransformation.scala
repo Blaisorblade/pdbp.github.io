@@ -37,27 +37,27 @@ import pdbp.natural.transformation.unary.`~C~>`
 
 import pdbp.computation.transformation.ComputationTransformation
 
-private[pdbp] trait FreeTransformation[C[+ _]: Computation]
-    extends ComputationTransformation[C, FreeTransformed[C]]
-    with Computation[FreeTransformed[C]]
-    with Program[Kleisli[FreeTransformed[C]]] {
+private[pdbp] trait FreeTransformation[FC[+ _]: Computation]
+    extends ComputationTransformation[FC, FreeTransformed[FC]]
+    with Computation[FreeTransformed[FC]]
+    with Program[Kleisli[FreeTransformed[FC]]] {
 
-  private type FTC = FreeTransformed[C]
+  private type FTFC = FreeTransformed[FC]
 
   override private[pdbp] def transform = new `~C~>` {
-    override private[pdbp] def apply[Z](cz: C[Z]): FTC[Z] = {
-      Transform(cz)
+    override private[pdbp] def apply[Z](fcz: FC[Z]): FTFC[Z] = {
+      Transform(fcz)
     }
   }
 
-  override private[pdbp] def result[Z]: Z => FTC[Z] = { z =>
+  override private[pdbp] def result[Z]: Z => FTFC[Z] = { z =>
     // println(s"Result($z)")
     Result(z)
   }
 
-  override private[pdbp] def bind[Z, Y](ftcz: FTC[Z],
-                                        `z=>ftcy`: => (Z => FTC[Y])): FTC[Y] = {
-    Bind(ftcz, `z=>ftcy`)
+  override private[pdbp] def bind[Z, Y](ftfcz: FTFC[Z],
+                                        `z=>ftfcy`: => (Z => FTFC[Y])): FTFC[Y] = {
+    Bind(ftfcz, `z=>ftfcy`)
   }  
 
 }

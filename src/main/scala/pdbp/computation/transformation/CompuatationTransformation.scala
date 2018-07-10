@@ -15,8 +15,8 @@ import pdbp.natural.transformation.unary.`~C~>`
 
 import pdbp.computation.Computation
 
-private[pdbp] trait ComputationTransformation[F[+ _]: Computation, T[+ _]] {
+private[pdbp] trait ComputationTransformation[FC[+ _]: Computation, T[+ _]] {
 
-  private[pdbp] def transform: F `~C~>` T
+  private[pdbp] def transform: FC `~C~>` T
 
 }

@@ -18,7 +18,7 @@ Below is a link to picture, taken by a friend, of me and my wife, cycling in the
 
 [Luc and Maritza](./pictures/LucAndMaritza.JPG)
 
-Below is a link to picture of a radish I picked out of my greenhouse 5 minutes ago.
+Below is a link to picture of a radish I picked out of my greenhouse some time ago.
 
 [Radish](./pictures/Radijs.png)
 
@@ -3200,9 +3200,9 @@ Result(())
 Agreed, we do an I/O side effect here (this can and will be solved later).
 
 
-## `Reading`
+## **Describing `Reading`**
 
-### Introduction
+### **Introduction**
 
 In sections `Program` and `Computation` we presented the *basic* programming and computation capabilities. 
 In this section we introduce the first *extra* programming capability: *reading*. 
@@ -3214,7 +3214,7 @@ Think, for example, of the capability of this section (reading related) as being
 Think, for example, of the capability of the next section (writing related) as being able to 
   - do *logging*
 
-### `Reading`
+### **Describing `Reading`**
 
 Consider
 
@@ -3268,16 +3268,21 @@ In his POPL article, Martin Odersky argues that implicit functions can be used t
 Since our goal is to provide an *explicit* program description DSL we add reading as an *explicit* programming capability taking advantage of implicit functions to greatly simplify the definition of `trait ReadingTransformation`. 
 Moreover implicit functions greatly improve the *performance* of the meanings of reading. 
 
-Implicit functions replace boilerplate repetition of `implicit` parameters by an *implicitly* available global `val`. 
+Implicit functions replace boilerplate repetition of `implicit` parameters by an *implicitly* available global value `implicitly`. 
 You may argue that this is *going back in time* since, for years, using globals has been considered to be harmful. 
 In fact, instead it is *going back to the future* since
 
- - those globals are *immutable* `val`'s rather than *mutable* `var`'s (much less prone to harmful code),
- - more important, those globals are only available in bodies of members having a type that *reflects their availability*.
+ - the global value `implicitly` is an *immutable* `val` rather than a *mutable* `var` (much less prone to harmful code),
+ - more important, the global value `implicitly` is only available in bodies of members having a type that *reflects its availability*.
 
-Our explicit, globally available, reading capability corresponds to the implicitly available global `val`.
+Our explicit, globally available, reading capability `read` closely corresponds to the implicit, globally available value `implicitly`.
 
+You may argue: why using an explicit `read` member if using an implicitly available `implicitly` value works as well.
 
+  - using the member `read` instead of the value `implicitly` does not really matter so much,
+  - - just like `implicitly` can only be used in a context where the type system allows it to be used, `read` can only be used in a context where the type system allows it to be used.
+  - 
+.
 ### **Introducing `type` `` `I=>` ``**
 
 Implicit function types `implicit Z => Y` are types like all other ones.

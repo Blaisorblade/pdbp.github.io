@@ -15,7 +15,7 @@ import pdbp.types.implicitFunctionType.`I=>`
 
 private[pdbp] object ReadingTransformation {
 
-  type ReadingTransformed[R, C[+ _]] = [+Z] => R `I=>` C[Z]
+  type ReadingTransformed[R, FC[+ _]] = [+Z] => R `I=>` FC[Z]
 
 }
 
@@ -32,36 +32,36 @@ import pdbp.natural.transformation.unary.`~C~>`
 
 import pdbp.computation.transformation.ComputationTransformation
 
-private[pdbp] trait ReadingTransformation[R, C[+ _]: Computation]
-    extends ComputationTransformation[C, ReadingTransformed[R, C]]
-    with Computation[ReadingTransformed[R, C]]
-    with Program[Kleisli[ReadingTransformed[R, C]]]
-    with Reading[R, Kleisli[ReadingTransformed[R, C]]] {
+private[pdbp] trait ReadingTransformation[R, FC[+ _]: Computation]
+    extends ComputationTransformation[FC, ReadingTransformed[R, FC]]
+    with Computation[ReadingTransformed[R, FC]]
+    with Program[Kleisli[ReadingTransformed[R, FC]]]
+    with Reading[R, Kleisli[ReadingTransformed[R, FC]]] {
 
-  private type RTC = ReadingTransformed[R, C]
-  private type `=>RTC` = Kleisli[RTC]
+  private type RTFC = ReadingTransformed[R, FC]
+  private type `=>RTFC` = Kleisli[RTFC]
 
-  import implicitly.{result => resultC}
-  import implicitly.{bind => bindC}
+  import implicitly.{result => resultFC}
+  import implicitly.{bind => bindFC}
 
   override private[pdbp] def transform = new `~C~>` {
-    override private[pdbp] def apply[Z](mz: C[Z]): RTC[Z] =
+    override private[pdbp] def apply[Z](fcz: FC[Z]): RTFC[Z] =
       sys.error(
         "Impossible, since, for 'ReadingTransformation', 'transform' is used nowhere")
   }
 
-  override private[pdbp] def result[Z]: Z => RTC[Z] = { z =>
-    resultC(z)
+  override private[pdbp] def result[Z]: Z => RTFC[Z] = { z =>
+    resultFC(z)
   }
 
-  override private[pdbp] def bind[Z, Y](rtmz: RTC[Z],
-                                        `z>=rtmy`: => (Z => RTC[Y])): RTC[Y] =
-    bindC(rtmz, { z =>
-      `z>=rtmy`(z)
+  override private[pdbp] def bind[Z, Y](rtfcz: RTFC[Z],
+                                        `z>=rtfcy`: => (Z => RTFC[Y])): RTFC[Y] =
+    bindFC(rtfcz, { z =>
+      `z>=rtfcy`(z)
     })
 
-  override val `u>-->r`: Unit `=>RTC` R = { _ =>
-    resultC(implicitly)
+  override val `u>-->r`: Unit `=>RTFC` R = { _ =>
+    resultFC(implicitly)
   }
 
 }

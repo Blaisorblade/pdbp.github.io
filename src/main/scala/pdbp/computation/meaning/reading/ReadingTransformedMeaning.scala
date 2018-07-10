@@ -15,12 +15,14 @@ import pdbp.computation.Computation
 
 import pdbp.natural.transformation.unary.`~C~>`
 
+import pdbp.computation.transformation.reading.ReadingTransformation
 import pdbp.computation.transformation.reading.ReadingTransformation._
 
 import pdbp.computation.meaning.ComputationMeaning
 
 trait ReadingTransformedMeaning[R, FC[+ _]: Computation, T[+ _]](
-    toBeTransformedMeaning: ComputationMeaning[FC, T])
+    toBeTransformedMeaning: ComputationMeaning[FC, T],
+    optionalReadingTransformation: Option[ReadingTransformation[R, FC]])
     extends ComputationMeaning[ReadingTransformed[R, FC],
                                ReadingTransformed[R, T]] {
 

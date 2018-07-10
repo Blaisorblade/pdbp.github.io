@@ -22,12 +22,14 @@ import pdbp.computation.meaning.ComputationMeaning
 
 private[pdbp] trait FreeTransformedMeaning[FC[+ _]: Computation, T[+ _]](
     toBeTransformedMeaning: ComputationMeaning[FC, T],
-    freeTransformation: FreeTransformation[FC])
+    optionalFreeTransformation: Option[FreeTransformation[FC]])
     extends ComputationMeaning[FreeTransformed[FC], T] {
 
   private type FTFC = FreeTransformed[FC]
 
   import implicitly.{result => resultFC}
+
+  val freeTransformation = optionalFreeTransformation.get
 
   import freeTransformation.{bind => bindFC}
 

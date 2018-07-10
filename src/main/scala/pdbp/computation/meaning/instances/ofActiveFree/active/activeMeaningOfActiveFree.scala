@@ -34,7 +34,7 @@ object freeTransformationOfActive
 
 object activeMeaningOfActiveFree
     extends FreeTransformedMeaning[Active, Active](activeMeaningOfActive,
-                                                   freeTransformationOfActive)
+                                                   Some(freeTransformationOfActive))
     with ComputationMeaning[ActiveFree, Active]()
     with ProgramMeaning[`=>AF`, `=>A`]()
   

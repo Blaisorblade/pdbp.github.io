@@ -27,6 +27,6 @@ import pdbp.computation.meaning.reading.ReadingTransformedMeaning
 import pdbp.computation.meaning.instances.ofActive.active.activeMeaningOfActive
 
 object activeIntReadingMeaningOfActiveIntReading
-    extends ReadingTransformedMeaning[BigInt, Active, Active](activeMeaningOfActive)
+    extends ReadingTransformedMeaning[BigInt, Active, Active](activeMeaningOfActive, None)
     with ComputationMeaning[ActiveReading[BigInt], ActiveReading[BigInt]]()
     with ProgramMeaning[`=>AR`[BigInt], `=>AR`[BigInt]]()
