@@ -531,7 +531,7 @@ Here is the good news.
  - For now, you only have to concentrate on the concepts below
    - power of expression, 
    - elegance of use.
-   - 
+
  - The concepts below
    - flexible meanings,
    - extra capabilities,
