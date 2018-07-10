@@ -35,7 +35,7 @@ class Factorial[>-->[- _, + _]: Program] {
   private def one[Z]: Z >--> BigInt =
     function(oneFunction)
 
-  lazy val factorial: BigInt >--> BigInt =
+  val factorial: BigInt >--> BigInt =
     `if`(isZero) {
       one
     } `else` {

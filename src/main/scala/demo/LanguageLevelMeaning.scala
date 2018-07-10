@@ -15,7 +15,7 @@ import DefiningDescriptions._
 
 object LanguageLevelMeaning {
 
-  case class Box[+Z](contained: Z)
+  case class Box[+Z](z: Z)
 
   implicit object implicitBox extends Containing[Box] {
 
@@ -27,7 +27,7 @@ object LanguageLevelMeaning {
 
   }
 
-  case class Bag[+Z](contained: Z)
+  case class Bag[+Z](z: Z)
 
   implicit object implicitBag extends Containing[Bag] {
 
@@ -39,7 +39,7 @@ object LanguageLevelMeaning {
 
   }
 
-  case class Cap[+Z](covered: Z)
+  case class Cap[+Z](z: Z)
 
   implicit object implicitCap extends Covering[Cap] {
 
@@ -51,7 +51,7 @@ object LanguageLevelMeaning {
 
   }
 
-  case class Fez[+Z](covered: Z)
+  case class Fez[+Z](z: Z)
 
   implicit object implicitFez extends Covering[Fez] {
 

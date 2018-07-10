@@ -11,8 +11,8 @@ package pdbp.types.kleisli
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-object kleisliProgramType {
+private[pdbp] object kleisliProgramType {
 
-  type Kleisli[M[+ _]] = [-Z, + Y] => Z => M[Y]
+  private[pdbp] type Kleisli[C[+ _]] = [-Z, + Y] => Z => C[Y]
 
 }

@@ -15,24 +15,23 @@ import DefiningDescriptions._
 
 import LanguageLevelMeaning._
 
-object LibraryLevelMeaning {
+trait NaturalTransformation[F[+ _], T[+ _]] {
+  def apply[Z](fz: F[Z]): T[Z]
+}
 
-  trait NaturalTransformation[From[+ _], To[+ _]] {
-    def apply[Z](fz: From[Z]): To[Z]
-  }
+trait Meaning[F[+ _], T[+ _]] {
+  def meaning: NaturalTransformation[F, T]
+}
 
-  trait Meaning[From[+ _], To[+ _]] {
-    def meaning: NaturalTransformation[From, To]
-  }
+object LibraryLevelMeaning {  
 
-  trait ContainingMeaningOfContaining[
-      From[+ _]: Containing, To[+ _]: Containing]
-      extends Meaning[From, To] {
-    val implicitlyFrom = implicitly[Containing[From]]
-    val implicitlyTo = implicitly[Containing[To]]
-    override def meaning: NaturalTransformation[From, To] =
+  trait ContainingMeaningOfContaining[F[+ _]: Containing, T[+ _]: Containing]
+      extends Meaning[F, T] {
+    val implicitlyFrom = implicitly[Containing[F]]
+    val implicitlyTo = implicitly[Containing[T]]
+    override def meaning: NaturalTransformation[F, T] =
       new NaturalTransformation {
-        override def apply[Z](fz: From[Z]): To[Z] = {
+        override def apply[Z](fz: F[Z]): T[Z] = {
           implicitlyTo.contain(implicitlyFrom.contained(fz))
         }
       }
@@ -41,13 +40,13 @@ object LibraryLevelMeaning {
   trait ContainingMeaningOfBox[C[+ _]: Containing]
       extends ContainingMeaningOfContaining[Box, C]
 
-  trait CoveringMeaningOfContaining[From[+ _]: Containing, To[+ _]: Covering]
-      extends Meaning[From, To] {
-    val implicitlyFrom = implicitly[Containing[From]]
-    val implicitlyTo = implicitly[Covering[To]]
-    override def meaning: NaturalTransformation[From, To] =
+  trait CoveringMeaningOfContaining[F[+ _]: Containing, T[+ _]: Covering]
+      extends Meaning[F, T] {
+    val implicitlyFrom = implicitly[Containing[F]]
+    val implicitlyTo = implicitly[Covering[T]]
+    override def meaning: NaturalTransformation[F, T] =
       new NaturalTransformation {
-        override def apply[Z](fz: From[Z]): To[Z] = {
+        override def apply[Z](fz: F[Z]): T[Z] = {
           implicitlyTo.cover(implicitlyFrom.contained(fz))
         }
       }
@@ -56,13 +55,13 @@ object LibraryLevelMeaning {
   trait CoveringMeaningOfBox[C[+ _]: Covering]
       extends CoveringMeaningOfContaining[Box, C]
 
-  trait ContainingMeaningOfCovering[From[+ _]: Covering, To[+ _]: Containing]
-      extends Meaning[From, To] {
-    val implicitlyFrom = implicitly[Covering[From]]
-    val implicitlyTo = implicitly[Containing[To]]
-    override def meaning: NaturalTransformation[From, To] =
+  trait ContainingMeaningOfCovering[F[+ _]: Covering, T[+ _]: Containing]
+      extends Meaning[F, T] {
+    val implicitlyFrom = implicitly[Covering[F]]
+    val implicitlyTo = implicitly[Containing[T]]
+    override def meaning: NaturalTransformation[F, T] =
       new NaturalTransformation {
-        override def apply[Z](fz: From[Z]): To[Z] = {
+        override def apply[Z](fz: F[Z]): T[Z] = {
           implicitlyTo.contain(implicitlyFrom.covered(fz))
         }
       }

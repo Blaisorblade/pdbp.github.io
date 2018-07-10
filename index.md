@@ -52,7 +52,7 @@ This document builds upon the ideas of this influential lecture.
 ## **Introduction**
 
 When writing an introduction it is challenging to find the right balance between providing *too many* details or *too few* details. 
-This introduction provides *many* details. 
+This introduction provides *(hopefully not too) many* details. 
 It is perfectly fine to read this introduction *diagonally*.
 
 ### **Introducing `FP`**
@@ -108,7 +108,7 @@ Below is the logo of the library
 ### **Objects and values**
 
 In `Dotty`, every *value* is an *object*.
-From now on, when dealing with `Dotty`, we use *object* and *value* interchangably.
+From now on, when dealing with `Dotty`, we use *object* and *value* interchangeably.
 
 ### **Introducing `trait Program`**
 
@@ -152,7 +152,7 @@ All it's capabilities are `public`, the default in `Dotty`.
 Below is a `factorial` program written using `trait Program`'s API .
 
 ```scala
-  lazy val factorial: BigInt >--> BigInt =
+  val factorial: BigInt >--> BigInt =
     `if`(isZero) {
       one
     } `else` {
@@ -168,13 +168,22 @@ Below is a `factorial` program written using `trait Program`'s API .
 In a way programs generalize *functions*. 
 
  - A function transforms *function arguments* to yield a *function result*. 
- - A program also, *somehow*, transforms *program arguments* to yield a *program result*. 
+ - A program also, *somehow*, transforms a *program argument* to yield a *program result*. 
 
 When there is no danger of confusion 
-  - we simply write *arguments* and *result*, not mentioning *function* or *program*,
-  - we simply say that a function transforms an argument to a result.
+  - we simply write arguments, argument and result, not mentioning function or program.
 
-To finish
+So
+  - we simply write that a function transforms arguments to a result, and
+  - we simply write that a program transforms an argument to a result.
+
+Note that we used both *arguments* and *argument*.
+For functions we used *zero or more* arguments.
+For programs we used *one* argument.
+
+How one argument can be used to represent zero or more arguments will be explained soon.
+
+To finish, let's state that
 
  - pointfree programming using `trait Program` is *program oriented* and *program composition* based.
 
@@ -193,6 +202,7 @@ private[pdbp] trait Computation[C[+ _]]
     with Binding[C]
     // ...
     with Program[[-Z, + Y] => Z => C[Y]]
+    // ...
 ```
 `trait Computation` closely resembles *monads*.
 
@@ -203,7 +213,7 @@ In 1992, Philip Wadler used monads in `Haskell` in
 [*The essence of functional programming*](http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=E09A5FD9362F6780675ADF29471B7428?doi=10.1.1.38.9516&rep=rep1&type=pdf).
 
 `trait Computation` is about *computation descriptions*. 
-Computation descriptions are defined in terms of *computational capabilities* that are declared as members of `trait Computation`.
+Computation descriptions are defined in terms of *computational capabilities* that are declared as members (`def`'s or `val`'s) of `trait Computation`.
 
 By abuse of notation, we often simply refer to computation descriptions as *computations*. 
 We hope that this does not lead to any confusion.
@@ -217,50 +227,29 @@ In a way computations generalize *expressions*.
  - A computation *execution* also, *somehow*, yields a *computation result*.
 
 When there is no danger of confusion 
-  - we simply write *result*, not mentioning *expression* or *computation*,
-  - we simply say that a computation has a result.
+  - we do not mention evaluation or execution, and
+  - we simply write result, not mentioning expression or computation.
 
-To finish
+So
+  - we simply write that an expression has a result, and
+  - we simply write that a computation has a result.
+
+To finish, lt's state that
 
  - pointful programming using `trait Computation` is *computation oriented* and *result binding* based.
-
-
-### **Power of expression**
-
-In 2008, Conor McBride and Ross Paterson described *applicatives* (a.k.a. *idioms*) and used applicatives in `Haskell` in 
-[*Applicative programming with effects*](http://www.staff.city.ac.uk/~ross/papers/Applicative.pdf).
-
-In 2008, Sam Lindley, Philip Wadler and Jeremy Yallop compared the *power of expression* of monads, arrows and idioms in 
-[*Idioms are oblivious, arrows are meticulous, monads are promiscuous*](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.187.6750&rep=rep1&type=pdf). 
-
- - Monads have most power of expression. 
- - Applicatives have least power of expression. 
- - Arrows are in between.
-
-Recall that
-
- - Monads naturally lead to a pointful programming style. 
- - Arrows naturally lead to a pointfree programming style. 
-
-But
-
- - Monad based computations can, using [*Kleisli categories*](https://en.wikipedia.org/wiki/Kleisli_category), use a pointfree programming style. 
- - Arrow based programs can, using [*arrow calculus*](http://homepages.inf.ed.ac.uk/slindley/papers/arrow-calculus.pdf), use a pointful programming style.
-
-The `PDBP` library goes for programming monads in a pointfree style using Kleisli categories.
 
 ### **Introducing `type Kleisli` for programs**
 
 The `with Program[[-Z, + Y] => Z => C[Y]]` part of `trait Computation`, which states that computations have more power of expression than programs, is a bit verbose.
 
-Using the *type alias* `type Kleisli` below
+Using the *type alias* `type Kleisli`, named after [Heinrich Kleisli](https://en.wikipedia.org/wiki/Heinrich_Kleisli), below
 
 ```scala
 package pdbp.types.kleisli
 
-object kleisliProgramType {
+private[pdbp] object kleisliProgramType {
 
-  type Kleisli[C[+ _]] = [-Z, + Y] => Z => C[Y]
+  private[pdbp] type Kleisli[C[+ _]] = [-Z, + Y] => Z => C[Y]
 
 }
 ```
@@ -279,9 +268,58 @@ private[pdbp] trait Computation[C[+ _]]
     with Binding[C]
     // ...
     with Program[Kleisli[C]]
+    // ...
 ``` 
 
-A program of type `Kleisli[C]` is referred to as a *Kleisli program*. 
+A program of type `Kleisli[C]` is referred to as a *kleisli program* (note that we use a lower case *k*). 
+
+### **Power of expression**
+
+In 2008, Conor McBride and Ross Paterson described *applicatives* (a.k.a. *idioms*) and used applicatives in `Haskell` in 
+[*Applicative programming with effects*](http://www.staff.city.ac.uk/~ross/papers/Applicative.pdf).
+
+In 2008, Sam Lindley, Philip Wadler and Jeremy Yallop compared the *power of expression* of monads, arrows and idioms in 
+[*Idioms are oblivious, arrows are meticulous, monads are promiscuous*](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.187.6750&rep=rep1&type=pdf). 
+
+ - Monads (cfr. `Computation`) have most power of expression. 
+ - Applicatives have least power of expression. 
+ - Arrows (cfr. `Program`) are in between.
+
+Indeed
+ - if `C` is a computation (an instance of the `Computation` type class), 
+ - then `Kleisli[C]` is a program (an instance of the `Program` type class).
+
+### **Elegance of use**
+
+Programming is not only about power of expression. 
+It is also, and probably even more, about *elegance of use*. 
+
+Recall that
+
+ - Monads naturally lead to a pointful programming style. 
+ - Arrows naturally lead to a pointfree programming style. 
+
+Note that
+
+ - Monad based computations can, using [*Kleisli categories*](https://en.wikipedia.org/wiki/Kleisli_category), use a pointfree programming style. 
+ - Arrow based programs can, using [*arrow calculus*](http://homepages.inf.ed.ac.uk/slindley/papers/arrow-calculus.pdf), use a pointful programming style.
+
+Traditionally the pointfree style has been considered to be elegant by some programmers and *abstruse* by other programmers. 
+Luckily, the `Dotty` programming language comes to the rescue for the latter ones. 
+`Dotty` is a *strongly typed*, *scalable* programming language. 
+It is possible to *extend the language* in a *type safe* way at the *library* level with *internal domain specific languages*. 
+
+By using a *domain specific language for the domain of programs*, program description based programming can be done in a very elegant way.
+
+Of course, elegance of use is a highly subjective concept.
+
+Personally, we consider program oriented composition based programming to be more elegant than computation oriented result binding based programming. 
+
+### **Our choice**
+
+`PDBP` goes for
+ - a powerful, computation oriented, and (slightly less) elegant, result binding based, programming API for library developers, and 
+ - a (slightly less) powerful, program oriented, and elegant, composition based, programming API for application developers.
 
 #### **About functions and expressions (for those who are a bit impatient)**
 
@@ -290,8 +328,13 @@ Recall that
  - In a way, programs generalize functions. 
  - In a way, computations generalize expressions.
 
+Think of
+
+ - Functions as *expression templates* with, to be filled in, *unknown parts* (its arguments).
+ - Programs as *computation templatess* with a, to be filled in, *unknown part* (its argument).
+
 [AppendixFunctionsAndExpressions](#appendixfunctionsandexpressions) has demo code that compares 
- - pointful expression oriented and function application (argument binding) based programming,
+ - pointful expression oriented and function application (argument binding) based programming, with
  - pointfree function oriented and function composition based programming. 
 
 #### **About descriptions (for those who are a bit impatient)**
@@ -303,25 +346,12 @@ Recall that
 
 [AppendixDefiningDescriptions](#appendixdefiningdescriptions) has demo code where descriptions are defined in terms of capabilities that are declared in a type class.
 
-### **Elegance of use**
-
-Programming is not only about power of expression. 
-It is also, and probably even more, about *elegance of use*. 
-Traditionally the pointfree style has been considered to be elegant by some programmers and *abstruse* by other programmers. 
-Luckily, the `Dotty` programming language comes to the rescue for the latter ones. 
-`Dotty` is a *strongly typed*, *scalable* programming language. 
-It is possible to *extend the language* in a *type safe* way at the *library* level with *internal domain specific languages*. 
-
-By using a *domain specific language for the domain of programs*, program description based programming can be done in a very elegant way.
-
-Of course, elegance of use is a highly subjective concept. 
-
-#### **informal description of `factorial`**
+#### **Informal description of `factorial`**
 
 Consider, again, the program description of `factorial`
 
 ```scala
-  lazy val factorial: BigInt >--> BigInt =
+  val factorial: BigInt >--> BigInt =
     `if`(isZero) {
       one
     } `else` {
@@ -338,12 +368,12 @@ Below is an *informal description* of the program fragments of the `factorial` p
 
  - `isZero` is a program description of type `BigInt >--> Boolean`
    - think of `isZero` as a *predicate* (`Boolean`-valued function) that transforms its argument to yield the result `true` if it is equal to `0` and to yield the result`false` otherwise,
- - `one` is a program description of type `BigInt >--> BigInt`
+ - `one` is a program description of type `Z >--> BigInt`
    - think of `one` as a *constant function* that transforms its argument to yield the result `1`,
  - `subtractOne` is a program description of type `BigInt >--> BigInt`
    - think of `subtractOne` as a function that transforms its argument to yield the result obtained by subtracting `1` from it,
  - `multiply` is a program description of type `(BigInt && BigInt) >--> BigInt`
-   - think of `multiply` as a function that transforms its *two* arguments to yield the result obtained by multiplying them.
+   - think of `multiply` as a function that transforms its arguments to yield the result obtained by multiplying them.
 
 Note that
 
@@ -356,18 +386,18 @@ Also note that
 
 Below is an informal description of the program templates of the `factorial` program description above
 
- - `first >--> second`  is part of the `Dotty` program description DSL related to `Composition`
+ - `first >--> second` is part of the `Dotty` program description DSL related to `Composition`
    - think of `first` as a *first* function that transforms an argument and `second`as a *second* function that transforms the result yielded by the first function,
  - `` `let` { constructNewUsingCurrent } `in` { useBothNewAndCurrent } `` is part of the `Dotty` program description DSL related to `Construction`
-   - note that `let` and `in` are between *backticks*,
-   - think of `constructNew` as a function that *constructs* a *new* value using the *current* one,
+   - note that `let` and `in` are between backticks,
+   - think of `constructNewUsingCurrent` as a function that *constructs* a *new* value using the *current* one,
    - think of `useBothNewAndCurrent` as a function that uses both the *new* value and the *current* value, 
-     - together, the new value and the old current value become the new current value,
+     - furthermore, together, the new value and the old current value become the new current value,
  - `` `if`(predicate) { trueCase } `else` { falseCase } `` is part of the `Dotty` program description DSL related to `Condition`
-   - note that `if` and `else` are between *backticks*,
-   - think of `predicate` as a *predicate* (`Boolean`-valued function) that tests the current value,
-   - if `true`, then function `trueCase` takes over control,
-   - if `false`, then function `falseCase` takes over control.
+   - note that `if` and `else` are between backticks,
+   - think of `predicate` as a predicate (`Boolean`-valued function) that tests the current value,
+   - if the result yielded by that test is `true`, then function `trueCase` takes over control,
+   - if the result yielded by that test is `false`, then function `falseCase` takes over control.
 
 Agreed, at first sight the pointfree `factorial` code above may seem a bit abstruse.
 
@@ -384,7 +414,7 @@ you will, hopefully, start appreciating the power of expression and elegance of 
 
 ### **`FP` versus `PDBP`**
 
-There is an important difference between `FP` programs and `PDBP` programs. 
+There is an important difference between `FP` programs and `PDBP` programs (program descriptions, remember). 
 
  - `FP` programs are `FP` *language* based.
  - `PDBP` programs are `Dotty` *library* based.
@@ -396,19 +426,22 @@ Exploiting the *flexibility* that comes with this difference is one of the most 
  - `FP` is *heterogeneous*,
    -  programs are not objects.
  - `PDBP` is *homogeneous*,
-   - in `Dotty`, everything is an oject, in particular programs are objects.
+   - in `Dotty`, everything is an object (value), in particular programs are objects (values).
 
 #### **Meaning of programs**
 
  - in `FP`,
-   - programs have *one meaning*.
+   - programs have *one meaning* where
+     - the meaning is language defined (according to the implementation of `FP`). 
  - in `PDBP,`
-   - programs can have *many meanings*. 
+   - programs can have *many meanings* where
+     - the meaning is language level (`object` implementation of a `trait`), or
+     - the meaning is library level (using a *natural transformation*, see below).
 
 Consider, again, the `factorial` program below.
 
 ```scala
-  lazy val factorial: BigInt >--> BigInt =
+  val factorial: BigInt >--> BigInt =
     `if`(isZero) {
       one
     } `else` {
@@ -423,7 +456,7 @@ Consider, again, the `factorial` program below.
 
 Note that `factorial` is a *recursive* program description.
 It can be given both a *stack unsafe* (*non tail recursive*) meaning and a *stack safe* (*tail recursive*) meaning.
-The stack safe meaning simply uses the *heap* instead of the *stack*.
+The stack safe meaning uses the *heap* instead of the *stack*.
 
 #### **About meanings (for those who are a bit impatient)**
 
@@ -434,34 +467,36 @@ The stack safe meaning simply uses the *heap* instead of the *stack*.
 #### **Extra programming capabilities**
 
  - in `FP`
-   - the amount of forms of the language is fixed.
+   - the set of forms of the language cannot be extended by adding extra forms.
  - in `PDBP`
-   - the type class `trait Program` can be extended by mixing-in extra `traits`'s.
+   - the capabilities of the type class `trait Program` can be extended by mixing-in extra `traits`'s.
 
 Extra programming capabilities can be added such as
 
  - state manipulation
  - failure handling
  - latency handling (using parallelism)
- - control handling (using delimited continuations)
+ - advanced control handling (using delimited continuations)
  - ...
+
+Note that `Program` already has basic control handling (using the capabilities of `Condition`).
 
 #### **I/O**
 
 Also programming capabilities can be added related to
 
- - input reading
- - output writing
+ - *input reading*
+ - *output writing*
 
  - in `FP`
-   - input and output are *effectful*, they *execute effects* in an *impure* way.
+   - input and output are *effectful*, they *execute I/O effects* in an *impure* way.
  - in `PDBP`
-   - input and output are *effectfree*, they *describe effects* in an *pure* way. 
+   - input and output are *effectfree*, they *describe I/O effects* in an *pure* way. 
 
 A program description involving I/O can be given 
- - *effectfree* meanings for different *testing* purposes,
- - *effectful* meanings for different *deployment* purposes. 
- -  
+ - effectfree meanings for different *testing* purposes,
+ - effectful meanings for different *deployment* purposes. 
+ 
 Of course, eventually, for being useful at all, application code using `PDBP` may need to execute I/O effects.
  - in `FP`
    - I/O effects are executed *in the middle of library code*.
@@ -475,7 +510,7 @@ The *main goal* of the `PDBP` library is to illustrate that program description 
  - *powerful*
    -  as a library developer you can use the full expressive power of monads,
  - *elegant*
-   - as an application developer you can use the elegant `Dotty` DSL syntax,
+   - as an application developer you can use the elegance of  `Dotty` DSL syntax,
  - *flexible*
    - as a library developer you can define many meanings,
    - as an application developer you can use many meanings,
@@ -484,7 +519,7 @@ The *main goal* of the `PDBP` library is to illustrate that program description 
    - as an application developer you can use extra capabilities,
  - *pure*
    - as a library developer you can define I/O in a pure way,
-   - as a library tester you can use I/O in a pure way.
+   - as a library tester you can use I/O in a pure way,
    - as an application developer you can use I/O in a impure way.
 
 ### **Summary**
@@ -493,11 +528,11 @@ For some of you this introduction may have touched upon a lot of frightening stu
 
 Here is the good news.
 
- - For now, you only have to concentrate on
+ - For now, you only have to concentrate on the concepts below
    - power of expression, 
    - elegance of use.
    - 
- - The features below
+ - The concepts below
    - flexible meanings,
    - extra capabilities,
    - pure I/0,
@@ -3514,8 +3549,6 @@ This appendix compares pointful and pointfree programming.
 Recall that the `implicit class` below formalizes argument binding
 
 ```scala
-package demo
-
 object bindingOperator {
 
   implicit class BindingOperator[Z](z: Z) {
@@ -3544,55 +3577,103 @@ The code below illustrates, among others, how to go from the former one to the l
 ```scala
 object FunctionsAndExpressions {
 
-  val z = 3.0
-  val y = 4.0
+  private val z = 3.0
+  private val y = 4.0
 
-  type &&[+Z, +Y] = Tuple2[Z, Y]
-
-  def main(args: Array[String]): Unit = {
+  private type &&[+Z, +Y] = Tuple2[Z, Y]
 
     import scala.math.{sqrt => squareRoot}
 
-    val result01: Double = squareRoot(z * z + y * y)
+    private val result01: Double = squareRoot(z * z + y * y)
 
-    val square: Double => Double =
+    private val square: Double => Double =
       z => z * z
 
-    val result02: Double = squareRoot(square(z) + square(y))
+    private val result02: Double = squareRoot(square(z) + square(y))
 
-    val sum: Double && Double => Double =
+    private val sum: Double && Double => Double =
       (z, y) => z + y
 
-    val result03: Double = squareRoot(sum(square(z), square(y)))
+    private val result03: Double = squareRoot(sum(square(z), square(y)))
 
-    val squares: Double && Double => Double && Double =
+    private val squares: Double && Double => Double && Double =
       (z, y) => (square(z), square(y))
 
-    val result04: Double = squareRoot(sum(squares(z, y)))
+    private val result04: Double = squareRoot(sum(squares(z, y)))
 
-    val result05: Double = (squares andThen sum andThen squareRoot)(z, y)
+    private val result05: Double = (squares andThen sum andThen squareRoot)(z, y)
 
-    val result06: Double = (squares andThen sum andThen squareRoot) apply (z, y)
+    private val result06: Double = (squares andThen sum andThen squareRoot) apply (z, y)
 
     import bindingOperator.BindingOperator
 
-    val result07: Double = (z, y) bind (squares andThen sum andThen squareRoot)
+    private val result07: Double = (z, y) bind (squares andThen sum andThen squareRoot)
 
-    val result08: Double = (z, y) bind squares bind sum bind squareRoot
+    private val result08: Double = (z, y) bind squares bind sum bind squareRoot
+
+    // private val result09: Double = (z, y) bind (squares bind sum bind squareRoot)
+
+    private val squareRootOfSumOfSquares: Double && Double => Double = 
+      squares andThen sum andThen squareRoot
+
+    private val result10: Double = squareRootOfSumOfSquares(z, y)
+
+    private val result11: Double = squareRootOfSumOfSquares apply (z, y)  
+
+    private val result12: Double = (z, y) bind squareRootOfSumOfSquares  
+
+    private val bindToSquaresAndThenBindToSumAndThenBindToSquareRoot: Double && Double => Double  = 
+      _ bind squares bind sum bind squareRoot
+
+    private val result13: Double = bindToSquaresAndThenBindToSumAndThenBindToSquareRoot(z, y)
+
+    private val result14: Double = bindToSquaresAndThenBindToSumAndThenBindToSquareRoot apply (z, y)  
+
+    private val toSquaresAndThenBindToSumAndThenBindToSquareRoot: Double && Double => Double  = 
+      bindToSquaresAndThenBindToSumAndThenBindToSquareRoot
+
+    private val result15: Double = (z, y) bind toSquaresAndThenBindToSumAndThenBindToSquareRoot  
+
+  def main(args: Array[String]): Unit = {      
+
+    println(result01)
+    println(result02)
+    println(result03)
+    println(result04)
+    println(result05)
+    println(result06)
+    println(result07)
+    println(result08)
+    // println(result09)
+    println(result10)
+    println(result11)
+    println(result12)
+    println(result13)
+    println(result14)
+    println(result15)
 
   }
 
 }
 ```
 
-Note that argument binding naturally reads from left to right.
+You may argue that `(z, y) bind (squares andThen sum andThen squareRoot)` is not, in any way, more pointless than `(z, y) bind squares bind sum bind squareRoot`.
+
+Note that, in `(z, y) bind squares bind sum bind squareRoot`, argument binding naturally reads from left to right, and,
+`(z, y) bind (squares bind sum bind squareRoot)` is, in contrast with `(z, y) bind (squares andThen sum andThen squareRoot)`, not a valid `Dotty` expression.
+
+Note that we defined a function level expression `squareRootOfSumOfSquares`.
+
+Note that it is possible, using `Dotty`'s infamous *underscore syntax*, to define a, binding based, function level expression `bindToSquaresAndThenBindToSumAndThenBindToSquareRoot`.
+We hope that you agree that this definiton is not as concise as the, composition based, definition of `squareRootOfSumOfSquares`.
+But, then again, elegance of use is a highly subjective concept.
 
 ## **AppendixDefiningDescriptions**
 
 Warning: the next appendices (before [AppendixVariance](#appendixvariance)) are elaborate ones.
 This is intentional: the concepts they describe, *descriptions* and their *meanings* are important.
 
-### **Descriptions in terms of declared capabilities**
+### **Defining descriptions in terms of declared capabilities**
 
 This section describes how *descriptions* can be *defined* in terms of *capabilities* that are *declared* in a *type class*.
 
@@ -3606,6 +3687,8 @@ object DefiningDescriptions {
   trait Containing[C[+ _]] extends Description[C] {
 
     def contain[Z](z: Z): C[Z]
+
+    def contained[Z](cz: C[Z]): Z
 
   }
 
@@ -3628,13 +3711,14 @@ object DefiningDescriptions {
 
 `trait Description` is a *marker* `Dotty` type class. 
 
-`trait Containing` is a `Dotty` type class declaring the capability to *contain a value*.
+`trait Containing` is a `Dotty` type class declaring the capability to *contain a value* and *extract* that contained value.
 
 More precisely
 
  - `Containing[C[+ _]]` declares, using it's member `contain`, `C[+ _]`'s capability to contain a value.
+ - `Containing[C[+ _]]` declares, using it's member `contained`, `C[+ _]`'s capability to extract the value it contains.
 
-We have also already defined some, agreed, very simple, descriptions, `containedZero` and `containedTrue` in terms of this declared capability.
+We have also already defined some, agreed, very simple, descriptions, `containedZero` and `containedTrue` in terms of the declared `contain` capability.
 
 `trait SomeValuesContainedIn[C[+ _]: Containing]`, declares `C[+ _]` to *implicitly* have the capability to contain a value. 
 It defines descriptions `containedZero` and `containedTrue` using this `implicitly` available capability. 
@@ -3642,11 +3726,11 @@ It defines descriptions `containedZero` and `containedTrue` using this `implicit
 Think of those descriptions as *recipes*
 
  - Take `0` and apply `contain` to it to make `containedZero`. 
-   - Think of it as `0` contained in a, for now, *unknown* kind of, *(one element) container*.
+   - Think of what has been made as `0` contained in a, for now, unknown kind of, (one element) container.
  - Take `true` and apply `contain` to it to make `containedTrue`.
-   - Think of it as `true` contained in a, for now, unknown kind of, (one element) container.
+   - Think of what has been made as `true` contained in a, for now, unknown kind of, (one element) container.
 
-Note that, at this moment, no definition of the declared capability has been provided yet.
+Note that, at this moment, no definitions of the declared capabilities have been provided yet.
 
 Below is another example
 
@@ -3661,6 +3745,8 @@ object DefiningDescriptions {
 
     def cover[Z](z: Z): C[Z]
 
+    def covered[Z](cz: C[Z]): Z
+
   }
 
   trait SomeValuesCoveredBy[C[+ _]: Covering] {
@@ -3673,82 +3759,125 @@ object DefiningDescriptions {
     val coveredTrue: C[Boolean] =
       cover(true)
 
-  }  
+  } 
 
 }
 ```
 
-`trait Covering` is a `Dotty` type class declaring the capability to *cover a value*.
+`trait Covering` is a `Dotty` type class declaring the capability to *cover a value* and *uncover* that covered value.
 
-Again, we have also already defined some, agreed, very simple, descriptions, `coveredZero` and `coveredTrue`, in terms of this declared capability.
+More precisely
 
-Note, again, that, at this moment, no definition of the declared capability has been provided yet.
+ - `Covering[C[+ _]]` declares, using it's member `cover`, `C[+ _]`'s capability to cover a value.
+ - `Covering[C[+ _]]` declares, using it's member `covered`, `C[+ _]`'s capability to uncover the value it covers.
+
+Again, we have also already defined some, agreed, very simple, descriptions, `coveredZero` and `coveredTrue`, in terms of the declared `cover` capability.
+
+Note, again, that, at this moment, no definitions of the declared capabilities have been provided yet.
 
 ## **AppendixLanguageLevelMeaning**
 
 ### **Defining declared `contain` capability for `Box`**
 
-Let's go ahead and provide a first definition of the declared capability `contain`.
+Let's go ahead and provide a first definition of the declared capabilities `contain` and `contained`.
 
 ```scala
-  case class Box[+Z](contained: Z)
+object LanguageLevelMeaning {
+
+  case class Box[+Z](z: Z)
 
   implicit object implicitBox extends Containing[Box] {
 
     override def contain[Z](z: Z): Box[Z] = Box(z)
 
+    override def contained[Z](bz: Box[Z]) = bz match {
+      case Box(z) => z
+    }
+
   }
+
+  // ...
 ```
 
-`implicitBox` is an `implicit object` that defines the capability `contain` that is declared in `trait Containing`. 
+`implicitBox` is an `implicit object` that defines the capabilities `contain` and `contained` are is declared in `trait Containing`. 
 
 ### **Defining declared `contain` capability for `Bag`**
 
 Let's go ahead and provide a second definition of the declared capability `contain`.
 
 ```scala
-  case class Bag[+Z](contained: Z)
+object LanguageLevelMeaning {
+
+  // ...
+
+  case class Bag[+Z](z: Z)
 
   implicit object implicitBag extends Containing[Bag] {
 
     override def contain[Z](z: Z): Bag[Z] = Bag(z)
 
-  }
+    override def contained[Z](bz: Bag[Z]) = bz match {
+      case Bag(z) => z
+    }
+
+  } 
+
+  // ... 
 ```
 
-`implicitBag` is an `implicit object` that defines the capability that is declared in `trait Containing`. 
+`implicitBag` is an `implicit object` that defines the capabilities `contain` and `contained` are is declared in `trait Containing`. 
 
 ### **Defining declared `cover` capability for `Cap`**
 
 Let's go ahead and provide a first definition of the declared capability `cover`.
 
 ```scala
-  case class Cap[+Z](covered: Z)
+object LanguageLevelMeaning {
+
+  // ...
+
+  case class Cap[+Z](z: Z)
 
   implicit object implicitCap extends Covering[Cap] {
 
     override def cover[Z](z: Z): Cap[Z] = Cap(z)
 
+    override def covered[Z](cz: Cap[Z]) = cz match {
+      case Cap(z) => z
+    }
+
   }
+
+  // ...
 ```
 
-`implicitCap` is an `implicit object` that defines the capability `cover` that is declared in `trait Covering`. 
+`implicitCap` is an `implicit object` that defines the capabilities `cover` and `covered` that are declared in `trait Covering`. 
 
 ### **Defining declared `cover` capability for `Fez`**
 
 Let's go ahead and provide a second definition of the declared capability `cover`.
 
 ```scala
-  case class Fez[+Z](covered: Z)
+object LanguageLevelMeaning {
+
+  // ...
+
+  case class Fez[+Z](z: Z)
 
   implicit object implicitFez extends Covering[Fez] {
 
     override def cover[Z](z: Z): Fez[Z] = Fez(z)
 
-  } 
+    override def covered[Z](fz: Fez[Z]) = fz match {
+      case Fez(z) => z
+    }
+
+  }
+
+  // ...
 ```
 
-`implicitFez` is an `implicit object` that defines the capability that is declared in `trait Covering`. 
+`implicitFez` is an `implicit object` that defines the capabilities `cover` and `covered` that are declared in `trait Covering`. 
 
 ### **Language level meaning**
 
@@ -3758,9 +3887,13 @@ Think of a them as *language level meanings*.
 
 ### **Defining descriptions in terms of language level meaning**
 
-This simply boils down to defining `object`'s that depend on appropriate `implicit object`'s.
+Defining descriptions in terms of language level meaning simply boils down to defining `object`'s that depend on appropriate `implicit object`'s.
 
 ```scala
+object DefiningDescriptions {
+
+  // ... 
+
   object someValuesContainedInBox extends SomeValuesContainedIn[Box]()
 
   object someValuesContainedInBag extends SomeValuesContainedIn[Bag]()
@@ -3768,6 +3901,8 @@ This simply boils down to defining `object`'s that depend on appropriate `implic
   object someValuesCoveredByCap extends SomeValuesCoveredBy[Cap]()
 
   object someValuesCoveredByFez extends SomeValuesCoveredBy[Fez]()
+
+  // ...
 ```
 
 ### **Using `Box` language level meaning of `Containing`** 
@@ -3775,6 +3910,10 @@ This simply boils down to defining `object`'s that depend on appropriate `implic
 We can now use values contained in a box
 
 ```scala
+object DefiningDescriptions {
+
+  // ... 
+
   def usingSomeValuesContainedInBox: Unit = {
 
     import someValuesContainedInBox._
@@ -3783,6 +3922,8 @@ We can now use values contained in a box
     println(containedTrue)
 
   }
+
+  // ...
 ```
 
 Some values contained in a box are made available using `import someValuesContainedInBox._`.
@@ -3799,6 +3940,10 @@ In particular, for *type classes*, like `trait Containing`, dependency injection
 We can now use values contained in a bag
 
 ```scala
+object DefiningDescriptions {
+
+  // ... 
+
   def usingSomeValuesContainedInBag: Unit = {
 
     import someValuesContainedInBag._
@@ -3807,6 +3952,8 @@ We can now use values contained in a bag
     println(containedTrue)
 
   }
+
+  // ...
 ```
 
 Again we use dependency injection by `import`.
@@ -3816,6 +3963,10 @@ Again we use dependency injection by `import`.
 We can now use values covered by a cap
 
 ```scala
+object DefiningDescriptions {
+
+  // ... 
+
   def usingSomeValuesCoveredByCap: Unit = {
 
     import someValuesCoveredByCap._
@@ -3824,6 +3975,8 @@ We can now use values covered by a cap
     println(coveredTrue)
 
   }
+
+  // ...
 ```
 
 Again, we use dependency injection by `import`.
@@ -3833,6 +3986,10 @@ Again, we use dependency injection by `import`.
 We can now use values covered by a fez
 
 ```scala
+object DefiningDescriptions {
+
+  // ... 
+
   def usingSomeValuesCoveredByFez: Unit = {
 
     import someValuesCoveredByFez._
@@ -3841,6 +3998,8 @@ We can now use values covered by a fez
     println(coveredTrue)
 
   } 
+
+  // ...
 ```
 
 Again, we use dependency injection by `import`.
@@ -3854,7 +4013,7 @@ for `Containing`, once the `import` has been done, the rest of the code
     println(containedZero)
     println(containedTrue)
 ```
-*is the same* for `usingSomeValuesContainedInBag` and `usingSomeValuesContainedInBag`.
+is the same for `usingSomeValuesContainedInBag` and `usingSomeValuesContainedInBag`.
 
 In this case we talk about only two lines of code, but, hopefully, you get the point.
 
@@ -3863,7 +4022,7 @@ for `Covering`, once the `import` has been done, the rest of the code
     println(containedZero)
     println(containedTrue)
 ```
-*is the same* for `usingSomeValuesCoveredByCap` and `usingSomeValuesCoveredByFez`.
+is the same for `usingSomeValuesCoveredByCap` and `usingSomeValuesCoveredByFez`.
 
 In this case we talk about only two lines of code, but, hopefully, you get the point.
 
@@ -3871,16 +4030,16 @@ In this case we talk about only two lines of code, but, hopefully, you get the p
 
 So far we have described language defined meanings.
 
-Now we go one step further by describing *library defined meanings*.
+Now we describe *library defined meanings*.
 
 ### **Natural transformation**
 
 Before we continue, we describe *natural transformations*
 
 ```scala
-  trait NaturalTransformation[From[+ _], To[+ _]] {
-    def apply[Z](fz: From[Z]): To[Z]
-  }
+trait NaturalTransformation[From[+ _], To[+ _]] {
+  def apply[Z](fz: From[Z]): To[Z]
+}
 ```
 
 Natural transformations are like functions, but they work at the *type constructor* level instead of at the type level.
@@ -3888,31 +4047,35 @@ Natural transformations are like functions, but they work at the *type construct
 ### **Defining `Meaning`**
 
 ```scala
-  trait Meaning[From[+ _], To[+ _]] {
-    def meaning: NaturalTransformation[From, To]
-  }
+trait Meaning[From[+ _], To[+ _]] {
+  
+  def meaning: NaturalTransformation[From, To]
+}
 ```
 
-`trait Meaning` *declares* the *meaning* of a type constructor `From` as a natural transformation `meaning` to a type constructor `To`.
+`trait Meaning` *declares* the *meaning* of a type constructor `F` (from) as a natural transformation `meaning` to a type constructor `T` (to).
 
 ### **Defining `ContainingMeaningOfContaining`**
  
 ```scala
-  trait ContainingMeaningOfContaining[
-      From[+ _]: Containing, To[+ _]: Containing]
-      extends Meaning[From, To] {
-    val implicitlyFrom = implicitly[Containing[From]]
-    val implicitlyTo = implicitly[Containing[To]]
-    override def meaning: NaturalTransformation[From, To] =
+object LibraryLevelMeaning {
+
+  trait ContainingMeaningOfContaining[F[+ _]: Containing, T[+ _]: Containing]
+      extends Meaning[F, T] {
+    val implicitlyFrom = implicitly[Containing[F]]
+    val implicitlyTo = implicitly[Containing[T]]
+    override def meaning: NaturalTransformation[F, T] =
       new NaturalTransformation {
-        override def apply[Z](fz: From[Z]): To[Z] = {
+        override def apply[Z](fz: F[Z]): T[Z] = {
           implicitlyTo.contain(implicitlyFrom.contained(fz))
         }
       }
   }
+
+  // ...
 ```
 
-`trait ContainingMeaningOfContaining` declares the meaning of a type constructor that is declared to implicitly have the capability to contain a value
+`trait ContainingMeaningOfContaining` declares the meaning of type constructors that sre declared to implicitly have the capability to contain a value
 in terms of type constructors that are declared to implicitly have the capability to contain a value. 
 
 `meaning` is defined using those implicitly available capabilities. 
@@ -3922,13 +4085,23 @@ in terms of type constructors that are declared to implicitly have the capabilit
 We can now define `trait ContainingMeaningOfBox` defining the meaning of `Box` in terms of type constructors that are declared to implicitly have the capability to contain a value.
 
 ```scala
+object LibraryLevelMeaning {
+
+  // ...
+
   trait ContainingMeaningOfBox[C[+ _]: Containing]
       extends ContainingMeaningOfContaining[Box, C]
+
+  // ...    
 ```
 
 Below are two examples
 
 ```scala
+object LibraryLevelMeaning {
+
+  // ...
+
   object bagMeaningOfBox
       extends ContainingMeaningOfBox[Bag]()
       with ContainingMeaningOfContaining[Box, Bag]()
@@ -3936,38 +4109,46 @@ Below are two examples
   object boxMeaningOfBox
       extends ContainingMeaningOfBox[Box]()
       with ContainingMeaningOfContaining[Box, Box]()
+
+  // ...    
 ```
 
 ### **Exploiting similarity**
 
-So far we have defined `meaning` for `Containing` descriptions in terms of `Containing`.
+So far we have defined `meaning` for `Containing` descriptions in terms of `Containing` instances.
 
 `Containing` and `Covering` describe similar concepts. Maybe you can think of
 
-  - a box as something covering something
-  - a bag as something covering something
-  - a cap as something containing something
-  - a fez as something containing something
+  - a box as something covering something, and
+  - a bag as something covering something, and
+  - a cap as something containing something, and
+  - a fez as something containing something.
 
 This is where the flexibility of library level declarations and definitions comes in.
 
 ### **Defining `CoveringMeaningOfContaining`**
  
 ```scala
-  trait CoveringMeaningOfContaining[From[+ _]: Containing, To[+ _]: Covering]
-      extends Meaning[From, To] {
-    val implicitlyFrom = implicitly[Containing[From]]
-    val implicitlyTo = implicitly[Covering[To]]
-    override def meaning: NaturalTransformation[From, To] =
+object LibraryLevelMeaning {
+
+  // ...
+
+  trait CoveringMeaningOfContaining[F[+ _]: Containing, T[+ _]: Covering]
+      extends Meaning[F, T] {
+    val implicitlyFrom = implicitly[Containing[F]]
+    val implicitlyTo = implicitly[Covering[T]]
+    override def meaning: NaturalTransformation[F, T] =
       new NaturalTransformation {
-        override def apply[Z](fz: From[Z]): To[Z] = {
+        override def apply[Z](fz: F[Z]): T[Z] = {
           implicitlyTo.cover(implicitlyFrom.contained(fz))
         }
       }
   }
+
+  // ...
 ```
 
-`trait CoveringMeaningOfContaining` declares the meaning of a type constructor that is declared to implicitly have the capability to contain a value
+`trait CoveringMeaningOfContaining` declares the meaning of type constructors that are declared to implicitly have the capability to contain a value
 in terms of type constructors that are declared to implicitly have the capability to cover a value. 
 
 `meaning` is defined using those implicitly available capabilities. 
@@ -3977,13 +4158,23 @@ in terms of type constructors that are declared to implicitly have the capabilit
 We can now define `trait ContainingMeaningOfBox` defining the meaning of `Box` in terms of type constructors that are declared to implicitly have the capability to cover a value.
 
 ```scala
+object LibraryLevelMeaning {
+
+  // ...
+
   trait CoveringMeaningOfBox[C[+ _]: Covering]
       extends CoveringMeaningOfContaining[Box, C]
+
+  // ...    
 ```
 
 Below are two examples
 
 ```scala
+object LibraryLevelMeaning {
+
+  // ...
+
   object capMeaningOfBox
       extends CoveringMeaningOfBox[Cap]()
       with CoveringMeaningOfContaining[Box, Cap]()
@@ -3991,25 +4182,33 @@ Below are two examples
   object fezMeaningOfBox
       extends CoveringMeaningOfBox[Fez]()
       with CoveringMeaningOfContaining[Box, Fez]()
+
+  // ...    
 ```
 
 ### **Defining `ContainingMeaningOfCovering`**
  
 ```scala
-  trait ContainingMeaningOfCovering[From[+ _]: Covering, To[+ _]: Containing]
-      extends Meaning[From, To] {
-    val implicitlyFrom = implicitly[Covering[From]]
-    val implicitlyTo = implicitly[Containing[To]]
-    override def meaning: NaturalTransformation[From, To] =
+object LibraryLevelMeaning {
+
+  // ...
+
+  trait ContainingMeaningOfCovering[F[+ _]: Covering, T[+ _]: Containing]
+      extends Meaning[F, T] {
+    val implicitlyFrom = implicitly[Covering[F]]
+    val implicitlyTo = implicitly[Containing[T]]
+    override def meaning: NaturalTransformation[F, T] =
       new NaturalTransformation {
-        override def apply[Z](fz: From[Z]): To[Z] = {
+        override def apply[Z](fz: F[Z]): T[Z] = {
           implicitlyTo.contain(implicitlyFrom.covered(fz))
         }
       }
   }
+
+  // ...
 ```
 
-`trait CoveringMeaningOfContaining` declares the meaning of a type constructor that is declared to implicitly have the capability to cover a value
+`trait CoveringMeaningOfContaining` declares the meaning of a type constructors that are declared to implicitly have the capability to cover a value
 in terms of type constructors that are declared to implicitly have the capability to contain a value. 
 
 `meaning` is defined using those implicitly available capabilities. 
@@ -4019,8 +4218,14 @@ in terms of type constructors that are declared to implicitly have the capabilit
 We can now define `trait ContainingMeaningOfCap` defining the meaning of `Cap` in terms of type constructors that are declared to implicitly have the capability to contain a value.
 
 ```scala
+object LibraryLevelMeaning {
+
+  // ...
+
   trait ContainingMeaningOfCap[C[+ _]: Containing]
-      extends ContainingMeaningOfCovering[Cap, C] 
+      extends ContainingMeaningOfCovering[Cap, C]
+
+  // ...     
 ```
 
 `meaning` is defined using this `implicitly` available capability.
@@ -4028,6 +4233,10 @@ We can now define `trait ContainingMeaningOfCap` defining the meaning of `Cap` i
 Below are two examples
 
 ```scala
+object LibraryLevelMeaning {
+
+  // ...
+
   object boxMeaningOfCap
       extends ContainingMeaningOfCap[Box]()
       with ContainingMeaningOfCovering[Cap, Box]()
@@ -4035,6 +4244,8 @@ Below are two examples
   object bagMeaningOfCap
       extends ContainingMeaningOfCap[Bag]()
       with ContainingMeaningOfCovering[Cap, Bag]()
+
+  // ...    
 ```
 
 ### **Library level meaning**
@@ -4047,6 +4258,10 @@ Think of a them as *library level meanings*
 We can now use the bag meaning of values contained in a box
 
 ```scala
+object LibraryLevelMeaning {
+
+  // ...
+
   def usingBagMeaningOfValuesContainedInBox: Unit = {
 
     import someValuesContainedInBox._
@@ -4056,15 +4271,21 @@ We can now use the bag meaning of values contained in a box
     println(meaning(containedTrue))
 
   }
+
+  // ...
 ```
 
-For `trait Meaning` we also use dependency injection by `import`.
+For `usingBagMeaningOfValuesContainedInBox` we also use dependency injection by `import`.
 
 ### **Use `Box` library level `Containing` meaning for `Box`**
       
 We can now use the box meaning of values contained in a box
 
 ```scala
+object LibraryLevelMeaning {
+
+  // ...
+
   def usingBoxMeaningOfValuesContainedInBox: Unit = {
 
     import someValuesContainedInBox._
@@ -4074,6 +4295,8 @@ We can now use the box meaning of values contained in a box
     println(meaning(containedTrue))
 
   }
+
+  // ...
 ```
 
 Again we use dependency injection by `import`.
@@ -4083,6 +4306,10 @@ Again we use dependency injection by `import`.
 We can now use the cap meaning of values contained in a box
 
 ```scala
+object LibraryLevelMeaning {
+
+  // ...
+
   def usingCapMeaningOfValuesContainedInBox: Unit = {
 
     import someValuesContainedInBox._
@@ -4092,6 +4319,8 @@ We can now use the cap meaning of values contained in a box
     println(meaning(containedTrue))
 
   } 
+
+  // ...
 ```
 
 Again we use dependency injection by `import`.
@@ -4101,6 +4330,10 @@ Again we use dependency injection by `import`.
 We can now use the box meaning of values contained in a box
 
 ```scala
+object LibraryLevelMeaning {
+
+  // ...
+
   def usingFezMeaningOfValuesContainedInBox: Unit = {
 
     import someValuesContainedInBox._
@@ -4109,7 +4342,9 @@ We can now use the box meaning of values contained in a box
     println(meaning(containedZero))
     println(meaning(containedTrue))
 
-  } 
+  }
+
+  // ... 
 ```
 
 Again we use dependency injection by `import`.
@@ -4119,6 +4354,10 @@ Again we use dependency injection by `import`.
 We can now use the box meaning of values covered by a cap
 
 ```scala
+object LibraryLevelMeaning {
+
+  // ...
+
   def usingBoxMeaningOfValuesCoveredByCap: Unit = {
 
     import someValuesCoveredByCap._
@@ -4128,6 +4367,8 @@ We can now use the box meaning of values covered by a cap
     println(meaning(coveredTrue))
 
   } 
+
+  // ...
 ```
 
 Again we use dependency injection by `import`.
@@ -4137,6 +4378,10 @@ Again we use dependency injection by `import`.
 We can now use the bag meaning of values covered by a cap
 
 ```scala
+object LibraryLevelMeaning {
+
+  // ...
+
   def usingBagMeaningOfValuesCoveredByCap: Unit = {
 
     import someValuesCoveredByCap._
@@ -4146,6 +4391,8 @@ We can now use the bag meaning of values covered by a cap
     println(meaning(coveredTrue))
 
   }
+
+  // ...
 ```
 
 Again we use dependency injection by `import`.
@@ -4159,7 +4406,7 @@ for `Containing`, once the `import`'s have been done, the rest of the code
     println(meaning(containedZero))
     println(meaning(containedTrue))
 ```
-*is the same* for `usingBoxMeaningOfValuesCoveredByCap` and usingBagMeaningOfValuesCoveredByCap, usingCapMeaningOfValuesContainedInBox and `usingFezMeaningOfValuesContainedInBox`.
+is the same for `usingBagMeaningOfValuesContainedInBox`, `usingBoxMeaningOfValuesContainedInBox`, `usingCapMeaningOfValuesContainedInBox` and `usingFezMeaningOfValuesContainedInBox`.
 
 In this case we talk about only two lines of code, but, hopefully, you get the point.
 
@@ -4168,7 +4415,7 @@ for `Covering`, once the `import`'s have been done, the rest of the code
     println(meaning(coveredZero))
     println(meaning(coveredTrue))
 ```
-*is the same* for `usingBoxMeaningOfValuesCoveredByCap` and `usingBagMeaningOfValuesCoveredByCap`.
+is the same for `usingBoxMeaningOfValuesCoveredByCap` and `usingBagMeaningOfValuesCoveredByCap`.
 
 In this case we talk about only two lines of code, but, hopefully, you get the point.
 

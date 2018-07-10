@@ -13,41 +13,64 @@ package demo
 
 object FunctionsAndExpressions {
 
-  val z = 3.0
-  val y = 4.0
+  private val z = 3.0
+  private val y = 4.0
 
-  type &&[+Z, +Y] = Tuple2[Z, Y]
-
-  def main(args: Array[String]): Unit = {
+  private type &&[+Z, +Y] = Tuple2[Z, Y]
 
     import scala.math.{sqrt => squareRoot}
 
-    val result01: Double = squareRoot(z * z + y * y)
+    private val result01: Double = squareRoot(z * z + y * y)
 
-    val square: Double => Double =
+    private val square: Double => Double =
       z => z * z
 
-    val result02: Double = squareRoot(square(z) + square(y))
+    private val result02: Double = squareRoot(square(z) + square(y))
 
-    val sum: Double && Double => Double =
+    private val sum: Double && Double => Double =
       (z, y) => z + y
 
-    val result03: Double = squareRoot(sum(square(z), square(y)))
+    private val result03: Double = squareRoot(sum(square(z), square(y)))
 
-    val squares: Double && Double => Double && Double =
+    private val squares: Double && Double => Double && Double =
       (z, y) => (square(z), square(y))
 
-    val result04: Double = squareRoot(sum(squares(z, y)))
+    private val result04: Double = squareRoot(sum(squares(z, y)))
 
-    val result05: Double = (squares andThen sum andThen squareRoot)(z, y)
+    private val result05: Double = (squares andThen sum andThen squareRoot)(z, y)
 
-    val result06: Double = (squares andThen sum andThen squareRoot) apply (z, y)
+    private val result06: Double = (squares andThen sum andThen squareRoot) apply (z, y)
 
     import bindingOperator.BindingOperator
 
-    val result07: Double = (z, y) bind (squares andThen sum andThen squareRoot)
+    private val result07: Double = (z, y) bind (squares andThen sum andThen squareRoot)
 
-    val result08: Double = (z, y) bind squares bind sum bind squareRoot
+    private val result08: Double = (z, y) bind squares bind sum bind squareRoot
+
+    // private val result09: Double = (z, y) bind (squares bind sum bind squareRoot)
+
+    private val squareRootOfSumOfSquares: Double && Double => Double = 
+      squares andThen sum andThen squareRoot
+
+    private val result10: Double = squareRootOfSumOfSquares(z, y)
+
+    private val result11: Double = squareRootOfSumOfSquares apply (z, y)  
+
+    private val result12: Double = (z, y) bind squareRootOfSumOfSquares  
+
+    private val bindToSquaresAndThenBindToSumAndThenBindToSquareRoot: Double && Double => Double  = 
+      _ bind squares bind sum bind squareRoot
+
+    private val result13: Double = bindToSquaresAndThenBindToSumAndThenBindToSquareRoot(z, y)
+
+    private val result14: Double = bindToSquaresAndThenBindToSumAndThenBindToSquareRoot apply (z, y)  
+
+    private val toSquaresAndThenBindToSumAndThenBindToSquareRoot: Double && Double => Double  = 
+      bindToSquaresAndThenBindToSumAndThenBindToSquareRoot
+
+    private val result15: Double = (z, y) bind toSquaresAndThenBindToSumAndThenBindToSquareRoot  
+
+  def main(args: Array[String]): Unit = {      
 
     println(result01)
     println(result02)
@@ -57,6 +80,13 @@ object FunctionsAndExpressions {
     println(result06)
     println(result07)
     println(result08)
+    // println(result09)
+    println(result10)
+    println(result11)
+    println(result12)
+    println(result13)
+    println(result14)
+    println(result15)
 
   }
 
