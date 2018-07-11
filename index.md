@@ -1025,7 +1025,8 @@ object productUtils {
 }
 ```
 
-Think of `product` as a program template and of `` `z>-->y` `` and `` `z>-->x` `` as program fragments.
+Think of `product` as a program template and of `` `z>-->y` `` and `` `z>-->x` `` as program fragment parameters.
+Once the program fragment parameters have been given program fragment arguments we obtain a composite program.
 
 `` product(`z>-->y`, `z>-->x`) `` *constructs* a result from the results of `` `z>-->y` `` and `` `z>-->x` ``.
 
@@ -1051,7 +1052,7 @@ The `PDBP` library deals with *many* arguments resp. results using *nested tuple
   - `Z && Y && X && W` for four of them,
   - ...  
 
-Note that `&&` associates to the right, so, for example, `Z && Y && X` is the same type as the nested tuple `(Z && Y) && X`.
+Note that `&&` associates to the left, so, for example, `Z && Y && X` is the same type as the nested tuple `(Z && Y) && X`.
 
 ### **Describing `trait Construction` continued**
 
@@ -1059,7 +1060,9 @@ Note that `&&` associates to the right, so, for example, `Z && Y && X` is the sa
 
  - `product[Z, Y, X, W]` is a more complex version of `product[Z, Y, X]`,
  - `and[Z, Y, X, W]` is yet another more complex version of `product[Z, Y, X]`,
- - `` `let`[Z, Y, X] `` has a parameter that is a program that *constructs a new result*, and `` `in` `` has a parameter that is a program that has that result available as an *extra argument*.
+ - `` `let`[Z, Y, X] `` has a parameter that is a program fragment that *constructs a new result*, and `` `in` `` has a parameter that is a program fragment that has that result available as an *extra argument*.
+
+The main difference between `` `let` `` and `compose` is that `` `let` `` does not loose the original argument of type `Z`. 
 
 Note that
 
@@ -1362,13 +1365,11 @@ object productUtils {
 }
 ```
 
-The definition of `product` is an example of a recurring theme of the `PDBP` library: defining a program description, or programming capability, often boils down to a *getting the types right puzzle*. 
+The definition of `product` is an example of a recurring theme of the `PDBP` library: defining a program, or programming capability, often boils down to a *getting the types right puzzle*. 
 Often there is only one meaningful way to get them right. 
 Let's have a look at some of the details of the puzzle for this definition`.
 
 The outer `` `let` `` creates, using `` `z>-->y` ``, a new argument of type `Y` for the outer `` `in` `` which, as a consequence, has an argument of type `Z && Y` available, representing two arguments, one of type `Z` and one of type `Y`. 
-
-The main difference between `` `let` `` and `compose` is that `` `let` `` does *not* loose the original argument of type `Z`. 
 
 The inner `` `let` `` of the outer `` `in` `` creates, using `` `(z&&y)>-->z` >--> `z>-->x` ``, the composition of `` `(z&&y)>-->z` `` and `` `z>-->x` ``, a new argument of type `X` for the inner `` `in` ``  of the outer `` `in` `` which, as a consequence, has an argument of type `Z && Y && X` available, representing three arguments, one of type `Z`, one of type `Y`, and one of type `X`. 
 
@@ -1487,10 +1488,10 @@ For example
 
 #### **Pointfree programming challenge**
 
-One challenge that comes with pointfree programming is getting the *necessary arguments* out of *all arguments*. 
+One challenge that comes with pointfree programming is getting the *necessary* arguments out of *all* available arguments. 
 One way to deal with this challenge is to keep programs, and therefore, the arguments that come with them, relatively small. 
 
-After all, small program components can be combined to obtain larger ones by plugging them into program templates.
+After all, small program components can be combined to obtain larger, composite programs by plugging them into program templates.
 
 [*Erik Meijer*](https://en.wikipedia.org/wiki/Erik_Meijer_(computer_scientist)) refers to this programming paradigm in a somewhat funny way as *good programmers write baby-code*. 
 
@@ -1528,9 +1529,9 @@ class FactorialTopDown[>-->[- _, + _]: Program] {
 `factorial` above uses 
 
   - the `` `if`(...) { ... } `else` { ... } `` program template capability of `trait Condition`.
-  - the atomic program fragment `isZero`
-  - the atomic program fragment `one`
-  - the composite program fragment `factorialOfNonZero`
+  - the atomic program component `isZero`
+  - the atomic program component `one`
+  - the composite program component `factorialOfNonZero`
 
 where
 
@@ -1564,8 +1565,8 @@ and
 `factorialOfNonZero` above uses 
 
   - the `` `let` { ... } `in` { ... } `` program template capability of `trait Construction`.
-  - the atomic program fragment `multiply`
-  - the composite program fragment `subtractOneAndThenFactorial`
+  - the atomic program component `multiply`
+  - the composite program component `subtractOneAndThenFactorial`
 
 where
 
@@ -1589,8 +1590,8 @@ and
 `subtractOneAndThenFactorial` above uses 
 
   - the `>-->` program template capability of `trait Composition` (more precisely, of `implicit class CompositionOperator`).
-  - the atomic program fragment `subtractOne`
-  - *recursively*, `factorial` *itself* as a program fragment
+  - the atomic program component `subtractOne`
+  - *recursively*, `factorial` itself as a composite program component
 
 where
 
@@ -1602,6 +1603,8 @@ where
     i - 1
   }   
 ```
+
+Note that, to obtain most flexibility, we keep atomic program components (pure functions, remember) as small as possile.
 
 ### **`factorial` revisited**
 
@@ -1750,13 +1753,13 @@ More percisely,
   - the function `effectfulWriteToConsoleFunction` that is used by `effectfulWriteToConsole` is not pure
     - it executes the effects `println("message")` and `println(s"$y")` in an impure way.
 
-Both `producer` and `consumer` above should will be replaced by *effectfree* ones. 
-  - they will *describe effects* in an *pure* way.
+Both `producer` and `consumer` above should (and will) be replaced by *effectfree* ones. 
+  - they should (and will) *describe effects* in an *pure* way.
 
 More precisely
-  - we will extend the programming DSL with the capability to *read input*
+  - we will extend the programming DSL with the *reading input* capability (in this case to read input from the console)
     - as such reading will describe effects in a pure way,
-  - we will extend the programming DSL with the capability to *write output*
+  - we will extend the programming DSL with the *writing output* capability (in this case to write output to the console) 
     - as such reading will describe effects in a pure way.
 
 ## **Describing `trait Computation`**
