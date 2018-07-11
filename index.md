@@ -598,7 +598,7 @@ Note that, again, we were a bit sloppy by not showing `[>-->]`.
 
 The programming capabilities of `Function`, `Composition` and `Construction` correspond to *arrows*. 
 
-A program is an `object` of type `Z >--> Y`, where
+A program is an object of type `Z >--> Y`, where
 
  - `>-->` is a *binary type constructor*,
  - `Z` is the *parameter* (or *argument*) type of `>-->`,
@@ -612,21 +612,22 @@ We write
 
  - argument and result if we want to be explicit about being at the *usage* site.
 
-We also write argument and result as a default. 
+At the usage site an argument is given to the program for the parameter and a result is returned by the program.
+We also write that the program transforms an argument to yield a result.
 
 #### **Variance**
 
-Note that `>-->` is
+Note that `>-->` is declared to be
 
- - *contravariant* in its argument type,
- - *covariant* in its result type.
+ - *contravariant* in its parameter type,
+ - *covariant* in its return type.
 
 [AppendixVariance](#appendixvariance) has demo code that illustrates this.
 
 This *variance* property of `>-->` is related to two *principles* that are known as
 
  - the [*Liskov Substitution Principle*](https://en.wikipedia.org/wiki/Liskov_substitution_principle) which, roughly speaking, states
-   - *impose less*,
+   - *consume less*,
    - *provide more*, 
  - the [*Internet Robustness Principle*](https://en.wikipedia.org/wiki/Robustness_principle) which, roughly speaking, states 
    - *be liberal in what you receive*,
@@ -693,7 +694,7 @@ The main benefit of generic backtick names comes when trying to understand the t
  - `` `z=>y` apply z `` is an equivalent expression where function application is explicit, using `apply`. 
  - `` z bind `z=>y` `` is an equivalent expression where argument binding is explicit, using `bind`. 
 
-Note that argument binding can, conveniently, be read from left to right. 
+Note that the argument binding expression is, probably, the most natural one since it can, conveniently, be read from left to right. 
 
 When dealing with more complex expressions, having nested sub-expressions, the usefulness of generic backtick names becomes even more apparent. 
 
@@ -737,13 +738,13 @@ object functionUtils {
 For programs, we use generic backtick names like `` `z>-->y` `` to, hopefully, improve readability. 
 
 You may have doubts about the usefulness of a trivial program like`` `z>-->z` ``.  
-It turns out that, when defining more complex composite programs, obtained by plugging program components, into program templates, replacing one or more of the components, by `` `z>-->z` `` results in interesting programs of their own.
+It turns out that, when defining more complex composite programs, obtained by plugging program components, into program templates, replacing one or more of the components, by `` `z>-->z` `` results in interesting programs of their own, and, naturally, those programs have simpler types.
 
 In what follows we also refer to programs `` function(`z=>y`) `` as *atomic program fragments*. 
 In `PDBP` pure functions are atomic program building blocks. 
 It is up to you to define the *complexity* of the functions `` `z=>y` ``.
 
-For example, `factorial` might as wel have been defined as follows
+For example, `factorial` might as well have been defined as follows
 
 ```scala
 package demo
@@ -783,6 +784,10 @@ class FactorialAsFunction[>-->[- _, + _]: Function] {
 where
 
 ```scala
+object FactorialFunction {
+
+  // ...
+
   val isZeroFunction: BigInt => Boolean = { i =>
     i == 0
   }
@@ -802,8 +807,53 @@ where
 }
 ```
 
-If we describe `factorial` as `function(factorialFunction)`,
-then we have less flexibility for giving a meaning to it.
+If we describe `factorial` as `function(factorialFunction)`, then, of course, we have less flexibility for giving a meaning to it.
+
+We can use this `factorial` program as follows
+
+```scala
+object function1Function extends Function[Function1] {
+
+  override def function[Z, Y]: (Z => Y) => (Z => Y) = identity
+
+}
+
+object implicits {
+
+  implicit object functionFunction extends Function[[-Z, +Y] => (Z => Y)] {
+
+    override def function[Z, Y]: (Z => Y) => (Z => Y) = identity
+
+  }
+
+}
+
+object FactorialAsFunctionMain {
+
+  import implicits.functionFunction
+
+  object factorialAsFunction extends FactorialAsFunction[[-Z, +Y] => (Z => Y)]  
+
+  def main(args: Array[String]): Unit = {
+
+    import factorialAsFunction.factorial
+
+    println(factorial(10))
+
+  }
+
+}
+```
+
+The `import implicits.functionFunction`, extending the type class `Function`, is a first example of what is called *dependency injection by importing an implicit object extending a type class*.
+
+The object `factorialAsFunction`, depending on `functionFunction`, extends the class `FactorialAsFunction`, that defines `factorial` in terms of the member `function` declared in the type class `Function`. 
+
+The statement above is a first example of a powerful `Dotty` *design pattern*.
+
+Dependency injection by importing an implicit object extending a type class, used together with an object, depending on that imported implicit object, that extends a class that defines its members in terms of the members declared in the type class.
+
+Agreed, the design pattern above is a whole mouth full, but, please keep on reading and re-reading it until you fully understand it.
 
 ### **Describing `trait Composition`**
 
@@ -819,11 +869,13 @@ trait Composition[>-->[- _, + _]] {
 }
 ```
 
-Think of `compose` as a program template and of `` `z>-->y` `` and `` `y>-->x` `` as program fragments.
+Think of `compose` as a *program template* (a.k.a. *higher order program*) and of `` `z>-->y` `` and `` `y>-->x` `` as *program fragment parameters* (a.k.a. *program component parameters*).
+Once the program fragment parameters have been given *program fragment arguments* (a.k.a. *program component arguments*) we obtain a *composite program*.
 
 Translated to functions:
 
-Think of `compose` as a function template (a.k.a. higher order function) and of `` `z>-->y` `` and `` `y>-->x` `` as function fragments (a.k.a. function arguments).
+Think of `compose` as a function template (a.k.a. *higher order function*) and of `` `z>-->y` `` and `` `y>-->x` `` as *function fragment parameters* (a.k.a. function parameters).
+Once the function parameters have been given function fragment arguments (a.k.a. *function arguments*) we obtain a *composite function*.
 
 `` composition(`z>-->y`, `y>-->x`) `` is the *sequential composition* of `` `z>-->y` `` and `` `y>-->x` ``. 
 
@@ -831,9 +883,10 @@ If the program `` `z>-->y` `` transforms an argument of type `Z` to yield a resu
 then that result serves as an argument for the *subsequent* program `` `y>-->x` `` which transforms it to yield a result of type `X`.
 
 Note that `` `y>-->x` `` is a *call-by-name parameter*.
-If program `` `z>-->y` `` fails to yield a result, then program `` `y>-->x` `` is not used.  
+If program `` `z>-->y` `` fails to yield a result, then program `` `y>-->x` `` is not used.
 
-Note that, preferably, `` `y>-->x` `` would be a *lazy parameter* (one of the possible language extensions of `Dotty`).
+Note that for a pure function, the difference between *call by name* and *lazy* does not matter as far as it's yielded result is concerned.
+Therefore we can always use a local `` lazy val `lazy y>-->x` = `y>-->x` `` as an optimization.
 
 Consider
 
@@ -843,7 +896,7 @@ object compositionOperator {
   implicit class CompositionOperator[>-->[- _, + _]: Composition, -Z, +Y](
       `z>-->y`: Z >--> Y) {
 
-    import implicitly._    
+    import implicitly._
 
     def >-->[X](`y>-->x`: => Y >--> X) = {
       compose(`z>-->y`, `y>-->x`)
