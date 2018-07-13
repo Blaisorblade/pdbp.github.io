@@ -740,9 +740,8 @@ For programs, we use generic backtick names like `` `z>-->y` `` to, hopefully, i
 You may have doubts about the usefulness of a trivial program like`` `z>-->z` ``.  
 It turns out that, when defining more complex composite programs, obtained by plugging program components, into program templates, replacing one or more of the components, by `` `z>-->z` `` results in interesting programs of their own, and, naturally, those programs have simpler types.
 
-In what follows we also refer to programs `` function(`z=>y`) `` as *atomic program fragments*. 
-In `PDBP` pure functions are atomic program building blocks. 
-It is up to you to define the *complexity* of the functions `` `z=>y` ``.
+In what follows we also refer to programs `` function(`z=>y`) ``, that, essentially, are *pure functions*, as *atomic programs*.  
+It is up to you to define the *granularity* of atomic programs
 
 For example, `factorial` might as well have been defined as follows
 
@@ -1604,7 +1603,7 @@ where
   }   
 ```
 
-Note that, to obtain most flexibility, we keep atomic program components (pure functions, remember) as small as possile.
+Note that, to obtain most flexibility, we keep atomic program components as small as possile.
 
 ### **`factorial` revisited**
 
@@ -1658,13 +1657,13 @@ Recall that programs have type `Z >--> Y` for types `Z` and `Y`.
 
 For example: `factorial` has type `BigInt >--> BigInt`.
 
-A *main program* has type `Unit >--> Unit`.
+A *main* program has type `Unit >--> Unit`.
 
 If
 
- - `producer` is a *producer program* of type `Unit >--> Z`,
- - `program` is a *program* of type `Z >--> Y`,
- - `consumer` is a *consumer program* of type `Y >--> Unit`,
+ - `producer` is a *producer* program of type `Unit >--> Z`,
+ - `program` is a program of type `Z >--> Y`,
+ - `consumer` is a *consumer* program of type `Y >--> Unit`,
 
 then
 
@@ -1742,25 +1741,23 @@ object effectfulUtils {
 }
 ```
 
-We have a problem here.
+You may argue that we have a problem here. 
+We promised to use `function` only for pure functions (a.k.a. as *effectfree*).
 
-Both `producer` and `consumer` above are *effectful*.
-  - they *execute effects* in an *impure* way.
-
-More percisely,
-  - the function `effectfulReadIntFromConsoleFunction` that is used by `effectfulReadIntFromConsole` is not pure 
-    - it executes the effects `println("message")` and `readInt()` in an impure way,
-  - the function `effectfulWriteToConsoleFunction` that is used by `effectfulWriteToConsole` is not pure
+But,
+  - the function `effectfulReadIntFromConsoleFunction` that is used by `effectfulReadIntFromConsole` is *impure* (a.k.a. as *effectful*)
+    - it *executes* the *effects* `println("message")` and `readInt()` in an impure way,
+  - the function `effectfulWriteToConsoleFunction` that is used by `effectfulWriteToConsole` is impure
     - it executes the effects `println("message")` and `println(s"$y")` in an impure way.
 
-Both `producer` and `consumer` above should (and will) be replaced by *effectfree* ones. 
-  - they should (and will) *describe effects* in an *pure* way.
+Both `producer` and `consumer` above should (and will) be replaced versions where
+  - the functions they use are ones *describing effects* in an pure way instead of *executing effects* in an impure way.
 
 More precisely
   - we will extend the programming DSL with the *reading input* capability (in this case to read input from the console)
     - as such reading will describe effects in a pure way,
   - we will extend the programming DSL with the *writing output* capability (in this case to write output to the console) 
-    - as such reading will describe effects in a pure way.
+    - as such writing will describe effects in a pure way.
 
 ## **Describing `trait Computation`**
 
@@ -1781,6 +1778,7 @@ private[pdbp] trait Computation[C[+ _]]
     with Lifting[C]
     with Sequencing[C]
     with Program[Kleisli[C]]
+    // ...
 ```
 
 where
@@ -1797,8 +1795,8 @@ private[pdbp] trait Sequencing[C]
 
 belong to the same `package pdbp.computation`.
 
-`trait Computation` is a *type class* that will gradually be explained later in this document. 
-`trait Computation` *declares* the *computational capabilities* of *computation descriptions*. 
+`trait Computation` is a type class that will gradually be explained later in this document. 
+`trait Computation` declares the *computational capabilities* of *computation descriptions*. 
 
 We often write *computation* instead of *computation description*.
 
