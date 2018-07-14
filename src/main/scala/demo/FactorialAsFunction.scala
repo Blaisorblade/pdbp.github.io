@@ -1,82 +1,66 @@
-package demo
+// package demo
 
-//       _______         __    __        _______
-//      / ___  /\       / /\  / /\      / ___  /\
-//     / /__/ / / _____/ / / / /_/__   / /__/ / /
-//    / _____/ / / ___  / / / ___  /\ /____  / /
-//   / /\____\/ / /__/ / / / /__/ / / \___/ / /
-//  /_/ /      /______/ / /______/ /     /_/ /
-//  \_\/       \______\/  \______\/      \_\/
-//                                           v1.0
-//  Program Description Based Programming Library
-//  author        Luc Duponcheel        2017-2018
+// //       _______         __    __        _______
+// //      / ___  /\       / /\  / /\      / ___  /\
+// //     / /__/ / / _____/ / / / /_/__   / /__/ / /
+// //    / _____/ / / ___  / / / ___  /\ /____  / /
+// //   / /\____\/ / /__/ / / / /__/ / / \___/ / /
+// //  /_/ /      /______/ / /______/ /     /_/ /
+// //  \_\/       \______\/  \______\/      \_\/
+// //                                           v1.0
+// //  Program Description Based Programming Library
+// //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.product.productType._
+// import pdbp.types.product.productType._
 
-object FactorialFunction {
+// import examples.utils.functionUtils._
 
-  val factorialFunction: BigInt => BigInt = { i =>
-    if (isZeroFunction(i)) {
-      oneFunction(i)
-    } else {
-      val subtractOneAndThenFactorial =
-        subtractOneFunction andThen factorialFunction
-      multiplyFunction(i, subtractOneAndThenFactorial(i))
-    }
-  }
+// object FactorialFunction {
 
-  val isZeroFunction: BigInt => Boolean = { i =>
-    i == 0
-  }
+//   val factorialFunction: BigInt => BigInt = { i =>
+//     if (isZeroFunction(i)) {
+//       oneFunction(i)
+//     } else {
+//       multiplyFunction(i, (subtractOneFunction andThen factorialFunction)(i))
+//     }
+//   }
 
-  def oneFunction[Z]: Z => BigInt = { z =>
-    1
-  }
+// }
 
-  val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
-    i * j
-  }
+// import pdbp.program.Function
 
-  val subtractOneFunction: BigInt => BigInt = { i =>
-    i - 1
-  }
+// import FactorialFunction._
 
-}
+// class FactorialAsFunction[>-->[- _, + _]: Function] {
 
-import pdbp.program.Function
+//   import implicitly._
 
-import FactorialFunction._
+//   val factorial: BigInt >--> BigInt = function(factorialFunction)
 
-class FactorialAsFunction[>-->[- _, + _]: Function] {
+// }
 
-  import implicitly._
+// object functionImplicits {
 
-  val factorial: BigInt >--> BigInt = function(factorialFunction)
+//   implicit object functionFunction extends Function[[-Z, +Y] => (Z => Y)] {
 
-}
+//     override def function[Z, Y]: (Z => Y) => (Z => Y) = identity
 
-object implicits {
+//   }
 
-  implicit object functionFunction extends Function[[-Z, +Y] => (Z => Y)] {
+// }
 
-    override def function[Z, Y]: (Z => Y) => (Z => Y) = identity
+// object FactorialAsFunctionMain {
 
-  }
+//   import functionImplicits.functionFunction
 
-}
+//   object factorialAsFunction extends FactorialAsFunction[[-Z, +Y] => (Z => Y)]  
 
-object FactorialAsFunctionMain {
+//   def main(args: Array[String]): Unit = {
 
-  import implicits.functionFunction
+//     import factorialAsFunction.factorial
 
-  object factorialAsFunction extends FactorialAsFunction[[-Z, +Y] => (Z => Y)]  
+//     println(factorial(10))
 
-  def main(args: Array[String]): Unit = {
+//   }
 
-    import factorialAsFunction.factorial
-
-    println(factorial(10))
-
-  }
-
-}
+// }

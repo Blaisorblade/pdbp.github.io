@@ -19,7 +19,7 @@ import pdbp.program.compositionOperator._
 
 import examples.utils.functionUtils._
 
-class Factorial[>-->[- _, + _]: Program] {
+class FactorialAsProgram[>-->[- _, + _]: Program] {
 
   import implicitly._
 

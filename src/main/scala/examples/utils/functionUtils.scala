@@ -31,4 +31,12 @@ object functionUtils {
     1
   }
 
+  val squareFunction: Double => Double = { z =>
+    z * z
+  }
+
+  val sumFunction: Double && Double => Double = { (z, y) =>
+    z + y
+  }  
+
 }

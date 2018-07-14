@@ -17,7 +17,7 @@ import pdbp.program.compositionOperator._
 
 import pdbp.utils.effectfulUtils._
 
-import examples.programs.Factorial
+import examples.programs.FactorialAsProgram
 
 trait MainFactorial[>-->[- _, + _]: Program] {
 
@@ -35,7 +35,7 @@ trait MainFactorial[>-->[- _, + _]: Program] {
   private val consumer: BigInt >--> Unit =
     effectfulWriteToConsole("the factorial value of the integer is")
 
-  private object factorialObject extends Factorial[>-->]
+  private object factorialObject extends FactorialAsProgram[>-->]
 
   import factorialObject.factorial
 

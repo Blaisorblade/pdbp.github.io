@@ -613,7 +613,7 @@ We write
  - argument and result if we want to be explicit about being at the *usage* site.
 
 At the usage site an argument is given to the program for the parameter and a result is returned by the program.
-We also write that the program transforms an argument to yield a result.
+We also write that a program *transforms* an argument to yield a result.
 
 #### **Variance**
 
@@ -746,78 +746,65 @@ It is up to you to define the *granularity* of atomic programs
 For example, `factorial` might as well have been defined as follows
 
 ```scala
-package demo
+package examples.programs
 
-import pdbp.types.product.productType._
-
-object FactorialFunction {
-
-  val factorialFunction: BigInt => BigInt = { i =>
-    if (isZeroFunction(i)) {
-      oneFunction(i)
-    } else {
-      val subtractOneAndThenFactorial =
-        subtractOneFunction andThen factorialFunction
-      multiplyFunction(i, subtractOneAndThenFactorial(i))
-    }
-  }
-
-  // ...
-
-}
+import examples.utils.functionUtils._
 
 import pdbp.program.Function
-
-import FactorialFunction._
 
 class FactorialAsFunction[>-->[- _, + _]: Function] {
 
   import implicitly._
 
+  val factorialFunction: BigInt => BigInt = { i =>
+    if (isZeroFunction(i)) {
+      oneFunction(i)
+    } else {
+      multiplyFunction(i, (subtractOneFunction andThen factorialFunction)(i))
+    }
+  }
+
   val factorial: BigInt >--> BigInt = function(factorialFunction)
 
-} 
-
-```  
+}
+```
 
 where
 
 ```scala
-object FactorialFunction {
+package examples.utils
 
-  // ...
+import pdbp.types.product.productType._
+
+object functionUtils {
 
   val isZeroFunction: BigInt => Boolean = { i =>
     i == 0
-  }
-
-  def oneFunction[Z]: Z => BigInt = { z =>
-    1
-  }
-
-  val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
-    i * j
   }
 
   val subtractOneFunction: BigInt => BigInt = { i =>
     i - 1
   }
 
+  val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
+    i * j
+  }
+
+  def oneFunction[Z]: Z => BigInt = { z =>
+    1
+  }
+
+  // ...  
+
 }
 ```
 
-If we describe `factorial` as `function(factorialFunction)`, then, of course, we have less flexibility for giving a meaning to it.
+If we describe `factorial` as a function as above, then, of course, we have less flexibility for giving a meaning to it.
 
 We can use this `factorial` program as follows
 
 ```scala
-object function1Function extends Function[Function1] {
-
-  override def function[Z, Y]: (Z => Y) => (Z => Y) = identity
-
-}
-
-object implicits {
+object functionImplicits {
 
   implicit object functionFunction extends Function[[-Z, +Y] => (Z => Y)] {
 
@@ -829,9 +816,9 @@ object implicits {
 
 object FactorialAsFunctionMain {
 
-  import implicits.functionFunction
+  import functionImplicits.functionFunction
 
-  object factorialAsFunction extends FactorialAsFunction[[-Z, +Y] => (Z => Y)]  
+  object factorialAsFunction extends FactorialAsFunction[[-Z, +Y] => (Z => Y)]
 
   def main(args: Array[String]): Unit = {
 
@@ -844,7 +831,7 @@ object FactorialAsFunctionMain {
 }
 ```
 
-The `import implicits.functionFunction`, extending the type class `Function`, is a first example of what is called *dependency injection by importing an implicit object extending a type class*.
+The `import functionImplicits.functionFunction`, of an object extending the type class `Function`, is a first example of what is called *dependency injection by importing an implicit object extending a type class*.
 
 The object `factorialAsFunction`, depending on `functionFunction`, extends the class `FactorialAsFunction`, that defines `factorial` in terms of the member `function` declared in the type class `Function`. 
 
@@ -1620,7 +1607,7 @@ import pdbp.program.compositionOperator._
 
 import examples.utils.functionUtils._
 
-class Factorial[>-->[- _, + _]: Program] {
+class FactorialAsProgram[>-->[- _, + _]: Program] {
 
   import implicitly._
 
@@ -1649,6 +1636,12 @@ class Factorial[>-->[- _, + _]: Program] {
     }
 
 }
+```
+
+where
+
+```scala
+
 ```
 
 ### **main programs**
@@ -1687,7 +1680,7 @@ import pdbp.program.compositionOperator._
 
 import pdbp.utils.effectfulUtils._
 
-import examples.programs.Factorial
+import examples.programs.FactorialAsProgram
 
 trait MainFactorial[>-->[- _, + _]: Program] {
 
@@ -1705,7 +1698,7 @@ trait MainFactorial[>-->[- _, + _]: Program] {
   private val consumer: BigInt >--> Unit =
     effectfulWriteToConsole("the factorial value of the integer is")
 
-  private object factorialObject extends Factorial[>-->]
+  private object factorialObject extends FactorialAsProgram[>-->]
 
   import factorialObject.factorial
 
@@ -1822,7 +1815,7 @@ We write
 
  - result if we want to be explicit about being at the usage site.
 
-We also write result as a default. 
+We also write that a computation yields a result.
 
 #### **`PDBP` library users versus `PDBP` library developers**
 
@@ -1861,7 +1854,99 @@ private[pdbp] trait Resulting[C[+ _]] {
 ```
 
 Think of `result(ez)` as a computation that is a *pure expression* `ez`. 
-*Executing* `result(ez)` is supposed to do nothing else than *evaluating* the expression `ez` to a yield a result of type `Z`.
+It is supposed to do nothing else than *evaluating* the expression `ez` to a yield a result of type `Z`.
+
+In what follows we also refer to computations `result(ez)`, that, essentially, are pure expression, as *atomic computations*. 
+It is up to you to define the granularity of atomic computations.
+
+For example, the sum of the squares of two numbers can be defined as an expression.
+
+#### **`sumOfSquares` as an expression**
+
+```scala
+package pdbp.examples.computation
+
+import pdbp.types.product.productType._
+
+import examples.utils.functionUtils._
+
+object SumOfSquaresFunction { 
+
+  val sumOfSquaresFunction: Double && Double => Double = { (z, y) => 
+    sumFunction(squareFunction(z), squareFunction(y)) 
+  }
+
+}
+
+import pdbp.computation.Resulting
+
+import SumOfSquaresFunction._
+
+class SumOfSquaresAsExpression[C[+ _]: Resulting] {
+
+  import implicitly._
+
+  def sumOfSquares: Double && Double => C[Double] = { (z, y) =>
+    result(sumOfSquaresFunction(z, y))
+  }
+
+}
+```
+
+where
+
+```scala
+package examples.utils
+
+object functionUtils { 
+
+  // ...
+
+  val squareFunction: Double => Double = { z =>
+    z * z
+  }
+
+  val sumFunction: Double && Double => Double = { (z, y) =>
+    z + y
+  }
+
+}
+```
+
+If we describe `sumOfSquares` as an expression as above, then, of course, we have less flexibility for giving a meaning to it.
+
+We can use this `sumOfSquares` computation as follows.
+
+```scala
+object resultingImplicits {
+
+  type I[+Z] = Z
+
+  implicit object identityResulting extends Resulting[I] {
+
+    override def result[Z]: Z => I[Z] = identity
+
+  }
+
+}
+
+object SumOfSquaresAsExpressionMain {
+
+  import resultingImplicits.I
+  import resultingImplicits.identityResulting
+
+  object sumOfSquaresAsExpression extends SumOfSquaresAsExpression[I]
+
+  def main(args: Array[String]): Unit = {
+    import sumOfSquaresAsExpression.sumOfSquares
+    println(sumOfSquares(3.0, 4.0))
+  }
+
+}
+```
+
+The `import resultingImplicits.identityResulting`, of an object extending the type class `Resulting`, is another example of what is called dependency injection by importing an implicit object extending a type class.
+
 
 ### **Describing `trait Binding`**
 
@@ -1877,90 +1962,94 @@ private[pdbp] trait Binding[C[+ _]] {
 }
 ```
 
-Think of `` `z=>cy` `` as a *computation execution continuation template* or, simply, *computation template*, and of `cz` as a *computation fragment* (a.k.a. *sub-computation*).
+Think of `` `z=>cy` `` as a *computation execution continuation template* or, simply, *computation template*, and of `cz` as a *computation fragment* (a.k.a. *computation component* and *sub-computation*).
 
 Translated to expressions:
 
-Think of `` `z=>cy` `` as an *expression evaluation continuation template*, or, simply, *expression template*, and of `cz` as an *expression fragment* (a.k.a. *sub-expression*).
+Think of `` `z=>cy` `` as an *expression evaluation continuation template*, or, simply, *expression template*, and of `cz` as an *expression fragment* (a.k.a. *expression component* and *sub-expression*).
 
 `` bind(cz, `z=>cy`) `` is function that *binds* `cz` to `z=>cy`.
 
 If the computation `cz` yields a result of type Z, then that result serves as an argument for the subsequent function `z=>cy` which transforms it to a computation that yields a result of type Y.
 
-In what follows we also refer to computations `result(ez)` as *atomic computation fragments*. 
-In `PDBP` pure expressions are atomic computation building blocks. 
-It is up to you to define the *complexity* of the expressions `ez`.
+Different from expression evaluation, which, for example, happens bottom-up left to right.
+the *computation execution order* is strictly imposed by `bind`.
 
-For example, the sum of the squares of two numbers can be defined in many ways.
+For example, the sum of the squares of two numbers can also be defined as a computation.
+
+#### **`sumOfSquares` as a computation**
 
 ```scala
-package demo
+package pdbp.examples.computation
 
-import demo.resulting._
-import demo.bindingOperator._
+//       _______         __    __        _______
+//      / ___  /\       / /\  / /\      / ___  /\
+//     / /__/ / / _____/ / / / /_/__   / /__/ / /
+//    / _____/ / / ___  / / / ___  /\ /____  / /
+//   / /\____\/ / /__/ / / / /__/ / / \___/ / /
+//  /_/ /      /______/ / /______/ /     /_/ /
+//  \_\/       \______\/  \______\/      \_\/
+//                                           v1.0
+//  Program Description Based Programming Library
+//  author        Luc Duponcheel        2017-2018
 
-object SumOfSquaresAsExpression {
+import pdbp.computation.Computation
 
-  def sumOfSquares01(z: Double, y: Double) =
-    result(z * z + y * y)
+import examples.utils.functionUtils._
 
-  def sumOfSquares02(z: Double, y: Double) =
-    z * z bind { zSquare =>
-      y * y bind { ySquare =>
-        result(zSquare + ySquare)
+class SumOfSquaresAsComputation[C[+ _]: Computation] {
+
+  import implicitly._
+
+  def sumOfSquares(z: Double, y: Double) =
+    bind(
+      result(squareFunction(z)), { zSquare =>
+        bind(result(squareFunction(z)), { ySquare =>
+          bind(result(sumFunction(zSquare, ySquare)), { zSquare_plus_ySquare =>
+            result(zSquare_plus_ySquare)
+          })
+        })
       }
-    }
+    )
 
-  def sumOfSquares03(z: Double, y: Double) =
-    z * z bind { zSquare =>
-      y * y bind { ySquare =>
-        zSquare + ySquare bind { zSquare_plus_ySquare =>
-          result(zSquare_plus_ySquare)
-        }
-      }
-    }
+}
+```
+
+If we describe `sumOfSquares` as a computation as above, then, of course, we have more flexibility for giving a meaning to it.
+
+We can use this `sumOfSquares` computation as follows.
+
+```scala
+object computationImplicits {
+
+  type I[+Z] = Z
+
+  implicit object identityComputation extends Computation[I] {
+
+    override def result[Z]: Z => I[Z] = identity
+
+    override def bind[Z, Y](iz: I[Z], `z=>iy`: => Z => I[Y]): I[Y] = `z=>iy`(iz)
+
+  }
+
+}
+
+object SumOfSquaresAsComputationMain {
+
+  import computationImplicits.I
+  import computationImplicits.identityComputation
+
+  object sumOfSquaresAsComputation extends SumOfSquaresAsComputation[I]
 
   def main(args: Array[String]): Unit = {
-    println(sumOfSquares01(3.0, 4.0))
-    println(sumOfSquares02(3.0, 4.0))
-    println(sumOfSquares03(3.0, 4.0))
-
+    import sumOfSquaresAsComputation.sumOfSquares
+    println(sumOfSquares(3.0, 4.0))
   }
 
 }
 ```
 
-where
-
-```scala
-package demo
-
-object resulting {
-
-  def result[Z]: Z => Z = identity
-
-}
-```
-
-and
-
-```scala
-package demo
-
-object bindingOperator {
-
-  implicit class BindingOperator[Z](z: Z) {
-
-    def bind[Y](`z=>y`: Z => Y) = `z=>y` apply z
-
-  }
-
-}
-```
-
-  - `sumOfSquares01` uses `result` one time,
-  - `sumOfSquares02` uses `result` one time and `bind` two times,
-  - `sumOfSquares03` uses `result` one time and `bind` three times.
+The `import computationImplicits.identityComputation`, of an object extending the type class `Computation`, is another example of what is called dependency injection by importing an implicit object extending a type class.
 
 ### **Describing `trait Lifting`**
 
