@@ -1,4 +1,4 @@
-package pdbp.examples.computation
+package pdbp.examples.computations
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\

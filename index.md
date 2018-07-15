@@ -1864,7 +1864,7 @@ For example, the sum of the squares of two numbers can be defined as an expressi
 #### **`sumOfSquares` as an expression**
 
 ```scala
-package pdbp.examples.computation
+package pdbp.examples.computations
 
 import pdbp.types.product.productType._
 
@@ -1979,7 +1979,7 @@ For example, the sum of the squares of two numbers can also be defined as a comp
 #### **`sumOfSquares` as a computation**
 
 ```scala
-package pdbp.examples.computation
+package pdbp.examples.computations
 
 import pdbp.computation.Computation
 
@@ -2042,7 +2042,7 @@ The `import computationImplicits.identityComputation`, of an object extending th
 Note that, after
 
   - doing dependency injection by importing an implicit object extending a type class
-  - defining an object defining `sumOfSquares` using the members decared in the type class
+  - defining an object defining `sumOfSquares` using the members declared in the type class
   - importing the members of that object
 
 The rest of the code
@@ -2055,7 +2055,9 @@ The rest of the code
   }
 ```
 
-is the same for defining the sum of the squares of two numbers as an expression or as a computation.
+is the same for defining the sum of the squares of two numbers 
+  - as an expression, or
+  - as a computation.
 
 ### **Describing `trait Lifting`**
 
