@@ -13,7 +13,7 @@ package pdbp.computation.meaning.instances.ofActive.active
 
 import pdbp.types.active.activeTypes._
 
-import pdbp.program.implicits.active.implicits.implicitActiveProgram
+import pdbp.program.implicits.active.implicits.activeProgram
 
 import pdbp.program.meaning.ProgramMeaning
 

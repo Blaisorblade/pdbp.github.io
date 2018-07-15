@@ -21,7 +21,7 @@ import pdbp.computation.Computation
 import pdbp.computation.transformation.ComputationTransformation
 import pdbp.computation.transformation.free.FreeTransformation
 
-import pdbp.program.implicits.active.implicits.implicitActiveProgram
+import pdbp.program.implicits.active.implicits.activeProgram
 
 object activeFreeProgram
     extends Computation[ActiveFree]

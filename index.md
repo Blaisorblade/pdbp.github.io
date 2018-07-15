@@ -2552,24 +2552,45 @@ object functionUtils {
 
 ### **Language level meaning of programs**
 
-So far we have *defined* program descriptions using the *declared* programming capabilities of `trait Program`.
+So far we have defined program descriptions using the declared programming capabilities of `trait Program[>-->[- _, + _]]`.
 
-Program descriptions can be given a *language level meaning* by *defining* the programming capabilities of `trait Program` in a program `object`. 
+Program descriptions can be given a *language level meaning* by defining the programming capabilities of `trait Program[>-->[- _, + _]]` in an `object` that extends `trait Program[>-->[- _, + _]]`. 
+
+We also refer to an `object` that extends `trait Program[>-->[- _, + _]]` as a program object.
 
 ### **Language level meaning of computations**
 
-So far we have *defined* program descriptions using the *declared* programming capabilities of `trait Computation`.
+So far we have defined computation descriptions using the declared computational capabilities of `trait Computation[C[+ _]]`.
 
-Computation descriptions can be given a *language level meaning* by *defining* the computational capabilities of `trait Computation` in a program `object`. 
+Computation descriptions can be given a *language level meaning* by defining the computational capabilities of `trait Computation[C[+ _]]` in an `object` that extends `trait Computation[C[+ _]]`. 
 
-Note that the programming capabilities of `trait Program` can be defined by defining the computational capabilities of `trait Computation`in a computation `object`.
+We also refer to an `object` that extends `trait Computation[C[+ _]]` as a computation object.
+
+Note that defining the computational capabilities of `trait Computation[C[+ _]]` also defines the programming capabilities of `trait Program[Kleisli[C]]`.
+
+We have already mentioned the design pattern dependency injection by importing an implicit object extending a type class.
+The type classes involved are `trait Program[>-->[- _, + _]]` and `trait Computation[C[+ _]]` (with corresponsing `trait Program[Kleisli[C]]`.)
+Instead of defining program objects and computation objects (with corresponding program objects), we define implicit program objects and implicit computation objects (with corresponding implicit program objects) that are used for dependency injection by `import`.
+
+Recall that in the [Introduction](#introduction) we mentioned that we go for kleisli programs `Program[Kleisli[C]]` for computations `C`.
 
 ### **Describing `activeProgram`**
 
-The simplest computation `object` (and corresponding program `object`) one can probably think of is the *active* one (we use active as opposed to *reactive*) defined below
+The simplest implicit computation `object` (and corresponding implicit program `object`) one can probably think of is the *active* one (we use active as opposed to *reactive*) defined below
 
 ```scala
-package pdbp.program.instances.active
+package pdbp.program.implicits.active
+
+//       _______         __    __        _______
+//      / ___  /\       / /\  / /\      / ___  /\
+//     / /__/ / / _____/ / / / /_/__   / /__/ / /
+//    / _____/ / / ___  / / / ___  /\ /____  / /
+//   / /\____\/ / /__/ / / / /__/ / / \___/ / /
+//  /_/ /      /______/ / /______/ /     /_/ /
+//  \_\/       \______\/  \______\/      \_\/
+//                                           v1.0
+//  Program Description Based Programming Library
+//  author        Luc Duponcheel        2017-2018
 
 import pdbp.types.active.activeTypes._
 
@@ -2579,14 +2600,19 @@ import pdbp.program.Program
 
 import pdbp.computation.Computation
 
-object activeProgram extends Computation[Active] with Program[`=>A`] {
+object implicits {
 
-  override private[pdbp] def result[Z]: Z => Active[Z] = `z=>az`
+  implicit object activeProgram
+      extends Computation[Active]
+      with Program[`=>A`] {
 
-  override private[pdbp] def bind[Z, Y](
-      az: Active[Z],
-      `z=>ay`: => (Z => Active[Y])): Active[Y] = {
-    `z=>ay`(az)
+    override private[pdbp] def result[Z]: Z => Active[Z] = `z=>az`
+
+    override private[pdbp] def bind[Z, Y](
+        az: Active[Z],
+        `z=>ay`: => (Z => Active[Y])): Active[Y] =
+      `z=>ay`(az)
+
   }
 
 }
@@ -2630,25 +2656,9 @@ object functionUtils {
 }
 ```
 
-### **Describing `implicitActiveProgram`**
-
-Let's move on and define an `implicit val` that we can use later on for doing dependecy injection by `import`.
-
-```scala
-package pdbp.program.implicits.active
-
-import pdbp.program.instances.active.activeProgram
-
-object implicits {
-
-  implicit val implicitActiveProgram: activeProgram.type = activeProgram
-
-}
-```
-
 ## **Running main programs (language level meaning)**
 
-### **Running `factorialMain` using an effectful `producer` and `consumer` and `activeProgram`**
+### **Running `factorialMain` using  `activeProgram` and an effectful `producer` and `consumer`**
 
 Consider
 
@@ -2658,20 +2668,22 @@ package examples.objects.active.effectfulReadingAndWriting
 import pdbp.types.active.activeTypes._
 
 import pdbp.program.implicits.active.implicits
-import implicits.implicitActiveProgram
+import implicits.activeProgram
 
 import examples.mainPrograms.effectfulReadingAndWriting.MainFactorial
 
 object mainFactorial extends MainFactorial[`=>A`]()
 ```
 
-The definition of `mainFactorial` uses dependecy injection by `import` 
-  - `import implicits.implicitActiveProgram` to bring an `implicit val` (`implicitActiveProgram` in scope to `extend` the *type class* `MainFactorial[>-->]` using `` MainFactorial[`=>A`] ``.
+The definition of `mainFactorial` uses dependecy injection by `import` of an `implicit object` extending `Computation[Active]` and `Program[`=>A`]`.
+  - `import implicits.implicitActiveProgram` brings the `implicit object activeProgram` in scope to define `mainFactorial` that `` extends MainFactorial[`=>A`] ``.
 
 Note that
 
-  - `mainFactorial.factorialObject.factorial` is an active, language level meaning of the program description `factorial` in `trait Factorial`.
   - `mainFactorial.factorialMain` is an active, language level meaning of the main program description `factorialMain` in `trait FactorialMain`.
+
+Note that `factorialMain` uses `mainFactorial.factorialObject.factorial` 
+  - `mainFactorial.factorialObject.factorial` is an active, language level meaning of the program description `factorial` in `trait Factorial`.
 
 We can now finally define `main` in `object FactorialMain`
 
@@ -2692,7 +2704,7 @@ object FactorialMain {
 }
 ```
 
-The definition of `FactorialMain` uses dependecy injection by `import`
+The definition of `FactorialMain` uses `import`
  -`import mainFactorial.factorialMain`) to bring `factorialMain` in scope.
 
 Note that `factorialMain` has

@@ -14,7 +14,7 @@ package pdbp.computation.meaning.instances.ofActiveIntReading.activeIntReading
 import pdbp.types.active.activeTypes._
 import pdbp.types.active.reading.activeReadingTypes._
 
-import pdbp.program.implicits.active.implicits.implicitActiveProgram
+import pdbp.program.implicits.active.implicits.activeProgram
 
 import pdbp.program.implicits.active.reading.int.implicits.implicitActiveIntReadingProgram
 

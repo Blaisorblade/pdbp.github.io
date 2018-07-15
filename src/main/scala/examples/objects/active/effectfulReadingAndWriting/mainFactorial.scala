@@ -14,7 +14,7 @@ package examples.objects.active.effectfulReadingAndWriting
 import pdbp.types.active.activeTypes._
 
 import pdbp.program.implicits.active.implicits
-import implicits.implicitActiveProgram
+import implicits.activeProgram
 
 import examples.mainPrograms.effectfulReadingAndWriting.MainFactorial
 

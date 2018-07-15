@@ -21,7 +21,7 @@ import pdbp.computation.transformation.reading.ReadingTransformation
 
 import pdbp.program.instances.active.reading.ActiveReadingProgram
 
-import pdbp.program.implicits.active.implicits.implicitActiveProgram
+import pdbp.program.implicits.active.implicits.activeProgram
 
 object activeIntReadingProgram
     extends ActiveReadingProgram[BigInt]()

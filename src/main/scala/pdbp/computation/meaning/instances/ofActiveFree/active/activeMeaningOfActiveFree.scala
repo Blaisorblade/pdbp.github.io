@@ -25,7 +25,7 @@ import pdbp.computation.transformation.free.FreeTransformation
 
 import pdbp.computation.meaning.instances.ofActive.active.activeMeaningOfActive
 
-import pdbp.program.implicits.active.implicits.implicitActiveProgram
+import pdbp.program.implicits.active.implicits.activeProgram
 import pdbp.program.implicits.active.free.implicits.implicitActiveFreeProgram
 
 object freeTransformationOfActive

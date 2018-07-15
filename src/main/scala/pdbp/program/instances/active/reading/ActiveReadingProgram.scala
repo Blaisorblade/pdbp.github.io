@@ -22,7 +22,7 @@ import pdbp.computation.Computation
 import pdbp.computation.transformation.ComputationTransformation
 import pdbp.computation.transformation.reading.ReadingTransformation
 
-import pdbp.program.implicits.active.implicits.implicitActiveProgram
+import pdbp.program.implicits.active.implicits.activeProgram
 
 trait ActiveReadingProgram[R]
     extends Computation[ActiveReading[R]]
