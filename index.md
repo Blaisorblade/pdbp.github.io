@@ -1920,11 +1920,9 @@ We can use this `sumOfSquares` computation as follows.
 ```scala
 object resultingImplicits {
 
-  type I[+Z] = Z
+  implicit object identityResulting extends Resulting[[+Z] => Z] {
 
-  implicit object identityResulting extends Resulting[I] {
-
-    override def result[Z]: Z => I[Z] = identity
+    override def result[Z]: Z => Z = identity
 
   }
 
@@ -1932,21 +1930,22 @@ object resultingImplicits {
 
 object SumOfSquaresAsExpressionMain {
 
-  import resultingImplicits.I
   import resultingImplicits.identityResulting
 
-  object sumOfSquaresAsExpression extends SumOfSquaresAsExpression[I]
+  object sumOfSquaresAsExpression extends SumOfSquaresAsExpression[[+Z] => Z]
+
+  import sumOfSquaresAsExpression.sumOfSquares
 
   def main(args: Array[String]): Unit = {
-    import sumOfSquaresAsExpression.sumOfSquares
+
     println(sumOfSquares(3.0, 4.0))
+    
   }
 
 }
 ```
 
 The `import resultingImplicits.identityResulting`, of an object extending the type class `Resulting`, is another example of what is called dependency injection by importing an implicit object extending a type class.
-
 
 ### **Describing `trait Binding`**
 
@@ -1982,17 +1981,6 @@ For example, the sum of the squares of two numbers can also be defined as a comp
 ```scala
 package pdbp.examples.computation
 
-//       _______         __    __        _______
-//      / ___  /\       / /\  / /\      / ___  /\
-//     / /__/ / / _____/ / / / /_/__   / /__/ / /
-//    / _____/ / / ___  / / / ___  /\ /____  / /
-//   / /\____\/ / /__/ / / / /__/ / / \___/ / /
-//  /_/ /      /______/ / /______/ /     /_/ /
-//  \_\/       \______\/  \______\/      \_\/
-//                                           v1.0
-//  Program Description Based Programming Library
-//  author        Luc Duponcheel        2017-2018
-
 import pdbp.computation.Computation
 
 import examples.utils.functionUtils._
@@ -2004,7 +1992,7 @@ class SumOfSquaresAsComputation[C[+ _]: Computation] {
   def sumOfSquares(z: Double, y: Double) =
     bind(
       result(squareFunction(z)), { zSquare =>
-        bind(result(squareFunction(z)), { ySquare =>
+        bind(result(squareFunction(y)), { ySquare =>
           bind(result(sumFunction(zSquare, ySquare)), { zSquare_plus_ySquare =>
             result(zSquare_plus_ySquare)
           })
@@ -2022,13 +2010,11 @@ We can use this `sumOfSquares` computation as follows.
 ```scala
 object computationImplicits {
 
-  type I[+Z] = Z
+  implicit object identityComputation extends Computation[[+Z] => Z] {
 
-  implicit object identityComputation extends Computation[I] {
+    override def result[Z]: Z => Z = identity
 
-    override def result[Z]: Z => I[Z] = identity
-
-    override def bind[Z, Y](iz: I[Z], `z=>iy`: => Z => I[Y]): I[Y] = `z=>iy`(iz)
+    override def bind[Z, Y](z: Z, `z=>y`: => Z => Y): Y = `z=>y`(z)
 
   }
 
@@ -2036,20 +2022,40 @@ object computationImplicits {
 
 object SumOfSquaresAsComputationMain {
 
-  import computationImplicits.I
   import computationImplicits.identityComputation
 
-  object sumOfSquaresAsComputation extends SumOfSquaresAsComputation[I]
+  object sumOfSquaresAsComputation extends SumOfSquaresAsComputation[[+Z] => Z]
+
+  import sumOfSquaresAsComputation.sumOfSquares
 
   def main(args: Array[String]): Unit = {
-    import sumOfSquaresAsComputation.sumOfSquares
+
     println(sumOfSquares(3.0, 4.0))
+
   }
 
 }
 ```
 
 The `import computationImplicits.identityComputation`, of an object extending the type class `Computation`, is another example of what is called dependency injection by importing an implicit object extending a type class.
+
+Note that, after
+
+  - doing dependency injection by importing an implicit object extending a type class
+  - defining an object defining `sumOfSquares` using the members decared in the type class
+  - importing the members of that object
+
+The rest of the code
+
+```scala
+  def main(args: Array[String]): Unit = {
+
+    println(sumOfSquares(3.0, 4.0))
+
+  }
+```
+
+is the same for defining the sum of the squares of two numbers as an expression or as a computation.
 
 ### **Describing `trait Lifting`**
 

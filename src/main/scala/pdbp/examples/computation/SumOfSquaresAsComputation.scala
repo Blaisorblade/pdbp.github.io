@@ -22,7 +22,7 @@ class SumOfSquaresAsComputation[C[+ _]: Computation] {
   def sumOfSquares(z: Double, y: Double) =
     bind(
       result(squareFunction(z)), { zSquare =>
-        bind(result(squareFunction(z)), { ySquare =>
+        bind(result(squareFunction(y)), { ySquare =>
           bind(result(sumFunction(zSquare, ySquare)), { zSquare_plus_ySquare =>
             result(zSquare_plus_ySquare)
           })
@@ -34,13 +34,11 @@ class SumOfSquaresAsComputation[C[+ _]: Computation] {
 
 object computationImplicits {
 
-  type I[+Z] = Z
+  implicit object identityComputation extends Computation[[+Z] => Z] {
 
-  implicit object identityComputation extends Computation[I] {
+    override def result[Z]: Z => Z = identity
 
-    override def result[Z]: Z => I[Z] = identity
-
-    override def bind[Z, Y](iz: I[Z], `z=>iy`: => Z => I[Y]): I[Y] = `z=>iy`(iz)
+    override def bind[Z, Y](z: Z, `z=>y`: => Z => Y): Y = `z=>y`(z)
 
   }
 
@@ -48,14 +46,16 @@ object computationImplicits {
 
 object SumOfSquaresAsComputationMain {
 
-  import computationImplicits.I
   import computationImplicits.identityComputation
 
-  object sumOfSquaresAsComputation extends SumOfSquaresAsComputation[I]
+  object sumOfSquaresAsComputation extends SumOfSquaresAsComputation[[+Z] => Z]
+
+  import sumOfSquaresAsComputation.sumOfSquares
 
   def main(args: Array[String]): Unit = {
-    import sumOfSquaresAsComputation.sumOfSquares
+
     println(sumOfSquares(3.0, 4.0))
+
   }
 
 }
