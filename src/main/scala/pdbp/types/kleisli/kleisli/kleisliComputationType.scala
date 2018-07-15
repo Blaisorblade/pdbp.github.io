@@ -1,4 +1,4 @@
-package pdbp.demo.types.kleisli
+package pdbp.types.kleisli
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\

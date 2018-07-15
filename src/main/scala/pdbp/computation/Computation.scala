@@ -29,28 +29,30 @@ private[pdbp] trait Computation[C[+ _]]
     with Program[Kleisli[C]]
     with Applying[Kleisli[C]] {
 
-  override private[pdbp] def lift0[Z](z: Z): C[Z] =
-    result(z)
+  override private[pdbp] def lift0[Z]: Z => C[Z] =
+    result
 
-  override private[pdbp] def lift1[Z, Y](`z=>y`: Z => Y): C[Z] => C[Y] = {
+  override private[pdbp] def lift1[Z, Y]: (Z => Y) => C[Z] => C[Y] = `z=>y` => {
     case cz =>
       bind(cz, z => result(`z=>y`(z)))
   }
 
-  override private[pdbp] def lift2[Z, Y, X](
-      `(z&&y)=>x`: (Z && Y) => X): (C[Z] && C[Y]) => C[X] = {
+  override private[pdbp] def lift2[Z, Y, X]
+    : ((Z && Y) => X) => (C[Z] && C[Y]) => C[X] = `(z&&y)=>x` => {
     case (cz, cy) =>
       bind(cz, z => bind(cy, y => result(`(z&&y)=>x`(z, y))))
   }
 
-  override private[pdbp] def lift3[Z, Y, X, W](
-      `(z&&y&&x)=>w`: (Z && Y && X) => W): (C[Z] && C[Y] && C[X]) => C[W] = {
-    case ((cz, cy), cx) =>
-      bind(cz,
-           z => bind(cy, y => bind(cx, x => result(`(z&&y&&x)=>w`((z, y), x)))))
-  }
+  override private[pdbp] def lift3[Z, Y, X, W]
+    : ((Z && Y && X) => W) => (C[Z] && C[Y] && C[X]) => C[W] =
+    `(z&&y&&x)=>w` => {
+      case ((cz, cy), cx) =>
+        bind(
+          cz,
+          z => bind(cy, y => bind(cx, x => result(`(z&&y&&x)=>w`((z, y), x)))))
+    }
 
-  // ...
+  // and so on ...
 
   private type `=>C` = Kleisli[C]
 

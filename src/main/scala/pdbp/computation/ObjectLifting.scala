@@ -16,7 +16,7 @@ private[pdbp] trait ObjectLifting[C[+ _]] {
   private[pdbp] def liftObject[Z](z: Z): C[Z] =
     lift0(z)
 
-  private[pdbp] def lift0[Z](z: Z): C[Z] =
-    liftObject(z)
+  private[pdbp] def lift0[Z]: Z => C[Z] =
+    liftObject
 
 }

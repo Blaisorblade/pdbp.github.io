@@ -1,4 +1,4 @@
-package pdbp.demo.program
+package pdbp.program
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -17,7 +17,7 @@ import pdbp.program.Applying
 import pdbp.computation.Resulting
 import pdbp.computation.Binding
 
-import pdbp.demo.types.kleisli.kleisliComputationType._
+import pdbp.types.kleisli.kleisliComputationType._
 
 private[pdbp] trait ProgramWithApplying[>-->[- _, + _]]
     extends Program[>-->]

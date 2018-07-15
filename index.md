@@ -2107,13 +2107,13 @@ private[pdbp] trait ObjectLifting[C[+ _]] {
   private[pdbp] def liftObject[Z](z: Z): C[Z] =
     lift0(z)
 
-  private[pdbp] def lift0[Z](z: Z): C[Z] =
-    liftObject(z)
+  private[pdbp] def lift0[Z]: Z => C[Z] =
+    liftObject
 
 }
 ```
 
-`liftObject` and it's alias `lift0` are functions that *lift* an *object* `z` to a *computation* with result `z`.
+`liftObject` and it's alias `lift0` are members that *lift* an *object* `z` to a *computation* with result `z`.
 
 #### **Describing `trait FunctionLifting`**
 
@@ -2127,13 +2127,13 @@ private[pdbp] trait FunctionLifting[C[+ _]] {
   private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): C[Z] => C[Y] =
     lift1(`z=>y`)
 
-  private[pdbp] def lift1[Z, Y](`z=>y`: Z => Y): C[Z] => C[Y] =
-    lift1(`z=>y`)
+  private[pdbp] def lift1[Z, Y]: (Z => Y) => C[Z] => C[Y] =
+    lift1
 
 }
 ```
 
-`liftFunction` and it's alias `lift1` are functions that *lift* an *object-level function* to a *computation-level function*.
+`liftFunction` and it's alias `lift1` are members that *lift* an *object-level function* to a *computation-level function*.
 
 #### **Describing `trait OperatorLifting`**
 
@@ -2142,22 +2142,19 @@ Consider
 ```scala
 import pdbp.types.product.productType._
 
-import pdbp.types.product.productType._
-
 private[pdbp] trait OperatorLifting[C[+ _]] {
 
   private[pdbp] def liftOperator[Z, Y, X](
       `(z&&y)=>x`: (Z && Y) => X): (C[Z] && C[Y]) => C[X] =
     lift2(`(z&&y)=>x`)
 
-  private[pdbp] def lift2[Z, Y, X](
-      `(z&&y)=>x`: (Z && Y) => X): (C[Z] && C[Y]) => C[X] =
-    liftOperator(`(z&&y)=>x`)
+  private[pdbp] def lift2[Z, Y, X]: ((Z && Y) => X) => (C[Z] && C[Y]) => C[X] =
+    liftOperator
 
 }
 ```
 
-`liftOperator` and it's alias `lift2` are functions that *lift* an *object-level operator* to a *computation-level operator*.
+`liftOperator` and it's alias `lift2` are members that *lift* an *object-level operator* to a *computation-level operator*.
 
 ### **Describing `trait Lifting` revisited**
 
@@ -2175,23 +2172,57 @@ private[pdbp] trait Lifting[C[+ _]]
     with FunctionLifting[C]
     with OperatorLifting[C] {
 
+  private[pdbp] def lift3[Z, Y, X, W]
+    : ((Z && Y && X) => W) => (C[Z] && C[Y] && C[X]) => C[W] =
+    `((z&&y)&&x)=>w` =>
+      `((cz&&cy)=>c(z&&y)))=>((cz&&cy)&&cx)=>c(z&&y)&&cx`(
+        lift2(`(z&&y)=>(z&&y)`)) andThen lift2(`((z&&y)&&x)=>w`)
+
+  // and so on ...
+
   private[pdbp] def liftedAnd[Z, Y]: (C[Z] && C[Y]) => C[Z && Y] =
     liftOperator(`(z&&y)=>(z&&y)`)
 
   private[pdbp] def liftedApply[Z, Y]: (C[Z => Y] && C[Z]) => C[Y] =
     liftOperator(`((z=>y)&&z)=>y`)
 
-  private[pdbp] def lift3[Z, Y, X, W](
-      `(z&&y&&x)=>w`: (Z && Y && X) => W): (C[Z] && C[Y] && C[X]) => C[W] =
-    `((cz&&cy)=>c(z&&y)))=>((cz&&cy)&&cx)=>c(z&&y)&&cx`(liftedAnd) andThen liftOperator(
-      `(z&&y&&x)=>w`)
-
-  // ...
-
   private[pdbp] override def liftFunction[Z, Y](
       `z=>y`: Z => Y): C[Z] => C[Y] = { cz =>
     liftedApply(liftObject(`z=>y`), cz)
-  }  
+
+  }
+
+}
+```
+
+Lifting does not stop with objects (`lift0`), unary functions (`lift1`) and binary operators (`lift2`).
+It is possible to define lifting for ternary operators and so on ... .
+
+  - `lift3` is defined in terms of `lift2`
+
+where
+
+ - `` `((cz&&cy)=>c(z&&y)))=>((cz&&cy)&&cx)=>c(z&&y)&&cx` ``
+
+is the program you expect.
+
+```scala
+package pdbp.utils
+
+// ...
+
+object productUtils {
+
+  // ...
+
+  def `((cz&&cy)=>c(z&&y)))=>((cz&&cy)&&cx)=>c(z&&y)&&cx`[C[+ _], Z, Y, X]
+    : (((C[Z] && C[Y]) => C[Z && Y])) => (
+        C[Z] && C[Y] && C[X]) => C[Z && Y] && C[X] = {
+    `(cz&&cy)=>c(z&&y)` => (`cz&&cy`, cx) =>
+      (`(cz&&cy)=>c(z&&y)`(`cz&&cy`), cx)
+  }
+
+  // ...     
 
 }
 ```
@@ -2250,39 +2281,7 @@ object productUtils {
 }
 ```
 
-Lifting does not stop with objects (`lift0`), unary functions (`lift1`) and binary operators (`lift2`).
-It is possible to define lifting for ternary operators and so on ... .
-
-  - `lift3` is defined in terms of `liftOperator` and `liftedAnd`
-
-where
-
- - `` `((cz&&cy)=>c(z&&y)))=>((cz&&cy)&&cx)=>c(z&&y)&&cx` ``
-
-is the program you expect.
-
-```scala
-package pdbp.utils
-
-// ...
-
-object productUtils {
-
-  // ...
-
-  def `((cz&&cy)=>c(z&&y)))=>((cz&&cy)&&cx)=>c(z&&y)&&cx`[C[+ _], Z, Y, X]
-    : (((C[Z] && C[Y]) => C[Z && Y])) => (
-        C[Z] && C[Y] && C[X]) => C[Z && Y] && C[X] = {
-    `(cz&&cy)=>c(z&&y)` => (`cz&&cy`, cx) =>
-      (`(cz&&cy)=>c(z&&y)`(`cz&&cy`), cx)
-  }
-
-  // ...     
-
-}
-```
-
-Note that `liftFunction` can be defined in terms of `liftObject` and `liftedApply`.
+Note that `lift1` can be defined in terms of `lift0` and `lift2`.
 
 
 ```scala
@@ -2297,16 +2296,12 @@ private[pdbp] trait Lifting[C[+ _]]
 
   // ...
   
-  private[pdbp] override def liftFunction[Z, Y](
-      `z=>y`: Z => Y): C[Z] => C[Y] = { cz =>
-    liftedApply(liftObject(`z=>y`), cz)
-  }
+  private[pdbp] override def lift1[Z, Y]: (Z => Y) => C[Z] => C[Y] = {
+    `z=>y` => cz =>
+      lift2(`((z=>y)&&z)=>y`)(lift0(`z=>y`), cz)
 
 }
 ```
-
-This implies that `liftFunction` can be defined in terms of `liftObject` and `liftOperator`,
-which implies that `lift1` can be defined in terms of `lift0` and `lift2`.
 
 ### **Defining lifting and programming capabilities in terms of computational capabilities**
 
@@ -2326,28 +2321,33 @@ private[pdbp] trait Computation[C[+ _]]
     with Binding[C]
     with Lifting[C]
     with Sequencing[C]
-    with Program[Kleisli[C]] {
+    with Program[Kleisli[C]] 
+    // ... {
 
-  override private[pdbp] def lift0[Z](z: Z): C[Z] =
-    result(z)
+  override private[pdbp] def lift0[Z]: Z => C[Z] =
+    result
 
-  override private[pdbp] def lift1[Z, Y](`z=>y`: Z => Y): C[Z] => C[Y] = {
+  override private[pdbp] def lift1[Z, Y]: (Z => Y) => C[Z] => C[Y] = `z=>y` => {
     case cz =>
       bind(cz, z => result(`z=>y`(z)))
   }
 
-  override private[pdbp] def lift2[Z, Y, X](
-      `(z&&y)=>x`: (Z && Y) => X): (C[Z] && C[Y]) => C[X] = {
+  override private[pdbp] def lift2[Z, Y, X]
+    : ((Z && Y) => X) => (C[Z] && C[Y]) => C[X] = `(z&&y)=>x` => {
     case (cz, cy) =>
       bind(cz, z => bind(cy, y => result(`(z&&y)=>x`(z, y))))
   }
 
-  override private[pdbp] def lift3[Z, Y, X, W](
-      `(z&&y&&x)=>w`: (Z && Y && X) => W): (C[Z] && C[Y] && C[X]) => C[W] = {
-    case ((cz, cy), cx) =>
-      bind(cz,
-           z => bind(cy, y => bind(cx, x => result(`(z&&y&&x)=>w`((z, y), x)))))
-  }
+  override private[pdbp] def lift3[Z, Y, X, W]
+    : ((Z && Y && X) => W) => (C[Z] && C[Y] && C[X]) => C[W] =
+    `(z&&y&&x)=>w` => {
+      case ((cz, cy), cx) =>
+        bind(
+          cz,
+          z => bind(cy, y => bind(cx, x => result(`(z&&y&&x)=>w`((z, y), x)))))
+    }
+
+  // and so on ...
 
   // ...
 
@@ -2453,7 +2453,7 @@ private[pdbp] trait Computation[C[+ _]]
 Consider
 
 ```scala
-package pdbp.demo.types.kleisli
+package pdbp.types.kleisli
 
 object kleisliComputationType {
 
@@ -2470,28 +2470,29 @@ Think of it as a program without arguments.
 The computational capabilities `result` and `bind` can be defined in terms the of the programming capabilities `function` and `compose`, `product` and `apply`.
 
 ```scala
-package pdbp.demo.program
+package pdbp.program
 
 import pdbp.program.Program
+import pdbp.program.Applying
 
 import pdbp.computation.Resulting
 import pdbp.computation.Binding
 
-import pdbp.demo.types.kleisli.kleisliComputationType._
+import pdbp.types.kleisli.kleisliComputationType._
 
 private[pdbp] trait ProgramWithApplying[>-->[- _, + _]]
     extends Program[>-->]
-    with Applying[>-->] 
+    with Applying[>-->]
     with Resulting[Kleisli[>-->]]
     with Binding[Kleisli[>-->]] {
 
-  private type C = Kleisli[>-->]
+  private type M = Kleisli[>-->]
 
-  override private[pdbp] def result[Z]: Z => C[Z] =
+  override private[pdbp] def result[Z]: Z => M[Z] =
     `z=>(u>-->z)`
-      
-  override private[pdbp] def bind[Z, Y](cz: C[Z], `z=>cy`: => Z => C[Y]): C[Y] =
-    compose(cz, compose(product(`z>-->u`, function(`z=>cy`)), apply))
+
+  override private[pdbp] def bind[Z, Y](mz: M[Z], `z=>my`: => Z => M[Y]): M[Y] =
+    compose(mz, compose(product(`z>-->u`, function(`z=>my`)), apply))
 
 }
 ```

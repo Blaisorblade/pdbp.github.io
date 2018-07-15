@@ -16,7 +16,7 @@ private[pdbp] trait FunctionLifting[C[+ _]] {
   private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): C[Z] => C[Y] =
     lift1(`z=>y`)
 
-  private[pdbp] def lift1[Z, Y](`z=>y`: Z => Y): C[Z] => C[Y] =
-    lift1(`z=>y`)
+  private[pdbp] def lift1[Z, Y]: (Z => Y) => C[Z] => C[Y] =
+    lift1
 
 }
