@@ -19,4 +19,4 @@ import implicits.implicitActiveFreeProgram
 import examples.mainPrograms.effectfulReadingAndWriting.EffectfulUtils
 import examples.mainPrograms.effectfulReadingAndWriting.MainFactorialAsProgram
 
-object mainFactorialAsProgram extends MainFactorialAsProgram[`=>AF`]() with EffectfulUtils[`=>AF`]()
+object mainFactorialAsProgram extends MainFactorialAsProgram[`=>AF`]()

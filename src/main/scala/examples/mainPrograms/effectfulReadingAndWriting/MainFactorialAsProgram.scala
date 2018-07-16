@@ -17,7 +17,7 @@ import pdbp.program.compositionOperator._
 
 import examples.programs.FactorialAsProgram
 
-trait MainFactorialAsProgram[>-->[- _, + _]: Program] extends EffectfulUtils[>-->] {
+class MainFactorialAsProgram[>-->[- _, + _]: Program] extends EffectfulUtils[>-->]() {
 
   private object factorialAsProgram extends FactorialAsProgram[>-->]
 

@@ -13,24 +13,39 @@ package pdbp.examples.computations
 
 import pdbp.computation.Computation
 
-import examples.utils.functionUtils._
+import pdbp.computation.bindingOperator._
 
-class SumOfSquaresAsComputation[C[+ _]: Computation] {
+class SumOfSquaresAsComputation[C[+ _]: Computation]
+    extends ResultingUtils[C]() {
 
   import implicitly._
 
   def sumOfSquares(z: Double, y: Double) =
-    bind(
-      result(squareFunction(z)), { zSquare =>
-        bind(result(squareFunction(y)), { ySquare =>
-          bind(result(sumFunction(zSquare, ySquare)), { zSquare_plus_ySquare =>
-            result(zSquare_plus_ySquare)
-          })
-        })
+    square(z) bind { zSquare =>
+      square(y) bind { ySquare =>
+        sum(zSquare, ySquare) bind { zSquare_plus_ySquare =>
+          result(zSquare_plus_ySquare)
+        }
       }
-    )
+    }
 
 }
+
+// class SumOfSquaresAsComputation[C[+ _]: Computation]
+//     extends ResultingUtils[C]() {
+
+//   import implicitly._
+
+//   def sumOfSquares(z: Double, y: Double) =
+//     bind(square(z), { zSquare =>
+//       bind(square(y), { ySquare =>
+//         bind(sum(zSquare, ySquare), { zSquare_plus_ySquare =>
+//           result(zSquare_plus_ySquare)
+//         })
+//       })
+//     })
+
+// }
 
 // object computationImplicits {
 

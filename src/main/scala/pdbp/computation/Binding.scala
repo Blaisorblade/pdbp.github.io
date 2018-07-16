@@ -16,3 +16,13 @@ private[pdbp] trait Binding[C[+ _]] {
   private[pdbp] def bind[Z, Y](cz: C[Z], `z=>cy`: => Z => C[Y]): C[Y]
 
 }
+
+private[pdbp] object bindingOperator {
+
+  implicit class bindingOperator[C[+ _] : Binding, -Z, ZZ <: Z](czz: C[ZZ]) {
+
+    private[pdbp] def bind[Y](`zz=>cy`: ZZ => C[Y]): C[Y] =
+      implicitly.bind(czz, `zz=>cy`)
+  }
+
+}

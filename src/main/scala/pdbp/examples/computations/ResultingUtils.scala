@@ -1,4 +1,4 @@
-package examples.mainPrograms.effectfulReadingAndWriting
+package pdbp.examples.computations
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,21 +11,18 @@ package examples.mainPrograms.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.program.Program
+import pdbp.types.product.productType._
 
-import pdbp.program.compositionOperator._
+import pdbp.computation.Resulting
 
-import examples.programs.FactorialTopDown
+import examples.utils.functionUtils._
 
-class MainFactorialTopDown[>-->[- _, + _]: Program] extends EffectfulUtils[>-->]() {
+trait ResultingUtils[C[+ _]: Resulting] {
 
-  private object factorialTopDown extends FactorialTopDown[>-->]
+  import implicitly._
 
-  import factorialTopDown.factorial
+  val square: Double => C[Double] = squareFunction andThen result
 
-  val factorialMain: Unit >--> Unit =
-    producer >-->
-      factorial >-->
-      consumer
+  val sum: Double && Double => C[Double] = sumFunction andThen result
 
 }

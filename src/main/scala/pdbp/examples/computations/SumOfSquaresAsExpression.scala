@@ -13,27 +13,20 @@ package pdbp.examples.computations
 
 import pdbp.types.product.productType._
 
-import examples.utils.functionUtils._
-
-object SumOfSquaresFunction { 
-
-  val sumOfSquaresFunction: Double && Double => Double = { (z, y) => 
-    sumFunction(squareFunction(z), squareFunction(y)) 
-  }
-
-}
-
 import pdbp.computation.Resulting
 
-import SumOfSquaresFunction._
+import examples.utils.functionUtils._
 
 class SumOfSquaresAsExpression[C[+ _]: Resulting] {
 
   import implicitly._
 
-  def sumOfSquares: Double && Double => C[Double] = { (z, y) =>
-    result(sumOfSquaresFunction(z, y))
+  val sumOfSquaresFunction: Double && Double => Double = { (z, y) =>
+    sumFunction(squareFunction(z), squareFunction(y))
   }
+
+  val sumOfSquares: Double && Double => C[Double] =
+    sumOfSquaresFunction andThen result
 
 }
 
