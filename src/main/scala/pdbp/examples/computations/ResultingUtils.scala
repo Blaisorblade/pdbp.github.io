@@ -21,8 +21,10 @@ trait ResultingUtils[C[+ _]: Resulting] {
 
   import implicitly._
 
-  val square: Double => C[Double] = squareFunction andThen result
+  type `=>C` = [-Z, +Y] => Z => C[Y]
 
-  val sum: Double && Double => C[Double] = sumFunction andThen result
+  val square: Double `=>C` Double = squareFunction andThen result
+
+  val sum: (Double && Double) `=>C` Double = sumFunction andThen result
 
 }

@@ -21,11 +21,13 @@ class SumOfSquaresAsExpression[C[+ _]: Resulting] {
 
   import implicitly._
 
+  type `=>C` = [-Z, +Y] => Z => C[Y]
+
   val sumOfSquaresFunction: Double && Double => Double = { (z, y) =>
     sumFunction(squareFunction(z), squareFunction(y))
   }
 
-  val sumOfSquares: Double && Double => C[Double] =
+  val sumOfSquares: (Double && Double) `=>C` Double =
     sumOfSquaresFunction andThen result
 
 }

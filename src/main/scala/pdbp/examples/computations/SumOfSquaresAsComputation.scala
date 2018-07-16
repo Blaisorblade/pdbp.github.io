@@ -11,6 +11,8 @@ package pdbp.examples.computations
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.types.product.productType._
+
 import pdbp.computation.Computation
 
 import pdbp.computation.bindingOperator._
@@ -20,7 +22,7 @@ class SumOfSquaresAsComputation[C[+ _]: Computation]
 
   import implicitly._
 
-  def sumOfSquares(z: Double, y: Double) =
+  val sumOfSquares: (Double && Double) `=>C` Double = { (z, y) =>
     square(z) bind { zSquare =>
       square(y) bind { ySquare =>
         sum(zSquare, ySquare) bind { zSquare_plus_ySquare =>
@@ -28,6 +30,7 @@ class SumOfSquaresAsComputation[C[+ _]: Computation]
         }
       }
     }
+  }  
 
 }
 

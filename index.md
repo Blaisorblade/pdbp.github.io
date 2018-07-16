@@ -1576,12 +1576,12 @@ A *main* program has type `Unit >--> Unit`.
 If
 
  - `producer` is a *producer* program of type `Unit >--> Z`,
- - `program` is a program of type `Z >--> Y`,
+ - `` `z>-->y` `` is a program of type `Z >--> Y`,
  - `consumer` is a *consumer* program of type `Y >--> Unit`,
 
 then
 
- - `producer >--> program >--> consumer` is a main program.
+ - `` producer >--> `z>-->y` >--> consumer `` is a main program.
 
 We also simply refer to 
 
@@ -1658,11 +1658,15 @@ object effectfulUtils {
     i
   }
 
+  // ...
+
   def effectfulWriteToConsoleFunction[Y](message: String): Y => Unit = { y =>
     println(s"$message")
     val u = println(s"$y")
     u
   }
+
+  // ...
 
 }
 ```
@@ -1899,12 +1903,16 @@ The computation examples described in the next sections are pointful and should 
 
 Note that the package of the examples is `pdbp.examples.computations`. 
 
-#### **`sumOfSquares` as a computation**
+#### **`sumOfSquares` as computation**
 
 Below is the code for `sumOfSquares`.
 
 ```scala
 package pdbp.examples.computations
+
+import pdbp.types.product.productType._
+
+import pdbp.computation.Computation
 
 import pdbp.computation.bindingOperator._
 
@@ -1913,7 +1921,7 @@ class SumOfSquaresAsComputation[C[+ _]: Computation]
 
   import implicitly._
 
-  def sumOfSquares(z: Double, y: Double) =
+  val sumOfSquares: (Double && Double) `=>C` Double = { (z, y) =>
     square(z) bind { zSquare =>
       square(y) bind { ySquare =>
         sum(zSquare, ySquare) bind { zSquare_plus_ySquare =>
@@ -1921,6 +1929,7 @@ class SumOfSquaresAsComputation[C[+ _]: Computation]
         }
       }
     }
+  }  
 
 }
 ```
@@ -1936,13 +1945,15 @@ import pdbp.computation.Resulting
 
 import examples.utils.functionUtils._
 
-trait ResultingUtils[C[+ _] : Resulting] {
+trait ResultingUtils[C[+ _]: Resulting] {
 
-  import implicitly._ 
+  import implicitly._
 
-  val square: Double => C[Double] = squareFunction andThen result
+  type `=>C` = [-Z, +Y] => Z => C[Y]
 
-  val sum: Double && Double => C[Double] = sumFunction andThen result
+  val square: Double `=>C` Double = squareFunction andThen result
+
+  val sum: (Double && Double) `=>C` Double = sumFunction andThen result
 
 }
 ```
@@ -1967,7 +1978,7 @@ object functionUtils {
 
 Since the atomic computations, `square` and `sum` used by `sumOfSquares` are very fine-grained this gives us a lot of flexibility to give a meaning to `sumOfSquares`.
 
-#### **`sumOfSquares` as a expression**
+#### **`sumOfSquares` as expression**
 
 Below is other code for `sumOfSquares`.
 
@@ -1984,17 +1995,127 @@ class SumOfSquaresAsExpression[C[+ _]: Resulting] {
 
   import implicitly._
 
-  val sumOfSquaresFunction: Double && Double => Double = { (z, y) => 
-    sumFunction(squareFunction(z), squareFunction(y)) 
-  }  
+  type `=>C` = [-Z, +Y] => Z => C[Y]
 
-  val sumOfSquares: Double && Double => C[Double] =
+  val sumOfSquaresFunction: Double && Double => Double = { (z, y) =>
+    sumFunction(squareFunction(z), squareFunction(y))
+  }
+
+  val sumOfSquares: (Double && Double) `=>C` Double =
     sumOfSquaresFunction andThen result
 
 }
 ```
 
 Since the atomic program `sumOfSquaresFunction andThen result` used by `sumOfSquares` is very coarse-grained this gives us almost no flexibility to give a meaning to `sumOfSquares`.
+
+### **main kleisli programs**
+
+Recall that kleisli programs have type `Z => C[Y]` (or `` Z `=>C` Y ``, using an appropriate type synonum) for types Z and Y.
+
+For example: `sumOfSquares` has type `` (Double && Double) `=>C` Double ``.
+
+A *main kleisli program* has type `` Unit `=>C` Unit ``.
+
+If
+
+`producer` is a producer kleisli program of type `` Unit `=>C` Z ``,
+`` `z=>cy` `` is a kleisli program of type `` Z `=>C` Y ``,
+`consumer` is a consumer kleisli program of type `` Y `=>C` Unit ``,
+then
+
+`` { u => producer(u) bind { z => `z=>cy`(z) bind { y => consumer(y) } } }`` is a main kleisli program.
+
+We also simply refer to
+
+ - a producer kleisli program as a producer,
+ - a consumer kleisliprogram as a consumer.
+
+### Describing `MainFactorialAsProgram` using an effectful `producer` and `consumer`**
+
+Consider
+
+```scala
+package pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting
+
+import pdbp.computation.Computation
+
+import pdbp.computation.bindingOperator._
+
+import pdbp.examples.computations.SumOfSquaresAsComputation
+
+class MainSumOfSquaresAsKleisliProgram[C[+ _]: Computation] extends EffectfulUtils[C]() {
+
+  private object sumOfSquaresAsKleisliProgram extends SumOfSquaresAsComputation[C]
+
+  import sumOfSquaresAsKleisliProgram.sumOfSquares
+
+  val sumOfSquaresMain: Unit `=>C` Unit = { u =>
+    producer(u) bind { (z, y) => 
+      sumOfSquares(z, y) bind { x => 
+        consumer(x) 
+      }
+    }  
+  }
+
+}
+```
+
+where
+
+```scala
+package pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting
+
+import pdbp.types.product.productType._
+
+import pdbp.utils.effectfulUtils._
+
+import pdbp.computation.Resulting
+
+trait EffectfulUtils[C[+ _]: Resulting] {
+
+  import implicitly._
+
+  type `=>C` = [-Z, +Y] => Z => C[Y]
+
+  private def effectfulReadTwoDoublesFromConsole(
+      message: String): Unit `=>C` (Double && Double) = { _ =>
+    result(effectfulReadTwoDoublesFromConsoleFunction(message)(()))
+  }
+
+  private def effectfulWriteToConsole[Y](message: String): Y `=>C` Unit = { y =>
+    result(effectfulWriteToConsoleFunction(message)(y))
+  }
+
+  val producer: Unit `=>C` (Double && Double) =
+    effectfulReadTwoDoublesFromConsole("please type a double")
+
+  val consumer: Double `=>C` Unit =
+    effectfulWriteToConsole("the sum of the squares of the doubles is")
+
+}
+```
+
+where
+
+```scala
+object effectfulUtils {
+
+  // ...
+
+   def effectfulReadTwoDoublesFromConsoleFunction(message: String): Unit => (Double && Double) = {
+    _ =>
+      println(s"$message")
+      val d1 = readDouble()
+      println(s"$message")
+      val d2 = readDouble()     
+      (d1, d2)
+  } 
+
+  // ...
+
+}
+```
 
 ### **Describing `trait Lifting`**
 

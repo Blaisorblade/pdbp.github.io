@@ -11,7 +11,9 @@ package pdbp.utils
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import scala.io.StdIn.readInt
+import scala.io.StdIn.{readInt, readDouble}
+
+import pdbp.types.product.productType._
 
 object effectfulUtils {
 
@@ -21,6 +23,15 @@ object effectfulUtils {
       val i = BigInt(readInt())
       i
   }
+
+   def effectfulReadTwoDoublesFromConsoleFunction(message: String): Unit => (Double && Double) = {
+    _ =>
+      println(s"$message")
+      val d1 = readDouble()
+      println(s"$message")
+      val d2 = readDouble()     
+      (d1, d2)
+  } 
 
   def effectfulWriteToConsoleFunction[Y](message: String): Y => Unit = { y =>
     println(s"$message")
