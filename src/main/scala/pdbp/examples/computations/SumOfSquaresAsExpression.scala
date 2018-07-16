@@ -37,28 +37,28 @@ class SumOfSquaresAsExpression[C[+ _]: Resulting] {
 
 }
 
-object resultingImplicits {
+// object resultingImplicits {
 
-  implicit object identityResulting extends Resulting[[+Z] => Z] {
+//   implicit object identityResulting extends Resulting[[+Z] => Z] {
 
-    override def result[Z]: Z => Z = identity
+//     override def result[Z]: Z => Z = identity
 
-  }
+//   }
 
-}
+// }
 
-object SumOfSquaresAsExpressionMain {
+// object SumOfSquaresAsExpressionMain {
 
-  import resultingImplicits.identityResulting
+//   import resultingImplicits.identityResulting
 
-  object sumOfSquaresAsExpression extends SumOfSquaresAsExpression[[+Z] => Z]
+//   object sumOfSquaresAsExpression extends SumOfSquaresAsExpression[[+Z] => Z]
 
-  import sumOfSquaresAsExpression.sumOfSquares
+//   import sumOfSquaresAsExpression.sumOfSquares
 
-  def main(args: Array[String]): Unit = {
+//   def main(args: Array[String]): Unit = {
 
-    println(sumOfSquares(3.0, 4.0))
+//     println(sumOfSquares(3.0, 4.0))
 
-  }
+//   }
 
-}
+// }

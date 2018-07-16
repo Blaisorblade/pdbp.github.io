@@ -11,8 +11,6 @@ package examples.programs
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.product.productType._
-
 import examples.utils.functionUtils._
 
 import pdbp.program.Function
@@ -33,28 +31,28 @@ class FactorialAsFunction[>-->[- _, + _]: Function] {
 
 }
 
-object functionImplicits {
+// object functionImplicits {
 
-  implicit object functionFunction extends Function[[-Z, +Y] => (Z => Y)] {
+//   implicit object functionFunction extends Function[[-Z, +Y] => (Z => Y)] {
 
-    override def function[Z, Y]: (Z => Y) => (Z => Y) = identity
+//     override def function[Z, Y]: (Z => Y) => (Z => Y) = identity
 
-  }
+//   }
 
-}
+// }
 
-object FactorialAsFunctionMain {
+// object FactorialAsFunctionMain {
 
-  import functionImplicits.functionFunction
+//   import functionImplicits.functionFunction
 
-  object factorialAsFunction extends FactorialAsFunction[[-Z, +Y] => (Z => Y)]
+//   object factorialAsFunction extends FactorialAsFunction[[-Z, +Y] => (Z => Y)]
 
-  def main(args: Array[String]): Unit = {
+//   def main(args: Array[String]): Unit = {
 
-    import factorialAsFunction.factorial
+//     import factorialAsFunction.factorial
 
-    println(factorial(10))
+//     println(factorial(10))
 
-  }
+//   }
 
-}
+// }

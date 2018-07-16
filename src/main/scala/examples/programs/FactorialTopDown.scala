@@ -1,4 +1,4 @@
-package demo
+package examples.programs
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,14 +11,10 @@ package demo
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.product.productType._
-
-import pdbp.utils.productUtils._
-
 import pdbp.program.Program
 import pdbp.program.compositionOperator._
 
-class FactorialTopDown[>-->[- _, + _]: Program] {
+class FactorialTopDown[>-->[- _, + _]: Program] extends FunctionUtils[>-->]() {
 
   import implicitly._
 
@@ -29,20 +25,6 @@ class FactorialTopDown[>-->[- _, + _]: Program] {
       factorialOfNonZero
     }
 
-  val isZero: BigInt >--> Boolean =
-    function(isZeroFunction)
-
-  val isZeroFunction: BigInt => Boolean = { i =>
-    i == 0
-  }
-
-  def one[Z]: Z >--> BigInt =
-    function(oneFunction)
-
-  def oneFunction[Z]: Z => BigInt = { z =>
-    1
-  }
-
   val factorialOfNonZero: BigInt >--> BigInt =
     `let` {
       subtractOneAndThenFactorial
@@ -50,22 +32,8 @@ class FactorialTopDown[>-->[- _, + _]: Program] {
       multiply
     }
 
-  val multiply: (BigInt && BigInt) >--> BigInt =
-    function(multiplyFunction)
-
-  val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
-    i * j
-  }
-
   val subtractOneAndThenFactorial: BigInt >--> BigInt =
     subtractOne >-->
       factorial
-
-  val subtractOne: BigInt >--> BigInt =
-    function(subtractOneFunction)
-
-  val subtractOneFunction: BigInt => BigInt = { i =>
-    i - 1
-  }
 
 }

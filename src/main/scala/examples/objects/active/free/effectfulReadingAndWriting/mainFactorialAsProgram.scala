@@ -1,4 +1,4 @@
-package examples.programs
+package examples.objects.active.free.effectfulReadingAndWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,24 +11,12 @@ package examples.programs
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.program.Program
+import pdbp.types.active.free.activeFreeTypes._
 
-import pdbp.program.compositionOperator._
+import pdbp.program.implicits.active.free.implicits
+import implicits.implicitActiveFreeProgram
 
-class FactorialAsProgram[>-->[- _, + _]: Program] extends FunctionUtils[>-->]() {
+import examples.mainPrograms.effectfulReadingAndWriting.EffectfulUtils
+import examples.mainPrograms.effectfulReadingAndWriting.MainFactorialAsProgram
 
-  import implicitly._
-
-  val factorial: BigInt >--> BigInt =
-    `if`(isZero) {
-      one
-    } `else` {
-      `let` {
-        subtractOne >-->
-          factorial
-      } `in` {
-        multiply
-      }
-    }
-
-}
+object mainFactorialAsProgram extends MainFactorialAsProgram[`=>AF`]() with EffectfulUtils[`=>AF`]()

@@ -1,4 +1,4 @@
-package examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting
+package examples.mainPrograms.effectfulReadingAndWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,18 +11,21 @@ package examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import examples.objects.active.free.effectfulReadingAndWriting.mainFactorial
-import mainFactorial.factorialMain
+import pdbp.program.Program
 
-import pdbp.computation.meaning.instances.ofActiveFree.active.activeMeaningOfActiveFree
-import activeMeaningOfActiveFree.programMeaning
+import pdbp.program.compositionOperator._
 
-object FactorialMain {
+import examples.programs.FactorialAsFunction
 
-  def main(args: Array[String]): Unit = {
+trait MainFactorialAsFunction[>-->[- _, + _]: Program] extends EffectfulUtils[>-->] {
 
-    programMeaning.applyToProgram(factorialMain)(())
+  private object factorialAsFunction extends FactorialAsFunction[>-->]
 
-  }
+  import factorialAsFunction.factorial
+
+  val factorialMain: Unit >--> Unit =
+    producer >-->
+      factorial >-->
+      consumer
 
 }

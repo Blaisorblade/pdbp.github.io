@@ -32,30 +32,30 @@ class SumOfSquaresAsComputation[C[+ _]: Computation] {
 
 }
 
-object computationImplicits {
+// object computationImplicits {
 
-  implicit object identityComputation extends Computation[[+Z] => Z] {
+//   implicit object identityComputation extends Computation[[+Z] => Z] {
 
-    override def result[Z]: Z => Z = identity
+//     override def result[Z]: Z => Z = identity
 
-    override def bind[Z, Y](z: Z, `z=>y`: => Z => Y): Y = `z=>y`(z)
+//     override def bind[Z, Y](z: Z, `z=>y`: => Z => Y): Y = `z=>y`(z)
 
-  }
+//   }
 
-}
+// }
 
-object SumOfSquaresAsComputationMain {
+// object SumOfSquaresAsComputationMain {
 
-  import computationImplicits.identityComputation
+//   import computationImplicits.identityComputation
 
-  object sumOfSquaresAsComputation extends SumOfSquaresAsComputation[[+Z] => Z]
+//   object sumOfSquaresAsComputation extends SumOfSquaresAsComputation[[+Z] => Z]
 
-  import sumOfSquaresAsComputation.sumOfSquares
+//   import sumOfSquaresAsComputation.sumOfSquares
 
-  def main(args: Array[String]): Unit = {
+//   def main(args: Array[String]): Unit = {
 
-    println(sumOfSquares(3.0, 4.0))
+//     println(sumOfSquares(3.0, 4.0))
 
-  }
+//   }
 
-}
+// }

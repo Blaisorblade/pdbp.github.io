@@ -1,4 +1,4 @@
-package examples.objects.active.effectfulReadingAndWriting
+package examples.main.active.effectfulReadingAndWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,11 +11,15 @@ package examples.objects.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.activeTypes._
+import examples.objects.active.effectfulReadingAndWriting.mainFactorialAsProgram
+import mainFactorialAsProgram.factorialMain
 
-import pdbp.program.implicits.active.implicits
-import implicits.activeProgram
+object FactorialAsProgramMain {
 
-import examples.mainPrograms.effectfulReadingAndWriting.MainFactorial
+  def main(args: Array[String]): Unit = {
 
-object mainFactorial extends MainFactorial[`=>A`]()
+    factorialMain(())
+
+  }
+
+}

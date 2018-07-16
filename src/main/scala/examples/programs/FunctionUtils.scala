@@ -1,4 +1,4 @@
-package examples.main.active.effectfulReadingAndWriting
+package examples.programs
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,15 +11,26 @@ package examples.main.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import examples.objects.active.effectfulReadingAndWriting.mainFactorial
-import mainFactorial.factorialMain
+import pdbp.types.product.productType._
 
-object FactorialMain {
+import pdbp.program.Function
 
-  def main(args: Array[String]): Unit = {
+import examples.utils.functionUtils._
 
-    factorialMain(())
+trait FunctionUtils[>-->[- _, + _] : Function] {
 
-  }
+  import implicitly._ 
+
+  val isZero: BigInt >--> Boolean =
+    function(isZeroFunction)
+
+  val subtractOne: BigInt >--> BigInt =
+    function(subtractOneFunction)
+
+  val multiply: (BigInt && BigInt) >--> BigInt =
+    function(multiplyFunction)
+
+  def one[Z]: Z >--> BigInt =
+    function(oneFunction)
 
 }

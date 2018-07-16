@@ -743,104 +743,6 @@ It turns out that, when defining more complex composite programs, obtained by pl
 In what follows we also refer to programs `` function(`z=>y`) ``, that, essentially, are *pure functions*, as *atomic programs*.  
 It is up to you to define the *granularity* of atomic programs
 
-For example, `factorial` might as well have been defined as follows
-
-```scala
-package examples.programs
-
-import examples.utils.functionUtils._
-
-import pdbp.program.Function
-
-class FactorialAsFunction[>-->[- _, + _]: Function] {
-
-  import implicitly._
-
-  val factorialFunction: BigInt => BigInt = { i =>
-    if (isZeroFunction(i)) {
-      oneFunction(i)
-    } else {
-      multiplyFunction(i, (subtractOneFunction andThen factorialFunction)(i))
-    }
-  }
-
-  val factorial: BigInt >--> BigInt = function(factorialFunction)
-
-}
-```
-
-where
-
-```scala
-package examples.utils
-
-import pdbp.types.product.productType._
-
-object functionUtils {
-
-  val isZeroFunction: BigInt => Boolean = { i =>
-    i == 0
-  }
-
-  val subtractOneFunction: BigInt => BigInt = { i =>
-    i - 1
-  }
-
-  val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
-    i * j
-  }
-
-  def oneFunction[Z]: Z => BigInt = { z =>
-    1
-  }
-
-  // ...  
-
-}
-```
-
-If we describe `factorial` as a function as above, then, of course, we have less flexibility for giving a meaning to it.
-
-We can use this `factorial` program as follows
-
-```scala
-object functionImplicits {
-
-  implicit object functionFunction extends Function[[-Z, +Y] => (Z => Y)] {
-
-    override def function[Z, Y]: (Z => Y) => (Z => Y) = identity
-
-  }
-
-}
-
-object FactorialAsFunctionMain {
-
-  import functionImplicits.functionFunction
-
-  object factorialAsFunction extends FactorialAsFunction[[-Z, +Y] => (Z => Y)]
-
-  def main(args: Array[String]): Unit = {
-
-    import factorialAsFunction.factorial
-
-    println(factorial(10))
-
-  }
-
-}
-```
-
-The `import functionImplicits.functionFunction`, of an object extending the type class `Function`, is a first example of what is called *dependency injection by importing an implicit object extending a type class*.
-
-The object `factorialAsFunction`, depending on `functionFunction`, extends the class `FactorialAsFunction`, that defines `factorial` in terms of the member `function` declared in the type class `Function`. 
-
-The statement above is a first example of a powerful `Dotty` *design pattern*.
-
-Dependency injection by importing an implicit object extending a type class, used together with an object, depending on that imported implicit object, that extends a class that defines its members in terms of the members declared in the type class.
-
-Agreed, the design pattern above is a whole mouth full, but, please keep on reading and re-reading it until you fully understand it.
-
 ### **Describing `trait Composition`**
 
 Consider
@@ -1484,146 +1386,24 @@ After all, small program components can be combined to obtain larger, composite 
 Erik Meijer is so famous that he does not need an introduction. 
 I was very lucky to be able to do research with him, on monads and related stuff, at the Univeristy of Utrecht back in the ninetees.
 
-#### **Formal top-down description of `factorial`**
-  
-Below is a *formal top-down description* of the `factorial` program description using the programming capabilities defined so far.
-
-```scala
-package demo
-
-import pdbp.types.product.productType._
-
-import pdbp.utils.productUtils._
-
-import pdbp.program.Program
-import pdbp.program.compositionOperator._
-
-class FactorialTopDown[>-->[- _, + _]: Program] {
-
-  import implicitly._
-
-  val factorial: BigInt >--> BigInt =
-    `if`(isZero) {
-      one
-    } `else` {
-      factorialOfNonZero
-    }
-
-  // ...  
-```
-
-`factorial` above uses 
-
-  - the `` `if`(...) { ... } `else` { ... } `` program template capability of `trait Condition`.
-  - the atomic program component `isZero`
-  - the atomic program component `one`
-  - the composite program component `factorialOfNonZero`
-
-where
-
-```scala
-  val isZero: BigInt >--> Boolean =
-    function(isZeroFunction)
-
-  val isZeroFunction: BigInt => Boolean = { i =>
-    i == 0
-  }
-
-  def one[Z]: Z >--> BigInt =
-    function(oneFunction)
-
-  def oneFunction[Z]: Z => BigInt = { z =>
-    1
-  }
-```
-
-and
-
-```scala
-  val factorialOfNonZero: BigInt >--> BigInt =
-    `let` {
-      subtractOneAndThenFactorial
-    } `in` {
-      multiply
-    }  
-```
-
-`factorialOfNonZero` above uses 
-
-  - the `` `let` { ... } `in` { ... } `` program template capability of `trait Construction`.
-  - the atomic program component `multiply`
-  - the composite program component `subtractOneAndThenFactorial`
-
-where
-
-```scala
-  val multiply: (BigInt && BigInt) >--> BigInt =
-    function(multiplyFunction)
-
-  val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
-    i * j
-  }    
-```
-
-and
-
-```scala
-  val subtractOneAndThenFactorial: BigInt >--> BigInt =
-    subtractOne >-->
-      factorial    
-```
-
-`subtractOneAndThenFactorial` above uses 
-
-  - the `>-->` program template capability of `trait Composition` (more precisely, of `implicit class CompositionOperator`).
-  - the atomic program component `subtractOne`
-  - *recursively*, `factorial` itself as a composite program component
-
-where
-
-```scala
-  val subtractOne: BigInt >--> BigInt =
-    function(subtractOneFunction)
-
-  val subtractOneFunction: BigInt => BigInt = { i =>
-    i - 1
-  }   
-```
-
-Note that, to obtain most flexibility, we keep atomic program components as small as possile.
-
 ### **`factorial` revisited**
 
-Below is, again, the code of `factorial`
+#### **`factorial` as program**
+
+Below is the code for `factorial`.
 
 ```scala
 package examples.programs
 
-import pdbp.types.product.productType._
-
 import pdbp.program.Program
 
 import pdbp.program.compositionOperator._
 
-import examples.utils.functionUtils._
-
-class FactorialAsProgram[>-->[- _, + _]: Program] {
+class FactorialAsProgram[>-->[- _, + _]: Program] extends FunctionUtils[>-->]() {
 
   import implicitly._
 
-  private val isZero: BigInt >--> Boolean =
-    function(isZeroFunction)
-
-  private val subtractOne: BigInt >--> BigInt =
-    function(subtractOneFunction)
-
-  private val multiply: (BigInt && BigInt) >--> BigInt =
-    function(multiplyFunction)
-
-  private def one[Z]: Z >--> BigInt =
-    function(oneFunction)
-
-  lazy val factorial: BigInt >--> BigInt =
+  val factorial: BigInt >--> BigInt =
     `if`(isZero) {
       one
     } `else` {
@@ -1641,8 +1421,160 @@ class FactorialAsProgram[>-->[- _, + _]: Program] {
 where
 
 ```scala
+package examples.programs
 
+import pdbp.types.product.productType._
+
+import pdbp.program.Function
+
+import examples.utils.functionUtils._
+
+trait FunctionUtils[>-->[- _, + _] : Function] {
+
+  import implicitly._ 
+
+  val isZero: BigInt >--> Boolean =
+    function(isZeroFunction)
+
+  val subtractOne: BigInt >--> BigInt =
+    function(subtractOneFunction)
+
+  val multiply: (BigInt && BigInt) >--> BigInt =
+    function(multiplyFunction)
+
+  def one[Z]: Z >--> BigInt =
+    function(oneFunction)
+
+}
 ```
+
+where
+
+```scala
+package examples.utils
+
+import pdbp.types.product.productType._
+
+object functionUtils {
+
+  val isZeroFunction: BigInt => Boolean = { i =>
+    i == 0
+  }
+
+  val subtractOneFunction: BigInt => BigInt = { i =>
+    i - 1
+  }
+
+  val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
+    i * j
+  }
+
+  def oneFunction[Z]: Z => BigInt = { z =>
+    1
+  }
+
+ // ...  
+
+}
+```
+
+Since the atomic programs, `isZero`, `one`, `subtractOne` and `multiply` used by `factorial` are very fine-grained this gives us a lot of flexibility to give a meaning to `factorial`.
+
+#### **`factorial` top-down**
+
+Below is *top-down* code for `factorial`
+
+```scala
+package examples.programs
+
+import pdbp.program.Program
+import pdbp.program.compositionOperator._
+
+class FactorialTopDown[>-->[- _, + _]: Program] extends FunctionUtils[>-->]() {
+
+  import implicitly._
+
+  val factorial: BigInt >--> BigInt =
+    `if`(isZero) {
+      one
+    } `else` {
+      factorialOfNonZero
+    }
+
+  val factorialOfNonZero: BigInt >--> BigInt =
+    `let` {
+      subtractOneAndThenFactorial
+    } `in` {
+      multiply
+    }
+
+  val subtractOneAndThenFactorial: BigInt >--> BigInt =
+    subtractOne >-->
+      factorial
+
+}
+```
+
+`factorial` above uses 
+
+  - the `` `if`(...) { ... } `else` { ... } `` program template capability of `trait Condition`.
+  - the atomic program component `isZero`
+  - the atomic program component `one`
+  - the composite program component `factorialOfNonZero`
+
+`factorialOfNonZero` above uses 
+
+  - the `` `let` { ... } `in` { ... } `` program template capability of `trait Construction`.
+  - the atomic program component `multiply`
+  - the composite program component `subtractOneAndThenFactorial`
+
+`subtractOneAndThenFactorial` above uses 
+
+  - the `>-->` program template capability of `trait Composition` (more precisely, of `implicit class CompositionOperator`).
+  - the atomic program component `subtractOne`
+  - *recursively*, `factorial` itself as a composite program component
+
+
+#### **`factorial` as function**
+
+Below is other code for `factorial`.
+
+```scala
+package examples.programs
+
+//       _______         __    __        _______
+//      / ___  /\       / /\  / /\      / ___  /\
+//     / /__/ / / _____/ / / / /_/__   / /__/ / /
+//    / _____/ / / ___  / / / ___  /\ /____  / /
+//   / /\____\/ / /__/ / / / /__/ / / \___/ / /
+//  /_/ /      /______/ / /______/ /     /_/ /
+//  \_\/       \______\/  \______\/      \_\/
+//                                           v1.0
+//  Program Description Based Programming Library
+//  author        Luc Duponcheel        2017-2018
+
+import examples.utils.functionUtils._
+
+import pdbp.program.Function
+
+class FactorialAsFunction[>-->[- _, + _]: Function] {
+
+  import implicitly._
+
+  val factorialFunction: BigInt => BigInt = { i =>
+    if (isZeroFunction(i)) {
+      oneFunction(i)
+    } else {
+      multiplyFunction(i, (subtractOneFunction andThen factorialFunction)(i))
+    }
+  }
+
+  val factorial: BigInt >--> BigInt = function(factorialFunction)
+
+}
+```
+
+Since the atomic program `function(factorialFunction)` used by `factorial` is very coarse-grained this gives us almost no flexibility to give a meaning to `factorial`.
 
 ### **main programs**
 
@@ -1667,7 +1599,7 @@ We also simply refer to
   - a producer program as a *producer*,
   - a consumer program as a *consumer*.
 
-### **Describing `mainFactorial` using an effectful `producer` and `consumer`**
+### **Describing `MainFactorialAsProgram` using an effectful `producer` and `consumer`**
 
 Consider
 
@@ -1678,11 +1610,32 @@ import pdbp.program.Program
 
 import pdbp.program.compositionOperator._
 
-import pdbp.utils.effectfulUtils._
-
 import examples.programs.FactorialAsProgram
 
-trait MainFactorial[>-->[- _, + _]: Program] {
+trait MainFactorialAsProgram[>-->[- _, + _]: Program] extends EffectfulUtils[>-->] {
+
+  private object factorialAsProgram extends FactorialAsProgram[>-->]
+
+  import factorialAsProgram.factorial
+
+  val factorialMain: Unit >--> Unit =
+    producer >-->
+      factorial >-->
+      consumer
+
+}
+```
+
+where
+
+```scala
+package examples.mainPrograms.effectfulReadingAndWriting
+
+import pdbp.program.Function
+
+import pdbp.utils.effectfulUtils._
+
+class EffectfulUtils[>-->[- _, + _]: Function] {
 
   import implicitly._
 
@@ -1692,20 +1645,11 @@ trait MainFactorial[>-->[- _, + _]: Program] {
   private def effectfulWriteToConsole[Y](message: String): Y >--> Unit =
     function(effectfulWriteToConsoleFunction(message))
 
-  private val producer: Unit >--> BigInt =
+  val producer: Unit >--> BigInt =
     effectfulReadIntFromConsole("please type an integer")
 
-  private val consumer: BigInt >--> Unit =
+  val consumer: BigInt >--> Unit =
     effectfulWriteToConsole("the factorial value of the integer is")
-
-  private object factorialObject extends FactorialAsProgram[>-->]
-
-  import factorialObject.factorial
-
-  val factorialMain: Unit >--> Unit =
-    producer >-->
-      factorial >-->
-      consumer
 
 }
 ```
@@ -1734,7 +1678,7 @@ object effectfulUtils {
 }
 ```
 
-You may argue that we have a problem here. 
+You may, rightly, argue that we are cheating here. 
 We promised to use `function` only for pure functions (a.k.a. as *effectfree*).
 
 But,
@@ -1751,6 +1695,62 @@ More precisely
     - as such reading will describe effects in a pure way,
   - we will extend the programming DSL with the *writing output* capability (in this case to write output to the console) 
     - as such writing will describe effects in a pure way.
+
+### **Describing `MainFactorialAsFunction` using an effectful `producer` and `consumer`**
+
+`MainFactorialAsFunction` is similar to `MainFactorialAsProgram`
+
+```scala
+package examples.mainPrograms.effectfulReadingAndWriting
+
+import pdbp.program.Program
+
+import pdbp.program.compositionOperator._
+
+import examples.programs.FactorialAsFunction
+
+trait MainFactorialAsFunction[>-->[- _, + _]: Program] extends EffectfulUtils[>-->] {
+
+  private object factorialAsFunction extends FactorialAsFunction[>-->]
+
+  import factorialAsFunction.factorial
+
+  val factorialMain: Unit >--> Unit =
+    producer >-->
+      factorial >-->
+      consumer
+
+}
+```
+
+### **Describing `MainFactorialTopDown` using an effectful `producer` and `consumer`**
+
+`MainFactorialTopDown` is similar to `MainFactorialAsProgram`
+
+```scala
+package examples.mainPrograms.effectfulReadingAndWriting
+
+import pdbp.program.Program
+
+import pdbp.program.compositionOperator._
+
+import examples.programs.FactorialTopDown
+
+trait MainFactorialTopDown[>-->[- _, + _]: Program] extends EffectfulUtils[>-->] {
+
+  private object factorialTopDown extends FactorialTopDown[>-->]
+
+  import factorialTopDown.factorial
+
+  val factorialMain: Unit >--> Unit =
+    producer >-->
+      factorial >-->
+      consumer
+
+}
+```
+
+
 
 ## **Describing `trait Computation`**
 
@@ -1859,6 +1859,134 @@ It is supposed to do nothing else than *evaluating* the expression `ez` to a yie
 In what follows we also refer to computations `result(ez)`, that, essentially, are pure expression, as *atomic computations*. 
 It is up to you to define the granularity of atomic computations.
 
+### **Describing `trait Binding`**
+
+Consider
+
+```scala
+package pdbp.computation
+
+private[pdbp] trait Binding[C[+ _]] {
+
+  private[pdbp] def bind[Z, Y](cz: C[Z], `z=>cy`: => Z => C[Y]): C[Y]
+
+}
+```
+
+Think of `` `z=>cy` `` as a *computation execution continuation template* or, simply, *computation template*, and of `cz` as a *computation fragment* (a.k.a. *computation component* and *sub-computation*).
+
+Translated to expressions:
+
+Think of `` `z=>cy` `` as an *expression evaluation continuation template*, or, simply, *expression template*, and of `cz` as an *expression fragment* (a.k.a. *expression component* and *sub-expression*).
+
+`` bind(cz, `z=>cy`) `` is function that *binds* `cz` to `z=>cy`.
+
+If the computation `cz` yields a result of type Z, then that result serves as an argument for the subsequent function `z=>cy` which transforms it to a computation that yields a result of type Y.
+
+Different from expressions, for which the *evaluation order* is langauge defined,
+for computations, the *execution order* is strictly imposed by `bind`.
+
+#### **`sumOfSquares` as a computation**
+
+```scala
+package pdbp.examples.computations
+
+import pdbp.computation.Computation
+
+import examples.utils.functionUtils._
+
+class SumOfSquaresAsComputation[C[+ _]: Computation] {
+
+  import implicitly._
+
+  def sumOfSquares(z: Double, y: Double) =
+    bind(
+      result(squareFunction(z)), { zSquare =>
+        bind(result(squareFunction(y)), { ySquare =>
+          bind(result(sumFunction(zSquare, ySquare)), { zSquare_plus_ySquare =>
+            result(zSquare_plus_ySquare)
+          })
+        })
+      }
+    )
+
+}
+```
+
+where
+
+```scala
+object functionUtils {
+
+  // ...
+
+  val squareFunction: Double => Double = { z =>
+    z * z
+  }
+
+  val sumFunction: Double && Double => Double = { (z, y) =>
+    z + y
+  }  
+
+}
+```
+
+If we describe `sumOfSquares` as a computation as above, then, of course, we have more flexibility for giving a meaning to it.
+
+We can use this `sumOfSquares` computation as follows.
+
+```scala
+object computationImplicits {
+
+  implicit object identityComputation extends Computation[[+Z] => Z] {
+
+    override def result[Z]: Z => Z = identity
+
+    override def bind[Z, Y](z: Z, `z=>y`: => Z => Y): Y = `z=>y`(z)
+
+  }
+
+}
+
+object SumOfSquaresAsComputationMain {
+
+  import computationImplicits.identityComputation
+
+  object sumOfSquaresAsComputation extends SumOfSquaresAsComputation[[+Z] => Z]
+
+  import sumOfSquaresAsComputation.sumOfSquares
+
+  def main(args: Array[String]): Unit = {
+
+    println(sumOfSquares(3.0, 4.0))
+
+  }
+
+}
+```
+
+The `import computationImplicits.identityComputation`, of an object extending the type class `Computation`, is another example of what is called dependency injection by importing an implicit object extending a type class.
+
+Note that, after
+
+  - doing dependency injection by importing an implicit object extending a type class
+  - defining an object defining `sumOfSquares` using the members declared in the type class
+  - importing the members of that object
+
+The rest of the code
+
+```scala
+  def main(args: Array[String]): Unit = {
+
+    println(sumOfSquares(3.0, 4.0))
+
+  }
+```
+
+is the same for defining the sum of the squares of two numbers 
+  - as an expression, or
+  - as a computation.
+
 For example, the sum of the squares of two numbers can be defined as an expression.
 
 #### **`sumOfSquares` as an expression**
@@ -1946,118 +2074,6 @@ object SumOfSquaresAsExpressionMain {
 ```
 
 The `import resultingImplicits.identityResulting`, of an object extending the type class `Resulting`, is another example of what is called dependency injection by importing an implicit object extending a type class.
-
-### **Describing `trait Binding`**
-
-Consider
-
-```scala
-package pdbp.computation
-
-private[pdbp] trait Binding[C[+ _]] {
-
-  private[pdbp] def bind[Z, Y](cz: C[Z], `z=>cy`: => Z => C[Y]): C[Y]
-
-}
-```
-
-Think of `` `z=>cy` `` as a *computation execution continuation template* or, simply, *computation template*, and of `cz` as a *computation fragment* (a.k.a. *computation component* and *sub-computation*).
-
-Translated to expressions:
-
-Think of `` `z=>cy` `` as an *expression evaluation continuation template*, or, simply, *expression template*, and of `cz` as an *expression fragment* (a.k.a. *expression component* and *sub-expression*).
-
-`` bind(cz, `z=>cy`) `` is function that *binds* `cz` to `z=>cy`.
-
-If the computation `cz` yields a result of type Z, then that result serves as an argument for the subsequent function `z=>cy` which transforms it to a computation that yields a result of type Y.
-
-Different from expression evaluation, which, for example, happens bottom-up left to right.
-the *computation execution order* is strictly imposed by `bind`.
-
-For example, the sum of the squares of two numbers can also be defined as a computation.
-
-#### **`sumOfSquares` as a computation**
-
-```scala
-package pdbp.examples.computations
-
-import pdbp.computation.Computation
-
-import examples.utils.functionUtils._
-
-class SumOfSquaresAsComputation[C[+ _]: Computation] {
-
-  import implicitly._
-
-  def sumOfSquares(z: Double, y: Double) =
-    bind(
-      result(squareFunction(z)), { zSquare =>
-        bind(result(squareFunction(y)), { ySquare =>
-          bind(result(sumFunction(zSquare, ySquare)), { zSquare_plus_ySquare =>
-            result(zSquare_plus_ySquare)
-          })
-        })
-      }
-    )
-
-}
-```
-
-If we describe `sumOfSquares` as a computation as above, then, of course, we have more flexibility for giving a meaning to it.
-
-We can use this `sumOfSquares` computation as follows.
-
-```scala
-object computationImplicits {
-
-  implicit object identityComputation extends Computation[[+Z] => Z] {
-
-    override def result[Z]: Z => Z = identity
-
-    override def bind[Z, Y](z: Z, `z=>y`: => Z => Y): Y = `z=>y`(z)
-
-  }
-
-}
-
-object SumOfSquaresAsComputationMain {
-
-  import computationImplicits.identityComputation
-
-  object sumOfSquaresAsComputation extends SumOfSquaresAsComputation[[+Z] => Z]
-
-  import sumOfSquaresAsComputation.sumOfSquares
-
-  def main(args: Array[String]): Unit = {
-
-    println(sumOfSquares(3.0, 4.0))
-
-  }
-
-}
-```
-
-The `import computationImplicits.identityComputation`, of an object extending the type class `Computation`, is another example of what is called dependency injection by importing an implicit object extending a type class.
-
-Note that, after
-
-  - doing dependency injection by importing an implicit object extending a type class
-  - defining an object defining `sumOfSquares` using the members declared in the type class
-  - importing the members of that object
-
-The rest of the code
-
-```scala
-  def main(args: Array[String]): Unit = {
-
-    println(sumOfSquares(3.0, 4.0))
-
-  }
-```
-
-is the same for defining the sum of the squares of two numbers 
-  - as an expression, or
-  - as a computation.
 
 ### **Describing `trait Lifting`**
 
@@ -2581,17 +2597,6 @@ The simplest implicit computation `object` (and corresponding implicit program `
 ```scala
 package pdbp.program.implicits.active
 
-//       _______         __    __        _______
-//      / ___  /\       / /\  / /\      / ___  /\
-//     / /__/ / / _____/ / / / /_/__   / /__/ / /
-//    / _____/ / / ___  / / / ___  /\ /____  / /
-//   / /\____\/ / /__/ / / / /__/ / / \___/ / /
-//  /_/ /      /______/ / /______/ /     /_/ /
-//  \_\/       \______\/  \______\/      \_\/
-//                                           v1.0
-//  Program Description Based Programming Library
-//  author        Luc Duponcheel        2017-2018
-
 import pdbp.types.active.activeTypes._
 
 import pdbp.utils.functionUtils._
@@ -2658,6 +2663,105 @@ object functionUtils {
 
 ## **Running main programs (language level meaning)**
 
+For example, `factorial` might as well have been defined as follows
+
+```scala
+package examples.programs
+
+import examples.utils.functionUtils._
+
+import pdbp.program.Function
+
+class FactorialAsFunction[>-->[- _, + _]: Function] {
+
+  import implicitly._
+
+  val factorialFunction: BigInt => BigInt = { i =>
+    if (isZeroFunction(i)) {
+      oneFunction(i)
+    } else {
+      multiplyFunction(i, (subtractOneFunction andThen factorialFunction)(i))
+    }
+  }
+
+  val factorial: BigInt >--> BigInt = function(factorialFunction)
+
+}
+```
+
+where
+
+```scala
+package examples.utils
+
+import pdbp.types.product.productType._
+
+object functionUtils {
+
+  val isZeroFunction: BigInt => Boolean = { i =>
+    i == 0
+  }
+
+  val subtractOneFunction: BigInt => BigInt = { i =>
+    i - 1
+  }
+
+  val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
+    i * j
+  }
+
+  def oneFunction[Z]: Z => BigInt = { z =>
+    1
+  }
+
+  // ...  
+
+}
+```
+
+If we describe `factorial` as a function as above, then, of course, we have less flexibility for giving a meaning to it.
+
+We can use this `factorial` program as follows
+
+```scala
+object functionImplicits {
+
+  implicit object functionFunction extends Function[[-Z, +Y] => (Z => Y)] {
+
+    override def function[Z, Y]: (Z => Y) => (Z => Y) = identity
+
+  }
+
+}
+
+object FactorialAsFunctionMain {
+
+  import functionImplicits.functionFunction
+
+  object factorialAsFunction extends FactorialAsFunction[[-Z, +Y] => (Z => Y)]
+
+  def main(args: Array[String]): Unit = {
+
+    import factorialAsFunction.factorial
+
+    println(factorial(10))
+
+  }
+
+}
+```
+
+The `import functionImplicits.functionFunction`, of an object extending the type class `Function`, is a first example of what is called *dependency injection by importing an implicit object extending a type class*.
+
+The object `factorialAsFunction`, depending on `functionFunction`, extends the class `FactorialAsFunction`, that defines `factorial` in terms of the member `function` declared in the type class `Function`. 
+
+The statement above is a first example of a powerful `Dotty` *design pattern*.
+
+Dependency injection by importing an implicit object extending a type class, used together with an object, depending on that imported implicit object, that extends a class that defines its members in terms of the members declared in the type class.
+
+Agreed, the design pattern above is a whole mouth full, but, please keep on reading and re-reading it until you fully understand it.
+
+
 ### **Running `factorialMain` using  `activeProgram` and an effectful `producer` and `consumer`**
 
 Consider
@@ -2670,30 +2774,30 @@ import pdbp.types.active.activeTypes._
 import pdbp.program.implicits.active.implicits
 import implicits.activeProgram
 
-import examples.mainPrograms.effectfulReadingAndWriting.MainFactorial
+import examples.mainPrograms.effectfulReadingAndWriting.MainFactorialAsProgram
 
-object mainFactorial extends MainFactorial[`=>A`]()
+object mainFactorialAsProgram extends MainFactorialAsProgram[`=>A`]()
 ```
 
-The definition of `mainFactorial` uses dependecy injection by `import` of an `implicit object` extending `Computation[Active]` and `Program[`=>A`]`.
-  - `import implicits.implicitActiveProgram` brings the `implicit object activeProgram` in scope to define `mainFactorial` that `` extends MainFactorial[`=>A`] ``.
+The definition of `mainFactorialAsProgram` uses dependecy injection by `import` of an `implicit object` extending `Computation[Active]` and `Program[`=>A`]`.
+  - `import implicits.implicitActiveProgram` brings the `implicit object activeProgram` in scope to define `mainFactorialAsProgram` that `` extends MainFactorialAsProgram[`=>A`] ``.
 
 Note that
 
-  - `mainFactorial.factorialMain` is an active, language level meaning of the main program description `factorialMain` in `trait FactorialMain`.
+  - `mainFactorialAsProgram.factorialMain` is an active, language level meaning of the main program description `factorialMain` in `trait FactorialAsProgramMain`.
 
-Note that `factorialMain` uses `mainFactorial.factorialObject.factorial` 
-  - `mainFactorial.factorialObject.factorial` is an active, language level meaning of the program description `factorial` in `trait Factorial`.
+Note that `factorialMain` uses `mainFactorialAsProgram.factorialAsProgram.factorial` 
+  - `mainFactorialAsProgram.factorialAsProgram.factorial` is an active, language level meaning of the program description `factorial` in `trait Factorial`.
 
-We can now finally define `main` in `object FactorialMain`
+We can now finally define `main` in `object FactorialAsProgramMain`
 
 ```scala
 package examples.main.active.effectfulReadingAndWriting
 
-import examples.objects.active.effectfulReadingAndWriting.mainFactorial
-import mainFactorial.factorialMain
+import examples.objects.active.effectfulReadingAndWriting.mainFactorialAsProgram
+import mainFactorialAsProgram.factorialMain
 
-object FactorialMain {
+object FactorialAsProgramMain {
 
   def main(args: Array[String]): Unit = {
 
@@ -2704,8 +2808,8 @@ object FactorialMain {
 }
 ```
 
-The definition of `FactorialMain` uses `import`
- -`import mainFactorial.factorialMain`) to bring `factorialMain` in scope.
+The definition of `FactorialAsProgramMain` uses `import`
+ -`import mainFactorialAsProgram.factorialMain`) to bring `factorialMain` in scope.
 
 Note that `factorialMain` has
 
@@ -2716,12 +2820,12 @@ Note that `factorialMain` has
 It suffuces to evaluate `factorialMain(())` to run `factorialMain`.
 
 
-Ok, so let's use `main` in `object FactorialMain`.
+Ok, so let's use `main` in `object FactorialAsProgramMain`.
 
 Let's try `10`.
 
 ```scala
-[info] Running examples.main.active.effectfulReadingAndWriting.FactorialMain
+[info] Running examples.main.active.effectfulReadingAndWriting.FactorialAsProgramMain
 please type an integer
 10
 the factorial value of the integer is
@@ -2731,7 +2835,7 @@ the factorial value of the integer is
 Let's try `100`.
 
 ```scala
-[info] Running examples.main.active.effectfulReadingAndWriting.FactorialMain
+[info] Running examples.main.active.effectfulReadingAndWriting.FactorialAsProgramMain
 please type an integer
 100
 the factorial value of the integer is
@@ -2741,7 +2845,7 @@ the factorial value of the integer is
 Let's try `1000`.
 
 ```scala
-[info] Running examples.main.active.effectfulReadingAndWriting.FactorialMain
+[info] Running examples.main.active.effectfulReadingAndWriting.FactorialAsProgramMain
 please type an integer
 1000
 [error] (run-main-0) java.lang.StackOverflowError
@@ -2750,12 +2854,12 @@ java.lang.StackOverflowError
 
 We have a problem here. 
 
-The language level meaning `mainFactorial.factorialObject.factorial` above of the `factorial` description is *not tail recursive*. 
+The language level meaning `mainFactorialAsProgram.factorialAsProgram.factorial` above of the `factorial` description is *not tail recursive*. 
   - it is not stack safe: it uses the *stack* which overflows for the argument `1000`.
  
 The good news is that it is just one language level meaning of that description.
 
-The language level meaning `mainFactorial.factorialObject.factorial` above should (and will) be replaced by a *tail recursive* one. 
+The language level meaning `mainFactorialAsProgram.factorialAsProgram.factorial` above should (and will) be replaced by a *tail recursive* one. 
   - it is stack safe: it uses the *heap* which does not run out of memory for the argument `1000`.
 
 ## **Natural transformations**
@@ -2944,18 +3048,18 @@ trait MeaningOfActive[TR[+ _]: Resulting] extends ComputationMeaning[Active, TR]
 
 ### **Running `factorialMain` using an effectful `producer` and `consumer` and `activeMeaningOfActive`**
 
-We can now finally define `main` in `object FactorialMain`
+We can now finally define `main` in `object FactorialAsProgramMain`
 
 ```scala
 package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
 
-import examples.objects.active.effectfulReadingAndWriting.mainFactorial
-import mainFactorial.factorialMain
+import examples.objects.active.effectfulReadingAndWriting.mainFactorialAsProgram
+import mainFactorialAsProgram.factorialMain
 
 import pdbp.computation.meaning.instances.ofActive.active.activeMeaningOfActive
 import activeMeaningOfActive.programMeaning
 
-object FactorialMain {
+object FactorialAsProgramMain {
 
   def main(args: Array[String]): Unit = {
 
@@ -2966,11 +3070,11 @@ object FactorialMain {
 }
 ```
 
-The definition of `FactorialMain` also uses dependecy injection by `import` 
- -`import mainFactorial.factorialMain`) to bring `factorialMain` in scope,
+The definition of `FactorialAsProgramMain` also uses dependecy injection by `import` 
+ -`import mainFactorialAsProgram.factorialMain`) to bring `factorialMain` in scope,
  - `import activeMeaningOfActive.programMeaning` to bring `programMeaning` in scope.
 
-Note that `programMeaning.applyToProgram(mainFactorial)` has
+Note that `programMeaning.applyToProgram(mainFactorialAsProgram)` has
 
   - type `` Unit `=>A` Unit ``, which is
   - type `Unit => Active[Unit]`, which is
@@ -2978,12 +3082,12 @@ Note that `programMeaning.applyToProgram(mainFactorial)` has
 
 It suffuces to evaluate `programMeaning.applyToProgram(factorialMain)(())` to run `factorialMain`.
 
-Ok, so let's use `main` in `object FactorialMain`.
+Ok, so let's use `main` in `object FactorialAsProgramMain`.
 
 Let's try `10`.
 
 ```scala
-[info] Running examples.main.meaning.ofActive.active.effectfulReadingAndWriting.MainFactorial
+[info] Running examples.main.meaning.ofActive.active.effectfulReadingAndWriting.MainFactorialAsProgram
 please type an integer
 10
 the factorial value of the integer is
@@ -3285,27 +3389,27 @@ import pdbp.types.active.free.activeFreeTypes._
 import pdbp.program.implicits.active.free.implicits
 import implicits.implicitActiveFreeProgram
 
-import examples.mainPrograms.effectfulReadingAndWriting.MainFactorial
+import examples.mainPrograms.effectfulReadingAndWriting.MainFactorialAsProgram
 
-object mainFactorial extends MainFactorial[`=>AF`]()
+object mainFactorialAsProgram extends MainFactorialAsProgram[`=>AF`]()
 ```
 
-The definition of `mainFactorial` uses dependecy injection by `import` 
-  - `import implicits.implicitActiveProgram` to bring an `implicit val` (`implicitActiveProgram` in scope to `extend` the *type class* `MainFactorial[>-->]` using `` MainFactorial[`=>AF`] ``.
+The definition of `mainFactorialAsProgram` uses dependecy injection by `import` 
+  - `import implicits.implicitActiveProgram` to bring an `implicit val` (`implicitActiveProgram` in scope to `extend` the *type class* `MainFactorialAsProgram[>-->]` using `` MainFactorialAsProgram[`=>AF`] ``.
 
 
-We can now finally define `main` in `object FactorialMain`
+We can now finally define `main` in `object FactorialAsProgramMain`
 
 ```scala
 package examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting
 
-import examples.objects.active.free.effectfulReadingAndWriting.mainFactorial
-import mainFactorial.factorialMain
+import examples.objects.active.free.effectfulReadingAndWriting.mainFactorialAsProgram
+import mainFactorialAsProgram.factorialMain
 
 import pdbp.computation.meaning.instances.ofActiveFree.active.activeMeaningOfActiveFree
 import activeMeaningOfActiveFree.programMeaning
 
-object FactorialMain {
+object FactorialAsProgramMain {
 
   def main(args: Array[String]): Unit = {
 
@@ -3316,12 +3420,12 @@ object FactorialMain {
 }
 ```
 
-Ok, so let's use `main` in `object FactorialMain`.
+Ok, so let's use `main` in `object FactorialAsProgramMain`.
 
 Let's try `1000`.
 
 ```scala
-[info] Running examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting.FactorialMain
+[info] Running examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting.FactorialAsProgramMain
 please type an integer
 1000
 the factorial value of the integer is
@@ -3342,7 +3446,7 @@ By the way, changing the definition of `result` in `FreeTransformation` to
 leads to the following (let's try `5`)
 
 ```scala
-[info] Running examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting.FactorialMain
+[info] Running examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting.FactorialAsProgramMain
 please type an integer
 5
 Result(5)

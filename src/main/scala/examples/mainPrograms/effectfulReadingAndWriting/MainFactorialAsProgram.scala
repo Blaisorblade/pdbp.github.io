@@ -15,29 +15,13 @@ import pdbp.program.Program
 
 import pdbp.program.compositionOperator._
 
-import pdbp.utils.effectfulUtils._
-
 import examples.programs.FactorialAsProgram
 
-trait MainFactorial[>-->[- _, + _]: Program] {
+trait MainFactorialAsProgram[>-->[- _, + _]: Program] extends EffectfulUtils[>-->] {
 
-  import implicitly._
+  private object factorialAsProgram extends FactorialAsProgram[>-->]
 
-  private def effectfulReadIntFromConsole(message: String): Unit >--> BigInt =
-    function(effectfulReadIntFromConsoleFunction(message))
-
-  private def effectfulWriteToConsole[Y](message: String): Y >--> Unit =
-    function(effectfulWriteToConsoleFunction(message))
-
-  private val producer: Unit >--> BigInt =
-    effectfulReadIntFromConsole("please type an integer")
-
-  private val consumer: BigInt >--> Unit =
-    effectfulWriteToConsole("the factorial value of the integer is")
-
-  private object factorialObject extends FactorialAsProgram[>-->]
-
-  import factorialObject.factorial
+  import factorialAsProgram.factorial
 
   val factorialMain: Unit >--> Unit =
     producer >-->
