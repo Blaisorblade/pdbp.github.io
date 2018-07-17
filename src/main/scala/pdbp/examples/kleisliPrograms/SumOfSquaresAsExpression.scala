@@ -1,4 +1,4 @@
-package pdbp.examples.computations
+package pdbp.examples.kleisliPrograms
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\

@@ -1,4 +1,4 @@
-package pdbp.examples.computations
+package pdbp.examples.objects.active.effectfulReadingAndWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,20 +11,12 @@ package pdbp.examples.computations
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.product.productType._
+import pdbp.types.active.activeTypes._
 
-import pdbp.computation.Resulting
+import pdbp.program.implicits.active.implicits
+import implicits.activeProgram
 
-import examples.utils.functionUtils._
+import pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting.MainSumOfSquaresAsComputation
+import pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting.EffectfulUtils
 
-trait ResultingUtils[C[+ _]: Resulting] {
-
-  import implicitly._
-
-  type `=>C` = [-Z, +Y] => Z => C[Y]
-
-  val square: Double `=>C` Double = squareFunction andThen result
-
-  val sum: (Double && Double) `=>C` Double = sumFunction andThen result
-
-}
+object mainSumOfSquaresAsComputation extends MainSumOfSquaresAsComputation[Active]()

@@ -15,13 +15,13 @@ import pdbp.computation.Computation
 
 import pdbp.computation.bindingOperator._
 
-import pdbp.examples.computations.SumOfSquaresAsComputation
+import pdbp.examples.kleisliPrograms.SumOfSquaresAsExpression
 
-class MainSumOfSquaresAsKleisliProgram[C[+ _]: Computation] extends EffectfulUtils[C]() {
+class MainSumOfSquaresAsExpression[C[+ _]: Computation] extends EffectfulUtils[C]() {
 
-  private object sumOfSquaresAsKleisliProgram extends SumOfSquaresAsComputation[C]
+  private object sumOfSquaresAsExpression extends SumOfSquaresAsExpression[C]
 
-  import sumOfSquaresAsKleisliProgram.sumOfSquares
+  import sumOfSquaresAsExpression.sumOfSquares
 
   val sumOfSquaresMain: Unit `=>C` Unit = { u =>
     producer(u) bind { (z, y) => 

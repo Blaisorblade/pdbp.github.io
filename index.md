@@ -1896,19 +1896,19 @@ private[pdbp] object bindingOperator {
 
   - `bind[Z, Y]` comes with an operator equivalent `bind`,
 
-#### **Warning about the next sections describing computations**
+#### **Warning about the next sections describing kleisli programs**
 
 The idea behind `PDBP` is to promote pointfree programming.
 The computation examples described in the next sections are pointful and should not be written by application developers.
 
-Note that the package of the examples is `pdbp.examples.computations`. 
+Note that the package of the examples is `pdbp.examples.kleisliPrograms`. 
 
 #### **`sumOfSquares` as computation**
 
 Below is the code for `sumOfSquares`.
 
 ```scala
-package pdbp.examples.computations
+package pdbp.examples.kleisliPrograms
 
 import pdbp.types.product.productType._
 
@@ -1937,7 +1937,7 @@ class SumOfSquaresAsComputation[C[+ _]: Computation]
 where
 
 ```scala
-package pdbp.examples.computations
+package pdbp.examples.kleisliPrograms
 
 import pdbp.types.product.productType._
 
@@ -1983,7 +1983,7 @@ Since the atomic computations, `square` and `sum` used by `sumOfSquares` are ver
 Below is other code for `sumOfSquares`.
 
 ```scala
-package pdbp.examples.computations
+package pdbp.examples.kleisliPrograms
 
 import pdbp.types.product.productType._
 
@@ -2031,7 +2031,7 @@ We also simply refer to
  - a producer kleisli program as a producer,
  - a consumer kleisliprogram as a consumer.
 
-### Describing `MainFactorialAsProgram` using an effectful `producer` and `consumer`**
+### Describing `MainSumOfSquaresAsComputation` using an effectful `producer` and `consumer`**
 
 Consider
 
@@ -2042,13 +2042,13 @@ import pdbp.computation.Computation
 
 import pdbp.computation.bindingOperator._
 
-import pdbp.examples.computations.SumOfSquaresAsComputation
+import pdbp.examples.kleisliPrograms.SumOfSquaresAsComputation
 
-class MainSumOfSquaresAsKleisliProgram[C[+ _]: Computation] extends EffectfulUtils[C]() {
+class MainSumOfSquaresAsComputation[C[+ _]: Computation] extends EffectfulUtils[C]() {
 
   private object sumOfSquaresAsKleisliProgram extends SumOfSquaresAsComputation[C]
 
-  import sumOfSquaresAsKleisliProgram.sumOfSquares
+  import sumOfSquaresAsComputation.sumOfSquares
 
   val sumOfSquaresMain: Unit `=>C` Unit = { u =>
     producer(u) bind { (z, y) => 
@@ -2113,6 +2113,36 @@ object effectfulUtils {
   } 
 
   // ...
+
+}
+```
+
+### Describing `MainSumOfSquaresAsExpression` using an effectful `producer` and `consumer`**
+
+`MainSumOfSquaresAsExpression` is similar to `MainSumOfSquaresAsComputation`
+
+```scala
+package pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting
+
+import pdbp.computation.Computation
+
+import pdbp.computation.bindingOperator._
+
+import pdbp.examples.kleisliPrograms.SumOfSquaresAsExpression
+
+class MainSumOfSquaresAsExpression[C[+ _]: Computation] extends EffectfulUtils[C]() {
+
+  private object sumOfSquaresAsExpression extends SumOfSquaresAsExpression[C]
+
+  import sumOfSquaresAsExpression.sumOfSquares
+
+  val sumOfSquaresMain: Unit `=>C` Unit = { u =>
+    producer(u) bind { (z, y) => 
+      sumOfSquares(z, y) bind { x => 
+        consumer(x) 
+      }
+    }  
+  }
 
 }
 ```
@@ -2764,7 +2794,6 @@ Note that `factorialMain` has
 
 It suffuces to evaluate `factorialMain(())` to run `factorialMain`.
 
-
 Ok, so let's use `main` in `object FactorialAsProgramMain`.
 
 Let's try `10`.
@@ -2807,7 +2836,66 @@ The good news is that it is just one language level meaning of that description.
 The language level meaning `mainFactorialAsProgram.factorialAsProgram.factorial` above should (and will) be replaced by a *tail recursive* one. 
   - it is stack safe: it uses the *heap* which does not run out of memory for the argument `1000`.
 
-# UNTIL HERE
+## **Running main kleisli programs (language level meaning)**
+
+### **Running `sumOfSquaresMain` using  `activeProgram` and an effectful `producer` and `consumer`**
+
+Consider
+
+```scala
+package pdbp.examples.objects.active.effectfulReadingAndWriting
+
+import pdbp.types.active.activeTypes._
+
+import pdbp.program.implicits.active.implicits
+import implicits.activeProgram
+
+import pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting.MainSumOfSquaresAsComputation
+import pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting.EffectfulUtils
+
+object mainSumOfSquaresAsComputation extends MainSumOfSquaresAsComputation[Active]()
+```
+
+We can now, finally, define `main` in `object FactorialAsProgramMain`
+
+```scala
+package pdbp.examples.main.active.effectfulReadingAndWriting
+
+import pdbp.examples.objects.active.effectfulReadingAndWriting.mainSumOfSquaresAsComputation
+import mainSumOfSquaresAsComputation.sumOfSquaresMain
+
+object SumOfSquaresAsComputationMain {
+
+  def main(args: Array[String]): Unit = {
+
+    sumOfSquaresMain(())
+
+  }
+
+}
+```
+
+Note that `sumOfSquaresMain` has
+
+  - type `` Unit `=>A` Unit ``, which is
+  - type `Unit => Active[Unit]`, which is
+  - type `Unit => Unit`
+
+It suffuces to evaluate `factorialMain(())` to run `factorialMain`.
+
+Ok, so let's use `main` in `object SumOfSquaresAsComputationMain`.
+
+Let's try `3.0` and `4.0`.
+
+```scala
+[info] Running pdbp.examples.main.active.effectfulReadingAndWriting.SumOfSquaresAsComputationMain
+please type a double
+3.0
+please type a double
+4.0
+the sum of the squares of the doubles is
+25.0
+```
 
 ## **Natural transformations**
 
