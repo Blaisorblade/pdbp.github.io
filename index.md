@@ -238,7 +238,7 @@ To finish, lt's state that
 
  - pointful programming using `trait Computation` is *computation oriented* and *result binding* based.
 
-### **Introducing `type Kleisli` for programs**
+### **Introducing `type Kleisli` for binary type constructors**
 
 The `with Program[[-Z, + Y] => Z => C[Y]]` part of `trait Computation`, which states that computations have more power of expression than programs, is a bit verbose.
 
@@ -247,7 +247,7 @@ Using the *type alias* `type Kleisli`, named after [Heinrich Kleisli](https://en
 ```scala
 package pdbp.types.kleisli
 
-private[pdbp] object kleisliProgramType {
+private[pdbp] object kleisliBinaryTypeConstructorType {
 
   private[pdbp] type Kleisli[C[+ _]] = [-Z, + Y] => Z => C[Y]
 
@@ -259,7 +259,7 @@ private[pdbp] object kleisliProgramType {
 ```scala
 package pdbp.computation
 
-import pdbp.types.kleisli.kleisliProgramType.Kleisli
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType.Kleisli
 
 import pdbp.program.Program
 
@@ -1754,7 +1754,7 @@ Consider
 ```scala
 package pdbp.computation
 
-import pdbp.types.kleisli.kleisliProgramType.Kleisli
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType.Kleisli
 
 import pdbp.program.Program
 
@@ -2536,14 +2536,14 @@ private[pdbp] trait Computation[C[+ _]]
 }
 ```
 
-#### **Introducing `type Kleisli` for computations**
+#### **Introducing `type Kleisli` for unary type constructors**
 
 Consider
 
 ```scala
 package pdbp.types.kleisli
 
-object kleisliComputationType {
+object kleisliUnaryTypeConstructorType {
 
   type Kleisli[>-->[- _, + _]] = [+Y] => Unit >--> Y
 
@@ -2566,7 +2566,7 @@ import pdbp.program.Applying
 import pdbp.computation.Resulting
 import pdbp.computation.Binding
 
-import pdbp.types.kleisli.kleisliComputationType._
+import pdbp.types.kleisli.kleisliUnaryTypeConstructorType._
 
 private[pdbp] trait ProgramWithApplying[>-->[- _, + _]]
     extends Program[>-->]
@@ -2664,7 +2664,7 @@ Recall that in the [Introduction](#introduction) we mentioned that we go for kle
 
 ### **Describing `activeProgram`**
 
-The simplest implicit computation `object` (and corresponding implicit program `object`) one can probably think of is the *active* one (we use active as opposed to *reactive*) defined below
+The simplest implicit computation `object` (and corresponding implicit kleisli program `object`) one can probably think of is the *active* one (we use active as opposed to *reactive*) defined below
 
 ```scala
 package pdbp.program.implicits.active
@@ -2700,7 +2700,7 @@ where the types `Active` and `` `=>A` `` are defined as follows
 ```scala
 package pdbp.types.active
 
-import pdbp.types.kleisli.kleisliProgramType._
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
 object activeTypes {
 
@@ -2899,26 +2899,18 @@ the sum of the squares of the doubles is
 
 ## **Natural transformations**
 
-Unary and binary type constructors can be *transformed* using *natural transformations*. 
+Note that programs `C[+ _]` resp. computations `>-->[- _, + _]` are *unary* resp. *binary type constructors*.
 
-Natural *binary type constructor transformations* are described below, where `F` stands for *from*, `T` stands for *to* and `P` stands for *program* (we mainly use programs as binary type constructors)
+Such type constructors can be *transformed* using *natural transformations*. 
 
-```scala
-package pdbp.natural.transformation.binary
+### **Natural unary type constructor transformations**
 
-trait `~P~>`[`>-F->`[- _, + _], `>-T->`[- _, + _]] {
-
-  def applyToProgram[Z, Y](`z>-f->y`: Z `>-F->` Y): Z `>-T->` Y
-
-}
-```
-
-Natural *unary type constructor transformations* are described below, where `F` stands for *from*, `T` stands for *to* and `C` stands for *computation* (we mainly use computations as unnary type constructors)
+Consider
 
 ```scala
 package pdbp.natural.transformation.unary
 
-private[pdbp] trait `~C~>`[F[+ _], T[+ _]] {
+private[pdbp] trait `~U~>`[F[+ _], T[+ _]] {
 
   private[pdbp] def apply[Z](fz: F[Z]): T[Z]
 
@@ -2927,34 +2919,50 @@ private[pdbp] trait `~C~>`[F[+ _], T[+ _]] {
 }
 ```
 
-Natural unary type constructor transformations are like functions, but they work at the type constructor level instead of at the type level.
+`` trait `~U~>` `` defines *natural unary type constructor transformations* (`F` stands for from, `T` stands for to, and `U` stands for unary).
 
-### **Defining natural unary type constructor transformations in terms of natural binary type constructor transformations**
+Natural unary type constructor transformations are like functions, but they work at the unary type constructor level instead of at the type level.
 
-Natural unary type constructor transformations can be defined in terms of natural binary type constructor transformations as follows
+### **Natural binary type constructor transformations**
+
+Consider
 
 ```scala
-package pdbp.natural.transformation.unary
+package pdbp.natural.transformation.binary
 
-import pdbp.types.kleisli.kleisliProgramType._
+trait `~B~>`[`>-F->`[- _, + _], `>-T->`[- _, + _]] {
 
-import pdbp.natural.transformation.binary.`~P~>`
+  def apply[Z, Y]: Z `>-F->` Y => Z `>-T->` Y
 
-private[pdbp] trait `~C~>`[F[+ _], T[+ _]]
-    extends `~P~>`[Kleisli[F], Kleisli[T]] {
+}
+```
 
-  // ...
+`` trait `~B~>` `` defines *natural binary type constructor transformations* (`F` stands for from, `T` stands for to, and `B` stands for binary).
 
-  private def applyToComputation[Z](fz: F[Z]): T[Z] =
-    apply(fz)
+
+### **Defining natural binary type constructor transformations in terms of natural unary type constructor transformations**
+
+Natural binary type constructor transformations can be defined in terms of natural unary type constructor transformations using keisli program types.
+
+```scala
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
+
+import pdbp.natural.transformation.binary.`~B~>`
+
+private[pdbp] trait `~U~>`[F[+ _], T[+ _]]
+    extends `~B~>`[Kleisli[F], Kleisli[T]] {
+
+  private[pdbp] def apply[Z](fz: F[Z]): T[Z]
+
+  private def unaryTransform[Z]: F[Z] => T[Z] =
+    apply
 
   private type `=>F` = Kleisli[F]
 
-  private type `=>T` = Kleisli[T]  
+  private type `=>T` = Kleisli[T]
 
-  override def applyToProgram[Z, Y](`z=>fy`: Z `=>F` Y): Z `=>T` Y  = { z =>
-    val fy: F[Y] = `z=>fy`(z)
-    applyToComputation(fy)
+  override def apply[Z, Y]: Z `=>F` Y => Z `=>T` Y  = { `z=>fy` => z =>
+      unaryTransform(`z=>fy`(z))
   }
 
 }
@@ -2964,21 +2972,23 @@ private[pdbp] trait `~C~>`[F[+ _], T[+ _]]
 
 ### **Library level meaning of programs**
 
-Language level meanings of programs can be given a *library level meaning* as follows
+Consider 
 
 ```scala
 package pdbp.program.meaning
 
 import pdbp.program.Program
 
-import pdbp.natural.transformation.binary.`~P~>`
+import pdbp.natural.transformation.binary.`~B~>`
 
 trait ProgramMeaning[`>-FP->`[- _, + _]: Program, `>-T->`[- _, + _]] {
 
-  lazy val programMeaning: `>-FP->` `~P~>` `>-T->`
+  lazy val programMeaning: `>-FP->` `~B~>` `>-T->`
 
 }
 ```
+Programs in general and language level meanings of programs in particular can be given a *library level meaning* using a natural binary type constructor transformation `programMeaning`.
+
 
 ### **Library level meaning of computations**
 
@@ -2987,65 +2997,49 @@ Language level meanings of computations can be given a library level meaning as 
 ```scala
 package pdbp.computation.meaning
 
-import pdbp.natural.transformation.unary.`~C~>`
+
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
+
+import pdbp.natural.transformation.binary.`~B~>`
+
+import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.Computation
 
 import pdbp.program.meaning.ProgramMeaning
 
 private[pdbp] trait ComputationMeaning[FC[+ _]: Computation, T[+ _]]
-    // ... {
-
-  private[pdbp] lazy val computationMeaning: FC `~C~>` T
-
-  // ...
-
-}
-```
-
-#### **Defining library level meaning of programs in terms of library level meaning of computations**
-
-The library level meaning of programs `programMeaning` can be defined in terms of the library level meaning of computations `computationMeaning`.
-
-```scala
-package pdbp.computation.meaning
-
-import pdbp.types.kleisli.kleisliProgramType._
-
-import pdbp.natural.transformation.binary.`~P~>`
-
-// ...
-
-private[pdbp] trait ComputationMeaning[FC[+ _]: Computation, T[+ _]]
     extends ProgramMeaning[Kleisli[FC], Kleisli[T]] {
 
-  // ...
+  private[pdbp] val computationMeaning: FC `~U~>` T
 
   private type `=>FC` = Kleisli[FC]
 
   private type `=>T` = Kleisli[T]
 
-  override lazy val programMeaning: `=>FC` `~P~>` `=>T` = computationMeaning
+  override lazy val programMeaning: `=>FC` `~B~>` `=>T` = computationMeaning
 
 }
 ```
 
+Computations in general and language level meanings of computations in particular can be given a library level meaning using a natural unary type constructor transformation `computationMeaning`, which also gives a library level meaning to the corresponding kleisli programs.
+
 ### **Describing `activeMeaningOfActive`**
 
-The simplest computation meaning `object` (and corresponding program meaning `object`) one can probably think of is the *active meaning of active* one defined below
+The simplest computation meaning `object` (and corresponding kleisli program meaning `object`) one can probably think of is the *active meaning of active* one defined below
 
 ```scala
-package pdbp.computation.meaning.instances.ofActive.active
+package pdbp.program.meaning.ofActive.active
 
 import pdbp.types.active.activeTypes._
 
-import pdbp.program.implicits.active.implicits.implicitActiveProgram
+import pdbp.program.implicits.active.implicits.activeProgram
 
 import pdbp.program.meaning.ProgramMeaning
 
 import pdbp.computation.meaning.ComputationMeaning
 
-import pdbp.computation.meaning.instances.ofActive.MeaningOfActive
+import pdbp.computation.meaning.ofActive.MeaningOfActive
 
 object activeMeaningOfActive
     extends MeaningOfActive[Active]()
@@ -3056,20 +3050,20 @@ object activeMeaningOfActive
 where `MeaningOfActive` defines a computation meaning of `Active` for any type constructor `TR` with the `Resulting` computational capability.
 
 ```scala
-package pdbp.computation.meaning.instances.ofActive
+package pdbp.computation.meaning.ofActive
 
 import pdbp.types.active.activeTypes._
 
 import pdbp.computation.Resulting
 
-import pdbp.natural.transformation.unary.`~C~>`
+import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.meaning.ComputationMeaning
 
-trait MeaningOfActive[TR[+ _]: Resulting] extends ComputationMeaning[Active, TR] {
+private[pdbp] trait MeaningOfActive[TR[+ _]: Resulting] extends ComputationMeaning[Active, TR] {
 
-  override private[pdbp] lazy val computationMeaning: Active `~C~>` TR =
-    new `~C~>` {
+  override private[pdbp] val computationMeaning: Active `~U~>` TR =
+    new {
       override private[pdbp] def apply[Z](az: Active[Z]): TR[Z] = {
         import implicitly._
         result(az)
@@ -3088,41 +3082,37 @@ We can now finally define `main` in `object FactorialAsProgramMain`
 ```scala
 package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
 
+import pdbp.program.meaning.ofActive.active.activeMeaningOfActive
+import activeMeaningOfActive.programMeaning
+
 import examples.objects.active.effectfulReadingAndWriting.mainFactorialAsProgram
 import mainFactorialAsProgram.factorialMain
-
-import pdbp.computation.meaning.instances.ofActive.active.activeMeaningOfActive
-import activeMeaningOfActive.programMeaning
 
 object FactorialAsProgramMain {
 
   def main(args: Array[String]): Unit = {
 
-    programMeaning.applyToProgram(factorialMain)(())
+    programMeaning(factorialMain)(())
 
   }
 
 }
 ```
 
-The definition of `FactorialAsProgramMain` also uses dependecy injection by `import` 
- -`import mainFactorialAsProgram.factorialMain`) to bring `factorialMain` in scope,
- - `import activeMeaningOfActive.programMeaning` to bring `programMeaning` in scope.
-
-Note that `programMeaning.applyToProgram(mainFactorialAsProgram)` has
+Note that `programMeaning(factorialMain)` has
 
   - type `` Unit `=>A` Unit ``, which is
   - type `Unit => Active[Unit]`, which is
   - type `Unit => Unit`
 
-It suffuces to evaluate `programMeaning.applyToProgram(factorialMain)(())` to run `factorialMain`.
+It suffuces to evaluate `programMeaning(factorialMain)(())` to run `programMeaning(factorialMain)(`.
 
 Ok, so let's use `main` in `object FactorialAsProgramMain`.
 
 Let's try `10`.
 
 ```scala
-[info] Running examples.main.meaning.ofActive.active.effectfulReadingAndWriting.MainFactorialAsProgram
+[info] Running examples.main.meaning.ofActive.active.effectfulReadingAndWriting.FactorialAsProgramMain
 please type an integer
 10
 the factorial value of the integer is
@@ -3136,13 +3126,13 @@ the factorial value of the integer is
 ```scala
 package pdbp.computation.transformation
 
-import pdbp.natural.transformation.unary.`~C~>`
+import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.Computation
 
-private[pdbp] trait ComputationTransformation[F[+ _]: Computation, T[+ _]] {
+private[pdbp] trait ComputationTransformation[FC[+ _]: Computation, T[+ _]] {
 
-  private[pdbp] def transform: F `~C~>` T
+  private[pdbp] val transform: FC `~U~>` T
 
 }
 ```
@@ -3155,18 +3145,18 @@ I have contributed to monad transformers myself by combining them with *catamorp
 
 ## **Describing `FreeTransformation`**
 
-The first computation transformer that we describe is `trait FreeTransformer`.
+The first computation transformer that we describe is `trait FreeTransformation`.
 
 ```scala
 import FreeTransformation._
 
-import pdbp.types.kleisli.kleisliProgramType._
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
 import pdbp.program.Program
 
 import pdbp.computation.Computation
 
-import pdbp.natural.transformation.unary.`~C~>`
+import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.transformation.ComputationTransformation
 
@@ -3177,7 +3167,7 @@ private[pdbp] trait FreeTransformation[C[+ _]: Computation]
 
   private type FTC = FreeTransformed[C]
 
-  override private[pdbp] def transform = new `~C~>` {
+  override private[pdbp] val transform = new {
     override private[pdbp] def apply[Z](cz: C[Z]): FTC[Z] = {
       Transform(cz)
     }
@@ -3246,14 +3236,14 @@ The word *free* refers to the fact that a data structure built using `Result` an
 
 ## **Describing `FreeTransformedMeaning`**
 
-The transformed computation meaning corresponding to the free computation transformer `trait FreeTransformer` is `trait FreeTransformedMeaning`.
+The transformed computation meaning corresponding to the free computation transformation `trait FreeTransformation` is `trait FreeTransformedMeaning`.
 
 ```scala
 package pdbp.computation.meaning.free
 
 import pdbp.computation.Computation
 
-import pdbp.natural.transformation.unary.`~C~>`
+import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.transformation.free.FreeTransformation
 import pdbp.computation.transformation.free.FreeTransformation._
@@ -3261,38 +3251,33 @@ import pdbp.computation.transformation.free.FreeTransformation._
 import pdbp.computation.meaning.ComputationMeaning
 
 private[pdbp] trait FreeTransformedMeaning[FC[+ _]: Computation, T[+ _]](
-    toBeTransformedMeaning: ComputationMeaning[FC, T],
-    freeTransformation: FreeTransformation[FC])
+    toBeTransformedMeaning: ComputationMeaning[FC, T])
     extends ComputationMeaning[FreeTransformed[FC], T] {
+
+  import implicitly._
 
   private type FTFC = FreeTransformed[FC]
 
-  import implicitly.{result => resultFC}
-
-  import freeTransformation.{bind => bindFC}
-
-  import toBeTransformedMeaning.{computationMeaning => computationMeaningFC}
-
-  override private[pdbp] lazy val computationMeaning: FTFC `~C~>` T =
-    new `~C~>` {
+  override private[pdbp] val computationMeaning: FTFC `~U~>` T =
+    new {
       override private[pdbp] def apply[Z](ftfcz: FTFC[Z]): T[Z] = {
         @annotation.tailrec
         def tailrecFold(ftfcz: FTFC[Z]): FC[Z] = ftfcz match {
           case Transform(fcz) =>
             fcz
           case Result(z) =>
-            resultFC(z)
+            result(z)
           case Bind(Result(y), y2ftfcz) =>
             tailrecFold(y2ftfcz(y))
           case Bind(Bind(fcx, x2ftfcy), y2ftfcz) =>
-            tailrecFold(bindFC(fcx, { x =>
-              bindFC(x2ftfcy(x), y2ftfcz)
+            tailrecFold(Bind(fcx, { x =>
+              Bind(x2ftfcy(x), y2ftfcz)
             }))
           case any =>
             sys.error(
               "Impossible, since, for 'FreeTransformedMeaning', 'tailrecFold' eliminates this case")
         }
-        computationMeaningFC(tailrecFold(ftfcz))
+        toBeTransformedMeaning.computationMeaning(tailrecFold(ftfcz))
       }
     }
 
@@ -3307,19 +3292,19 @@ Note that, when *pattern matching*,  we use names like `x2ftfcy` instead of `` `
 
 `tailrecFold`, as it's name suggests, is a *tail recursive folding* of a computation of type `FTFC[Z]`, which is a free data structure wrapping a computation of type `FC[Z]`, back to a computation of type `FC[Z]`. 
 
-The computation of type `FC[Z]` can be given a meaning using `computationMeaningFC`.
+The computation of type `FC[Z]` can be given a meaning using `toBeTransformedMeaning.computationMeaning`.
 Therefore the computation of type `FTFC[Z]` can be given a meaning as well.
 
 Note that
 
- - the last `case` uses an *associativity* law of `bind`, the *left* associated `Bind`'s are folded to *right* associated `bind`'s, 
+ - the last `case` uses an *associativity* law of `bind`: the *left* associated `Bind`'s are folded to *right* associated `Bind`'s, 
 
 ### **Describing `activeFreeProgram`**
 
-The next computation `object` (and corresponding program `object`) is the *active free* one defined below
+The next implicit computation object (and corresponding implicit kleisli program object) is the *active free* one defined below
 
 ```scala
-package pdbp.program.instances.active.free
+package pdbp.program.implicits.active.free
 
 import pdbp.types.active.activeTypes._
 import pdbp.types.active.free.activeFreeTypes._
@@ -3331,13 +3316,15 @@ import pdbp.computation.Computation
 import pdbp.computation.transformation.ComputationTransformation
 import pdbp.computation.transformation.free.FreeTransformation
 
-import pdbp.program.implicits.active.implicits.implicitActiveProgram
+import pdbp.program.implicits.active.implicits.activeProgram
 
-object activeFreeProgram
-    extends Computation[ActiveFree]
-    with Program[`=>AF`]
-    with ComputationTransformation[Active, ActiveFree]()
-    with FreeTransformation[Active]()
+object implicits {
+  implicit object activeFreeProgram
+      extends Computation[ActiveFree]
+      with Program[`=>AF`]
+      with FreeTransformation[Active]()
+      with ComputationTransformation[Active, ActiveFree]()
+}
 ```
 
 where the types `ActiveFree` and `` `=>AF` `` are defined as follows
@@ -3345,7 +3332,7 @@ where the types `ActiveFree` and `` `=>AF` `` are defined as follows
 ```scala
 package pdbp.types.active.free
 
-import pdbp.types.kleisli.kleisliProgramType._
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
 import pdbp.types.active.activeTypes._
 
@@ -3360,29 +3347,12 @@ object activeFreeTypes {
 }
 ```
 
-### **Describing `implicitActiveFreeProgram`**
-
-Let's move on and define an `implicit val` that we can use later on for doing dependecy injection by `import`.
-
-```scala
-package pdbp.program.implicits.active.free
-
-import pdbp.program.instances.active.free.activeFreeProgram
-
-object implicits {
-
-  implicit val implicitActiveFreeProgram: activeFreeProgram.type =
-    activeFreeProgram
-
-}
-```
-
 ### **Describing `activeMeaningOfActiveFree`**
 
-The next computation meaning `object` (and corresponding program meaning `object`) is the *active meaning of active free* one defined below
+The next computation meaning `object` (and corresponding kleisli program meaning `object`) is the *active meaning of active free* one defined below
 
 ```scala
-package pdbp.computation.meaning.instances.ofActiveFree.active
+package pdbp.program.meaning.ofActiveFree.active
 
 import pdbp.types.active.activeTypes._
 import pdbp.types.active.free.activeFreeTypes._
@@ -3393,26 +3363,18 @@ import pdbp.computation.meaning.ComputationMeaning
 
 import pdbp.computation.meaning.free.FreeTransformedMeaning
 
-import pdbp.computation.transformation.ComputationTransformation
-import pdbp.computation.transformation.free.FreeTransformation
+import pdbp.program.meaning.ofActive.active.activeMeaningOfActive
 
-import pdbp.computation.meaning.instances.ofActive.active.activeMeaningOfActive
-
-import pdbp.program.implicits.active.implicits.implicitActiveProgram
-import pdbp.program.implicits.active.free.implicits.implicitActiveFreeProgram
-
-object freeTransformationOfActive
-    extends FreeTransformation[Active]()
-    with ComputationTransformation[Active, ActiveFree]()
+import pdbp.program.implicits.active.implicits.activeProgram
+import pdbp.program.implicits.active.free.implicits.activeFreeProgram
 
 object activeMeaningOfActiveFree
-    extends FreeTransformedMeaning[Active, Active](activeMeaningOfActive,
-                                                   freeTransformationOfActive)
+    extends FreeTransformedMeaning[Active, Active](activeMeaningOfActive)
     with ComputationMeaning[ActiveFree, Active]()
     with ProgramMeaning[`=>AF`, `=>A`]()
 ```
 
-### **Running `factorialMain` using an effectful `producer` and `consumer` and `activeMeaningOfActiveFree`**
+### **Running `factorialMain` using an effectful `producer` and `consumer`, `activeFreeProgram` and `activeMeaningOfActiveFree`**
 
 Consider
 
@@ -3422,33 +3384,29 @@ package examples.objects.active.free.effectfulReadingAndWriting
 import pdbp.types.active.free.activeFreeTypes._
 
 import pdbp.program.implicits.active.free.implicits
-import implicits.implicitActiveFreeProgram
+import implicits.activeFreeProgram
 
 import examples.mainPrograms.effectfulReadingAndWriting.MainFactorialAsProgram
 
 object mainFactorialAsProgram extends MainFactorialAsProgram[`=>AF`]()
 ```
 
-The definition of `mainFactorialAsProgram` uses dependecy injection by `import` 
-  - `import implicits.implicitActiveProgram` to bring an `implicit val` (`implicitActiveProgram` in scope to `extend` the *type class* `MainFactorialAsProgram[>-->]` using `` MainFactorialAsProgram[`=>AF`] ``.
-
-
 We can now finally define `main` in `object FactorialAsProgramMain`
 
 ```scala
 package examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting
 
+import pdbp.program.meaning.ofActiveFree.active.activeMeaningOfActiveFree
+import activeMeaningOfActiveFree.programMeaning
+
 import examples.objects.active.free.effectfulReadingAndWriting.mainFactorialAsProgram
 import mainFactorialAsProgram.factorialMain
-
-import pdbp.computation.meaning.instances.ofActiveFree.active.activeMeaningOfActiveFree
-import activeMeaningOfActiveFree.programMeaning
 
 object FactorialAsProgramMain {
 
   def main(args: Array[String]): Unit = {
 
-    programMeaning.applyToProgram(factorialMain)(())
+    programMeaning(factorialMain)(())
 
   }
 
@@ -3467,76 +3425,8 @@ the factorial value of the integer is
 402387260077093773543702433923003985719374864210714632543799910429938512398629020592044208486969404800479988610197196058631666872994808558901323829669944590997424504087073759918823627727188732519779505950995276120874975462497043601418278094646496291056393887437886487337119181045825783647849977012476632889835955735432513185323958463075557409114262417474349347553428646576611667797396668820291207379143853719588249808126867838374559731746136085379534524221586593201928090878297308431392844403281231558611036976801357304216168747609675871348312025478589320767169132448426236131412508780208000261683151027341827977704784635868170164365024153691398281264810213092761244896359928705114964975419909342221566832572080821333186116811553615836546984046708975602900950537616475847728421889679646244945160765353408198901385442487984959953319101723355556602139450399736280750137837615307127761926849034352625200015888535147331611702103968175921510907788019393178114194545257223865541461062892187960223838971476088506276862967146674697562911234082439208160153780889893964518263243671616762179168909779911903754031274622289988005195444414282012187361745992642956581746628302955570299024324153181617210465832036786906117260158783520751516284225540265170483304226143974286933061690897968482590125458327168226458066526769958652682272807075781391858178889652208164348344825993266043367660176999612831860788386150279465955131156552036093988180612138558600301435694527224206344631797460594682573103790084024432438465657245014402821885252470935190620929023136493273497565513958720559654228749774011413346962715422845862377387538230483865688976461927383814900140767310446640259899490222221765904339901886018566526485061799702356193897017860040811889729918311021171229845901641921068884387121855646124960798722908519296819372388642614839657382291123125024186649353143970137428531926649875337218940694281434118520158014123344828015051399694290153483077644569099073152433278288269864602789864321139083506217095002597389863554277196742822248757586765752344220207573630569498825087968928162753848863396909959826280956121450994871701244516461260379029309120889086942028510640182154399457156805941872748998094254742173582401063677404595741785160829230135358081840096996372524230560855903700624271243416909004153690105933983835777939410970027753472000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 ```
 
-We do not have a problem here any more.
-
-By the way, changing the definition of `result` in `FreeTransformation` to
-
-```scala
-  override private[pdbp] def result[Z]: Z => FTC[Z] = { z =>
-    println(s"Result($z)")
-    Result(z)
-  }
-``` 
-
-leads to the following (let's try `5`)
-
-```scala
-[info] Running examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting.FactorialAsProgramMain
-please type an integer
-5
-Result(5)
-Result(5)
-Result(false)
-Result((5,false))
-Result(Right(5))
-Result(5)
-Result(4)
-Result(4)
-Result(false)
-Result((4,false))
-Result(Right(4))
-Result(4)
-Result(3)
-Result(3)
-Result(false)
-Result((3,false))
-Result(Right(3))
-Result(3)
-Result(2)
-Result(2)
-Result(false)
-Result((2,false))
-Result(Right(2))
-Result(2)
-Result(1)
-Result(1)
-Result(false)
-Result((1,false))
-Result(Right(1))
-Result(1)
-Result(0)
-Result(0)
-Result(true)
-Result((0,true))
-Result(Left(0))
-Result(1)
-Result((1,1))
-Result(1)
-Result((2,1))
-Result(2)
-Result((3,2))
-Result(6)
-Result((4,6))
-Result(24)
-Result((5,24))
-Result(120)
-the factorial value of the integer is
-120
-Result(())
-```
-
-Agreed, we do an I/O side effect here (this can and will be solved later).
-
+We do not have a stack overflow problem here any more since we are using the heap instead.
+Agreed, the heap can run out of memory, but that's another problem.
 
 ## **Describing `Reading`**
 
@@ -3656,14 +3546,14 @@ private[pdbp] object ReadingTransformation {
 
 import ReadingTransformation._
 
-import pdbp.types.kleisli.kleisliProgramType._
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
 import pdbp.program.Program
 import pdbp.program.reading.Reading
 
 import pdbp.computation.Computation
 
-import pdbp.natural.transformation.unary.`~C~>`
+import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.transformation.ComputationTransformation
 
@@ -3679,7 +3569,7 @@ private[pdbp] trait ReadingTransformation[R, C[+ _]: Computation]
   import implicitly.{result => resultC}
   import implicitly.{bind => bindC}
 
-  override private[pdbp] def transform = new `~C~>` {
+  override private[pdbp] def transform = new `~U~>` {
     override private[pdbp] def apply[Z](mz: C[Z]): RTC[Z] =
       sys.error(
         "Impossible, since, for 'ReadingTransformation', 'transform' is used nowhere")
@@ -3717,7 +3607,7 @@ package pdbp.computation.meaning.reading
 
 import pdbp.computation.Computation
 
-import pdbp.natural.transformation.unary.`~C~>`
+import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.transformation.reading.ReadingTransformation._
 
@@ -3731,8 +3621,8 @@ trait ReadingTransformedMeaning[R, FC[+ _]: Computation, T[+ _]](
   private type RTFC = ReadingTransformed[R, FC]
   private type RTT = ReadingTransformed[R, T]
 
-  override private[pdbp] lazy val computationMeaning: RTFC `~C~>` RTT =
-    new `~C~>` {
+  override private[pdbp] lazy val computationMeaning: RTFC `~U~>` RTT =
+    new `~U~>` {
       override private[pdbp] def apply[Z](rtfcz: RTFC[Z]): RTT[Z] =
         toBeTransformedMeaning.computationMeaning(rtfcz(implicitly))
 
@@ -3774,7 +3664,7 @@ where the types `ActiveReading` and `` `=>AR` `` are defined as follows
 ```scala
 package pdbp.types.active.reading
 
-import pdbp.types.kleisli.kleisliProgramType._
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
 import pdbp.types.active.activeTypes._
 

@@ -11,12 +11,12 @@ package pdbp.computation.transformation
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.natural.transformation.unary.`~C~>`
+import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.Computation
 
 private[pdbp] trait ComputationTransformation[FC[+ _]: Computation, T[+ _]] {
 
-  private[pdbp] def transform: FC `~C~>` T
+  private[pdbp] val transform: FC `~U~>` T
 
 }

@@ -13,10 +13,10 @@ package pdbp.program.meaning
 
 import pdbp.program.Program
 
-import pdbp.natural.transformation.binary.`~P~>`
+import pdbp.natural.transformation.binary.`~B~>`
 
 trait ProgramMeaning[`>-FP->`[- _, + _]: Program, `>-T->`[- _, + _]] {
 
-  lazy val programMeaning: `>-FP->` `~P~>` `>-T->`
+  lazy val programMeaning: `>-FP->` `~B~>` `>-T->`
 
 }

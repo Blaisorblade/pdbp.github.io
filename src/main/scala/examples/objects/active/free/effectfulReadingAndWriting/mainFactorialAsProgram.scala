@@ -14,9 +14,8 @@ package examples.objects.active.free.effectfulReadingAndWriting
 import pdbp.types.active.free.activeFreeTypes._
 
 import pdbp.program.implicits.active.free.implicits
-import implicits.implicitActiveFreeProgram
+import implicits.activeFreeProgram
 
-import examples.mainPrograms.effectfulReadingAndWriting.EffectfulUtils
 import examples.mainPrograms.effectfulReadingAndWriting.MainFactorialAsProgram
 
 object mainFactorialAsProgram extends MainFactorialAsProgram[`=>AF`]()

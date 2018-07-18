@@ -11,7 +11,7 @@ package pdbp.computation
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.kleisli.kleisliProgramType.Kleisli
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
 import pdbp.types.product.productType._
 import pdbp.types.sum.sumType._

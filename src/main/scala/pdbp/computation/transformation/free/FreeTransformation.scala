@@ -27,13 +27,13 @@ private[pdbp] object FreeTransformation {
 
 import FreeTransformation._
 
-import pdbp.types.kleisli.kleisliProgramType._
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
 import pdbp.program.Program
 
 import pdbp.computation.Computation
 
-import pdbp.natural.transformation.unary.`~C~>`
+import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.transformation.ComputationTransformation
 
@@ -44,14 +44,13 @@ private[pdbp] trait FreeTransformation[FC[+ _]: Computation]
 
   private type FTFC = FreeTransformed[FC]
 
-  override private[pdbp] def transform = new `~C~>` {
+  override private[pdbp] val transform = new {
     override private[pdbp] def apply[Z](fcz: FC[Z]): FTFC[Z] = {
       Transform(fcz)
     }
   }
 
   override private[pdbp] def result[Z]: Z => FTFC[Z] = { z =>
-    // println(s"Result($z)")
     Result(z)
   }
 

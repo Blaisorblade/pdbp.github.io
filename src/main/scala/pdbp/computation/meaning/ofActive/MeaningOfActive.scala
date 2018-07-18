@@ -1,4 +1,4 @@
-package examples.objects.active.effectfulReadingAndWriting
+package pdbp.computation.meaning.ofActive
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -13,9 +13,20 @@ package examples.objects.active.effectfulReadingAndWriting
 
 import pdbp.types.active.activeTypes._
 
-import pdbp.program.implicits.active.implicits
-import implicits.activeProgram
+import pdbp.computation.Resulting
 
-import examples.mainPrograms.effectfulReadingAndWriting.MainFactorialAsProgram
+import pdbp.natural.transformation.unary.`~U~>`
 
-object mainFactorialAsProgram extends MainFactorialAsProgram[`=>A`]()
+import pdbp.computation.meaning.ComputationMeaning
+
+private[pdbp] trait MeaningOfActive[TR[+ _]: Resulting] extends ComputationMeaning[Active, TR] {
+
+  override private[pdbp] val computationMeaning: Active `~U~>` TR =
+    new {
+      override private[pdbp] def apply[Z](az: Active[Z]): TR[Z] = {
+        import implicitly._
+        result(az)
+      }
+    }
+
+}

@@ -1,4 +1,4 @@
-package pdbp.types.active
+package pdbp.types.kleisli
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,12 +11,8 @@ package pdbp.types.active
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
+private[pdbp] object kleisliBinaryTypeConstructorType {
 
-object activeTypes {
-
-  type Active[+Z] = Z
-
-  type `=>A` = Kleisli[Active]
+  private[pdbp] type Kleisli[C[+ _]] = [-Z, + Y] => Z => C[Y]
 
 }

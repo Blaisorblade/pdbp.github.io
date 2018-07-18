@@ -28,7 +28,7 @@ trait EffectfulUtils[>-->[- _, + _]: Function] {
   val producer: Unit >--> BigInt =
     effectfulReadIntFromConsole("please type an integer")
 
-  val consumer: BigInt >--> Unit =
+  def consumer[Z]: Z >--> Unit =
     effectfulWriteToConsole("the factorial value of the integer is")
 
 }

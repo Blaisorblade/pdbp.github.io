@@ -1,4 +1,4 @@
-package pdbp.computation.meaning.instances.ofActiveIntReading.activeIntReading
+package pdbp.program.meaning.ofActiveIntReading.activeIntReading
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -24,9 +24,9 @@ import pdbp.program.meaning.ProgramMeaning
 
 import pdbp.computation.meaning.reading.ReadingTransformedMeaning
 
-import pdbp.computation.meaning.instances.ofActive.active.activeMeaningOfActive
+import pdbp.program.meaning.ofActive.active.activeMeaningOfActive
 
 object activeIntReadingMeaningOfActiveIntReading
-    extends ReadingTransformedMeaning[BigInt, Active, Active](activeMeaningOfActive, None)
+    extends ReadingTransformedMeaning[BigInt, Active, Active](activeMeaningOfActive) // , None)
     with ComputationMeaning[ActiveReading[BigInt], ActiveReading[BigInt]]()
     with ProgramMeaning[`=>AR`[BigInt], `=>AR`[BigInt]]()

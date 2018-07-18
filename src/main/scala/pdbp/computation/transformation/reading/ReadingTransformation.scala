@@ -21,14 +21,14 @@ private[pdbp] object ReadingTransformation {
 
 import ReadingTransformation._
 
-import pdbp.types.kleisli.kleisliProgramType._
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
 import pdbp.program.Program
 import pdbp.program.reading.Reading
 
 import pdbp.computation.Computation
 
-import pdbp.natural.transformation.unary.`~C~>`
+import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.transformation.ComputationTransformation
 
@@ -44,7 +44,7 @@ private[pdbp] trait ReadingTransformation[R, FC[+ _]: Computation]
   import implicitly.{result => resultFC}
   import implicitly.{bind => bindFC}
 
-  override private[pdbp] def transform = new `~C~>` {
+  override private[pdbp] val transform = new `~U~>` {
     override private[pdbp] def apply[Z](fcz: FC[Z]): RTFC[Z] =
       sys.error(
         "Impossible, since, for 'ReadingTransformation', 'transform' is used nowhere")

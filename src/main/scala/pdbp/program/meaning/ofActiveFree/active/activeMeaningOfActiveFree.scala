@@ -1,4 +1,4 @@
-package pdbp.computation.meaning.instances.ofActive.active
+package pdbp.program.meaning.ofActiveFree.active
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -12,16 +12,21 @@ package pdbp.computation.meaning.instances.ofActive.active
 //  author        Luc Duponcheel        2017-2018
 
 import pdbp.types.active.activeTypes._
-
-import pdbp.program.implicits.active.implicits.activeProgram
+import pdbp.types.active.free.activeFreeTypes._
 
 import pdbp.program.meaning.ProgramMeaning
 
 import pdbp.computation.meaning.ComputationMeaning
 
-import pdbp.computation.meaning.instances.ofActive.MeaningOfActive
+import pdbp.computation.meaning.free.FreeTransformedMeaning
 
-object activeMeaningOfActive
-    extends MeaningOfActive[Active]()
-    with ComputationMeaning[Active, Active]()
-    with ProgramMeaning[`=>A`, `=>A`]()
+import pdbp.program.meaning.ofActive.active.activeMeaningOfActive
+
+import pdbp.program.implicits.active.implicits.activeProgram
+import pdbp.program.implicits.active.free.implicits.activeFreeProgram
+
+object activeMeaningOfActiveFree
+    extends FreeTransformedMeaning[Active, Active](activeMeaningOfActive)
+    with ComputationMeaning[ActiveFree, Active]()
+    with ProgramMeaning[`=>AF`, `=>A`]()
+  

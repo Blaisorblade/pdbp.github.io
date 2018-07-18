@@ -11,11 +11,11 @@ package pdbp.computation.meaning
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.kleisli.kleisliProgramType._
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
-import pdbp.natural.transformation.binary.`~P~>`
+import pdbp.natural.transformation.binary.`~B~>`
 
-import pdbp.natural.transformation.unary.`~C~>`
+import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.Computation
 
@@ -24,12 +24,11 @@ import pdbp.program.meaning.ProgramMeaning
 private[pdbp] trait ComputationMeaning[FC[+ _]: Computation, T[+ _]]
     extends ProgramMeaning[Kleisli[FC], Kleisli[T]] {
 
-  private[pdbp] lazy val computationMeaning: FC `~C~>` T
+  private[pdbp] val computationMeaning: FC `~U~>` T
 
   private type `=>FC` = Kleisli[FC]
 
   private type `=>T` = Kleisli[T]
-
-  override lazy val programMeaning: `=>FC` `~P~>` `=>T` = computationMeaning
+  override lazy val programMeaning: `=>FC` `~B~>` `=>T` = computationMeaning
 
 }

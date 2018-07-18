@@ -11,17 +11,17 @@ package examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.program.meaning.ofActiveFree.active.activeMeaningOfActiveFree
+import activeMeaningOfActiveFree.programMeaning
+
 import examples.objects.active.free.effectfulReadingAndWriting.mainFactorialAsProgram
 import mainFactorialAsProgram.factorialMain
-
-import pdbp.computation.meaning.instances.ofActiveFree.active.activeMeaningOfActiveFree
-import activeMeaningOfActiveFree.programMeaning
 
 object FactorialAsProgramMain {
 
   def main(args: Array[String]): Unit = {
 
-    programMeaning.applyToProgram(factorialMain)(())
+    programMeaning(factorialMain)(())
 
   }
 

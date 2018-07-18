@@ -11,11 +11,22 @@ package pdbp.program.implicits.active.free
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.program.instances.active.free.activeFreeProgram
+import pdbp.types.active.activeTypes._
+import pdbp.types.active.free.activeFreeTypes._
+
+import pdbp.program.Program
+
+import pdbp.computation.Computation
+
+import pdbp.computation.transformation.ComputationTransformation
+import pdbp.computation.transformation.free.FreeTransformation
+
+import pdbp.program.implicits.active.implicits.activeProgram
 
 object implicits {
-
-  implicit val implicitActiveFreeProgram: activeFreeProgram.type =
-    activeFreeProgram
-
+  implicit object activeFreeProgram
+      extends Computation[ActiveFree]
+      with Program[`=>AF`]
+      with FreeTransformation[Active]()
+      with ComputationTransformation[Active, ActiveFree]()
 }

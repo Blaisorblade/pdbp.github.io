@@ -17,7 +17,7 @@ import pdbp.program.Applying
 import pdbp.computation.Resulting
 import pdbp.computation.Binding
 
-import pdbp.types.kleisli.kleisliComputationType._
+import pdbp.types.kleisli.kleisliUnaryTypeConstructorType._
 
 private[pdbp] trait ProgramWithApplying[>-->[- _, + _]]
     extends Program[>-->]

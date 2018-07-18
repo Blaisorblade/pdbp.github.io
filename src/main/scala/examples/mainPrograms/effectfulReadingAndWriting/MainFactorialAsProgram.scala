@@ -23,7 +23,7 @@ class MainFactorialAsProgram[>-->[- _, + _]: Program] extends EffectfulUtils[>--
 
   import factorialAsProgram.factorial
 
-  val factorialMain: Unit >--> Unit =
+  def factorialMain: Unit >--> Unit =
     producer >-->
       factorial >-->
       consumer

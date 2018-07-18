@@ -1,4 +1,4 @@
-package pdbp.types.kleisli
+package examples.main.active.free.effectfulReadingAndWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,8 +11,15 @@ package pdbp.types.kleisli
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-private[pdbp] object kleisliProgramType {
+import examples.objects.active.free.effectfulReadingAndWriting.mainFactorialAsProgram
+import mainFactorialAsProgram.factorialMain
 
-  private[pdbp] type Kleisli[C[+ _]] = [-Z, + Y] => Z => C[Y]
+object FactorialAsProgramMain {
+
+  def main(args: Array[String]): Unit = {
+
+    factorialMain(())
+
+  }
 
 }

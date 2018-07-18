@@ -11,7 +11,7 @@ package pdbp.types.active.reading
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.kleisli.kleisliProgramType._
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
 import pdbp.types.active.activeTypes._
 

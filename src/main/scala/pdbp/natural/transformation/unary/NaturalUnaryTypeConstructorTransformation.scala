@@ -11,25 +11,21 @@ package pdbp.natural.transformation.unary
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.kleisli.kleisliProgramType._
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
-import pdbp.natural.transformation.binary.`~P~>`
+import pdbp.natural.transformation.binary.`~B~>`
 
-private[pdbp] trait `~C~>`[F[+ _], T[+ _]]
-    extends `~P~>`[Kleisli[F], Kleisli[T]] {
+private[pdbp] trait `~U~>`[F[+ _], T[+ _]]
+    extends `~B~>`[Kleisli[F], Kleisli[T]] {
 
   private[pdbp] def apply[Z](fz: F[Z]): T[Z]
 
-  private def applyToComputation[Z](fz: F[Z]): T[Z] =
-    apply(fz)
-
   private type `=>F` = Kleisli[F]
 
-  private type `=>T` = Kleisli[T]  
+  private type `=>T` = Kleisli[T]
 
-  override def applyToProgram[Z, Y](`z=>fy`: Z `=>F` Y): Z `=>T` Y  = { z =>
-    val fy: F[Y] = `z=>fy`(z)
-    applyToComputation(fy)
+  override def apply[Z, Y]: Z `=>F` Y => Z `=>T` Y = { `z=>fy` => z =>
+    apply(`z=>fy`(z))
   }
 
 }

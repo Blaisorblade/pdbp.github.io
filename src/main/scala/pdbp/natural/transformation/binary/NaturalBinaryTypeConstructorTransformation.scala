@@ -11,8 +11,8 @@ package pdbp.natural.transformation.binary
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-trait `~P~>`[`>-F->`[- _, + _], `>-T->`[- _, + _]] {
+trait `~B~>`[`>-F->`[- _, + _], `>-T->`[- _, + _]] {
 
-  def applyToProgram[Z, Y](`z>-f->y`: Z `>-F->` Y): Z `>-T->` Y
+  def apply[Z, Y]: Z `>-F->` Y => Z `>-T->` Y
 
 }
