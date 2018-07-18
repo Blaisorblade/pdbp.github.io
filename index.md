@@ -22,6 +22,10 @@ Below is a link to picture of a radish I picked out of my greenhouse some time a
 
 [Radish](./pictures/Radijs.png)
 
+Below is a link to picture of a typical lunch using vegetables of my greenhouse.
+
+[Lunch](./pictures/Lunch.png)
+
 As a hobby I am still having fun
   - programming 
     - bridging the gap between mathematical theory and programming practice.
