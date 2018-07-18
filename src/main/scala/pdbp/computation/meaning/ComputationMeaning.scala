@@ -29,6 +29,7 @@ private[pdbp] trait ComputationMeaning[FC[+ _]: Computation, T[+ _]]
   private type `=>FC` = Kleisli[FC]
 
   private type `=>T` = Kleisli[T]
+  
   override lazy val programMeaning: `=>FC` `~B~>` `=>T` = computationMeaning
 
 }

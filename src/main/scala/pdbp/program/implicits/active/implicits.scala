@@ -29,8 +29,8 @@ object implicits {
 
     override private[pdbp] def bind[Z, Y](
         az: Active[Z],
-        `z=>ay`: => (Z => Active[Y])): Active[Y] =
-      `z=>ay`(az)
+        `z=>ay`: => (Z => Active[Y])): Active[Y] = 
+      `z=>ay`(az)  
 
   }
 

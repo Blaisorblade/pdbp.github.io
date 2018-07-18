@@ -13,12 +13,21 @@ package examples.main.active.free.effectfulReadingAndWriting
 
 import examples.objects.active.free.effectfulReadingAndWriting.mainFactorialAsProgram
 import mainFactorialAsProgram.factorialMain
+// import mainFactorialAsProgram.fac
 
 object FactorialAsProgramMain {
 
   def main(args: Array[String]): Unit = {
 
-    factorialMain(())
+    import pdbp.types.active.free.activeFreeTypes._
+    val fac: Unit => ActiveFree[Unit] = factorialMain
+    fac(())
+    //factorialMain(())
+
+    // import pdbp.types.active.free.activeFreeTypes._
+    // val result: ActiveFree[BigInt] = fac(())
+
+    // println(s">>> result = $result")
 
   }
 

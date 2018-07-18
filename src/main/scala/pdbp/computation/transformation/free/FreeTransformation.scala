@@ -45,18 +45,15 @@ private[pdbp] trait FreeTransformation[FC[+ _]: Computation]
   private type FTFC = FreeTransformed[FC]
 
   override private[pdbp] val transform = new {
-    override private[pdbp] def apply[Z](fcz: FC[Z]): FTFC[Z] = {
+    override private[pdbp] def apply[Z](fcz: FC[Z]): FTFC[Z] =
       Transform(fcz)
-    }
   }
 
-  override private[pdbp] def result[Z]: Z => FTFC[Z] = { z =>
-    Result(z)
-  }
+  override private[pdbp] def result[Z]: Z => FTFC[Z] = 
+    Result(_)
 
   override private[pdbp] def bind[Z, Y](ftfcz: FTFC[Z],
-                                        `z=>ftfcy`: => (Z => FTFC[Y])): FTFC[Y] = {
-    Bind(ftfcz, `z=>ftfcy`)
-  }  
+                                        `z=>ftfcy`: => (Z => FTFC[Y])): FTFC[Y] =
+    Bind(ftfcz, `z=>ftfcy`)     
 
 }
