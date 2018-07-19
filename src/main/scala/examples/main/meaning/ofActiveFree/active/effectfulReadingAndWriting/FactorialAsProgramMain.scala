@@ -11,7 +11,7 @@ package examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.program.meaning.ofActiveFree.active.activeMeaningOfActiveFree
+import pdbp.program.meaning.ofActiveFree.active.implicits.activeMeaningOfActiveFree
 import activeMeaningOfActiveFree.binaryTransformation
 
 import examples.objects.active.free.effectfulReadingAndWriting.mainFactorialAsProgram

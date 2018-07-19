@@ -21,10 +21,12 @@ import pdbp.computation.transformation.free.FreeTransformation._
 import pdbp.computation.meaning.ComputationMeaning
 
 private[pdbp] trait FreeTransformedMeaning[FC[+ _]: Computation, T[+ _]](
-    toBeTransformedMeaning: ComputationMeaning[FC, T])
+    implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
     extends ComputationMeaning[FreeTransformed[FC], T] {
 
-  import implicitly._
+  private val implicitComputation = implicitly[Computation[FC]]
+
+  import implicitComputation._
 
   private type FTFC = FreeTransformed[FC]
 

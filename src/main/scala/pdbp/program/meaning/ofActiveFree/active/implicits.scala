@@ -20,13 +20,15 @@ import pdbp.computation.meaning.ComputationMeaning
 
 import pdbp.computation.meaning.free.FreeTransformedMeaning
 
-import pdbp.program.meaning.ofActive.active.activeMeaningOfActive
+import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
 
 import pdbp.program.implicits.active.implicits.activeProgram
 import pdbp.program.implicits.active.free.implicits.activeFreeProgram
 
-object activeMeaningOfActiveFree
-    extends FreeTransformedMeaning[Active, Active](activeMeaningOfActive)
-    with ComputationMeaning[ActiveFree, Active]()
-    with ProgramMeaning[`=>AF`, `=>A`]()
+object implicits {
+  implicit object activeMeaningOfActiveFree
+      extends FreeTransformedMeaning[Active, Active]()
+      with ComputationMeaning[ActiveFree, Active]()
+      with ProgramMeaning[`=>AF`, `=>A`]()
+}    
   

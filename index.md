@@ -3045,10 +3045,12 @@ import pdbp.computation.meaning.ComputationMeaning
 
 import pdbp.computation.meaning.ofActive.MeaningOfActive
 
-object activeMeaningOfActive
-    extends MeaningOfActive[Active]()
-    with ComputationMeaning[Active, Active]()
-    with ProgramMeaning[`=>A`, `=>A`]()
+object implicits {
+  implicit object activeMeaningOfActive
+      extends MeaningOfActive[Active]()
+      with ComputationMeaning[Active, Active]()
+      with ProgramMeaning[`=>A`, `=>A`]()
+} 
 ```
 
 where `MeaningOfActive` defines a computation meaning of `Active` for any type constructor `TR` with the `Resulting` computational capability.
@@ -3086,7 +3088,7 @@ We can now finally define `main` in `object FactorialAsProgramMain`
 ```scala
 package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
 
-import pdbp.program.meaning.ofActive.active.activeMeaningOfActive
+import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
 import activeMeaningOfActive.binaryTransformation
 
 import examples.objects.active.effectfulReadingAndWriting.mainFactorialAsProgram
@@ -3252,10 +3254,12 @@ import pdbp.computation.transformation.free.FreeTransformation._
 import pdbp.computation.meaning.ComputationMeaning
 
 private[pdbp] trait FreeTransformedMeaning[FC[+ _]: Computation, T[+ _]](
-    toBeTransformedMeaning: ComputationMeaning[FC, T])
+    implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
     extends ComputationMeaning[FreeTransformed[FC], T] {
 
-  import implicitly._
+  private val implicitComputation = implicitly[Computation[FC]]
+
+  import implicitComputation._
 
   private type FTFC = FreeTransformed[FC]
 
@@ -3364,15 +3368,17 @@ import pdbp.computation.meaning.ComputationMeaning
 
 import pdbp.computation.meaning.free.FreeTransformedMeaning
 
-import pdbp.program.meaning.ofActive.active.activeMeaningOfActive
+import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
 
 import pdbp.program.implicits.active.implicits.activeProgram
 import pdbp.program.implicits.active.free.implicits.activeFreeProgram
 
-object activeMeaningOfActiveFree
-    extends FreeTransformedMeaning[Active, Active](activeMeaningOfActive)
-    with ComputationMeaning[ActiveFree, Active]()
-    with ProgramMeaning[`=>AF`, `=>A`]()
+object implicits {
+  implicit object activeMeaningOfActiveFree
+      extends FreeTransformedMeaning[Active, Active]()
+      with ComputationMeaning[ActiveFree, Active]()
+      with ProgramMeaning[`=>AF`, `=>A`]()
+}
 ```
 
 ### **Running `factorialMain` using an effectful `producer` and `consumer`, `activeFreeProgram` and `activeMeaningOfActiveFree`**
@@ -3397,7 +3403,7 @@ We can now finally define `main` in `object FactorialAsProgramMain`
 ```scala
 package examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting
 
-import pdbp.program.meaning.ofActiveFree.active.activeMeaningOfActiveFree
+import pdbp.program.meaning.ofActiveFree.active.implicits.activeMeaningOfActiveFree
 import activeMeaningOfActiveFree.binaryTransformation
 
 import examples.objects.active.free.effectfulReadingAndWriting.mainFactorialAsProgram
@@ -3620,7 +3626,7 @@ import pdbp.computation.transformation.reading.ReadingTransformation._
 import pdbp.computation.meaning.ComputationMeaning
 
 trait ReadingTransformedMeaning[R, FC[+ _]: Computation, T[+ _]](
-    toBeTransformedMeaning: ComputationMeaning[FC, T])
+    implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
     extends ComputationMeaning[ReadingTransformed[R, FC],
                                ReadingTransformed[R, T]] {
 
@@ -3637,7 +3643,7 @@ trait ReadingTransformedMeaning[R, FC[+ _]: Computation, T[+ _]](
 }
 ```
 
-###  **Describing `ActiveReadingProgram`**
+###  **Describing `activeIntReadingProgram`**
 
 The next implicit computation object (and corresponding implicit kleisli program object) is the *active reading* one defined below
 
@@ -3666,7 +3672,7 @@ private[pdbp] trait ActiveReadingProgram[R]
 
 object implicits {
 
-  implicit object implicitActiveIntReadingProgram
+  implicit object activeIntReadingProgram
     extends ActiveReadingProgram[BigInt]()
     with ComputationTransformation[Active, ActiveReading[BigInt]]()
     with ReadingTransformation[BigInt, Active]()
@@ -3694,7 +3700,7 @@ object activeReadingTypes {
 }
 ```
 
-Note that, since there is a type parameter `R` involved, we first define a `trait` and second not an `object` (for `BigInt`).
+Note that, since there is a type parameter `R` involved, we first define a `trait` and second a corresponding `implicit object` (for `BigInt`).
 
 
 # **Appendices**
@@ -3711,7 +3717,7 @@ This appendix compares pointful and pointfree programming.
 ### **BindingOperator**
 
 Recall that the `implicit class` below formalizes argument binding
-
+ompile
 ```scala
 object bindingOperator {
 

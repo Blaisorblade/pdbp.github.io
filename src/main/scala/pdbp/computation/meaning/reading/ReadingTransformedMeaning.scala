@@ -21,7 +21,7 @@ import pdbp.computation.transformation.reading.ReadingTransformation._
 import pdbp.computation.meaning.ComputationMeaning
 
 trait ReadingTransformedMeaning[R, FC[+ _]: Computation, T[+ _]](
-    toBeTransformedMeaning: ComputationMeaning[FC, T])
+    implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
     extends ComputationMeaning[ReadingTransformed[R, FC],
                                ReadingTransformed[R, T]] {
 

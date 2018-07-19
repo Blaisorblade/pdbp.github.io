@@ -24,9 +24,11 @@ import pdbp.program.meaning.ProgramMeaning
 
 import pdbp.computation.meaning.reading.ReadingTransformedMeaning
 
-import pdbp.program.meaning.ofActive.active.activeMeaningOfActive
+import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
 
-object activeIntReadingMeaningOfActiveIntReading
-    extends ReadingTransformedMeaning[BigInt, Active, Active](activeMeaningOfActive)
-    with ComputationMeaning[ActiveReading[BigInt], ActiveReading[BigInt]]()
-    with ProgramMeaning[`=>AR`[BigInt], `=>AR`[BigInt]]()
+object implicits {
+  implicit object activeIntReadingMeaningOfActiveIntReading
+      extends ReadingTransformedMeaning[BigInt, Active, Active]()
+      with ComputationMeaning[ActiveReading[BigInt], ActiveReading[BigInt]]()
+      with ProgramMeaning[`=>AR`[BigInt], `=>AR`[BigInt]]()
+}    
