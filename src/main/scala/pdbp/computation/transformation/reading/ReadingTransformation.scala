@@ -44,21 +44,17 @@ private[pdbp] trait ReadingTransformation[R, FC[+ _]: Computation]
   import implicitly.{result => resultFC}
   import implicitly.{bind => bindFC}
 
-  override private[pdbp] val transform = new `~U~>` {
+  override private[pdbp] val transform: FC `~U~>` RTFC = new {
     override private[pdbp] def apply[Z](fcz: FC[Z]): RTFC[Z] =
-      sys.error(
-        "Impossible, since, for 'ReadingTransformation', 'transform' is used nowhere")
+    fcz
   }
 
-  override private[pdbp] def result[Z]: Z => RTFC[Z] = { z =>
-    resultFC(z)
-  }
+  override private[pdbp] def result[Z]: Z => RTFC[Z] =
+    resultFC(_)
 
   override private[pdbp] def bind[Z, Y](rtfcz: RTFC[Z],
                                         `z>=rtfcy`: => (Z => RTFC[Y])): RTFC[Y] =
-    bindFC(rtfcz, { z =>
-      `z>=rtfcy`(z)
-    })
+    bindFC(rtfcz, `z>=rtfcy`(_)) 
 
   override val `u>-->r`: Unit `=>RTFC` R = { _ =>
     resultFC(implicitly)

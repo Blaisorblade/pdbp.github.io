@@ -3435,7 +3435,7 @@ Agreed, the heap can run out of memory, but that's another problem.
 
 In sections `Program` and `Computation` we presented the *basic* programming and computation capabilities. 
 In this section we introduce the first *extra* programming capability: *reading*. 
-We already used a specific kind of effectful input reading using *producers* of type `Unit >--> Z` that are used together with a specific kind of effectful output writing using *consumers* of type `Y >--> Unit` to turn programs of type `Z >--> Y` into main programs of type `Unit >--> Unit`. 
+We already used a effectful input reading using *producers* of type `Unit >--> Z` that are used together with a effectful output writing using *consumers* of type `Y >--> Unit` to turn programs of type `Z >--> Y` into main programs of type `Unit >--> Unit`. 
 
 Think, for example, of the capability of this section (reading related) as being able to 
   - read *configuration*
@@ -3470,23 +3470,26 @@ where
 
   - `` `z>-->u` `` 
 
-is the program you expect (it has already been introduced).
+is the program you expect (it has already been described).
  
 
-Think of `` `u>-->r` `` as a program that transforms an argument of type `Unit` a yield result of type `R`. 
-We also write `` `u>-->r` `` is a program that produces a result of type `R`. 
+Think of `` `u>-->r` `` as a program that transforms an argument of type `Unit` to a yield result of type `R`. 
+We also say that `` `u>-->r` `` is a program that produces a result of type `R`. 
 
 
 `trait Reading` has another member 
 
- - `` `z>-->r` `` is a more complex version of `` `u>-->r` ``
+ - `` `z>-->r` `` is a more complex, and more useful version of `` `u>-->r` `` 
+  
+Think of `` `z>-->r` `` as a program that transforms any argument (of type `Z`) to a yield result of type `R`.
+We also say that `` `z>-->r` `` is a program that produces a result of type `R`. 
 
 Note that
 
  - `` `z>-->r` `` can be defined in terms of `` `u>-->r` ``, `compose` and `` `z>-->u` ``,
  - `` `u>-->r` `` can be defined in terms of `` `z>-->r` `` by using `Unit` for `Z`.
 
-Finally, since we're defining a public programming API here, it is also convenient to define an alias `reading` for `` `z>-->r` ``.
+Since we are defining a public programming API here, it is also convenient to define an alias `read` for `` `z>-->r` ``.
 
 
 ## **Describing `ReadingTransformation`**
@@ -3509,8 +3512,9 @@ Our explicit, globally available, reading capability `read` closely corresponds 
 You may argue: why using an explicit `read` member if using an implicitly available `implicitly` value works as well.
 
   - using the member `read` instead of the value `implicitly` does not really matter so much,
-  - - just like `implicitly` can only be used in a context where the type system allows it to be used, `read` can only be used in a context where the type system allows it to be used.
-  - 
+    - `implicitly` can only be used in a context where the type system allows it to be used
+    - `read` can only be used in a context where the type system allows it to be used.
+
 .
 ### **Introducing `type` `` `I=>` ``**
 
@@ -3537,14 +3541,6 @@ Consider
 ```scala
 package pdbp.computation.transformation.reading
 
-import pdbp.types.implicitFunctionType.`I=>`
-
-private[pdbp] object ReadingTransformation {
-
-  type ReadingTransformed[R, C[+ _]] = [+Z] => R `I=>` C[Z]
-
-}
-
 import ReadingTransformation._
 
 import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
@@ -3558,50 +3554,58 @@ import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.transformation.ComputationTransformation
 
-private[pdbp] trait ReadingTransformation[R, C[+ _]: Computation]
-    extends ComputationTransformation[C, ReadingTransformed[R, C]]
-    with Computation[ReadingTransformed[R, C]]
-    with Program[Kleisli[ReadingTransformed[R, C]]]
-    with Reading[R, Kleisli[ReadingTransformed[R, C]]] {
+private[pdbp] trait ReadingTransformation[R, FC[+ _]: Computation]
+    extends ComputationTransformation[FC, ReadingTransformed[R, FC]]
+    with Computation[ReadingTransformed[R, FC]]
+    with Program[Kleisli[ReadingTransformed[R, FC]]]
+    with Reading[R, Kleisli[ReadingTransformed[R, FC]]] {
 
-  private type RTC = ReadingTransformed[R, C]
-  private type `=>RTC` = Kleisli[RTC]
+  private type RTFC = ReadingTransformed[R, FC]
+  private type `=>RTFC` = Kleisli[RTFC]
 
-  import implicitly.{result => resultC}
-  import implicitly.{bind => bindC}
+  import implicitly.{result => resultFC}
+  import implicitly.{bind => bindFC}
 
-  override private[pdbp] def transform = new `~U~>` {
-    override private[pdbp] def apply[Z](mz: C[Z]): RTC[Z] =
-      sys.error(
-        "Impossible, since, for 'ReadingTransformation', 'transform' is used nowhere")
+  override private[pdbp] val transform: FC `~U~>` RTFC = new {
+    override private[pdbp] def apply[Z](fcz: FC[Z]): RTFC[Z] =
+    fcz
   }
 
-  override private[pdbp] def result[Z]: Z => RTC[Z] = { z =>
-    resultC(z)
-  }
+  override private[pdbp] def result[Z]: Z => RTFC[Z] =
+    resultFC(_)
 
-  override private[pdbp] def bind[Z, Y](rtmz: RTC[Z],
-                                        `z>=rtmy`: => (Z => RTC[Y])): RTC[Y] =
-    bindC(rtmz, { z =>
-      `z>=rtmy`(z)
-    })
+  override private[pdbp] def bind[Z, Y](rtfcz: RTFC[Z],
+                                        `z>=rtfcy`: => (Z => RTFC[Y])): RTFC[Y] =
+    bindFC(rtfcz, `z>=rtfcy`(_)) 
 
-  override val `u>-->r`: Unit `=>RTC` R = { _ =>
-    resultC(implicitly)
+  override val `u>-->r`: Unit `=>RTFC` R = { _ =>
+    resultFC(implicitly)
   }
 
 }
 ```
 
-The type synonym `` `I=>` `` (and corresponding `RTC` and `` `=>RTC` `` ) above, indicate that the an *implicitly* available *global* value `implicitly[R]` is available. 
+where
+
+```scala
+import pdbp.types.implicitFunctionType.`I=>`
+
+private[pdbp] object ReadingTransformation {
+
+  type ReadingTransformed[R, FC[+ _]] = [+Z] => R `I=>` FC[Z]
+
+}
+```
+
+The type synonym `` `I=>` `` (and corresponding `RTFC` and `` `=>RTFC` `` ) above, indicate that the an implicitly available global value `implicitly[R]` is available. 
 In fact, in `` `u>-->r` `` we use it as `implicitly` (not to be confused with the other `implicitly`'s in the code standing for `implicitly[Computation[C]]`). 
 
 You may wonder how it is possible that the definitions above are so simple. 
-This is mainly the case because the compiler can turn object types into implicit function types whenever it expects them to be.
+The compiler can turn value types into implicit function types whenever it expects them to be.
 
 ## **Describing `ReadingTransformedMeaning`**
 
-The transformed computation meaning corresponding to the reading computation transformer `trait ReadingTransformer` is `trait ReadingTransformedMeaning`.
+The transformed computation meaning corresponding to the reading computation transformion `trait ReadingTransformation` is `trait ReadingTransformedMeaning`.
 
 ```scala
 package pdbp.computation.meaning.reading
@@ -3610,6 +3614,7 @@ import pdbp.computation.Computation
 
 import pdbp.natural.transformation.unary.`~U~>`
 
+import pdbp.computation.transformation.reading.ReadingTransformation
 import pdbp.computation.transformation.reading.ReadingTransformation._
 
 import pdbp.computation.meaning.ComputationMeaning
@@ -3622,8 +3627,8 @@ trait ReadingTransformedMeaning[R, FC[+ _]: Computation, T[+ _]](
   private type RTFC = ReadingTransformed[R, FC]
   private type RTT = ReadingTransformed[R, T]
 
-  override private[pdbp] lazy val unaryTransformation: RTFC `~U~>` RTT =
-    new `~U~>` {
+  override private[pdbp] val unaryTransformation: RTFC `~U~>` RTT =
+    new {
       override private[pdbp] def apply[Z](rtfcz: RTFC[Z]): RTT[Z] =
         toBeTransformedMeaning.unaryTransformation(rtfcz(implicitly))
 
@@ -3634,10 +3639,10 @@ trait ReadingTransformedMeaning[R, FC[+ _]: Computation, T[+ _]](
 
 ###  **Describing `ActiveReadingProgram`**
 
-The next computation instance (and corresponding program instance) that we present is the *active reading* instance as defined below
+The next implicit computation object (and corresponding implicit kleisli program object) is the *active reading* one defined below
 
 ```scala
-package pdbp.program.instances.active.reading
+package pdbp.program.implicits.active.reading.int
 
 import pdbp.types.active.activeTypes._
 import pdbp.types.active.reading.activeReadingTypes._
@@ -3650,14 +3655,23 @@ import pdbp.computation.Computation
 import pdbp.computation.transformation.ComputationTransformation
 import pdbp.computation.transformation.reading.ReadingTransformation
 
-import pdbp.program.implicits.active.implicits.implicitActiveProgram
+import pdbp.program.implicits.active.implicits.activeProgram
 
-trait ActiveReadingProgram[R]
+private[pdbp] trait ActiveReadingProgram[R]
     extends Computation[ActiveReading[R]]
     with Program[`=>AR`[R]]
     with Reading[R, `=>AR`[R]]
     with ComputationTransformation[Active, ActiveReading[R]]
     with ReadingTransformation[R, Active]
+
+object implicits {
+
+  implicit object implicitActiveIntReadingProgram
+    extends ActiveReadingProgram[BigInt]()
+    with ComputationTransformation[Active, ActiveReading[BigInt]]()
+    with ReadingTransformation[BigInt, Active]()
+
+}
 ```
 
 where the types `ActiveReading` and `` `=>AR` `` are defined as follows
@@ -3680,51 +3694,7 @@ object activeReadingTypes {
 }
 ```
 
-Note that, since there is a type parameter `R` involved, we define the computation instance as a `trait` (not an `object`).
-
-We hope that this abuse of notation (involving the word *instance*) does not lead to any confusion. 
-
-###  **Describing `activeIntReadingProgram`**
-
-The first type argument we use for the type parameter `R` is `BigInt`
-
-```scala
-package pdbp.program.instances.active.reading.int
-
-import pdbp.types.active.activeTypes._
-import pdbp.types.active.reading.activeReadingTypes._
-
-import pdbp.program.reading.Reading
-
-import pdbp.computation.transformation.ComputationTransformation
-import pdbp.computation.transformation.reading.ReadingTransformation
-
-import pdbp.program.instances.active.reading.ActiveReadingProgram
-
-import pdbp.program.implicits.active.implicits.implicitActiveProgram
-
-object activeIntReadingProgram
-    extends ActiveReadingProgram[BigInt]()
-    with ComputationTransformation[Active, ActiveReading[BigInt]]()
-    with ReadingTransformation[BigInt, Active]()
-```
-
-### **Describing `implicitActiveIntReadingProgram`**
-
-Let's move on and define an `implicit val` that we can use later on for doing dependecy injection by `import`.
-
-```scala
-package pdbp.program.implicits.active.reading.int
-
-import pdbp.program.instances.active.reading.int.activeIntReadingProgram
-
-object implicits {
-
-  implicit val implicitActiveIntReadingProgram: activeIntReadingProgram.type =
-    activeIntReadingProgram
-
-}
-```
+Note that, since there is a type parameter `R` involved, we first define a `trait` and second not an `object` (for `BigInt`).
 
 
 # **Appendices**

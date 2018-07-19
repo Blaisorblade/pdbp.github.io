@@ -21,7 +21,7 @@ import pdbp.computation.transformation.reading.ReadingTransformation._
 import pdbp.computation.meaning.ComputationMeaning
 
 trait ReadingTransformedMeaning[R, FC[+ _]: Computation, T[+ _]](
-    toBeTransformedMeaning: ComputationMeaning[FC, T]) // ,
+    toBeTransformedMeaning: ComputationMeaning[FC, T])
     extends ComputationMeaning[ReadingTransformed[R, FC],
                                ReadingTransformed[R, T]] {
 
@@ -29,7 +29,7 @@ trait ReadingTransformedMeaning[R, FC[+ _]: Computation, T[+ _]](
   private type RTT = ReadingTransformed[R, T]
 
   override private[pdbp] val unaryTransformation: RTFC `~U~>` RTT =
-    new `~U~>` {
+    new {
       override private[pdbp] def apply[Z](rtfcz: RTFC[Z]): RTT[Z] =
         toBeTransformedMeaning.unaryTransformation(rtfcz(implicitly))
 

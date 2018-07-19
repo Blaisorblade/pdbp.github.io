@@ -11,11 +11,31 @@ package pdbp.program.implicits.active.reading.int
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.program.instances.active.reading.int.activeIntReadingProgram
+import pdbp.types.active.activeTypes._
+import pdbp.types.active.reading.activeReadingTypes._
+
+import pdbp.program.Program
+import pdbp.program.reading.Reading
+
+import pdbp.computation.Computation
+
+import pdbp.computation.transformation.ComputationTransformation
+import pdbp.computation.transformation.reading.ReadingTransformation
+
+import pdbp.program.implicits.active.implicits.activeProgram
+
+private[pdbp] trait ActiveReadingProgram[R]
+    extends Computation[ActiveReading[R]]
+    with Program[`=>AR`[R]]
+    with Reading[R, `=>AR`[R]]
+    with ComputationTransformation[Active, ActiveReading[R]]
+    with ReadingTransformation[R, Active]
 
 object implicits {
 
-  implicit val implicitActiveIntReadingProgram: activeIntReadingProgram.type =
-    activeIntReadingProgram
+  implicit object activeIntReadingProgram
+    extends ActiveReadingProgram[BigInt]()
+    with ComputationTransformation[Active, ActiveReading[BigInt]]()
+    with ReadingTransformation[BigInt, Active]()
 
 }
