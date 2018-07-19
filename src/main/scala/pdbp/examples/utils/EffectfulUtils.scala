@@ -1,4 +1,4 @@
-package pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting
+package pdbp.examples.utils
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -32,10 +32,10 @@ trait EffectfulUtils[C[+ _]: Resulting] {
     result(effectfulWriteToConsoleFunction(message)(y))
   }
 
-  val producer: Unit `=>C` (Double && Double) =
+  val twoDoublesProducer: Unit `=>C` (Double && Double) =
     effectfulReadTwoDoublesFromConsole("please type a double")
 
-  val consumer: Double `=>C` Unit =
+  val sumOfSquaresOfTwoDoublesConsumer: Double `=>C` Unit =
     effectfulWriteToConsole("the sum of the squares of the doubles is")
 
 }

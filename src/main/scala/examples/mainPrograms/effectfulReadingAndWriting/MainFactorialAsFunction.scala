@@ -15,6 +15,8 @@ import pdbp.program.Program
 
 import pdbp.program.compositionOperator._
 
+import examples.utils.EffectfulUtils
+
 import examples.programs.FactorialAsFunction
 
 class MainFactorialAsFunction[>-->[- _, + _]: Program] extends EffectfulUtils[>-->]() {
@@ -24,8 +26,8 @@ class MainFactorialAsFunction[>-->[- _, + _]: Program] extends EffectfulUtils[>-
   import factorialAsFunction.factorial
 
   val factorialMain: Unit >--> Unit =
-    producer >-->
+    intProducer >-->
       factorial >-->
-      consumer
+      factorialOfIntConsumer
 
 }

@@ -1592,7 +1592,7 @@ We also simply refer to
   - a producer program as a *producer*,
   - a consumer program as a *consumer*.
 
-### **Describing `MainFactorialAsProgram` using an effectful `producer` and `consumer`**
+### **Describing `MainFactorialAsProgram` using an effectful `intProducer` and `factorialOfIntConsumer`**
 
 Consider
 
@@ -1603,6 +1603,8 @@ import pdbp.program.Program
 
 import pdbp.program.compositionOperator._
 
+import examples.utils.EffectfulUtils
+
 import examples.programs.FactorialAsProgram
 
 class MainFactorialAsProgram[>-->[- _, + _]: Program] extends EffectfulUtils[>-->]() {
@@ -1612,9 +1614,9 @@ class MainFactorialAsProgram[>-->[- _, + _]: Program] extends EffectfulUtils[>--
   import factorialAsProgram.factorial
 
   val factorialMain: Unit >--> Unit =
-    producer >-->
+    intProducer >-->
       factorial >-->
-      consumer
+      factorialOfIntConsumer
 
 }
 ```
@@ -1622,7 +1624,7 @@ class MainFactorialAsProgram[>-->[- _, + _]: Program] extends EffectfulUtils[>--
 where
 
 ```scala
-package examples.mainPrograms.effectfulReadingAndWriting
+package examples.utils
 
 import pdbp.program.Function
 
@@ -1638,10 +1640,10 @@ class EffectfulUtils[>-->[- _, + _]: Function] {
   private def effectfulWriteToConsole[Y](message: String): Y >--> Unit =
     function(effectfulWriteToConsoleFunction(message))
 
-  val producer: Unit >--> BigInt =
+  val intProducer: Unit >--> BigInt =
     effectfulReadIntFromConsole("please type an integer")
 
-  val consumer: BigInt >--> Unit =
+  val factorialOfIntConsumer: BigInt >--> Unit =
     effectfulWriteToConsole("the factorial value of the integer is")
 
 }
@@ -1684,7 +1686,7 @@ But,
   - the function `effectfulWriteToConsoleFunction` that is used by `effectfulWriteToConsole` is impure
     - it executes the effects `println("message")` and `println(s"$y")` in an impure way.
 
-Both `producer` and `consumer` above should (and will) be replaced versions where
+Both `intProducer` and `factorialOfIntConsumer` above should (and will) be replaced versions where
   - the functions they use are ones *describing effects* in an pure way instead of *executing effects* in an impure way.
 
 More precisely
@@ -1693,7 +1695,7 @@ More precisely
   - we will extend the programming DSL with the *writing output* capability (in this case to write output to the console) 
     - as such writing will describe effects in a pure way.
 
-### **Describing `MainFactorialAsFunction` using an effectful `producer` and `consumer`**
+### **Describing `MainFactorialAsFunction` using an effectful `intProducer` and `factorialOfIntConsumer`**
 
 `MainFactorialAsFunction` is similar to `MainFactorialAsProgram`
 
@@ -1704,6 +1706,8 @@ import pdbp.program.Program
 
 import pdbp.program.compositionOperator._
 
+import examples.utils.EffectfulUtils
+
 import examples.programs.FactorialAsFunction
 
 trait MainFactorialAsFunction[>-->[- _, + _]: Program] extends EffectfulUtils[>-->] {
@@ -1713,14 +1717,14 @@ trait MainFactorialAsFunction[>-->[- _, + _]: Program] extends EffectfulUtils[>-
   import factorialAsFunction.factorial
 
   val factorialMain: Unit >--> Unit =
-    producer >-->
+    intProducer >-->
       factorial >-->
-      consumer
+      factorialOfIntConsumer
 
 }
 ```
 
-### **Describing `MainFactorialTopDown` using an effectful `producer` and `consumer`**
+### **Describing `MainFactorialTopDown` using an effectful `intProducer` and `factorialOfIntConsumer`**
 
 `MainFactorialTopDown` is similar to `MainFactorialAsProgram`
 
@@ -1731,6 +1735,8 @@ import pdbp.program.Program
 
 import pdbp.program.compositionOperator._
 
+import examples.utils.EffectfulUtils
+
 import examples.programs.FactorialTopDown
 
 trait MainFactorialTopDown[>-->[- _, + _]: Program] extends EffectfulUtils[>-->] {
@@ -1740,14 +1746,12 @@ trait MainFactorialTopDown[>-->[- _, + _]: Program] extends EffectfulUtils[>-->]
   import factorialTopDown.factorial
 
   val factorialMain: Unit >--> Unit =
-    producer >-->
+    intProducer >-->
       factorial >-->
-      consumer
+      factorialOfIntConsumer
 
 }
 ```
-
-
 
 ## **Describing `trait Computation`**
 
@@ -2035,7 +2039,7 @@ We also simply refer to
  - a producer kleisli program as a producer,
  - a consumer kleisliprogram as a consumer.
 
-### Describing `MainSumOfSquaresAsComputation` using an effectful `producer` and `consumer`**
+### Describing `MainSumOfSquaresAsComputation` using an effectful `twoDoublesProducer` and `sumOfSquaresOfTwoDoublesConsumer`**
 
 Consider
 
@@ -2046,18 +2050,19 @@ import pdbp.computation.Computation
 
 import pdbp.computation.bindingOperator._
 
+import pdbp.examples.utils.EffectfulUtils
+
 import pdbp.examples.kleisliPrograms.SumOfSquaresAsComputation
 
 class MainSumOfSquaresAsComputation[C[+ _]: Computation] extends EffectfulUtils[C]() {
 
   private object sumOfSquaresAsKleisliProgram extends SumOfSquaresAsComputation[C]
-
   import sumOfSquaresAsComputation.sumOfSquares
 
   val sumOfSquaresMain: Unit `=>C` Unit = { u =>
-    producer(u) bind { (z, y) => 
+    twoDoublesProducer(u) bind { (z, y) => 
       sumOfSquares(z, y) bind { x => 
-        consumer(x) 
+        sumOfSquaresOfTwoDoublesConsumer(x) 
       }
     }  
   }
@@ -2068,7 +2073,7 @@ class MainSumOfSquaresAsComputation[C[+ _]: Computation] extends EffectfulUtils[
 where
 
 ```scala
-package pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting
+package pdbp.examples.utils
 
 import pdbp.types.product.productType._
 
@@ -2091,10 +2096,10 @@ trait EffectfulUtils[C[+ _]: Resulting] {
     result(effectfulWriteToConsoleFunction(message)(y))
   }
 
-  val producer: Unit `=>C` (Double && Double) =
+  val twoDoublesProducer: Unit `=>C` (Double && Double) =
     effectfulReadTwoDoublesFromConsole("please type a double")
 
-  val consumer: Double `=>C` Unit =
+  val sumOfSquaresOfTwoDoublesConsumer: Double `=>C` Unit =
     effectfulWriteToConsole("the sum of the squares of the doubles is")
 
 }
@@ -2121,7 +2126,7 @@ object effectfulUtils {
 }
 ```
 
-### Describing `MainSumOfSquaresAsExpression` using an effectful `producer` and `consumer`**
+### Describing `MainSumOfSquaresAsExpression` using an effectful `twoDoublesProducer` and `sumOfSquaresOfTwoDoublesConsumer`**
 
 `MainSumOfSquaresAsExpression` is similar to `MainSumOfSquaresAsComputation`
 
@@ -2132,6 +2137,8 @@ import pdbp.computation.Computation
 
 import pdbp.computation.bindingOperator._
 
+import pdbp.examples.utils.EffectfulUtils
+
 import pdbp.examples.kleisliPrograms.SumOfSquaresAsExpression
 
 class MainSumOfSquaresAsExpression[C[+ _]: Computation] extends EffectfulUtils[C]() {
@@ -2141,9 +2148,9 @@ class MainSumOfSquaresAsExpression[C[+ _]: Computation] extends EffectfulUtils[C
   import sumOfSquaresAsExpression.sumOfSquares
 
   val sumOfSquaresMain: Unit `=>C` Unit = { u =>
-    producer(u) bind { (z, y) => 
+    twoDoublesProducer(u) bind { (z, y) => 
       sumOfSquares(z, y) bind { x => 
-        consumer(x) 
+        sumOfSquaresOfTwoDoublesConsumer(x) 
       }
     }  
   }
@@ -2739,7 +2746,7 @@ object functionUtils {
 
 ## **Running main programs (language level meaning)**
 
-### **Running `factorialMain` using  `activeProgram` and an effectful `producer` and `consumer`**
+### **Running `factorialMain` using  `activeProgram` and an effectful `intProducer` and `factorialOfIntConsumer`**
 
 Consider
 
@@ -2752,7 +2759,6 @@ import pdbp.program.implicits.active.implicits
 import implicits.activeProgram
 
 import examples.mainPrograms.effectfulReadingAndWriting.MainFactorialAsProgram
-import examples.mainPrograms.effectfulReadingAndWriting.EffectfulUtils
 
 object mainFactorialAsProgram extends MainFactorialAsProgram[`=>A`]()
 ```
@@ -2842,7 +2848,7 @@ The language level meaning `mainFactorialAsProgram.factorialAsProgram.factorial`
 
 ## **Running main kleisli programs (language level meaning)**
 
-### **Running `sumOfSquaresMain` using  `activeProgram` and an effectful `producer` and `consumer`**
+### **Running `sumOfSquaresMain` using  `activeProgram` and an effectful `twoDoublesProducer` and `sumOfSquaresOfTwoDoublesConsumer`**
 
 Consider
 
@@ -2855,7 +2861,6 @@ import pdbp.program.implicits.active.implicits
 import implicits.activeProgram
 
 import pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting.MainSumOfSquaresAsComputation
-import pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting.EffectfulUtils
 
 object mainSumOfSquaresAsComputation extends MainSumOfSquaresAsComputation[Active]()
 ```
@@ -3030,7 +3035,7 @@ Computations in general and language level meanings of computations in particula
 
 ### **Describing `activeMeaningOfActive`**
 
-The simplest computation meaning `object` (and corresponding kleisli program meaning `object`) one can probably think of is the *active meaning of active* one defined below
+The simplest computation meaning `implicit object` (and corresponding kleisli program meaning `object`) one can probably think of is the *active meaning of active* one defined below
 
 ```scala
 package pdbp.program.meaning.ofActive.active
@@ -3081,7 +3086,7 @@ private[pdbp] trait MeaningOfActive[TR[+ _]: Resulting] extends ComputationMeani
 
 ## **Running main programs (library level meaning)**
 
-### **Running `factorialMain` using an effectful `producer` and `consumer` and `activeMeaningOfActive`**
+### **Running `factorialMain` using an effectful `intProducer` and `factorialOfIntConsumer` and `activeMeaningOfActive`**
 
 We can now finally define `main` in `object FactorialAsProgramMain`
 
@@ -3354,7 +3359,7 @@ object activeFreeTypes {
 
 ### **Describing `activeMeaningOfActiveFree`**
 
-The next computation meaning `object` (and corresponding kleisli program meaning `object`) is the *active meaning of active free* one defined below
+The next computation meaning `implicit object` (and corresponding kleisli program meaning `implicit object`) is the *active meaning of active free* one defined below
 
 ```scala
 package pdbp.program.meaning.ofActiveFree.active
@@ -3381,7 +3386,7 @@ object implicits {
 }
 ```
 
-### **Running `factorialMain` using an effectful `producer` and `consumer`, `activeFreeProgram` and `activeMeaningOfActiveFree`**
+### **Running `factorialMain` using an effectful `intProducer` and `factorialOfIntConsumer`, `activeFreeProgram` and `activeMeaningOfActiveFree`**
 
 Consider
 
@@ -3701,6 +3706,37 @@ object activeReadingTypes {
 ```
 
 Note that, since there is a type parameter `R` involved, we first define a `trait` and second a corresponding `implicit object` (for `BigInt`).
+
+### **Describing `activeIntReadingMeaningOfActiveIntReading`**
+
+The next computation meaning `implicit object` (and corresponding kleisli program meaning `implicit object`) is the *active int reading meaning of active int reading* one defined below
+
+```scala
+package pdbp.program.meaning.ofActiveIntReading.activeIntReading
+
+import pdbp.types.active.activeTypes._
+import pdbp.types.active.reading.activeReadingTypes._
+
+import pdbp.program.implicits.active.implicits.activeProgram
+
+import pdbp.program.implicits.active.reading.int.implicits.activeIntReadingProgram
+
+import pdbp.computation.meaning.ComputationMeaning
+
+import pdbp.program.meaning.ProgramMeaning
+
+import pdbp.computation.meaning.reading.ReadingTransformedMeaning
+
+import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
+
+object implicits {
+  implicit object activeIntReadingMeaningOfActiveIntReading
+      extends ReadingTransformedMeaning[BigInt, Active, Active]()
+      with ComputationMeaning[ActiveReading[BigInt], ActiveReading[BigInt]]()
+      with ProgramMeaning[`=>AR`[BigInt], `=>AR`[BigInt]]()
+}
+```
+
 
 
 # **Appendices**

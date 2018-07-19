@@ -1,4 +1,4 @@
-package pdbp.examples.objects.active.effectfulReadingAndWriting
+package pdbp.types.console
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,11 +11,16 @@ package pdbp.examples.objects.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.activeTypes._
+import pdbp.types.effect.effectType._
 
-import pdbp.program.implicits.active.implicits
-import implicits.activeProgram
+object consoleTypes {
 
-import pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting.MainSumOfSquaresAsComputation
+  // case class Console(effect: Effect)
 
-object mainSumOfSquaresAsComputation extends MainSumOfSquaresAsComputation[Active]()
+  // implicit
+  type ReadFromConsoleEffect[Z] = Z
+
+  // explicit
+  // type WriteToConsoleEffect[Z] = Z => Effect
+
+}

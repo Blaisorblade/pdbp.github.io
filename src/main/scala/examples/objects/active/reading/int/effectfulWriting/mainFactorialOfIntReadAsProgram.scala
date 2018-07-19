@@ -1,4 +1,4 @@
-package pdbp.examples.objects.active.effectfulReadingAndWriting
+package examples.objects.active.reading.int.effectfulWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,11 +11,11 @@ package pdbp.examples.objects.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.activeTypes._
+import pdbp.types.active.reading.activeReadingTypes._
 
-import pdbp.program.implicits.active.implicits
-import implicits.activeProgram
+import pdbp.program.implicits.active.reading.int.implicits
+import implicits.activeIntReadingProgram
 
-import pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting.MainSumOfSquaresAsComputation
+import examples.mainPrograms.effectfreeReadingAndEffectfulWriting.MainFactorialOfIntReadAsProgram
 
-object mainSumOfSquaresAsComputation extends MainSumOfSquaresAsComputation[Active]()
+object mainFactorialOfIntReadAsProgram extends MainFactorialOfIntReadAsProgram[`=>AR`[BigInt]]()

@@ -1,4 +1,4 @@
-package pdbp.examples.objects.active.effectfulReadingAndWriting
+package examples.utils.reading
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,11 +11,19 @@ package pdbp.examples.objects.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.activeTypes._
+import pdbp.program.Program
 
-import pdbp.program.implicits.active.implicits
-import implicits.activeProgram
+import pdbp.program.reading.Reading
 
-import pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting.MainSumOfSquaresAsComputation
+import pdbp.utils.effectfulUtils._
 
-object mainSumOfSquaresAsComputation extends MainSumOfSquaresAsComputation[Active]()
+trait EffectfreeUtils[>-->[- _, + _]: [>-->[- _, + _]] => Reading[BigInt, >-->]] {
+
+  import implicitly._
+
+  private val readInt: Unit >--> BigInt = `u>-->r`
+
+  val effectfreeIntProducer: Unit >--> BigInt =
+    readInt
+
+}

@@ -1,4 +1,4 @@
-package examples.mainPrograms.effectfulReadingAndWriting
+package examples.utils
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -25,10 +25,10 @@ trait EffectfulUtils[>-->[- _, + _]: Function] {
   private def effectfulWriteToConsole[Y](message: String): Y >--> Unit =
     function(effectfulWriteToConsoleFunction(message))
 
-  val producer: Unit >--> BigInt =
+  val intProducer: Unit >--> BigInt =
     effectfulReadIntFromConsole("please type an integer")
 
-  def consumer[Z]: Z >--> Unit =
+  def factorialOfIntConsumer: BigInt >--> Unit =
     effectfulWriteToConsole("the factorial value of the integer is")
 
 }

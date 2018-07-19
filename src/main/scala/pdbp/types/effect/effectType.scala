@@ -1,4 +1,4 @@
-package pdbp.examples.objects.active.effectfulReadingAndWriting
+package pdbp.types.effect
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,11 +11,8 @@ package pdbp.examples.objects.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.activeTypes._
+object effectType {
 
-import pdbp.program.implicits.active.implicits
-import implicits.activeProgram
+  type Effect = Unit => Unit
 
-import pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting.MainSumOfSquaresAsComputation
-
-object mainSumOfSquaresAsComputation extends MainSumOfSquaresAsComputation[Active]()
+}

@@ -1,4 +1,4 @@
-package examples.mainPrograms.effectfulReadingAndWriting
+package examples.mainPrograms.effectfreeReadingAndEffectfulWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -13,21 +13,27 @@ package examples.mainPrograms.effectfulReadingAndWriting
 
 import pdbp.program.Program
 
+import pdbp.program.reading.Reading
+
 import pdbp.program.compositionOperator._
 
 import examples.utils.EffectfulUtils
 
-import examples.programs.FactorialTopDown
+import examples.utils.reading.EffectfreeUtils
 
-class MainFactorialTopDown[>-->[- _, + _]: Program] extends EffectfulUtils[>-->]() {
+import examples.programs.FactorialAsProgram
 
-  private object factorialTopDown extends FactorialTopDown[>-->]
+class MainFactorialOfIntReadAsProgram[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]] 
+  extends EffectfreeUtils[>-->]()
+  with EffectfulUtils[>-->]() {
 
-  import factorialTopDown.factorial
+  private object factorialAsProgram extends FactorialAsProgram[>-->]
+
+  import factorialAsProgram.factorial
 
   val factorialMain: Unit >--> Unit =
-    intProducer >-->
+    effectfreeIntProducer >-->
       factorial >-->
-      factorialOfIntConsumer
+      factorialOfIntConsumer  
 
 }
