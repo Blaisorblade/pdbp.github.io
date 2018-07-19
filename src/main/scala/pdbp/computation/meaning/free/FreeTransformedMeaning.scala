@@ -28,7 +28,7 @@ private[pdbp] trait FreeTransformedMeaning[FC[+ _]: Computation, T[+ _]](
 
   private type FTFC = FreeTransformed[FC]
 
-  override private[pdbp] val computationMeaning: FTFC `~U~>` T =
+  override private[pdbp] val unaryTransformation: FTFC `~U~>` T =
     new {
       override private[pdbp] def apply[Z](ftfcz: FTFC[Z]): T[Z] = {
         @annotation.tailrec
@@ -47,7 +47,7 @@ private[pdbp] trait FreeTransformedMeaning[FC[+ _]: Computation, T[+ _]](
             sys.error(
               "Impossible, since, for 'FreeTransformedMeaning', 'tailrecFold' eliminates this case")
         }
-        toBeTransformedMeaning.computationMeaning(tailrecFold(ftfcz))
+        toBeTransformedMeaning.unaryTransformation(tailrecFold(ftfcz))
       }
     }
 

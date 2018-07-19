@@ -12,7 +12,7 @@ package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
 //  author        Luc Duponcheel        2017-2018
 
 import pdbp.program.meaning.ofActive.active.activeMeaningOfActive
-import activeMeaningOfActive.programMeaning
+import activeMeaningOfActive.binaryTransformation
 
 import examples.objects.active.effectfulReadingAndWriting.mainFactorialAsProgram
 import mainFactorialAsProgram.factorialMain
@@ -21,7 +21,7 @@ object FactorialAsProgramMain {
 
   def main(args: Array[String]): Unit = {
 
-    programMeaning(factorialMain)(())
+    binaryTransformation(factorialMain)(())
 
   }
 

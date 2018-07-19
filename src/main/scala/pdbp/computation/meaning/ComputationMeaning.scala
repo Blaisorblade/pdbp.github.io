@@ -24,12 +24,12 @@ import pdbp.program.meaning.ProgramMeaning
 private[pdbp] trait ComputationMeaning[FC[+ _]: Computation, T[+ _]]
     extends ProgramMeaning[Kleisli[FC], Kleisli[T]] {
 
-  private[pdbp] val computationMeaning: FC `~U~>` T
+  private[pdbp] val unaryTransformation: FC `~U~>` T
 
   private type `=>FC` = Kleisli[FC]
 
   private type `=>T` = Kleisli[T]
   
-  override lazy val programMeaning: `=>FC` `~B~>` `=>T` = computationMeaning
+  override lazy val binaryTransformation: `=>FC` `~B~>` `=>T` = unaryTransformation
 
 }

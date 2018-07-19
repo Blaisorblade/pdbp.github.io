@@ -44,7 +44,7 @@ private[pdbp] trait FreeTransformation[FC[+ _]: Computation]
 
   private type FTFC = FreeTransformed[FC]
 
-  override private[pdbp] val transform = new {
+  override private[pdbp] val transform: FC `~U~>` FTFC = new {
     override private[pdbp] def apply[Z](fcz: FC[Z]): FTFC[Z] =
       Transform(fcz)
   }

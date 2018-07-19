@@ -21,7 +21,7 @@ import pdbp.computation.meaning.ComputationMeaning
 
 private[pdbp] trait MeaningOfActive[TR[+ _]: Resulting] extends ComputationMeaning[Active, TR] {
 
-  override private[pdbp] val computationMeaning: Active `~U~>` TR =
+  override private[pdbp] val unaryTransformation: Active `~U~>` TR =
     new {
       override private[pdbp] def apply[Z](az: Active[Z]): TR[Z] = {
         import implicitly._

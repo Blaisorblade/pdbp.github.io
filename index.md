@@ -2987,11 +2987,11 @@ import pdbp.natural.transformation.binary.`~B~>`
 
 trait ProgramMeaning[`>-FP->`[- _, + _]: Program, `>-T->`[- _, + _]] {
 
-  lazy val programMeaning: `>-FP->` `~B~>` `>-T->`
+  lazy val binaryTransformation: `>-FP->` `~B~>` `>-T->`
 
 }
 ```
-Programs in general and language level meanings of programs in particular can be given a *library level meaning* using a natural binary type constructor transformation `programMeaning`.
+Programs in general and language level meanings of programs in particular can be given a *library level meaning* using a natural binary type constructor transformation `binaryTransformation`.
 
 
 ### **Library level meaning of computations**
@@ -3015,18 +3015,18 @@ import pdbp.program.meaning.ProgramMeaning
 private[pdbp] trait ComputationMeaning[FC[+ _]: Computation, T[+ _]]
     extends ProgramMeaning[Kleisli[FC], Kleisli[T]] {
 
-  private[pdbp] val computationMeaning: FC `~U~>` T
+  private[pdbp] val unaryTransformation: FC `~U~>` T
 
   private type `=>FC` = Kleisli[FC]
 
   private type `=>T` = Kleisli[T]
 
-  override lazy val programMeaning: `=>FC` `~B~>` `=>T` = computationMeaning
+  override lazy val binaryTransformation: `=>FC` `~B~>` `=>T` = unaryTransformation
 
 }
 ```
 
-Computations in general and language level meanings of computations in particular can be given a library level meaning using a natural unary type constructor transformation `computationMeaning`, which also gives a library level meaning to the corresponding kleisli programs.
+Computations in general and language level meanings of computations in particular can be given a library level meaning using a natural unary type constructor transformation `unaryTransformation`, which also gives a library level meaning to the corresponding kleisli programs.
 
 ### **Describing `activeMeaningOfActive`**
 
@@ -3066,7 +3066,7 @@ import pdbp.computation.meaning.ComputationMeaning
 
 private[pdbp] trait MeaningOfActive[TR[+ _]: Resulting] extends ComputationMeaning[Active, TR] {
 
-  override private[pdbp] val computationMeaning: Active `~U~>` TR =
+  override private[pdbp] val unaryTransformation: Active `~U~>` TR =
     new {
       override private[pdbp] def apply[Z](az: Active[Z]): TR[Z] = {
         import implicitly._
@@ -3087,7 +3087,7 @@ We can now finally define `main` in `object FactorialAsProgramMain`
 package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
 
 import pdbp.program.meaning.ofActive.active.activeMeaningOfActive
-import activeMeaningOfActive.programMeaning
+import activeMeaningOfActive.binaryTransformation
 
 import examples.objects.active.effectfulReadingAndWriting.mainFactorialAsProgram
 import mainFactorialAsProgram.factorialMain
@@ -3096,20 +3096,20 @@ object FactorialAsProgramMain {
 
   def main(args: Array[String]): Unit = {
 
-    programMeaning(factorialMain)(())
+    binaryTransformation(factorialMain)(())
 
   }
 
 }
 ```
 
-Note that `programMeaning(factorialMain)` has
+Note that `binaryTransformation(factorialMain)` has
 
   - type `` Unit `=>A` Unit ``, which is
   - type `Unit => Active[Unit]`, which is
   - type `Unit => Unit`
 
-It suffuces to evaluate `programMeaning(factorialMain)(())` to run `programMeaning(factorialMain)(`.
+It suffuces to evaluate `binaryTransformation(factorialMain)(())` to run `binaryTransformation(factorialMain)(`.
 
 Ok, so let's use `main` in `object FactorialAsProgramMain`.
 
@@ -3259,7 +3259,7 @@ private[pdbp] trait FreeTransformedMeaning[FC[+ _]: Computation, T[+ _]](
 
   private type FTFC = FreeTransformed[FC]
 
-  override private[pdbp] val computationMeaning: FTFC `~U~>` T =
+  override private[pdbp] val unaryTransformation: FTFC `~U~>` T =
     new {
       override private[pdbp] def apply[Z](ftfcz: FTFC[Z]): T[Z] = {
         @annotation.tailrec
@@ -3278,7 +3278,7 @@ private[pdbp] trait FreeTransformedMeaning[FC[+ _]: Computation, T[+ _]](
             sys.error(
               "Impossible, since, for 'FreeTransformedMeaning', 'tailrecFold' eliminates this case")
         }
-        toBeTransformedMeaning.computationMeaning(tailrecFold(ftfcz))
+        toBeTransformedMeaning.unaryTransformation(tailrecFold(ftfcz))
       }
     }
 
@@ -3293,7 +3293,7 @@ Note that, when *pattern matching*,  we use names like `x2ftfcy` instead of `` `
 
 `tailrecFold`, as it's name suggests, is a *tail recursive folding* of a computation of type `FTFC[Z]`, which is a free data structure wrapping a computation of type `FC[Z]`, back to a computation of type `FC[Z]`. 
 
-The computation of type `FC[Z]` can be given a meaning using `toBeTransformedMeaning.computationMeaning`.
+The computation of type `FC[Z]` can be given a meaning using `toBeTransformedMeaning.unaryTransformation`.
 Therefore the computation of type `FTFC[Z]` can be given a meaning as well.
 
 Note that
@@ -3398,7 +3398,7 @@ We can now finally define `main` in `object FactorialAsProgramMain`
 package examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting
 
 import pdbp.program.meaning.ofActiveFree.active.activeMeaningOfActiveFree
-import activeMeaningOfActiveFree.programMeaning
+import activeMeaningOfActiveFree.binaryTransformation
 
 import examples.objects.active.free.effectfulReadingAndWriting.mainFactorialAsProgram
 import mainFactorialAsProgram.factorialMain
@@ -3407,7 +3407,7 @@ object FactorialAsProgramMain {
 
   def main(args: Array[String]): Unit = {
 
-    programMeaning(factorialMain)(())
+    binaryTransformation(factorialMain)(())
 
   }
 
@@ -3622,10 +3622,10 @@ trait ReadingTransformedMeaning[R, FC[+ _]: Computation, T[+ _]](
   private type RTFC = ReadingTransformed[R, FC]
   private type RTT = ReadingTransformed[R, T]
 
-  override private[pdbp] lazy val computationMeaning: RTFC `~U~>` RTT =
+  override private[pdbp] lazy val unaryTransformation: RTFC `~U~>` RTT =
     new `~U~>` {
       override private[pdbp] def apply[Z](rtfcz: RTFC[Z]): RTT[Z] =
-        toBeTransformedMeaning.computationMeaning(rtfcz(implicitly))
+        toBeTransformedMeaning.unaryTransformation(rtfcz(implicitly))
 
     }
 

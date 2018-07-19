@@ -22,17 +22,16 @@ import pdbp.computation.meaning.ComputationMeaning
 
 trait ReadingTransformedMeaning[R, FC[+ _]: Computation, T[+ _]](
     toBeTransformedMeaning: ComputationMeaning[FC, T]) // ,
-    // optionalReadingTransformation: Option[ReadingTransformation[R, FC]])
     extends ComputationMeaning[ReadingTransformed[R, FC],
                                ReadingTransformed[R, T]] {
 
   private type RTFC = ReadingTransformed[R, FC]
   private type RTT = ReadingTransformed[R, T]
 
-  override private[pdbp] val computationMeaning: RTFC `~U~>` RTT =
+  override private[pdbp] val unaryTransformation: RTFC `~U~>` RTT =
     new `~U~>` {
       override private[pdbp] def apply[Z](rtfcz: RTFC[Z]): RTT[Z] =
-        toBeTransformedMeaning.computationMeaning(rtfcz(implicitly))
+        toBeTransformedMeaning.unaryTransformation(rtfcz(implicitly))
 
     }
 
