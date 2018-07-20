@@ -14,6 +14,9 @@ package examples.programs.reading.int
 import pdbp.program.Program
 import pdbp.program.reading.Reading
 
+import pdbp.program.compositionOperator._
+import pdbp.program.constructionOperators._
+
 import examples.programs.FactorialAsProgram
 
 trait FactorialMultipliedByIntReadAsProgram[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]]
@@ -27,19 +30,6 @@ trait FactorialMultipliedByIntReadAsProgram[>-->[- _, + _]: Program: [>-->[- _, 
 
   import implicitIntReading._
 
-  import pdbp.program.compositionOperator._
-  import pdbp.program.constructionOperators._
-
   val factorialMultipliedByIntRead: BigInt >--> BigInt =
       (factorial & read) >--> multiply
-
-  // override def effectfulWriteToConsole[Z]: Z >--> Unit =
-  //   function(writeToConsole(
-  //     s"the factorial value of the integer multiplied by the integer read is"))
-
-  // val factorialMultipliedByIntReadMain: Unit >--> Unit =
-  //   effectfulReadIntFromConsole >-->
-  //     factorialMultipliedByIntRead >-->
-  //     effectfulWriteToConsole
-
 }

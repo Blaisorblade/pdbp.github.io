@@ -18,4 +18,5 @@ import implicits.activeIntReadingProgram
 
 import examples.mainPrograms.reading.int.effectfulWriting.MainFactorialOfIntReadAsProgram
 
-object mainFactorialOfIntReadAsProgram extends MainFactorialOfIntReadAsProgram[`=>AR`[BigInt]]()
+object mainFactorialOfIntReadAsProgram
+    extends MainFactorialOfIntReadAsProgram[`=>AR`[BigInt]]()

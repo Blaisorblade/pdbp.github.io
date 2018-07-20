@@ -11,16 +11,17 @@ package pdbp.types.effect.console
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.effect.effectType._
 
 object consoleTypes {
 
+  // implicit, language level effect
+  type ReadFromConsoleEffect[R] = R
+
+  // import pdbp.types.effect.effectType._
+
   // case class Console(effect: Effect)
 
-  // implicit, language level
-  type ReadFromConsoleEffect[Z] = Z
-
   // explicit, library level
-  // type WriteToConsoleEffect[Z] = Z => Effect
+  // type WriteToConsoleEffect[W] = W => Effect
 
 }

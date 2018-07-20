@@ -26,11 +26,7 @@ class MainFactorialMultipliedByIntReadAsProgram[>-->[- _, + _]: Program: [>-->[-
 
   private val implicitProgram = implicitly[Program[>-->]]  
 
-  private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
-
   import implicitProgram._ 
-
-  import implicitIntReading._ 
 
   private object factorialMultipliedByIntReadAsProgram extends FactorialMultipliedByIntReadAsProgram[>-->]()
 
@@ -39,6 +35,6 @@ class MainFactorialMultipliedByIntReadAsProgram[>-->[- _, + _]: Program: [>-->[-
   val factorialMultipliedByIntReadMain: Unit >--> Unit =
     intProducer >-->
       factorialMultipliedByIntRead >-->
-      factorialOfIntConsumer  
+      factorialOfIntMultipliedByIntReadConsumer  
 
 }

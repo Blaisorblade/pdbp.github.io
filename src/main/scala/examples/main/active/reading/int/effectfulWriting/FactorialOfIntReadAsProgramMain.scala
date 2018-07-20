@@ -14,11 +14,11 @@ package examples.main.active.reading.int.effectfulWriting
 import examples.objects.active.reading.int.effectfulWriting.mainFactorialOfIntReadAsProgram
 import mainFactorialOfIntReadAsProgram.factorialMain
 
-import pdbp.utils.effects.implicits.readIntFromConsoleEffect
-
 object FactorialOfIntReadAsProgramMain {
 
   def main(args: Array[String]): Unit = {
+
+    import pdbp.utils.effects.implicits.readIntFromConsoleEffect
 
     factorialMain(())
 

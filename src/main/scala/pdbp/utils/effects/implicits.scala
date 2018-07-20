@@ -11,19 +11,13 @@ package pdbp.utils.effects
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import scala.io.StdIn.{readInt, readDouble}
-
-import pdbp.types.product.productType._
-
-import pdbp.types.effect.effectType._
-
 import pdbp.types.effect.console.consoleTypes._
 
 import pdbp.utils.effectfulUtils._
 
 object implicits {
 
-  implicit def readIntFromConsoleEffect[Z]: ReadFromConsoleEffect[BigInt] = 
+  implicit def readIntFromConsoleEffect: ReadFromConsoleEffect[BigInt] = 
     effectfulReadIntFromConsoleFunction("please type an integer to read")(())
 
   // def writeToConsoleEffect[Y](

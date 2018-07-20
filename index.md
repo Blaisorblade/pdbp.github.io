@@ -2802,7 +2802,7 @@ Note that `factorialMain` has
   - type `Unit => Active[Unit]`, which is
   - type `Unit => Unit`
 
-It suffuces to evaluate `factorialMain(())` to run `factorialMain`.
+It suffices to evaluate `factorialMain(())` to run `factorialMain`.
 
 Ok, so let's use `main` in `object FactorialAsProgramMain`.
 
@@ -2890,7 +2890,7 @@ Note that `sumOfSquaresMain` has
   - type `Unit => Active[Unit]`, which is
   - type `Unit => Unit`
 
-It suffuces to evaluate `factorialMain(())` to run `factorialMain`.
+It suffices to evaluate `factorialMain(())` to run `factorialMain`.
 
 Ok, so let's use `main` in `object SumOfSquaresAsComputationMain`.
 
@@ -3116,7 +3116,7 @@ Note that `binaryTransformation(factorialMain)` has
   - type `Unit => Active[Unit]`, which is
   - type `Unit => Unit`
 
-It suffuces to evaluate `binaryTransformation(factorialMain)(())` to run `binaryTransformation(factorialMain)(`.
+It suffices to evaluate `binaryTransformation(factorialMain)(())` to run `binaryTransformation(factorialMain)(`.
 
 Ok, so let's use `main` in `object FactorialAsProgramMain`.
 
@@ -3679,6 +3679,280 @@ object activeReadingTypes {
 ```
 
 Note that, since there is a type parameter `R` involved, we first define a `trait` and second a corresponding `implicit object` (for `BigInt`).
+
+### **Describing `MainFactorialOfIntReadAsProgram` using `read` and an effectful `factorialOfIntConsumer`**
+
+Consider
+
+```scala
+package examples.mainPrograms.reading.int.effectfulWriting
+
+import pdbp.program.Program
+
+import pdbp.program.reading.Reading
+
+import pdbp.program.compositionOperator._
+
+import examples.utils.EffectfulUtils
+
+import examples.programs.FactorialAsProgram
+
+class MainFactorialOfIntReadAsProgram[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]]
+    extends EffectfulUtils[>-->]() {
+
+  private val implicitProgram = implicitly[Program[>-->]]
+
+  private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
+
+  import implicitProgram._
+
+  import implicitIntReading._
+
+  private object factorialAsProgram extends FactorialAsProgram[>-->]
+
+  import factorialAsProgram.factorial
+
+  val factorialMain: Unit >--> Unit =
+    read >-->
+      factorial >-->
+      factorialOfIntConsumer
+
+}
+```
+
+We replaced `intProducer` that *executes* an effect by `read` program that *describes* an effect.
+
+
+### **Running `factorialMain` using `activeIntReadingProgram`, `read` and an effectful `factorialOfIntConsumer`**
+
+Consider
+
+```scala
+package examples.objects.active.reading.int.effectfulWriting
+
+import pdbp.types.active.reading.activeReadingTypes._
+
+import pdbp.program.implicits.active.reading.int.implicits
+import implicits.activeIntReadingProgram
+
+import examples.mainPrograms.reading.int.effectfulWriting.MainFactorialOfIntReadAsProgram
+
+object mainFactorialOfIntReadAsProgram
+    extends MainFactorialOfIntReadAsProgram[`=>AR`[BigInt]]()
+```
+
+We can now, finally, define `main` in object `FactorialOfIntReadAsProgramMain`.
+
+
+```scala
+package examples.main.active.reading.int.effectfulWriting
+
+import examples.objects.active.reading.int.effectfulWriting.mainFactorialOfIntReadAsProgram
+import mainFactorialOfIntReadAsProgram.factorialMain
+
+object FactorialOfIntReadAsProgramMain {
+
+  def main(args: Array[String]): Unit = {
+
+    import pdbp.utils.effects.implicits.readIntFromConsoleEffect
+
+    factorialMain(())
+
+  }
+
+}
+```
+
+where `readIntFromConsoleEffect` executes the effect that is described by `read`.
+
+```scala
+package pdbp.utils.effects
+
+import pdbp.types.effect.console.consoleTypes._
+
+import pdbp.utils.effectfulUtils._
+
+object implicits {
+
+  implicit def readIntFromConsoleEffect: ReadFromConsoleEffect[BigInt] = 
+    effectfulReadIntFromConsoleFunction("please type an integer to read")(())
+
+  // ...
+
+}
+```
+
+where
+
+```scala
+package pdbp.types.effect.console
+
+import pdbp.types.effect.effectType._
+
+object consoleTypes {
+
+  type ReadFromConsoleEffect[R] = R
+
+  // ...
+
+}
+```
+
+The type alias `ReadFromConsoleEffect[Z]` is simple because the effect of reading a big integer from the console is implemented implicitly at the language level.
+
+Note that, in constrast with `factorialMain` using `activeProgram` and an effectful ``intProducer`, `factorialMain` using `activeIntReadingProgram` and `read` pushes the usage of the language level meaning of the description of the reading from console effect to it's very limits: the definition of `main`.
+
+Ok, so let’s use `main` in `objectFactorialOfIntReadAsProgramMain`.
+
+Let’s try `10`.
+
+```scala
+[info] Running examples.main.active.reading.int.effectfulWriting.FactorialOfIntReadAsProgramMain
+please type an integer to read
+10
+the factorial value of the integer is
+3628800
+```
+
+We used `read` as an effectfree alternative for the effectful `intProducer` at the beginning of a program.
+
+We can also use `read` anywhere in a program.
+
+### **Describing `FactorialMultipliedByIntReadAsProgram`**
+
+Consider
+
+```scala
+package examples.programs.reading.int
+
+import pdbp.program.Program
+import pdbp.program.reading.Reading
+
+import pdbp.program.compositionOperator._
+import pdbp.program.constructionOperators._
+
+import examples.programs.FactorialAsProgram
+
+trait FactorialMultipliedByIntReadAsProgram[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]]
+    extends FactorialAsProgram[>-->] {
+
+  private val implicitProgram = implicitly[Program[>-->]]
+
+  import implicitProgram._
+
+  private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
+
+  import implicitIntReading._
+
+  val factorialMultipliedByIntRead: BigInt >--> BigInt =
+      (factorial & read) >--> multiply
+
+}
+```
+
+### **Describing `MainFactorialMultipliedByIntReadAsProgram` using an effectful `intProducer` and `factorialOfIntConsumer`**
+
+Consider
+
+```scala
+package examples.mainPrograms.reading.int.effectfulWriting
+
+import pdbp.program.Program
+
+import pdbp.program.reading.Reading
+
+import pdbp.program.compositionOperator._
+
+import examples.utils.EffectfulUtils
+
+import examples.programs.reading.int.FactorialMultipliedByIntReadAsProgram
+
+class MainFactorialMultipliedByIntReadAsProgram[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]] 
+  extends EffectfulUtils[>-->]() {
+
+  private val implicitProgram = implicitly[Program[>-->]]  
+
+  import implicitProgram._ 
+
+  private object factorialMultipliedByIntReadAsProgram extends FactorialMultipliedByIntReadAsProgram[>-->]()
+
+  import factorialMultipliedByIntReadAsProgram.factorialMultipliedByIntRead
+
+  val factorialMultipliedByIntReadMain: Unit >--> Unit =
+    intProducer >-->
+      factorialMultipliedByIntRead >-->
+      factorialOfIntMultipliedByIntReadConsumer  
+
+}
+```
+
+where
+
+```scala
+trait EffectfulUtils[>-->[- _, + _]: Function] {
+
+  // ...
+
+  def factorialOfIntMultipliedByIntReadConsumer: BigInt >--> Unit =
+    effectfulWriteToConsole("the factorial value of the integer multiplied by the int read is")
+
+}
+```
+
+### **Running `factorialMultipliedByIntReadMain` using `activeIntReadingProgram`, and an effectful `intProducer` and `factorialOfIntConsumer`**
+
+Consider
+
+```scala
+package examples.objects.active.reading.int.effectfulWriting
+
+import pdbp.types.active.reading.activeReadingTypes._
+
+import pdbp.program.implicits.active.reading.int.implicits
+import implicits.activeIntReadingProgram
+
+import examples.mainPrograms.reading.int.effectfulWriting.MainFactorialMultipliedByIntReadAsProgram
+
+object mainFactorialMultipliedByIntReadAsProgram 
+    extends MainFactorialMultipliedByIntReadAsProgram[`=>AR`[BigInt]]()
+```
+
+We can now, finally, define `main` in object `FactorialOfIntReadAsProgramMain`.
+
+
+```scala
+package examples.main.active.reading.int.effectfulWriting
+
+import examples.objects.active.reading.int.effectfulWriting.mainFactorialMultipliedByIntReadAsProgram
+import mainFactorialMultipliedByIntReadAsProgram.factorialMultipliedByIntReadMain
+
+object FactorialMultipliedByIntReadAsProgramMain {
+
+  def main(args: Array[String]): Unit = {
+
+    import pdbp.utils.effects.implicits.readIntFromConsoleEffect
+    
+    factorialMultipliedByIntReadMain(())
+
+  }
+
+}
+```
+
+Ok, so let’s use `main` in `FactorialMultipliedByIntReadAsProgramMain`.
+
+Let’s try `10` and multiply by `2`.
+
+```scala
+[info] Running examples.main.active.reading.int.effectfulWriting.FactorialMultipliedByIntReadAsProgramMain
+please type an integer
+10
+please type an integer to read
+2
+the factorial value of the integer multiplied by the int read is
+7257600
+[success] Total time: 15 s, completed Jul 20, 2018 10:02:31 PM
+```
 
 ### **Describing `activeIntReadingMeaningOfActiveIntReading`**
 
