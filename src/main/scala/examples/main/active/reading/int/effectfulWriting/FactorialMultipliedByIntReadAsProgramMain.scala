@@ -1,4 +1,4 @@
-package examples.objects.active.reading.int.effectfulWriting
+package examples.main.active.reading.int.effectfulWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,11 +11,17 @@ package examples.objects.active.reading.int.effectfulWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.reading.activeReadingTypes._
+import examples.objects.active.reading.int.effectfulWriting.mainFactorialMultipliedByIntReadAsProgram
+import mainFactorialMultipliedByIntReadAsProgram.factorialMultipliedByIntReadMain
 
-import pdbp.program.implicits.active.reading.int.implicits
-import implicits.activeIntReadingProgram
+import pdbp.utils.effects.implicits.readIntFromConsoleEffect
 
-import examples.mainPrograms.reading.int.effectfulWriting.MainFactorialOfIntReadAsProgram
+object FactorialMultipliedByIntReadAsProgramMain {
 
-object mainFactorialOfIntReadAsProgram extends MainFactorialOfIntReadAsProgram[`=>AR`[BigInt]]()
+  def main(args: Array[String]): Unit = {
+
+    factorialMultipliedByIntReadMain(())
+
+  }
+
+}

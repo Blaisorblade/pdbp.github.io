@@ -1,4 +1,4 @@
-package examples.mainPrograms.effectfreeReadingAndEffectfulWriting
+package examples.mainPrograms.reading.int.effectfulWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -19,9 +19,9 @@ import pdbp.program.compositionOperator._
 
 import examples.utils.EffectfulUtils
 
-import examples.programs.FactorialAsProgram
+import examples.programs.reading.int.FactorialMultipliedByIntReadAsProgram
 
-class MainFactorialOfIntReadAsProgram[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]] 
+class MainFactorialMultipliedByIntReadAsProgram[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]] 
   extends EffectfulUtils[>-->]() {
 
   private val implicitProgram = implicitly[Program[>-->]]  
@@ -32,13 +32,13 @@ class MainFactorialOfIntReadAsProgram[>-->[- _, + _]: Program: [>-->[- _, + _]] 
 
   import implicitIntReading._ 
 
-  private object factorialAsProgram extends FactorialAsProgram[>-->]
+  private object factorialMultipliedByIntReadAsProgram extends FactorialMultipliedByIntReadAsProgram[>-->]()
 
-  import factorialAsProgram.factorial
+  import factorialMultipliedByIntReadAsProgram.factorialMultipliedByIntRead
 
-  val factorialMain: Unit >--> Unit =
-    read >-->
-      factorial >-->
+  val factorialMultipliedByIntReadMain: Unit >--> Unit =
+    intProducer >-->
+      factorialMultipliedByIntRead >-->
       factorialOfIntConsumer  
 
 }

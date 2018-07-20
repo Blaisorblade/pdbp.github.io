@@ -16,6 +16,6 @@ import pdbp.types.active.reading.activeReadingTypes._
 import pdbp.program.implicits.active.reading.int.implicits
 import implicits.activeIntReadingProgram
 
-import examples.mainPrograms.reading.int.effectfulWriting.MainFactorialOfIntReadAsProgram
+import examples.mainPrograms.reading.int.effectfulWriting.MainFactorialMultipliedByIntReadAsProgram
 
-object mainFactorialOfIntReadAsProgram extends MainFactorialOfIntReadAsProgram[`=>AR`[BigInt]]()
+object mainFactorialMultipliedByIntReadAsProgram extends MainFactorialMultipliedByIntReadAsProgram[`=>AR`[BigInt]]()
