@@ -17,7 +17,7 @@ import activeIntReadingMeaningOfActiveIntReading.binaryTransformation
 import examples.objects.active.reading.int.effectfulWriting.mainFactorialOfIntReadAsProgram
 import mainFactorialOfIntReadAsProgram.factorialMain
 
-import effects.implicits.readIntFromConsoleEffect
+import pdbp.utils.effects.implicits.readIntFromConsoleEffect
 
 object FactorialOfIntReadAsProgramMain {
 

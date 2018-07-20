@@ -19,20 +19,25 @@ import pdbp.program.compositionOperator._
 
 import examples.utils.EffectfulUtils
 
-import examples.utils.reading.EffectfreeUtils
-
 import examples.programs.FactorialAsProgram
 
 class MainFactorialOfIntReadAsProgram[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]] 
-  extends EffectfreeUtils[>-->]()
-  with EffectfulUtils[>-->]() {
+  extends EffectfulUtils[>-->]() {
+
+  private val implicitProgram = implicitly[Program[>-->]]  
+
+  private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
+
+  import implicitProgram._ 
+
+  import implicitIntReading._ 
 
   private object factorialAsProgram extends FactorialAsProgram[>-->]
 
   import factorialAsProgram.factorial
 
   val factorialMain: Unit >--> Unit =
-    effectfreeIntProducer >-->
+    read >-->
       factorial >-->
       factorialOfIntConsumer  
 

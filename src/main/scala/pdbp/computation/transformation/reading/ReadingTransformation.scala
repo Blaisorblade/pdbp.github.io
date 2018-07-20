@@ -56,7 +56,7 @@ private[pdbp] trait ReadingTransformation[R, FC[+ _]: Computation]
                                         `z>=rtfcy`: => (Z => RTFC[Y])): RTFC[Y] =
     bindFC(rtfcz, `z>=rtfcy`(_)) 
 
-  override val `u>-->r`: Unit `=>RTFC` R = { _ =>
+  private[pdbp] override def `z>-->r`[Z]: Z `=>RTFC` R = { _ =>
     resultFC(implicitly)
   }
 

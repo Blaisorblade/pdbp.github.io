@@ -1,4 +1,4 @@
-package pdbp.types.console
+package pdbp.utils.effects
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,16 +11,25 @@ package pdbp.types.console
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import scala.io.StdIn.{readInt, readDouble}
+
+import pdbp.types.product.productType._
+
 import pdbp.types.effect.effectType._
 
-object consoleTypes {
+import pdbp.types.effect.console.consoleTypes._
 
-  // case class Console(effect: Effect)
+import pdbp.utils.effectfulUtils._
 
-  // implicit
-  type ReadFromConsoleEffect[Z] = Z
+object implicits {
 
-  // explicit
-  // type WriteToConsoleEffect[Z] = Z => Effect
+  implicit def readIntFromConsoleEffect[Z]: ReadFromConsoleEffect[BigInt] = 
+    effectfulReadIntFromConsoleFunction("please type an integer to read")(())
+
+  // def writeToConsoleEffect[Y](
+  //     message: String): WriteToConsoleEffect[Y] = { y =>
+  //   _ =>
+  //     writeToConsole(message)(y)
+  // }
 
 }

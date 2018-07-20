@@ -3461,47 +3461,20 @@ Consider
 ```scala
 package pdbp.program.reading
 
-import pdbp.program.Function
-
-import pdbp.program.Composition
-
 trait Reading[R, >-->[- _, + _]] {
-  this: Function[>-->] & Composition[>-->] =>
 
-  def `u>-->r`: Unit >--> R = `z>-->r`[Unit]
-
-  def `z>-->r`[Z]: Z >--> R = compose(`z>-->u`, `u>-->r`)
+  private[pdbp] def `z>-->r`[Z]: Z >--> R
 
   def read[Z]: Z >--> R = `z>-->r`
 
 }
 ```
-
-where
-
-  - `` `z>-->u` `` 
-
-is the program you expect (it has already been described).
- 
-
-Think of `` `u>-->r` `` as a program that transforms an argument of type `Unit` to a yield result of type `R`. 
-We also say that `` `u>-->r` `` is a program that produces a result of type `R`. 
-
-
-`trait Reading` has another member 
-
- - `` `z>-->r` `` is a more complex, and more useful version of `` `u>-->r` `` 
   
-Think of `` `z>-->r` `` as a program that transforms any argument (of type `Z`) to a yield result of type `R`.
+Think of `` `z>-->r` `` as a program that transforms any argument of type `Z` to a yield result of type `R`.
 We also say that `` `z>-->r` `` is a program that produces a result of type `R`. 
 
-Note that
-
- - `` `z>-->r` `` can be defined in terms of `` `u>-->r` ``, `compose` and `` `z>-->u` ``,
- - `` `u>-->r` `` can be defined in terms of `` `z>-->r` `` by using `Unit` for `Z`.
-
-Since we are defining a public programming API here, it is also convenient to define an alias `read` for `` `z>-->r` ``.
-
+Note that `` `z>-->r` `` is `private[pdbp]`.
+Since we are defining a public programming API, it is also convenient to define an `public` alias `read` for `` `z>-->r` ``.
 
 ## **Describing `ReadingTransformation`**
 
@@ -3589,7 +3562,7 @@ private[pdbp] trait ReadingTransformation[R, FC[+ _]: Computation]
                                         `z>=rtfcy`: => (Z => RTFC[Y])): RTFC[Y] =
     bindFC(rtfcz, `z>=rtfcy`(_)) 
 
-  override val `u>-->r`: Unit `=>RTFC` R = { _ =>
+  private[pdbp] override val `u>-->r`: Unit `=>RTFC` R = { _ =>
     resultFC(implicitly)
   }
 
