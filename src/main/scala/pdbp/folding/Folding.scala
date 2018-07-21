@@ -1,4 +1,4 @@
-package pdbp.utils
+package pdbp.program.folding
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,28 +11,17 @@ package pdbp.utils
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.activeTypes._
+import pdbp.types.const.constType._
 
-object functionUtils {
+import pdbp.utils.functionUtils._
 
-  def `z=>z`[Z]: Z => Z = { z =>
-    z
-  }
+import pdbp.computation.Lifting
 
-  def `z=>u`[Z]: Z => Unit = { z =>
-    ()
-  }
+private[pdbp] trait Folding[W]
+    extends Starting[W]
+    with Appending[W]
+    with Lifting[Const[W]] {
 
-  def `z=>(y=>z)`[Z, Y]: Z => Y => Z = { z => y =>
-    z
-  }
-
-  def `z=>az`[Z]: Z => Active[Z] = { z =>
-    z
-  }
-
-  def `w=>w`[W]: W => W = { w =>
-    w
-  }
+  override private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): W => W = `w=>w`
 
 }

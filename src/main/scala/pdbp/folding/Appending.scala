@@ -1,4 +1,4 @@
-package pdbp.utils
+package pdbp.program.folding
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,28 +11,19 @@ package pdbp.utils
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.activeTypes._
+import pdbp.types.product.productType._
 
-object functionUtils {
+import pdbp.types.const.constType._
 
-  def `z=>z`[Z]: Z => Z = { z =>
-    z
-  }
+import pdbp.utils.productUtils._
 
-  def `z=>u`[Z]: Z => Unit = { z =>
-    ()
-  }
+import pdbp.computation.OperatorLifting
 
-  def `z=>(y=>z)`[Z, Y]: Z => Y => Z = { z => y =>
-    z
-  }
+private[pdbp] trait Appending[W] extends OperatorLifting[Const[W]] {
 
-  def `z=>az`[Z]: Z => Active[Z] = { z =>
-    z
-  }
+  private[pdbp] val append: W && W => W
 
-  def `w=>w`[W]: W => W = { w =>
-    w
-  }
+  override private[pdbp] def liftOperator[Z, Y, X](
+      `(z&&y)=>x`: (Z && Y) => X): (W && W) => W = append
 
 }

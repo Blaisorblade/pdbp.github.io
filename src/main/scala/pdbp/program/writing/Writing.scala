@@ -1,4 +1,4 @@
-package pdbp.utils
+package pdbp.program.writing
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,28 +11,10 @@ package pdbp.utils
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.activeTypes._
+import pdbp.program.folding.Folding
 
-object functionUtils {
+trait Writing[W: Folding, >-->[- _, + _]] {
 
-  def `z=>z`[Z]: Z => Z = { z =>
-    z
-  }
-
-  def `z=>u`[Z]: Z => Unit = { z =>
-    ()
-  }
-
-  def `z=>(y=>z)`[Z, Y]: Z => Y => Z = { z => y =>
-    z
-  }
-
-  def `z=>az`[Z]: Z => Active[Z] = { z =>
-    z
-  }
-
-  def `w=>w`[W]: W => W = { w =>
-    w
-  }
+  val `w>-->u`: W >--> Unit
 
 }
