@@ -16,6 +16,6 @@ import pdbp.types.active.activeTypes._
 import pdbp.program.implicits.active.implicits
 import implicits.activeProgram
 
-import examples.mainPrograms.effectfulReadingAndWriting.MainFactorialAsProgram
+import examples.mainPrograms.effectfulReadingAndWriting.MainFactorial
 
-object mainFactorialAsProgram extends MainFactorialAsProgram[`=>A`]()
+object mainFactorial extends MainFactorial[`=>A`]()

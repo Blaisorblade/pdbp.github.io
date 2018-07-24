@@ -1,4 +1,4 @@
-package pdbp.types.effect.console
+package examples.objects.active.reading.int.effectfulWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,17 +11,12 @@ package pdbp.types.effect.console
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.types.active.reading.activeReadingTypes._
 
-object consoleTypes {
+import pdbp.program.implicits.active.reading.int.implicits
+import implicits.activeIntReadingProgram
 
-  // implicit, language level effect
-  type ReadFromConsoleEffect[R] = R
+import examples.mainPrograms.reading.int.effectfulWriting.MainFactorialOfIntRead
 
-  // import pdbp.types.effect.effectType._
-
-  // case class Console(effect: Effect)
-
-  // explicit, library level
-  // type WriteToConsoleEffect[W] = W => Effect
-
-}
+object mainFactorialOfIntRead
+    extends MainFactorialOfIntRead[`=>AR`[BigInt]]()

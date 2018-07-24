@@ -19,18 +19,18 @@ import pdbp.program.compositionOperator._
 
 import examples.utils.EffectfulUtils
 
-import examples.programs.reading.int.FactorialMultipliedByIntReadAsProgram
+import examples.programs.reading.int.FactorialMultipliedByIntRead
 
-class MainFactorialMultipliedByIntReadAsProgram[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]] 
+class MainFactorialMultipliedByIntRead[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]] 
   extends EffectfulUtils[>-->]() {
 
   private val implicitProgram = implicitly[Program[>-->]]  
 
   import implicitProgram._ 
 
-  private object factorialMultipliedByIntReadAsProgram extends FactorialMultipliedByIntReadAsProgram[>-->]()
+  private object factorialMultipliedByIntReadObject extends FactorialMultipliedByIntRead[>-->]()
 
-  import factorialMultipliedByIntReadAsProgram.factorialMultipliedByIntRead
+  import factorialMultipliedByIntReadObject.factorialMultipliedByIntRead
 
   val factorialMultipliedByIntReadMain: Unit >--> Unit =
     intProducer >-->

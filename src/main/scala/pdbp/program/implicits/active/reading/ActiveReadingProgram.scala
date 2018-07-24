@@ -1,4 +1,4 @@
-package pdbp.program.implicits.active.reading.int
+package pdbp.program.implicits.active.reading
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -14,21 +14,17 @@ package pdbp.program.implicits.active.reading.int
 import pdbp.types.active.activeTypes._
 import pdbp.types.active.reading.activeReadingTypes._
 
+import pdbp.program.Program
 import pdbp.program.reading.Reading
 
-import pdbp.program.implicits.active.reading.ActiveReadingProgram
-
-import pdbp.program.implicits.active.implicits.activeProgram
+import pdbp.computation.Computation
 
 import pdbp.computation.transformation.ComputationTransformation
 import pdbp.computation.transformation.reading.ReadingTransformation
 
-object implicits {
-
-  implicit object activeIntReadingProgram
-    extends ActiveReadingProgram[BigInt]()
-    with ComputationTransformation[Active, ActiveReading[BigInt]]()
-    with ReadingTransformation[BigInt, Active]()
-    with Reading[BigInt, `=>AR`[BigInt]]
-
-}
+private[pdbp] trait ActiveReadingProgram[R]
+    extends Computation[ActiveReading[R]]
+    with Program[`=>AR`[R]]
+    with Reading[R, `=>AR`[R]]
+    with ComputationTransformation[Active, ActiveReading[R]]
+    with ReadingTransformation[R, Active]

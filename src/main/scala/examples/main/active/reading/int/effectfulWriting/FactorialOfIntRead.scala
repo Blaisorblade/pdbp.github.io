@@ -11,17 +11,21 @@ package examples.main.active.reading.int.effectfulWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import examples.objects.active.reading.int.effectfulWriting.mainFactorialMultipliedByIntReadAsProgram
-import mainFactorialMultipliedByIntReadAsProgram.factorialMultipliedByIntReadMain
+import pdbp.types.active.reading.activeReadingTypes._
 
-object FactorialMultipliedByIntReadAsProgramMain {
+import examples.objects.active.reading.int.effectfulWriting.mainFactorialOfIntRead
+import mainFactorialOfIntRead.factorialMain
 
-  def main(args: Array[String]): Unit = {
+import examples.main.Main
 
-    import pdbp.utils.effects.implicits.readIntFromConsoleEffect
+object FactorialOfIntReadMain extends Main[`=>AR`[BigInt]] {
+
+  import pdbp.utils.effects.implicits.readIntFromConsoleEffect
+
+  private type `=>AR[BigInt]` = `=>AR`[BigInt]
+
+  override val mainKleisliProgram: Unit `=>AR[BigInt]` Unit = factorialMain
     
-    factorialMultipliedByIntReadMain(())
-
-  }
+  override val run = mainKleisliProgram(())
 
 }

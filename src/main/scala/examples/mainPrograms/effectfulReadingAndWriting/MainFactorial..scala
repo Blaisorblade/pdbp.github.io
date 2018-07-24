@@ -1,4 +1,4 @@
-package examples.objects.active.free.effectfulReadingAndWriting
+package examples.mainPrograms.effectfulReadingAndWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,11 +11,23 @@ package examples.objects.active.free.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.free.activeFreeTypes._
+import pdbp.program.Program
 
-import pdbp.program.implicits.active.free.implicits
-import implicits.activeFreeProgram
+import pdbp.program.compositionOperator._
 
-import examples.mainPrograms.effectfulReadingAndWriting.MainFactorialAsProgram
+import examples.utils.EffectfulUtils
 
-object mainFactorialAsProgram extends MainFactorialAsProgram[`=>AF`]()
+import examples.programs.Factorial
+
+class MainFactorial[>-->[- _, + _]: Program] extends EffectfulUtils[>-->]() {
+
+  private object factorialObject extends Factorial[>-->]
+
+  import factorialObject.factorial
+
+  val factorialMain: Unit >--> Unit =
+    intProducer >-->
+      factorial >-->
+      factorialOfIntConsumer  
+
+}

@@ -1,4 +1,4 @@
-package pdbp.program.implicits.active.reading.int
+package pdbp.program.implicits.active.writing.toConsole
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,24 +11,27 @@ package pdbp.program.implicits.active.reading.int
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.types.effect.toConsole.ToConsole
+
 import pdbp.types.active.activeTypes._
-import pdbp.types.active.reading.activeReadingTypes._
+import pdbp.types.active.writing.activeWritingTypes._
 
-import pdbp.program.reading.Reading
+import pdbp.folding.implicits.toConsole.implicits.toConsoleFolding
 
-import pdbp.program.implicits.active.reading.ActiveReadingProgram
+import pdbp.program.writing.Writing
 
+import pdbp.program.implicits.active.writing.ActiveWritingProgram
 import pdbp.program.implicits.active.implicits.activeProgram
 
 import pdbp.computation.transformation.ComputationTransformation
-import pdbp.computation.transformation.reading.ReadingTransformation
+import pdbp.computation.transformation.writing.WritingTransformation
 
 object implicits {
 
-  implicit object activeIntReadingProgram
-    extends ActiveReadingProgram[BigInt]()
-    with ComputationTransformation[Active, ActiveReading[BigInt]]()
-    with ReadingTransformation[BigInt, Active]()
-    with Reading[BigInt, `=>AR`[BigInt]]
+  implicit object activeWritingToConsoleProgram
+    extends ActiveWritingProgram[ToConsole]()
+    with ComputationTransformation[Active, ActiveWriting[ToConsole]]()
+    with WritingTransformation[ToConsole, Active]()
+    with Writing[ToConsole, `=>AW`[ToConsole]]()
 
 }

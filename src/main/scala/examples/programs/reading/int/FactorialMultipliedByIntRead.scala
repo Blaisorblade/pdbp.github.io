@@ -1,4 +1,4 @@
-package examples.mainPrograms.effectfulReadingAndWriting
+package examples.programs.reading.int
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -12,22 +12,24 @@ package examples.mainPrograms.effectfulReadingAndWriting
 //  author        Luc Duponcheel        2017-2018
 
 import pdbp.program.Program
+import pdbp.program.reading.Reading
 
 import pdbp.program.compositionOperator._
+import pdbp.program.constructionOperators._
 
-import examples.utils.EffectfulUtils
+import examples.programs.Factorial
 
-import examples.programs.FactorialAsProgram
+trait FactorialMultipliedByIntRead[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]]
+    extends Factorial[>-->] {
 
-class MainFactorialAsProgram[>-->[- _, + _]: Program] extends EffectfulUtils[>-->]() {
+  private val implicitProgram = implicitly[Program[>-->]]
 
-  private object factorialAsProgram extends FactorialAsProgram[>-->]
+  import implicitProgram._
 
-  import factorialAsProgram.factorial
+  private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
 
-  val factorialMain: Unit >--> Unit =
-    intProducer >-->
-      factorial >-->
-      factorialOfIntConsumer  
+  import implicitIntReading._
 
+  val factorialMultipliedByIntRead: BigInt >--> BigInt =
+      (factorial & read) >--> multiply
 }

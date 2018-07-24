@@ -1,4 +1,4 @@
-package pdbp.program.writing
+package pdbp.types.effect.toConsole
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,18 +11,7 @@ package pdbp.program.writing
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.folding.Folding
+import pdbp.types.effect.effectType._
 
-import pdbp.program.Function
+case class ToConsole(effect: Effect)
 
-import pdbp.program.Composition
-
-trait Writing[W: Folding, >-->[- _, + _]] {
-  this: Function[>-->] & Composition[>-->] =>
-
-  private[pdbp] val `w>-->u`: W >--> Unit  
-
-  def write[Z]: implicit (Z => W) => Z >--> Unit =
-    compose(function(implicitly), `w>-->u`)       
-
-}

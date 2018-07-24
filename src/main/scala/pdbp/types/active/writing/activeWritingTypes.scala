@@ -1,4 +1,4 @@
-package examples.main.active.effectfulReadingAndWriting
+package pdbp.types.active.writing
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -9,17 +9,17 @@ package examples.main.active.effectfulReadingAndWriting
 //  \_\/       \______\/  \______\/      \_\/
 //                                           v1.0
 //  Program Description Based Programming Library
-//  author        Luc Duponcheel        2017-2018
 
-import examples.objects.active.effectfulReadingAndWriting.mainFactorialAsProgram
-import mainFactorialAsProgram.factorialMain
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
-object FactorialAsProgramMain {
+import pdbp.types.active.activeTypes._
 
-  def main(args: Array[String]): Unit = {
+import pdbp.computation.transformation.writing.WritingTransformation._
 
-    factorialMain(())
+object activeWritingTypes {
 
-  }
+  type ActiveWriting[W] = WritingTransformed[W, Active]
+
+  type `=>AW`[W] = Kleisli[ActiveWriting[W]]
 
 }

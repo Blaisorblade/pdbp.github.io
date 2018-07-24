@@ -11,20 +11,24 @@ package examples.main.meaning.ofActiveIntReading.activeIntReading.effectfulWriti
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.types.active.reading.activeReadingTypes._
+
 import pdbp.program.meaning.ofActiveIntReading.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReading
 import activeIntReadingMeaningOfActiveIntReading.binaryTransformation
 
-import examples.objects.active.reading.int.effectfulWriting.mainFactorialOfIntReadAsProgram
-import mainFactorialOfIntReadAsProgram.factorialMain
+import examples.objects.active.reading.int.effectfulWriting.mainFactorialOfIntRead
+import mainFactorialOfIntRead.factorialMain
 
-import pdbp.utils.effects.implicits.readIntFromConsoleEffect
+import examples.main.Main
 
-object FactorialOfIntReadAsProgramMain {
+object FactorialOfIntReadMain extends Main[`=>AR`[BigInt]] {
 
-  def main(args: Array[String]): Unit = {
+  import pdbp.utils.effects.implicits.readIntFromConsoleEffect
+ 
+  private type `=>AR[BigInt]` = `=>AR`[BigInt]
 
-    binaryTransformation(factorialMain)(())
-
-  }
+  override val mainKleisliProgram: Unit `=>AR[BigInt]` Unit = factorialMain
+ 
+  override val run = mainKleisliProgram(())
 
 }

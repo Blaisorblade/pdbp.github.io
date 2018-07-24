@@ -1392,8 +1392,6 @@ I was very lucky to be able to do research with him, on monads and related stuff
 
 ### **`factorial` revisited**
 
-#### **`factorial` as program**
-
 Below is the code for `factorial`.
 
 ```scala
@@ -1403,7 +1401,7 @@ import pdbp.program.Program
 
 import pdbp.program.compositionOperator._
 
-class FactorialAsProgram[>-->[- _, + _]: Program] extends FunctionUtils[>-->]() {
+class Factorial[>-->[- _, + _]: Program] extends FunctionUtils[>-->]() {
 
   import implicitly._
 
@@ -1592,7 +1590,7 @@ We also simply refer to
   - a producer program as a *producer*,
   - a consumer program as a *consumer*.
 
-### **Describing `MainFactorialAsProgram` using an effectful `intProducer` and `factorialOfIntConsumer`**
+### **Describing `MainFactorial` using an effectful `intProducer` and `factorialOfIntConsumer`**
 
 Consider
 
@@ -1605,13 +1603,13 @@ import pdbp.program.compositionOperator._
 
 import examples.utils.EffectfulUtils
 
-import examples.programs.FactorialAsProgram
+import examples.programs.Factorial
 
-class MainFactorialAsProgram[>-->[- _, + _]: Program] extends EffectfulUtils[>-->]() {
+class MainFactorial[>-->[- _, + _]: Program] extends EffectfulUtils[>-->]() {
 
-  private object factorialAsProgram extends FactorialAsProgram[>-->]
+  private object factorial extends Factorial[>-->]
 
-  import factorialAsProgram.factorial
+  import factorial.factorial
 
   val factorialMain: Unit >--> Unit =
     intProducer >-->
@@ -1697,7 +1695,7 @@ More precisely
 
 ### **Describing `MainFactorialAsFunction` using an effectful `intProducer` and `factorialOfIntConsumer`**
 
-`MainFactorialAsFunction` is similar to `MainFactorialAsProgram`
+`MainFactorialAsFunction` is similar to `MainFactorial`
 
 ```scala
 package examples.mainPrograms.effectfulReadingAndWriting
@@ -1726,7 +1724,7 @@ trait MainFactorialAsFunction[>-->[- _, + _]: Program] extends EffectfulUtils[>-
 
 ### **Describing `MainFactorialTopDown` using an effectful `intProducer` and `factorialOfIntConsumer`**
 
-`MainFactorialTopDown` is similar to `MainFactorialAsProgram`
+`MainFactorialTopDown` is similar to `MainFactorial`
 
 ```scala
 package examples.mainPrograms.effectfulReadingAndWriting
@@ -2758,18 +2756,18 @@ import pdbp.types.active.activeTypes._
 import pdbp.program.implicits.active.implicits
 import implicits.activeProgram
 
-import examples.mainPrograms.effectfulReadingAndWriting.MainFactorialAsProgram
+import examples.mainPrograms.effectfulReadingAndWriting.MainFactorial
 
-object mainFactorialAsProgram extends MainFactorialAsProgram[`=>A`]()
+object mainFactorial extends MainFactorial[`=>A`]()
 ```
 
-The definition of `mainFactorialAsProgram` uses *dependency injection* by `import` of `implicit object activeProgram`, extending the type class `Program[`=>A`]` (by extending `Computation[Active]`).
+The definition of `mainFactorial` uses *dependency injection* by `import` of `implicit object activeProgram`, extending the type class `Program[`=>A`]` (by extending `Computation[Active]`).
 
 *Dependency injection by importing an implicit object extending a type class is a design pattern that is very often used in* `Dotty`.
 
-The definition of `object mainFactorialAsProgram` extends `class MainFactorialAsProgram[`=>A`]`. 
-The definition of `MainFactorialAsProgram` uses `factorialAsProgram` that extends `FactorialAsProgram[>-->]`.
-The `FactorialAsProgram[>-->]` defines the program `factorial` using the programming capabilites declared in `Program[>-->]`.
+The definition of `object mainFactorial` extends `class MainFactorial[`=>A`]`. 
+The definition of `MainFactorial` uses `factorial` that extends `Factorial[>-->]`.
+The `Factorial[>-->]` defines the program `factorial` using the programming capabilites declared in `Program[>-->]`.
 
 *The dependency injection by importing an implicit object extending a type class design pattern is typically used together with an object extending a class that defines programs using the programming capabilites declared in the type class*.
 
@@ -2777,15 +2775,15 @@ Let's rephrase all this in another way
   - writing program descriptions using declared programming capabilities
   - giving a language level meaning to program descriptions by importing an implicit object defining the programming capabilities 
 
-We can now, finally, define `main` in `object FactorialAsProgramMain`
+We can now, finally, define `main` in `object FactorialMain`
 
 ```scala
 package examples.main.active.effectfulReadingAndWriting
 
-import examples.objects.active.effectfulReadingAndWriting.mainFactorialAsProgram
-import mainFactorialAsProgram.factorialMain
+import examples.objects.active.effectfulReadingAndWriting.mainFactorial
+import mainFactorial.factorialMain
 
-object FactorialAsProgramMain {
+object FactorialMain {
 
   def main(args: Array[String]): Unit = {
 
@@ -2804,12 +2802,12 @@ Note that `factorialMain` has
 
 It suffices to evaluate `factorialMain(())` to run `factorialMain`.
 
-Ok, so let's use `main` in `object FactorialAsProgramMain`.
+Ok, so let's use `main` in `object FactorialMain`.
 
 Let's try `10`.
 
 ```scala
-[info] Running examples.main.active.effectfulReadingAndWriting.FactorialAsProgramMain
+[info] Running examples.main.active.effectfulReadingAndWriting.FactorialMain
 please type an integer
 10
 the factorial value of the integer is
@@ -2819,7 +2817,7 @@ the factorial value of the integer is
 Let's try `100`.
 
 ```scala
-[info] Running examples.main.active.effectfulReadingAndWriting.FactorialAsProgramMain
+[info] Running examples.main.active.effectfulReadingAndWriting.FactorialMain
 please type an integer
 100
 the factorial value of the integer is
@@ -2829,7 +2827,7 @@ the factorial value of the integer is
 Let's try `1000`.
 
 ```scala
-[info] Running examples.main.active.effectfulReadingAndWriting.FactorialAsProgramMain
+[info] Running examples.main.active.effectfulReadingAndWriting.FactorialMain
 please type an integer
 1000
 [error] (run-main-0) java.lang.StackOverflowError
@@ -2838,12 +2836,12 @@ java.lang.StackOverflowError
 
 We have a problem here. 
 
-The language level meaning `mainFactorialAsProgram.factorialAsProgram.factorial` above of the `factorial` description is *not tail recursive*. 
+The language level meaning `mainFactorial.factorial.factorial` above of the `factorial` description is *not tail recursive*. 
   - it is not stack safe: it uses the *stack* which overflows for the argument `1000`.
  
 The good news is that it is just one language level meaning of that description.
 
-The language level meaning `mainFactorialAsProgram.factorialAsProgram.factorial` above should (and will) be replaced by a *tail recursive* one. 
+The language level meaning `mainFactorial.factorial.factorial` above should (and will) be replaced by a *tail recursive* one. 
   - it is stack safe: it uses the *heap* which does not run out of memory for the argument `1000`.
 
 ## **Running main kleisli programs (language level meaning)**
@@ -2865,7 +2863,7 @@ import pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting.MainSumOfSqu
 object mainSumOfSquaresAsComputation extends MainSumOfSquaresAsComputation[Active]()
 ```
 
-We can now, finally, define `main` in `object FactorialAsProgramMain`
+We can now, finally, define `main` in `object FactorialMain`
 
 ```scala
 package pdbp.examples.main.active.effectfulReadingAndWriting
@@ -3088,7 +3086,7 @@ private[pdbp] trait MeaningOfActive[TR[+ _]: Resulting] extends ComputationMeani
 
 ### **Running `factorialMain` using an effectful `intProducer` and `factorialOfIntConsumer` and `activeMeaningOfActive`**
 
-We can now finally define `main` in `object FactorialAsProgramMain`
+We can now finally define `main` in `object FactorialMain`
 
 ```scala
 package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
@@ -3096,10 +3094,10 @@ package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
 import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
 import activeMeaningOfActive.binaryTransformation
 
-import examples.objects.active.effectfulReadingAndWriting.mainFactorialAsProgram
-import mainFactorialAsProgram.factorialMain
+import examples.objects.active.effectfulReadingAndWriting.mainFactorial
+import mainFactorial.factorialMain
 
-object FactorialAsProgramMain {
+object FactorialMain {
 
   def main(args: Array[String]): Unit = {
 
@@ -3118,12 +3116,12 @@ Note that `binaryTransformation(factorialMain)` has
 
 It suffices to evaluate `binaryTransformation(factorialMain)(())` to run `binaryTransformation(factorialMain)(`.
 
-Ok, so let's use `main` in `object FactorialAsProgramMain`.
+Ok, so let's use `main` in `object FactorialMain`.
 
 Let's try `10`.
 
 ```scala
-[info] Running examples.main.meaning.ofActive.active.effectfulReadingAndWriting.FactorialAsProgramMain
+[info] Running examples.main.meaning.ofActive.active.effectfulReadingAndWriting.FactorialMain
 please type an integer
 10
 the factorial value of the integer is
@@ -3398,12 +3396,12 @@ import pdbp.types.active.free.activeFreeTypes._
 import pdbp.program.implicits.active.free.implicits
 import implicits.activeFreeProgram
 
-import examples.mainPrograms.effectfulReadingAndWriting.MainFactorialAsProgram
+import examples.mainPrograms.effectfulReadingAndWriting.MainFactorial
 
-object mainFactorialAsProgram extends MainFactorialAsProgram[`=>AF`]()
+object mainFactorial extends MainFactorial[`=>AF`]()
 ```
 
-We can now finally define `main` in `object FactorialAsProgramMain`
+We can now finally define `main` in `object FactorialMain`
 
 ```scala
 package examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting
@@ -3411,10 +3409,10 @@ package examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting
 import pdbp.program.meaning.ofActiveFree.active.implicits.activeMeaningOfActiveFree
 import activeMeaningOfActiveFree.binaryTransformation
 
-import examples.objects.active.free.effectfulReadingAndWriting.mainFactorialAsProgram
-import mainFactorialAsProgram.factorialMain
+import examples.objects.active.free.effectfulReadingAndWriting.mainFactorial
+import mainFactorial.factorialMain
 
-object FactorialAsProgramMain {
+object FactorialMain {
 
   def main(args: Array[String]): Unit = {
 
@@ -3425,12 +3423,12 @@ object FactorialAsProgramMain {
 }
 ```
 
-Ok, so let's use `main` in `object FactorialAsProgramMain`.
+Ok, so let's use `main` in `object FactorialMain`.
 
 Let's try `1000`.
 
 ```scala
-[info] Running examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting.FactorialAsProgramMain
+[info] Running examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting.FactorialMain
 please type an integer
 1000
 the factorial value of the integer is
@@ -3555,8 +3553,9 @@ private[pdbp] trait ReadingTransformation[R, FC[+ _]: Computation]
     fcz
   }
 
-  override private[pdbp] def result[Z]: Z => RTFC[Z] =
-    resultFC(_)
+  override private[pdbp] def result[Z]: Z => RTFC[Z] = { z =>
+    resultFC(z)
+  } 
 
   override private[pdbp] def bind[Z, Y](rtfcz: RTFC[Z],
                                         `z>=rtfcy`: => (Z => RTFC[Y])): RTFC[Y] =
@@ -3631,22 +3630,12 @@ package pdbp.program.implicits.active.reading.int
 import pdbp.types.active.activeTypes._
 import pdbp.types.active.reading.activeReadingTypes._
 
-import pdbp.program.Program
-import pdbp.program.reading.Reading
-
-import pdbp.computation.Computation
-
 import pdbp.computation.transformation.ComputationTransformation
 import pdbp.computation.transformation.reading.ReadingTransformation
 
-import pdbp.program.implicits.active.implicits.activeProgram
+import pdbp.program.implicits.active.reading.ActiveReadingProgram
 
-private[pdbp] trait ActiveReadingProgram[R]
-    extends Computation[ActiveReading[R]]
-    with Program[`=>AR`[R]]
-    with Reading[R, `=>AR`[R]]
-    with ComputationTransformation[Active, ActiveReading[R]]
-    with ReadingTransformation[R, Active]
+import pdbp.program.implicits.active.implicits.activeProgram
 
 object implicits {
 
@@ -3656,6 +3645,30 @@ object implicits {
     with ReadingTransformation[BigInt, Active]()
 
 }
+```
+
+where
+
+```scala
+package pdbp.program.implicits.active.reading
+
+import pdbp.types.active.activeTypes._
+import pdbp.types.active.reading.activeReadingTypes._
+
+import pdbp.program.Program
+import pdbp.program.reading.Reading
+
+import pdbp.computation.Computation
+
+import pdbp.computation.transformation.ComputationTransformation
+import pdbp.computation.transformation.reading.ReadingTransformation
+
+private[pdbp] trait ActiveReadingProgram[R]
+    extends Computation[ActiveReading[R]]
+    with Program[`=>AR`[R]]
+    with Reading[R, `=>AR`[R]]
+    with ComputationTransformation[Active, ActiveReading[R]]
+    with ReadingTransformation[R, Active]
 ```
 
 where the types `ActiveReading` and `` `=>AR` `` are defined as follows
@@ -3680,7 +3693,7 @@ object activeReadingTypes {
 
 Note that, since there is a type parameter `R` involved, we first define a `trait` and second a corresponding `implicit object` (for `BigInt`).
 
-### **Describing `MainFactorialOfIntReadAsProgram` using `read` and an effectful `factorialOfIntConsumer`**
+### **Describing `MainFactorialOfIntRead` using `read` and an effectful `factorialOfIntConsumer`**
 
 Consider
 
@@ -3695,9 +3708,9 @@ import pdbp.program.compositionOperator._
 
 import examples.utils.EffectfulUtils
 
-import examples.programs.FactorialAsProgram
+import examples.programs.Factorial
 
-class MainFactorialOfIntReadAsProgram[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]]
+class MainFactorialOfIntRead[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]]
     extends EffectfulUtils[>-->]() {
 
   private val implicitProgram = implicitly[Program[>-->]]
@@ -3708,9 +3721,9 @@ class MainFactorialOfIntReadAsProgram[>-->[- _, + _]: Program: [>-->[- _, + _]] 
 
   import implicitIntReading._
 
-  private object factorialAsProgram extends FactorialAsProgram[>-->]
+  private object factorial extends Factorial[>-->]
 
-  import factorialAsProgram.factorial
+  import factorial.factorial
 
   val factorialMain: Unit >--> Unit =
     read >-->
@@ -3735,22 +3748,22 @@ import pdbp.types.active.reading.activeReadingTypes._
 import pdbp.program.implicits.active.reading.int.implicits
 import implicits.activeIntReadingProgram
 
-import examples.mainPrograms.reading.int.effectfulWriting.MainFactorialOfIntReadAsProgram
+import examples.mainPrograms.reading.int.effectfulWriting.MainFactorialOfIntRead
 
-object mainFactorialOfIntReadAsProgram
-    extends MainFactorialOfIntReadAsProgram[`=>AR`[BigInt]]()
+object mainFactorialOfIntRead
+    extends MainFactorialOfIntRead[`=>AR`[BigInt]]()
 ```
 
-We can now, finally, define `main` in object `FactorialOfIntReadAsProgramMain`.
+We can now, finally, define `main` in object `FactorialOfIntReadMain`.
 
 
 ```scala
 package examples.main.active.reading.int.effectfulWriting
 
-import examples.objects.active.reading.int.effectfulWriting.mainFactorialOfIntReadAsProgram
-import mainFactorialOfIntReadAsProgram.factorialMain
+import examples.objects.active.reading.int.effectfulWriting.mainFactorialOfIntRead
+import mainFactorialOfIntRead.factorialMain
 
-object FactorialOfIntReadAsProgramMain {
+object FactorialOfIntReadMain {
 
   def main(args: Array[String]): Unit = {
 
@@ -3802,12 +3815,12 @@ The type alias `ReadFromConsoleEffect[Z]` is simple because the effect of readin
 
 Note that, in constrast with `factorialMain` using `activeProgram` and an effectful ``intProducer`, `factorialMain` using `activeIntReadingProgram` and `read` pushes the usage of the language level meaning of the description of the reading from console effect to it's very limits: the definition of `main`.
 
-Ok, so let’s use `main` in `objectFactorialOfIntReadAsProgramMain`.
+Ok, so let’s use `main` in `objectFactorialOfIntReadMain`.
 
 Let’s try `10`.
 
 ```scala
-[info] Running examples.main.active.reading.int.effectfulWriting.FactorialOfIntReadAsProgramMain
+[info] Running examples.main.active.reading.int.effectfulWriting.FactorialOfIntReadMain
 please type an integer to read
 10
 the factorial value of the integer is
@@ -3818,7 +3831,7 @@ We used `read` as an effectfree alternative for the effectful `intProducer` at t
 
 We can also use `read` anywhere in a program.
 
-### **Describing `FactorialMultipliedByIntReadAsProgram`**
+### **Describing `FactorialMultipliedByIntRead`**
 
 Consider
 
@@ -3831,10 +3844,10 @@ import pdbp.program.reading.Reading
 import pdbp.program.compositionOperator._
 import pdbp.program.constructionOperators._
 
-import examples.programs.FactorialAsProgram
+import examples.programs.Factorial
 
-trait FactorialMultipliedByIntReadAsProgram[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]]
-    extends FactorialAsProgram[>-->] {
+trait FactorialMultipliedByIntRead[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]]
+    extends Factorial[>-->] {
 
   private val implicitProgram = implicitly[Program[>-->]]
 
@@ -3850,7 +3863,7 @@ trait FactorialMultipliedByIntReadAsProgram[>-->[- _, + _]: Program: [>-->[- _, 
 }
 ```
 
-### **Describing `MainFactorialMultipliedByIntReadAsProgram` using an effectful `intProducer` and `factorialOfIntConsumer`**
+### **Describing `MainFactorialMultipliedByIntRead` using an effectful `intProducer` and `factorialOfIntConsumer`**
 
 Consider
 
@@ -3865,18 +3878,18 @@ import pdbp.program.compositionOperator._
 
 import examples.utils.EffectfulUtils
 
-import examples.programs.reading.int.FactorialMultipliedByIntReadAsProgram
+import examples.programs.reading.int.FactorialMultipliedByIntRead
 
-class MainFactorialMultipliedByIntReadAsProgram[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]] 
+class MainFactorialMultipliedByIntRead[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]] 
   extends EffectfulUtils[>-->]() {
 
   private val implicitProgram = implicitly[Program[>-->]]  
 
   import implicitProgram._ 
 
-  private object factorialMultipliedByIntReadAsProgram extends FactorialMultipliedByIntReadAsProgram[>-->]()
+  private object factorialMultipliedByIntRead extends FactorialMultipliedByIntRead[>-->]()
 
-  import factorialMultipliedByIntReadAsProgram.factorialMultipliedByIntRead
+  import factorialMultipliedByIntRead.factorialMultipliedByIntRead
 
   val factorialMultipliedByIntReadMain: Unit >--> Unit =
     intProducer >-->
@@ -3911,22 +3924,22 @@ import pdbp.types.active.reading.activeReadingTypes._
 import pdbp.program.implicits.active.reading.int.implicits
 import implicits.activeIntReadingProgram
 
-import examples.mainPrograms.reading.int.effectfulWriting.MainFactorialMultipliedByIntReadAsProgram
+import examples.mainPrograms.reading.int.effectfulWriting.MainFactorialMultipliedByIntRead
 
-object mainFactorialMultipliedByIntReadAsProgram 
-    extends MainFactorialMultipliedByIntReadAsProgram[`=>AR`[BigInt]]()
+object mainFactorialMultipliedByIntRead 
+    extends MainFactorialMultipliedByIntRead[`=>AR`[BigInt]]()
 ```
 
-We can now, finally, define `main` in object `FactorialOfIntReadAsProgramMain`.
+We can now, finally, define `main` in object `FactorialOfIntReadMain`.
 
 
 ```scala
 package examples.main.active.reading.int.effectfulWriting
 
-import examples.objects.active.reading.int.effectfulWriting.mainFactorialMultipliedByIntReadAsProgram
-import mainFactorialMultipliedByIntReadAsProgram.factorialMultipliedByIntReadMain
+import examples.objects.active.reading.int.effectfulWriting.mainFactorialMultipliedByIntRead
+import mainFactorialMultipliedByIntRead.factorialMultipliedByIntReadMain
 
-object FactorialMultipliedByIntReadAsProgramMain {
+object FactorialMultipliedByIntReadMain {
 
   def main(args: Array[String]): Unit = {
 
@@ -3939,12 +3952,12 @@ object FactorialMultipliedByIntReadAsProgramMain {
 }
 ```
 
-Ok, so let’s use `main` in `FactorialMultipliedByIntReadAsProgramMain`.
+Ok, so let’s use `main` in `FactorialMultipliedByIntReadMain`.
 
 Let’s try `10` and multiply by `2`.
 
 ```scala
-[info] Running examples.main.active.reading.int.effectfulWriting.FactorialMultipliedByIntReadAsProgramMain
+[info] Running examples.main.active.reading.int.effectfulWriting.FactorialMultipliedByIntReadMain
 please type an integer
 10
 please type an integer to read

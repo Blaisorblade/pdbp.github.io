@@ -1,4 +1,4 @@
-package pdbp.program.writing
+package pdbp.types.active.reading.writing
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,18 +11,16 @@ package pdbp.program.writing
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.folding.Folding
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
-import pdbp.program.Function
+import pdbp.types.active.writing.activeWritingTypes._
 
-import pdbp.program.Composition
+import pdbp.computation.transformation.reading.ReadingTransformation._
 
-trait Writing[W: Folding, >-->[- _, + _]] {
-  this: Function[>-->] & Composition[>-->] =>
+object activeReadingWithWritingTypes {
 
-  private[pdbp] val `w>-->u`: W >--> Unit  
+  type ActiveReadingWithWriting[R, W] = ReadingTransformed[R, ActiveWriting[W]]
 
-  def write[Z]: implicit (Z => W) => Z >--> Unit =
-    compose(function(implicitly), `w>-->u`)       
+  type `=>ARW`[R, W] = Kleisli[ActiveReadingWithWriting[R, W]]
 
 }

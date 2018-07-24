@@ -19,9 +19,9 @@ import pdbp.program.compositionOperator._
 
 import examples.utils.EffectfulUtils
 
-import examples.programs.FactorialAsProgram
+import examples.programs.Factorial
 
-class MainFactorialOfIntReadAsProgram[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]]
+class MainFactorialOfIntRead[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]]
     extends EffectfulUtils[>-->]() {
 
   private val implicitProgram = implicitly[Program[>-->]]
@@ -32,9 +32,9 @@ class MainFactorialOfIntReadAsProgram[>-->[- _, + _]: Program: [>-->[- _, + _]] 
 
   import implicitIntReading._
 
-  private object factorialAsProgram extends FactorialAsProgram[>-->]
+  private object factorialObject extends Factorial[>-->]
 
-  import factorialAsProgram.factorial
+  import factorialObject.factorial
 
   val factorialMain: Unit >--> Unit =
     read >-->

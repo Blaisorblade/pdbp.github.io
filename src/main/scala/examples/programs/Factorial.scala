@@ -1,4 +1,4 @@
-package examples.main.active.reading.int.effectfulWriting
+package examples.programs
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,17 +11,24 @@ package examples.main.active.reading.int.effectfulWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import examples.objects.active.reading.int.effectfulWriting.mainFactorialOfIntReadAsProgram
-import mainFactorialOfIntReadAsProgram.factorialMain
+import pdbp.program.Program
 
-object FactorialOfIntReadAsProgramMain {
+import pdbp.program.compositionOperator._
 
-  def main(args: Array[String]): Unit = {
+class Factorial[>-->[- _, + _]: Program] extends FunctionUtils[>-->]() {
 
-    import pdbp.utils.effects.implicits.readIntFromConsoleEffect
+  import implicitly._
 
-    factorialMain(())
-
-  }
+  val factorial: BigInt >--> BigInt =
+    `if`(isZero) {
+      one
+    } `else` {
+      `let` {
+        subtractOne >-->
+          factorial
+      } `in` {
+        multiply
+      }
+    }
 
 }

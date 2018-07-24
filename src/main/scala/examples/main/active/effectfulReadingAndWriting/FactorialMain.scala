@@ -1,4 +1,4 @@
-package examples.objects.active.reading.int.effectfulWriting
+package examples.main.active.effectfulReadingAndWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,12 +11,17 @@ package examples.objects.active.reading.int.effectfulWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.reading.activeReadingTypes._
+import pdbp.types.active.activeTypes._
 
-import pdbp.program.implicits.active.reading.int.implicits
-import implicits.activeIntReadingProgram
+import examples.objects.active.effectfulReadingAndWriting.mainFactorial
+import mainFactorial.factorialMain
 
-import examples.mainPrograms.reading.int.effectfulWriting.MainFactorialMultipliedByIntReadAsProgram
+import examples.main.Main
 
-object mainFactorialMultipliedByIntReadAsProgram 
-    extends MainFactorialMultipliedByIntReadAsProgram[`=>AR`[BigInt]]()
+object FactorialMain extends Main[`=>A`] {
+
+  override val mainKleisliProgram: Unit `=>A` Unit = factorialMain
+ 
+  override val run = mainKleisliProgram(())
+
+}

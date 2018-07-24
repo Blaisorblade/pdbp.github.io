@@ -13,7 +13,7 @@ package pdbp.computation.transformation.reading
 
 import pdbp.types.implicitFunctionType.`I=>`
 
-private[pdbp] object ReadingTransformation {
+private[pdbp] object ReadingTransformation { 
 
   type ReadingTransformed[R, FC[+ _]] = [+Z] => R `I=>` FC[Z]
 
@@ -49,8 +49,9 @@ private[pdbp] trait ReadingTransformation[R, FC[+ _]: Computation]
     fcz
   }
 
-  override private[pdbp] def result[Z]: Z => RTFC[Z] =
-    resultFC(_)
+  override private[pdbp] def result[Z]: Z => RTFC[Z] = { z =>
+    resultFC(z)
+  }  
 
   override private[pdbp] def bind[Z, Y](rtfcz: RTFC[Z],
                                         `z>=rtfcy`: => (Z => RTFC[Y])): RTFC[Y] =

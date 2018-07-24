@@ -32,6 +32,6 @@ trait EffectfulUtils[>-->[- _, + _]: Function] {
     effectfulWriteToConsole("the factorial value of the integer is")
 
   def factorialOfIntMultipliedByIntReadConsumer: BigInt >--> Unit =
-    effectfulWriteToConsole("the factorial value of the integer multiplied by the int read is")
+    effectfulWriteToConsole("the factorial value of the integer multiplied by the integer read is")
 
 }

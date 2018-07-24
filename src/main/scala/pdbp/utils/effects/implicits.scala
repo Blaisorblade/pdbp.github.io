@@ -11,19 +11,22 @@ package pdbp.utils.effects
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.effect.console.consoleTypes._
+import pdbp.types.effect.toConsole.ToConsole
 
 import pdbp.utils.effectfulUtils._
 
 object implicits {
 
-  implicit def readIntFromConsoleEffect: ReadFromConsoleEffect[BigInt] = 
+  implicit val readIntFromConsoleEffect: BigInt = 
     effectfulReadIntFromConsoleFunction("please type an integer to read")(())
 
-  // def writeToConsoleEffect[Y](
-  //     message: String): WriteToConsoleEffect[Y] = { y =>
-  //   _ =>
-  //     writeToConsole(message)(y)
-  // }
+  def writeToConsoleEffect[Y](message: String): Y => ToConsole = { y =>
+    ToConsole( { _ =>
+      effectfulWriteToConsoleFunction(message)(y)
+      } )
+  }
+
+  implicit val writeFactorialOfIntReadToConsoleEffect: BigInt => ToConsole =
+    writeToConsoleEffect[BigInt]("the factorial value of the integer read is")
 
 }

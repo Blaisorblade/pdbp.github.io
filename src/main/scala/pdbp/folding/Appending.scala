@@ -1,4 +1,4 @@
-package pdbp.program.folding
+package pdbp.folding
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\

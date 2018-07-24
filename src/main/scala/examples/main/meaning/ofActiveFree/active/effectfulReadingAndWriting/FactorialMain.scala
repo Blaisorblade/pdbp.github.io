@@ -11,18 +11,20 @@ package examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.types.active.activeTypes._
+
 import pdbp.program.meaning.ofActiveFree.active.implicits.activeMeaningOfActiveFree
 import activeMeaningOfActiveFree.binaryTransformation
 
-import examples.objects.active.free.effectfulReadingAndWriting.mainFactorialAsProgram
-import mainFactorialAsProgram.factorialMain
+import examples.objects.active.free.effectfulReadingAndWriting.mainFactorial
+import mainFactorial.factorialMain
 
-object FactorialAsProgramMain {
+import examples.main.Main
 
-  def main(args: Array[String]): Unit = {
+object FactorialMain extends Main[`=>A`] {
 
-    binaryTransformation(factorialMain)(())
-
-  }
+  override val mainKleisliProgram: Unit `=>A` Unit = binaryTransformation(factorialMain)
+ 
+  override val run = mainKleisliProgram(())
 
 }
