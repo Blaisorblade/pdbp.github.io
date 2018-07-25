@@ -13,8 +13,6 @@ package pdbp.computation.transformation.writing
 
 import pdbp.types.product.productType._
 
-import pdbp.utils.productUtils._
-
 private[pdbp] object WritingTransformation { 
 
   type WritingTransformed[W, FC[+ _]] = [+Z] => FC[W && Z]

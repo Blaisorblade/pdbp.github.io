@@ -11,6 +11,8 @@ package pdbp.program.writing
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.types.implicitFunctionType._
+
 import pdbp.writable.Writable
 
 import pdbp.program.Function
@@ -22,7 +24,7 @@ trait Writing[W: Writable, >-->[- _, + _]] {
 
   private[pdbp] val `w>-->u`: W >--> Unit  
 
-  def write[Z]: implicit (Z => W) => Z >--> Unit =
+  def write[Z]: (Z => W) `I=>` Z >--> Unit =
     compose(function(implicitly), `w>-->u`)       
 
 }

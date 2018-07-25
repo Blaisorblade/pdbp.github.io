@@ -11,6 +11,8 @@ package examples.mainPrograms.reading.int.writing.toConsole
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.types.implicitFunctionType._
+
 import pdbp.types.effect.toConsole.ToConsole
 
 import pdbp.program.Program
@@ -46,7 +48,7 @@ class MainFactorialOfIntReadWrittenToConsole[
 
   import factorialObject.factorial
 
-  val factorialMain: implicit (BigInt => ToConsole) => Unit >--> Unit =
+  val factorialMain: (BigInt => ToConsole) `I=>` Unit >--> Unit =
     read >-->
       factorial >-->
       write

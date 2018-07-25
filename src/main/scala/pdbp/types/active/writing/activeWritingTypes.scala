@@ -9,6 +9,7 @@ package pdbp.types.active.writing
 //  \_\/       \______\/  \______\/      \_\/
 //                                           v1.0
 //  Program Description Based Programming Library
+//  author        Luc Duponcheel        2017-2018
 
 import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 

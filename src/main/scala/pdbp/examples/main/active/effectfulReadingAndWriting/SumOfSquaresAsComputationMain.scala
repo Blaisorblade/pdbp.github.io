@@ -11,15 +11,17 @@ package pdbp.examples.main.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.types.active.activeTypes._
+
 import pdbp.examples.objects.active.effectfulReadingAndWriting.mainSumOfSquaresAsComputation
 import mainSumOfSquaresAsComputation.sumOfSquaresMain
 
-object SumOfSquaresAsComputationMain {
+import examples.main.Main
 
-  def main(args: Array[String]): Unit = {
+object SumOfSquaresAsComputationMain extends Main[`=>A`] {
 
-    sumOfSquaresMain(())
-
-  }
+  override val mainKleisliProgram: Unit `=>A` Unit = sumOfSquaresMain
+ 
+  override val run = mainKleisliProgram(())
 
 }

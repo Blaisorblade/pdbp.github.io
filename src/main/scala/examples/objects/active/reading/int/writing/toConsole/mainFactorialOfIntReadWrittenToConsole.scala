@@ -11,7 +11,6 @@ package examples.objects.active.reading.int.writing.toConsole
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-
 import pdbp.types.effect.toConsole.ToConsole
 
 import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
