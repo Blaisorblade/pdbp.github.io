@@ -11,13 +11,13 @@ package pdbp.program.writing
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.folding.Folding
+import pdbp.writable.Writable
 
 import pdbp.program.Function
 
 import pdbp.program.Composition
 
-trait Writing[W: Folding, >-->[- _, + _]] {
+trait Writing[W: Writable, >-->[- _, + _]] {
   this: Function[>-->] & Composition[>-->] =>
 
   private[pdbp] val `w>-->u`: W >--> Unit  

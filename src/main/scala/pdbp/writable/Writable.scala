@@ -1,4 +1,4 @@
-package pdbp.folding
+package pdbp.writable
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -13,12 +13,15 @@ package pdbp.folding
 
 import pdbp.types.const.constType._
 
-import pdbp.computation.ObjectLifting
+import pdbp.utils.functionUtils._
 
-private[pdbp] trait Starting[W] extends ObjectLifting[Const[W]] {
+import pdbp.computation.Lifting
 
-  private[pdbp] val start: W
+private[pdbp] trait Writable[W]
+    extends Startable[W]
+    with Appendable[W]
+    with Lifting[Const[W]] {
 
-  override private[pdbp] def liftObject[Z](z: Z): W = start
+  override private[pdbp] def liftFunction[Z, Y](`z=>y`: Z => Y): W => W = `w=>w`
 
 }

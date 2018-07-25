@@ -13,7 +13,7 @@ package pdbp.computation.transformation.reading.writing
 
 import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
-import pdbp.folding.Folding
+import pdbp.writable.Writable
 
 import pdbp.program.writing.Writing
 
@@ -24,7 +24,7 @@ import pdbp.computation.transformation.reading.ReadingTransformation._
 
 private[pdbp] trait ReadingWithWritingTransformation[
     R,
-    W : Folding, 
+    W : Writable, 
     FC[+ _]: Computation : [FC[+ _]] => Writing[W, Kleisli[FC]]]
     extends ReadingTransformation[R, FC]
     with Writing[W, Kleisli[ReadingTransformed[R, FC]]] {

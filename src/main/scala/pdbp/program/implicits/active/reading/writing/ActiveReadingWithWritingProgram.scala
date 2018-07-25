@@ -15,7 +15,7 @@ import pdbp.types.active.writing.activeWritingTypes._
 
 import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
 
-import pdbp.folding.Folding
+import pdbp.writable.Writable
 
 import pdbp.program.Program
 
@@ -29,7 +29,7 @@ import pdbp.computation.transformation.ComputationTransformation
 
 import pdbp.computation.transformation.reading.writing.ReadingWithWritingTransformation
 
-trait ActiveReadingWithWritingProgram[R, W: Folding]
+trait ActiveReadingWithWritingProgram[R, W: Writable]
     extends Computation[ActiveReadingWithWriting[R, W]]
     with Program[`=>ARW`[R, W]]
     with Reading[R, `=>ARW`[R, W]]

@@ -1,4 +1,4 @@
-package pdbp.folding
+package pdbp.writable
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,19 +11,14 @@ package pdbp.folding
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.product.productType._
-
 import pdbp.types.const.constType._
 
-import pdbp.utils.productUtils._
+import pdbp.computation.ObjectLifting
 
-import pdbp.computation.OperatorLifting
+private[pdbp] trait Startable[W] extends ObjectLifting[Const[W]] {
 
-private[pdbp] trait Appending[W] extends OperatorLifting[Const[W]] {
+  private[pdbp] val start: W
 
-  private[pdbp] val append: W && W => W
-
-  override private[pdbp] def liftOperator[Z, Y, X](
-      `(z&&y)=>x`: (Z && Y) => X): (W && W) => W = append
+  override private[pdbp] def liftObject[Z](z: Z): W = start
 
 }

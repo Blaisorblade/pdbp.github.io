@@ -25,7 +25,7 @@ import WritingTransformation._
 
 import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
-import pdbp.folding.Folding
+import pdbp.writable.Writable
 
 import pdbp.program.Program
 import pdbp.program.writing.Writing
@@ -36,7 +36,7 @@ import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.transformation.ComputationTransformation
 
-private[pdbp] trait WritingTransformation[W: Folding, FC[+ _]: Computation]
+private[pdbp] trait WritingTransformation[W: Writable, FC[+ _]: Computation]
     extends ComputationTransformation[FC, WritingTransformed[W, FC]]
     with Computation[WritingTransformed[W, FC]]
     with Program[Kleisli[WritingTransformed[W, FC]]]
@@ -50,9 +50,9 @@ private[pdbp] trait WritingTransformation[W: Folding, FC[+ _]: Computation]
   import implicitComputation.{bind => bindFC}
   import implicitComputation.{result => resultFC}
 
-  private val implicitFolding = implicitly[Folding[W]]
+  private val implicitWritable = implicitly[Writable[W]]
 
-  import implicitFolding._
+  import implicitWritable._
 
   override private[pdbp] val transform: FC `~U~>` WTFC = new {
     override private[pdbp] def apply[Z](fcz: FC[Z]): WTFC[Z] =

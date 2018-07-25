@@ -16,7 +16,7 @@ import pdbp.types.active.writing.activeWritingTypes._
 import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
 import pdbp.types.effect.toConsole.ToConsole
 
-import pdbp.folding.implicits.toConsole.implicits.toConsoleFolding
+import pdbp.writable.implicits.toConsole.implicits.toConsoleWritable
 
 import pdbp.program.reading.Reading
 

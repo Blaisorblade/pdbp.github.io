@@ -14,7 +14,7 @@ package pdbp.program.implicits.active.writing
 import pdbp.types.active.activeTypes._
 import pdbp.types.active.writing.activeWritingTypes._
 
-import pdbp.folding.Folding
+import pdbp.writable.Writable
 
 import pdbp.program.Program
 import pdbp.program.writing.Writing
@@ -24,7 +24,7 @@ import pdbp.computation.Computation
 import pdbp.computation.transformation.ComputationTransformation
 import pdbp.computation.transformation.writing.WritingTransformation
 
-private[pdbp] trait ActiveWritingProgram[W : Folding]
+private[pdbp] trait ActiveWritingProgram[W : Writable]
     extends Computation[ActiveWriting[W]]
     with Program[`=>AW`[W]]
     with Writing[W, `=>AW`[W]]
