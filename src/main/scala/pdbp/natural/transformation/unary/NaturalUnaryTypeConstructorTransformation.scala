@@ -24,8 +24,8 @@ private[pdbp] trait `~U~>`[F[+ _], T[+ _]]
 
   private type `=>T` = Kleisli[T]
 
-  override def apply[Z, Y]: Z `=>F` Y => Z `=>T` Y = { `z=>fy` => z =>
-    apply(`z=>fy`(z))
+  override def apply[Z, Y]: Z `=>F` Y => Z `=>T` Y = { `z=>fy` =>
+    `z=>fy` andThen apply
   }
 
 }

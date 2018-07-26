@@ -22,11 +22,15 @@ Below is a link to picture of a radish I picked out of my greenhouse some time a
 
 [Radish](./pictures/Radijs.png)
 
+Below is a link to picture of a cauliflower I picked out of my greenhouse some time ago.
+
+[Cauliflower](./pictures/Bloemkool.png)
+
 Below is a link to picture of a typical lunch using vegetables of my greenhouse.
 
 [Lunch](./pictures/Lunch.png)
 
-As a hobby I am still having fun
+As a hobby I am having fun
   - programming 
     - bridging the gap between mathematical theory and programming practice.
 
@@ -56,8 +60,8 @@ This document builds upon the ideas of this influential lecture.
 ## **Introduction**
 
 When writing an introduction it is challenging to find the right balance between providing *too many* details or *too few* details. 
-This introduction provides *(hopefully not too) many* details. 
-It is perfectly fine to read this introduction *diagonally*.
+This introduction provides (hopefully not too) many details. 
+It is perfectly fine to read this introduction diagonally.
 
 ### **Introducing `FP`**
 
@@ -75,16 +79,10 @@ The `FP` forms are
  - *Composition*
  - *Construction*
  - *Condition*
-  
-and
 
- - *Aggregation*
+Think forms as *program templates*, programs transformed by them as *program fragments*, or *program components*, and resulting programs as *composite programs*.
 
-#### **About the first four forms**
-
-Think of the first four forms as *program templates* and programs transformed by them as *program fragments*, or *program components*, that can be plugged into them to obtain *composite programs*.
-
-#### **About the last fifth form**
+#### **Aggregation**
 
 `FP` does not really have an *Aggregation* form. 
 It does have *sequences of objects* and it is possible to define `FP` programs that *aggregate* sequences of objects to an object.
@@ -112,7 +110,7 @@ Below is the logo of the library
 ### **Objects and values**
 
 In `Dotty`, every *value* is an *object*.
-From now on, when dealing with `Dotty`, we use *object* and *value* interchangeably.
+From now on, when dealing with `Dotty`, we use object and value interchangeably.
 
 ### **Introducing `trait Program`**
 
@@ -126,10 +124,11 @@ trait Program[>-->[- _, + _]]
     with Composition[>-->]
     with Construction[>-->]
     with Condition[>-->]
+
     with Aggregation[>-->]
 ```
 
-There is a one-to-one correspondence between `FP` forms and `trait`'s that are *mixed-in* by `trait Program`.
+There is a one-to-one correspondence between `FP` forms and `trait`'s that are *mixed-in* by `trait Program` (agreed, we treat Aggregation as an `FP` form although, sttrictly speaking, it is not an `FP` form).
 
 `trait Program` closely resembles *arrows*.
 
@@ -146,9 +145,9 @@ Compare this with the famous painting [Ceci n'est pas une pipe](https://en.wikip
 
 Below is a link to a picture of the painting.
 
-[Ceci n'est pas une pipe](./pictures/pipe.png)
+[Ceci n'est pas une pipe](./pictures/Pipe.png)
 
-The painting is not a pipe, it is a *description* of a pipe.
+The painting is not a pipe, it is a *description* of a pipe (you may even argue that the picture is a description of the painting which is a description of a pipe).
 
 `trait Program` exposes a *pointfree* programming API for *application developers*.
 All it's capabilities are `public`, the default in `Dotty`.
@@ -181,9 +180,7 @@ So
   - we simply write that a function transforms arguments to a result, and
   - we simply write that a program transforms an argument to a result.
 
-Note that we used both *arguments* and *argument*.
-For functions we used *zero or more* arguments.
-For programs we used *one* argument.
+Note that we used both (*zero or more*) arguments (for functions) and (*one*) argument (for programs).
 
 How one argument can be used to represent zero or more arguments will be explained soon.
 
@@ -204,6 +201,8 @@ import pdbp.program.Program
 private[pdbp] trait Computation[C[+ _]]
     extends Resulting[C]
     with Binding[C]
+
+    with Sequencing[C]
     // ...
     with Program[[-Z, + Y] => Z => C[Y]]
     // ...
@@ -244,7 +243,8 @@ To finish, lt's state that
 
 ### **Introducing `type Kleisli` for binary type constructors**
 
-The `with Program[[-Z, + Y] => Z => C[Y]]` part of `trait Computation`, which states that computations have more power of expression than programs, is a bit verbose.
+`Program[[-Z, + Y] => Z => C[Y]]`, mixed-in by `trait Computation`, states that computations have more power of expression than programs.
+You may argue that `Program[[-Z, + Y] => Z => C[Y]]` is a bit verbose.
 
 Using the *type alias* `type Kleisli`, named after [Heinrich Kleisli](https://en.wikipedia.org/wiki/Heinrich_Kleisli), below
 
@@ -270,6 +270,8 @@ import pdbp.program.Program
 private[pdbp] trait Computation[C[+ _]]
     extends Resulting[C]
     with Binding[C]
+
+    with Sequencing[C]    
     // ...
     with Program[Kleisli[C]]
     // ...
@@ -285,13 +287,15 @@ In 2008, Conor McBride and Ross Paterson described *applicatives* (a.k.a. *idiom
 In 2008, Sam Lindley, Philip Wadler and Jeremy Yallop compared the *power of expression* of monads, arrows and idioms in 
 [*Idioms are oblivious, arrows are meticulous, monads are promiscuous*](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.187.6750&rep=rep1&type=pdf). 
 
- - Monads (cfr. `Computation`) have most power of expression. 
- - Applicatives have least power of expression. 
- - Arrows (cfr. `Program`) are in between.
+ - Monads (cfr. `Computation`) have most power of expression, 
+ - applicatives have least power of expression, and 
+ - arrows (cfr. `Program`) are in between.
 
 Indeed
  - if `C` is a computation (an instance of the `Computation` type class), 
  - then `Kleisli[C]` is a program (an instance of the `Program` type class).
+
+Note that we use *instance* in a somewhat informal way.
 
 ### **Elegance of use**
 
@@ -300,15 +304,15 @@ It is also, and probably even more, about *elegance of use*.
 
 Recall that
 
- - Monads naturally lead to a pointful programming style. 
- - Arrows naturally lead to a pointfree programming style. 
+ - Monads (cfr `Computation`) naturally lead to a pointful programming style. 
+ - Arrows (cfr. `Program`) naturally lead to a pointfree programming style. 
 
 Note that
 
  - Monad based computations can, using [*Kleisli categories*](https://en.wikipedia.org/wiki/Kleisli_category), use a pointfree programming style. 
  - Arrow based programs can, using [*arrow calculus*](http://homepages.inf.ed.ac.uk/slindley/papers/arrow-calculus.pdf), use a pointful programming style.
 
-Traditionally the pointfree style has been considered to be elegant by some programmers and *abstruse* by other programmers. 
+Traditionally, the pointfree programming style has been considered to be elegant by some programmers and *abstruse* by other programmers. 
 Luckily, the `Dotty` programming language comes to the rescue for the latter ones. 
 `Dotty` is a *strongly typed*, *scalable* programming language. 
 It is possible to *extend the language* in a *type safe* way at the *library* level with *internal domain specific languages*. 
@@ -316,7 +320,6 @@ It is possible to *extend the language* in a *type safe* way at the *library* le
 By using a *domain specific language for the domain of programs*, program description based programming can be done in a very elegant way.
 
 Of course, elegance of use is a highly subjective concept.
-
 Personally, we consider program oriented composition based programming to be more elegant than computation oriented result binding based programming. 
 
 ### **Our choice**
@@ -334,12 +337,12 @@ Recall that
 
 Think of
 
- - Functions as *expression templates* with, to be filled in, *unknown parts* (its arguments).
- - Programs as *computation templatess* with a, to be filled in, *unknown part* (its argument).
+ - Functions as *expression templates* with, to be filled in, *unknown parts* (its parameters).
+ - Programs as *computation templates* with a, to be filled in, *unknown part* (its parameter).
 
 [AppendixFunctionsAndExpressions](#appendixfunctionsandexpressions) has demo code that compares 
- - pointful expression oriented and function application (argument binding) based programming, with
- - pointfree function oriented and function composition based programming. 
+ - pointful, expression oriented, and function application (argument binding) based programming, with
+ - pointfree, function oriented, and function composition based programming. 
 
 #### **About descriptions (for those who are a bit impatient)**
 
@@ -396,7 +399,7 @@ Below is an informal description of the program templates of the `factorial` pro
    - note that `let` and `in` are between backticks,
    - think of `constructNewUsingCurrent` as a function that *constructs* a *new* value using the *current* one,
    - think of `useBothNewAndCurrent` as a function that uses both the *new* value and the *current* value, 
-     - furthermore, together, the new value and the old current value become the new current value,
+     - furthermore, the new value and the old current value together, become the new current value,
  - `` `if`(predicate) { trueCase } `else` { falseCase } `` is part of the `Dotty` program description DSL related to `Condition`
    - note that `if` and `else` are between backticks,
    - think of `predicate` as a predicate (`Boolean`-valued function) that tests the current value,
@@ -409,10 +412,15 @@ Agreed, we explained the pointfree code above in a pointful way.
 
 But,
 
-once you get used to
+once you get used to powerful program templates
  - ` ... >--> ... `, 
  - `` `if`(...) { ... } `else` { ... } ``,  
  - `` `let` { ... } `in` { ... } ``. 
+and to simple program fragments
+ - `isZero` 
+ - `one`
+ - `subtractOne`
+ - `multiply`
 
 you will, hopefully, start appreciating the power of expression and elegance of use of pointfree code.
 
@@ -431,6 +439,8 @@ Exploiting the *flexibility* that comes with this difference is one of the most 
    -  programs are not objects.
  - `PDBP` is *homogeneous*,
    - in `Dotty`, everything is an object (value), in particular programs are objects (values).
+
+In a way you can look at programming with `PDBP` as passing around values having programming capabilities, or simply, passing around programming capabilities in particular and passing around capabilities in general.
 
 #### **Meaning of programs**
 
@@ -458,15 +468,15 @@ Consider, again, the `factorial` program below.
     }
 ```
 
-Note that `factorial` is a *recursive* program description.
-It can be given both a *stack unsafe* (*non tail recursive*) meaning and a *stack safe* (*tail recursive*) meaning.
+Note that `factorial` is a *recursive* program description (`factorial` uses `factorial`).
+
+It can be given both a *stack unsafe* (*non tail recursive*) language level meaning and a *stack safe* (*tail recursive*) library level meaning.
 The stack safe meaning uses the *heap* instead of the *stack*.
 
-#### **About meanings (for those who are a bit impatient)**
+For those who are a bit impatient
 
-[AppendixLanguageLevelMeaning](#appendixlanguagelevelmeaning) has demo code where meanings are described at the *language level*.
-
-[AppendixLibraryLevelMeaning](#appendixlibrarylevelmeaning) has demo code where meanings are described at the *library level*.
+ - [AppendixLanguageLevelMeaning](#appendixlanguagelevelmeaning) has demo code where meanings are described at the *language level*.
+ - [AppendixLibraryLevelMeaning](#appendixlibrarylevelmeaning) has demo code where meanings are described at the *library level*.
 
 #### **Extra programming capabilities**
 
@@ -477,10 +487,10 @@ The stack safe meaning uses the *heap* instead of the *stack*.
 
 Extra programming capabilities can be added such as
 
- - state manipulation
- - failure handling
- - latency handling (using parallelism)
- - advanced control handling (using delimited continuations)
+ - *state manipulation*
+ - *failure handling*
+ - *latency handling* (using parallelism)
+ - *advanced control handling* (using delimited continuations)
  - ...
 
 Note that `Program` already has basic control handling (using the capabilities of `Condition`).
@@ -556,7 +566,7 @@ Hopefully, the statements above sound exiting to both programmers with and progr
 
 From now on this document contains a lot of code. 
 When reading it in sequential order, you will often be confronted with code that has not been explained yet. 
-Do not worry, the code will be explained in the paragraph immediately below it. 
+Do not worry, the code will be explained immediately below it. 
 
 ### **Describing `trait Program`**
 
@@ -588,7 +598,7 @@ trait Aggregation[>-->]
 
 belong to the same `package pdbp.program`.
 
-`trait Program` is a *type class* that will gradually be explained later in this document. 
+`trait Program` is a *type class* that will be explained later in this document. 
 `trait Program` *declares* the *programming capabilities* of *program descriptions*. 
 
 We often write *program* instead of *program description*.
@@ -608,15 +618,16 @@ A program is an object of type `Z >--> Y`, where
  - `Z` is the *parameter* (or *argument*) type of `>-->`,
  - `Y` is the *return* (or *result*) type of `>-->`.
 
-We write
+We use
 
  - parameter and return if we want to be explicit about being at the *delaration* (or *definition*) site.
 
-We write
+We use
 
  - argument and result if we want to be explicit about being at the *usage* site.
 
-At the usage site an argument is given to the program for the parameter and a result is returned by the program.
+At the usage site an argument is given for the parameter and a result is returned.
+
 We also write that a program *transforms* an argument to yield a result.
 
 #### **Variance**
@@ -626,8 +637,6 @@ Note that `>-->` is declared to be
  - *contravariant* in its parameter type,
  - *covariant* in its return type.
 
-[AppendixVariance](#appendixvariance) has demo code that illustrates this.
-
 This *variance* property of `>-->` is related to two *principles* that are known as
 
  - the [*Liskov Substitution Principle*](https://en.wikipedia.org/wiki/Liskov_substitution_principle) which, roughly speaking, states
@@ -636,6 +645,8 @@ This *variance* property of `>-->` is related to two *principles* that are known
  - the [*Internet Robustness Principle*](https://en.wikipedia.org/wiki/Robustness_principle) which, roughly speaking, states 
    - *be liberal in what you receive*,
    - *be generous in what you send*.
+
+[AppendixVariance](#appendixvariance) has demo code that illustrates this.
 
 ### **Describing `trait Function`**
 
@@ -656,27 +667,27 @@ trait Function[>-->[- _, + _]] {
 Think of `` function(`z=>y`) `` as a program that is a *pure function* `` `z=>y` ``. 
 It is supposed to do nothing else than transforming an argument `z` of type `Z` to a yield a result `` y == `z=>y`(z) `` of type `Y`.
 
-For *generic function names*, we use *mixed alphabetic and symbolic characters within backticks*, like `` `z=>y` `` to, hopefully, improve readability. 
+For *generic functions*, we use *mixed alphabetic and symbolic names within backticks*, like `` `z=>y` `` to, hopefully, improve readability. 
 We agree that this is a somewhat unusual naming convention.
-We know programers who *hate* it, we know programmers who *love* it. 
+We know programers who *love* it, we know programmers who *hate* it. 
  
 Let's explain the reason of this naming convention with some examples that are special cases of [Theorems for free!](http://homepages.inf.ed.ac.uk/wadler/papers/free/free.dvi), as explained by Philip Wadler.
 
- - There is really only *one* generic function of type `Z => Z` *for all* `Z` : *identity*. 
+ - There is really only one generic function of type `Z => Z` *for all* `Z` : *identity*. 
    - The name `` `z=>z` ``, hopefully, suggests this function.
- - There is really only *one* generic function of type `(Z && Y) => Z` *for all* `Z` and `Y` : *left projection*. 
+ - There is really only one generic function of type `(Z && Y) => Z` *for all* `Z` and `Y` : *left projection*. 
    - The name `` `(z&&y)=>z` ``, hopefully, suggests this function.
- - There is really only *one* generic function of type `(Z && Y) => Y` *for all* `Z` and `Y` : *right projection*. 
+ - There is really only one generic function of type `(Z && Y) => Y` *for all* `Z` and `Y` : *right projection*. 
    - The name `` `(z&&y)=>y` ``, hopefully, suggests this function.
- - There is really only *one* generic function of type `(Z && Y) => Y && Z` *for all* `Z` and `Y` : *swap*. 
+ - There is really only one generic function of type `(Z && Y) => Y && Z` *for all* `Z` and `Y` : *swap*. 
    - The name `` `(z&&y)=>y&&z` ``, hopefully, suggests this function. 
- - There is really only *one* generic function of type `(Z => Y && Z) => Y` *for all* `Z` and `Y` : *function application* (or, equivalently, *argument binding*). 
+ - There is really only one generic function of type `(Z => Y && Z) => Y` *for all* `Z` and `Y` : *function application* (or, equivalently, *argument binding*). 
    - The name `` `(z=>y&&z)=>y` ``, hopefully, suggests this function.
 
 We use synonyms like `` `y=>y` ``, `` `x=>x` ``, etc. by need, when types `Y`, `X`, etc. are involved.
 
 We could have used names `identity`, `leftProjection`, `rightProjection` `swap` and `functionApplication`. 
-Sometimes you simply run out of meaningful generic names.
+Sometimes we would simply run out of meaningful generic names.
 
 By the way, argument binding, equivalent with function application, can be defined using an `implicit class` as follows
 
@@ -698,11 +709,11 @@ The main benefit of generic backtick names comes when trying to understand the t
  - `` `z=>y` apply z `` is an equivalent expression where function application is explicit, using `apply`. 
  - `` z bind `z=>y` `` is an equivalent expression where argument binding is explicit, using `bind`. 
 
-Note that the argument binding expression is, probably, the most natural one since it can, conveniently, be read from left to right. 
+Note that the argument binding expression is, in a way, the most natural one since it can, conveniently, be read from left to right. 
 
 When dealing with more complex expressions, having nested sub-expressions, the usefulness of generic backtick names becomes even more apparent. 
 
-Consider
+Let's define some pure functions.
 
 ```scala
 package pdbp.program
@@ -745,7 +756,83 @@ You may have doubts about the usefulness of a trivial program like`` `z>-->z` ``
 It turns out that, when defining more complex composite programs, obtained by plugging program components, into program templates, replacing one or more of the components, by `` `z>-->z` `` results in interesting programs of their own, and, naturally, those programs have simpler types.
 
 In what follows we also refer to programs `` function(`z=>y`) ``, that, essentially, are *pure functions*, as *atomic programs*.  
-It is up to you to define the *granularity* of atomic programs
+It is up to you to define the *granularity* of atomic programs.
+
+#### **`factorial` as function**
+
+Recall the definition of `factorial`
+
+```scala
+  val factorial: BigInt >--> BigInt =
+    `if`(isZero) {
+      one
+    } `else` {
+      `let` {
+        subtractOne >-->
+          factorial
+      } `in` {
+        multiply
+      }
+    }
+```
+
+Below is another definition of `factorial`.
+
+```scala
+package examples.programs
+
+import examples.utils.functionUtils._
+
+import pdbp.program.Function
+
+class FactorialAsFunction[>-->[- _, + _]: Function] {
+
+  import implicitly._
+
+  val factorialFunction: BigInt => BigInt = { i =>
+    if (isZeroFunction(i)) {
+      oneFunction(i)
+    } else {
+      multiplyFunction(i, (subtractOneFunction andThen factorialFunction)(i))
+    }
+  }
+
+  val factorial: BigInt >--> BigInt = function(factorialFunction)
+
+}
+```
+
+where
+
+```scala
+package examples.utils
+
+import pdbp.types.product.productType._
+
+object functionUtils {
+
+  val isZeroFunction: BigInt => Boolean = { i =>
+    i == 0
+  }
+
+  val subtractOneFunction: BigInt => BigInt = { i =>
+    i - 1
+  }
+
+  val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
+    i * j
+  }
+
+  def oneFunction[Z]: Z => BigInt = { z =>
+    1
+  }
+
+ // ...  
+
+}
+```
+
+Since the atomic program `function(factorialFunction)` is very coarse-grained this gives us almost no flexibility to give a meaning to `factorial`.
 
 ### **Describing `trait Composition`**
 
@@ -761,12 +848,12 @@ trait Composition[>-->[- _, + _]] {
 }
 ```
 
-Think of `compose` as a *program template* (a.k.a. *higher order program*) and of `` `z>-->y` `` and `` `y>-->x` `` as *program fragment parameters* (a.k.a. *program component parameters*).
-Once the program fragment parameters have been given *program fragment arguments* (a.k.a. *program component arguments*) we obtain a *composite program*.
+Think of `compose` as a *program template* (a.k.a. *higher order program*) and of `` `z>-->y` `` and `` `y>-->x` `` as *program fragment parameters* (a.k.a. *program component parameters* or simply *program parameters*).
+Once the program fragment parameters have been given *program fragment arguments* (a.k.a. *program component arguments* or simply *program arguments*) we obtain a *composite program*.
 
 Translated to functions:
 
-Think of `compose` as a function template (a.k.a. *higher order function*) and of `` `z>-->y` `` and `` `y>-->x` `` as *function fragment parameters* (a.k.a. function parameters).
+Think of `compose` as a function template (a.k.a. *higher order function*) and of `` `z>-->y` `` and `` `y>-->x` `` as *function fragment parameters* (a.k.a. *function parameters*).
 Once the function parameters have been given function fragment arguments (a.k.a. *function arguments*) we obtain a *composite function*.
 
 `` composition(`z>-->y`, `y>-->x`) `` is the *sequential composition* of `` `z>-->y` `` and `` `y>-->x` ``. 
@@ -801,7 +888,7 @@ object compositionOperator {
 
   - `compose` comes with an *operator* equivalent `>-->`. 
 
-The type constructor `>-->` is declared to implicitly have the programming capability `compose` that is declared in the type class `trait Composition`. The operator `>-->` is defined in terms of this declared programming capability. The definition uses `implicitly`, an abbreviation for `implicitly[Composition[>-->]]`, that is available as an *implicit evidence* having the `compose` capability of `Composition`.
+The type constructor `>-->` is declared to *implicitly* have the programming capability `compose` that is declared in the type class `trait Composition`. The operator `>-->` is defined in terms of this declared programming capability. The definition uses `implicitly`, an abbreviation for `implicitly[Composition[>-->]]`, that is available as an *evidence* having the `compose` capability of `Composition`.
 
 `` /* ... */ >--> /* ... */ `` is a first example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
 
@@ -917,8 +1004,8 @@ object productUtils {
 }
 ```
 
-Think of `product` as a program template and of `` `z>-->y` `` and `` `z>-->x` `` as program fragment parameters.
-Once the program fragment parameters have been given program fragment arguments we obtain a composite program.
+Think of `product` as a program template and of `` `z>-->y` `` and `` `z>-->x` `` as program parameters.
+Once the program parameters have been given program arguments we obtain a composite program.
 
 `` product(`z>-->y`, `z>-->x`) `` *constructs* a result from the results of `` `z>-->y` `` and `` `z>-->x` ``.
 
@@ -932,7 +1019,7 @@ Programs are objects of type `Z >--> Y`.
 
 It may look as if programs can have only *one* argument resp. result.
 
-Think of *one* object of type `Y && X` as two objects, one object of type `Y` and one object of type `X`. 
+Think of *one* object of type `Y && X` as *two* objects, one object of type `Y` and one object of type `X`. 
 This is the way the `PDBP` library deals with *two* arguments resp. results.
 
 Note that `Dotty` can also deal with many arguments the normal way using *argument lists*.
@@ -954,7 +1041,7 @@ Note that `&&` associates to the left, so, for example, `Z && Y && X` is the sam
  - `and[Z, Y, X, W]` is yet another more complex version of `product[Z, Y, X]`,
  - `` `let`[Z, Y, X] `` has a parameter that is a program fragment that *constructs a new result*, and `` `in` `` has a parameter that is a program fragment that has that result available as an *extra argument*.
 
-The main difference between `` `let` `` and `compose` is that `` `let` `` does not loose the original argument of type `Z`. 
+The main difference between `` `let` { /* ... */ } `in` { /* ... */ } `` and `` /* ... */ >--> /* ... */ `` is that it does not loose the original argument of type `Z`. 
 
 Note that
 
@@ -991,7 +1078,7 @@ object constructionOperators {
   - `product[Z, Y, X]` comes with an operator equivalent `&`,
   - `and[Z, Y, X, W]` comes with an operator equivalent `&&`.
 
-The type constructor `>-->` is declared to implicitly have the programming capabilities `product` and `and` that are declared in the type class `trait Construction`. The operators `&` and `&&` are defined in terms of those declared programming capabilities. The definitions use `implicitly`, an abbreviation for `implicitly[Construction[>-->]]`, that is available as an implicit evidence having the `product` and `and` capabilities of `Construction`.
+The type constructor `>-->` is declared to implicitly have the programming capabilities `product` and `and` that are declared in the type class `trait Construction`. The operators `&` and `&&` are defined in terms of those declared programming capabilities. The definitions use `implicitly`, an abbreviation for `implicitly[Construction[>-->]]`, that is available as an evidence having the `product` and `and` capabilities of `Construction`.
 
 `` /* ... */ & /* ... */ `` and `` /* ... */ && /* ... */ `` are a third and fourth example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
 
@@ -999,6 +1086,103 @@ It should not come as a surprise that
 
   - `` `z>-->y` & `z>-->x` `` has type `Z >--> (Y && X)`,
   - `` `z>-->y` && `x>-->w` `` has type `(Z && X) >--> (Y && W)`.
+
+#### **About the power of expression of `` `let` { ... } `in` { ... } ``**
+
+`product[Z, Y, X]` can be defined in terms of `` `let` { ... } `in` { ... } ``.
+
+```scala
+package demo
+
+import pdbp.types.product.productType._
+
+import pdbp.utils.productUtils._
+
+import pdbp.program.Function
+import pdbp.program.Composition
+import pdbp.program.Construction
+
+import pdbp.program.compositionOperator._
+
+trait ProductInTermsOfLetAndIn[
+    >-->[- _, + _]: Function: Composition: Construction] {
+
+  val implicitFunction = implicitly[Function[>-->]]
+  val implicitConstruction = implicitly[Construction[>-->]]
+
+  import implicitFunction._
+  import implicitConstruction._
+
+  def product[Z, Y, X](`z>-->y`: Z >--> Y,
+                       `z>-->x`: => Z >--> X): Z >--> (Y && X) =
+    `let` {
+      `z>-->y`
+    } `in` {
+      `let` {
+        `(z&&y)>-->z` >--> `z>-->x`
+      } `in` {
+        `(z&&y&&x)>-->(y&&x)`
+      }
+    }
+
+}
+```
+where
+
+  - `` `(z&&y&&x)>-->(y&&x)` `` 
+ 
+is the program you expect.
+
+```scala
+package pdbp.program
+
+// ...
+
+trait Function[>-->[- _, + _]] {
+
+  // ...
+
+  def `(z&&y&&x)>-->(y&&x)`[Z, Y, X]: (Z && Y && X) >--> (Y && X) =
+    function(`(z&&y&&x)=>(y&&x)`)    
+
+  // ...
+
+}
+```
+
+where
+
+```scala
+package pdbp.utils
+
+// ...
+
+object productUtils {
+
+  // ...
+
+  def `(z&&y&&x)=>(y&&x)`[Z, Y, X]: (Z && Y && X) => (Y && X) = {
+    case ((_, y), x) => (y, x)
+  }
+
+}
+```
+
+The definition of `product` is an example of a recurring theme of the `PDBP` library: defining a program, or programming capability, often boils down to a *getting the types right puzzle*. 
+Often there is only one meaningful way to get them right. 
+Let's have a look at some of the details of the puzzle for this definition`.
+
+The outer `` `let` `` creates, using `` `z>-->y` ``, a new argument of type `Y` for the outer `` `in` `` which, as a consequence, has an argument of type `Z && Y` available, representing two arguments, one of type `Z` and one of type `Y`. 
+
+The inner `` `let` `` of the outer `` `in` `` creates, using `` `(z&&y)>-->z` >--> `z>-->x` ``, the composition of `` `(z&&y)>-->z` `` and `` `z>-->x` ``, a new argument of type `X` for the inner `` `in` ``  of the outer `` `in` `` which, as a consequence, has an argument of type `Z && Y && X` available, representing three arguments, one of type `Z`, one of type `Y`, and one of type `X`. 
+
+The inner `` `in` `` in the outer `` `in` `` simply gets rid of the original argument of type `Z` using `` `(z&&y&&x)>-->(y&&x)` ``.
+
+Note that generic backtick names, hopefully, help to understand the puzzle. 
+For example
+
+  - in the composition `` `(z&&y)>-->z` >--> `z>-->x` ``, the matching `z`'s reflect the type `Z` involved,
+  - in the name `` `(z&&y&&x)>-->(y&&x)` ``, both `(z&&y&&x)` and `(y&&x)` reflect the types `(Z && Y && X)` and `(Y && X)` involved.
 
 ### **Describing `trait Condition`**
 
@@ -1073,7 +1257,7 @@ and where
 
 are the programs you expect. 
 
-Agreed, `` `(w&&b)>-->(w||w)` `` is one of the two programs you expect. 
+Agreed, `` `(w&&b)>-->(w||w)` `` is one of the *two* programs you expect. 
 It is the one where `true` corresponds to `Left` and  `false` corresponds to `Right`.
 
 ```scala
@@ -1174,104 +1358,7 @@ Note that
  - `and[Z, Y, X, W]` can be defined in terms of `product[Z, Y, X]`, `` `(z&&y)>-->z` ``, `` `(z&&y)>-->y` `` and `compose`,
  - `` `if`[W, Z] `` and `` `else` `` can be defined in terms of `sum`, `` `let` `` and `` `in` ``.
 
-`` `if`(/* ... */) { /* ... */ } `else` { /* ... */ } `` is a fifth example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
-
-#### **About the power of expression of `` `let` { ... } `in` { ... } ``**
-
-`product[Z, Y, X]` can be defined in terms of `` `let` { ... } `in` { ... } ``.
-
-```scala
-package demo
-
-import pdbp.types.product.productType._
-
-import pdbp.utils.productUtils._
-
-import pdbp.program.Function
-import pdbp.program.Composition
-import pdbp.program.Construction
-
-import pdbp.program.compositionOperator._
-
-trait ProductInTermsOfLetAndIn[
-    >-->[- _, + _]: Function: Composition: Construction] {
-
-  val implicitFunction = implicitly[Function[>-->]]
-  val implicitConstruction = implicitly[Construction[>-->]]
-
-  import implicitFunction._
-  import implicitConstruction._
-
-  def product[Z, Y, X](`z>-->y`: Z >--> Y,
-                       `z>-->x`: => Z >--> X): Z >--> (Y && X) =
-    `let` {
-      `z>-->y`
-    } `in` {
-      `let` {
-        `(z&&y)>-->z` >--> `z>-->x`
-      } `in` {
-        `(z&&y&&x)>-->(y&&x)`
-      }
-    }
-
-}
-```
-where
-
-  - `` `(z&&y&&x)>-->(y&&x)` `` 
- 
-is the program you expect.
-
-```scala
-package pdbp.program
-
-// ...
-
-trait Function[>-->[- _, + _]] {
-
-  // ...
-
-  def `(z&&y&&x)>-->(y&&x)`[Z, Y, X]: (Z && Y && X) >--> (Y && X) =
-    function(`(z&&y&&x)=>(y&&x)`)    
-
-  // ...
-
-}
-```
-
-where
-
-```scala
-package pdbp.utils
-
-// ...
-
-object productUtils {
-
-  // ...
-
-  def `(z&&y&&x)=>(y&&x)`[Z, Y, X]: (Z && Y && X) => (Y && X) = {
-    case ((_, y), x) => (y, x)
-  }
-
-}
-```
-
-The definition of `product` is an example of a recurring theme of the `PDBP` library: defining a program, or programming capability, often boils down to a *getting the types right puzzle*. 
-Often there is only one meaningful way to get them right. 
-Let's have a look at some of the details of the puzzle for this definition`.
-
-The outer `` `let` `` creates, using `` `z>-->y` ``, a new argument of type `Y` for the outer `` `in` `` which, as a consequence, has an argument of type `Z && Y` available, representing two arguments, one of type `Z` and one of type `Y`. 
-
-The inner `` `let` `` of the outer `` `in` `` creates, using `` `(z&&y)>-->z` >--> `z>-->x` ``, the composition of `` `(z&&y)>-->z` `` and `` `z>-->x` ``, a new argument of type `X` for the inner `` `in` ``  of the outer `` `in` `` which, as a consequence, has an argument of type `Z && Y && X` available, representing three arguments, one of type `Z`, one of type `Y`, and one of type `X`. 
-
-The inner `` `in` `` in the outer `` `in` `` simply gets rid of the original argument of type `Z` using `` `(z&&y&&x)>-->(y&&x)` ``.
-
-Note that generic backtick names, hopefully, help to understand the puzzle. 
-For example
-
-  - in the composition `` `(z&&y)>-->z` >--> `z>-->x` ``, the matching `z`'s reflect the type `Z` involved,
-  - in the name `` `(z&&y&&x)>-->(y&&x)` ``, both `(z&&y&&x)` and `(y&&x)` reflect the types `(Z && Y && X)` and `(Y && X)` involved. 
+`` `if`(/* ... */) { /* ... */ } `else` { /* ... */ } `` is a fifth example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor.  
 
 #### **About the power of expression of `` `if`(...) { ... } `else` { ... }``**
 
@@ -1392,7 +1479,7 @@ I was very lucky to be able to do research with him, on monads and related stuff
 
 ### **`factorial` revisited**
 
-Below is the code for `factorial`.
+Below is the full code for `factorial`.
 
 ```scala
 package examples.programs
@@ -1446,36 +1533,6 @@ trait FunctionUtils[>-->[- _, + _] : Function] {
 
   def one[Z]: Z >--> BigInt =
     function(oneFunction)
-
-}
-```
-
-where
-
-```scala
-package examples.utils
-
-import pdbp.types.product.productType._
-
-object functionUtils {
-
-  val isZeroFunction: BigInt => Boolean = { i =>
-    i == 0
-  }
-
-  val subtractOneFunction: BigInt => BigInt = { i =>
-    i - 1
-  }
-
-  val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
-    i * j
-  }
-
-  def oneFunction[Z]: Z => BigInt = { z =>
-    1
-  }
-
- // ...  
 
 }
 ```
@@ -1535,37 +1592,6 @@ class FactorialTopDown[>-->[- _, + _]: Program] extends FunctionUtils[>-->]() {
   - the `>-->` program template capability of `trait Composition` (more precisely, of `implicit class CompositionOperator`).
   - the atomic program component `subtractOne`
   - *recursively*, `factorial` itself as a composite program component
-
-
-#### **`factorial` as function**
-
-Below is other code for `factorial`.
-
-```scala
-package examples.programs
-
-import examples.utils.functionUtils._
-
-import pdbp.program.Function
-
-class FactorialAsFunction[>-->[- _, + _]: Function] {
-
-  import implicitly._
-
-  val factorialFunction: BigInt => BigInt = { i =>
-    if (isZeroFunction(i)) {
-      oneFunction(i)
-    } else {
-      multiplyFunction(i, (subtractOneFunction andThen factorialFunction)(i))
-    }
-  }
-
-  val factorial: BigInt >--> BigInt = function(factorialFunction)
-
-}
-```
-
-Since the atomic program `function(factorialFunction)` used by `factorial` is very coarse-grained this gives us almost no flexibility to give a meaning to `factorial`.
 
 ### **main programs**
 
@@ -1675,25 +1701,23 @@ object effectfulUtils {
 }
 ```
 
-You may, rightly, argue that we are cheating here. 
-We promised to use `function` only for pure functions (a.k.a. as *effectfree*).
+You may, rightly, argue that we are cheating here!
+We promised to use `function` only for *pure* (a.k.a. as *effectfree*) functions.
+Both `intProducer` and `factorialOfIntConsumer` are programs that *execute effects* in an *impure* (a.k.a. as *effectful*) way.
 
-But,
-  - the function `effectfulReadIntFromConsoleFunction` that is used by `effectfulReadIntFromConsole` is *impure* (a.k.a. as *effectful*)
-    - it *executes* the *effects* `println("message")` and `readInt()` in an impure way,
-  - the function `effectfulWriteToConsoleFunction` that is used by `effectfulWriteToConsole` is impure
-    - it executes the effects `println("message")` and `println(s"$y")` in an impure way.
+More precisely,
+  - the function `effectfulReadIntFromConsoleFunction` that is used by `effectfulReadIntFromConsole` executes* the effects `println("message")` and `readInt()`,
+  - the function `effectfulWriteToConsoleFunction` that is used by `effectfulWriteToConsole` executes the effects `println("message")` and `println(s"$y")`.
 
-Both `intProducer` and `factorialOfIntConsumer` above should (and will) be replaced versions where
-  - the functions they use are ones *describing effects* in an pure way instead of *executing effects* in an impure way.
+Both `intProducer` and `factorialOfIntConsumer` above should (and will!) be replaced by programs that *describe effects* in an pure way.
 
-More precisely
-  - we will extend the programming DSL with the *reading input* capability (in this case to read input from the console)
-    - as such reading will describe effects in a pure way,
-  - we will extend the programming DSL with the *writing output* capability (in this case to write output to the console) 
-    - as such writing will describe effects in a pure way.
-
-### **Describing `MainFactorialAsFunction` using an effectful `intProducer` and `factorialOfIntConsumer`**
+More precisely,
+  - we will extend the `PDBP` program description DSL with a *reading* programming capability, `read`
+    - in this case to read an integer from the console
+  - the `PDBP` program description DSL with a *writing* programming capability, `write`
+    - in this case to write to the console
+ 
+#### **Describing `MainFactorialAsFunction` using an effectful `intProducer` and `factorialOfIntConsumer`**
 
 `MainFactorialAsFunction` is similar to `MainFactorial`
 
@@ -1722,7 +1746,7 @@ trait MainFactorialAsFunction[>-->[- _, + _]: Program] extends EffectfulUtils[>-
 }
 ```
 
-### **Describing `MainFactorialTopDown` using an effectful `intProducer` and `factorialOfIntConsumer`**
+#### **Describing `MainFactorialTopDown` using an effectful `intProducer` and `factorialOfIntConsumer`**
 
 `MainFactorialTopDown` is similar to `MainFactorial`
 
@@ -1787,7 +1811,7 @@ private[pdbp] trait Sequencing[C]
 
 belong to the same `package pdbp.computation`.
 
-`trait Computation` is a type class that will gradually be explained later in this document. 
+`trait Computation` is a type class that will be explained later in this document. 
 `trait Computation` declares the *computational capabilities* of *computation descriptions*. 
 
 We often write *computation* instead of *computation description*.
@@ -1880,9 +1904,9 @@ Think of `` `z=>cy` `` as an *expression evaluation continuation template*, or, 
 
 `` bind(cz, `z=>cy`) `` is function that *binds* `cz` to `z=>cy`.
 
-If the computation `cz` yields a result of type Z, then that result serves as an argument for the subsequent function `z=>cy` which transforms it to a computation that yields a result of type Y.
+If the computation `cz` yields a result of type Z, then that result serves as an argument for the subsequent function `z=>cy`, a *computation continuation*, which transforms it to a computation that yields a result of type Y.
 
-Different from expressions, for which the *evaluation order* is langauge defined,
+Different from expressions, for which the *evaluation order* is langauge defined (e.g. *bottom-up* and *left to right*),
 for computations, the *execution order* is imposed by the usage of `bind`.
 
 Consider
@@ -2017,7 +2041,7 @@ Since the atomic program `sumOfSquaresFunction andThen result` used by `sumOfSqu
 
 ### **main kleisli programs**
 
-Recall that kleisli programs have type `Z => C[Y]` (or `` Z `=>C` Y ``, using an appropriate type synonum) for types Z and Y.
+Recall that kleisli programs have type `Z => C[Y]` (or `` Z `=>C` Y ``, using an appropriate type synonym) for types Z and Y.
 
 For example: `sumOfSquares` has type `` (Double && Double) `=>C` Double ``.
 
@@ -2036,6 +2060,8 @@ We also simply refer to
 
  - a producer kleisli program as a producer,
  - a consumer kleisliprogram as a consumer.
+
+Note that the code for a main kleisli program is more complex (and, as a consequence, imho, less elegant) than the code for a main program.
 
 ### Describing `MainSumOfSquaresAsComputation` using an effectful `twoDoublesProducer` and `sumOfSquaresOfTwoDoublesConsumer`**
 
@@ -2158,6 +2184,9 @@ class MainSumOfSquaresAsExpression[C[+ _]: Computation] extends EffectfulUtils[C
 
 ### **Describing `trait Lifting`**
 
+The members `result` and `bind` are the basic members of `trait Computation`.
+It turns out that there are many other useful members that can be defined using them.
+
 Consider
 
 ```scala
@@ -2181,7 +2210,7 @@ private[pdbp] trait OperatorLifting[C]
 
 belong to the same `package pdbp.computation`.
 
-`trait Lifting` is a type class that will gradually be explained later in this section. 
+`trait Lifting` is a type class that will be explained later in this section. 
 `trait Lifting` declares the *lifting capabilities* of computations. 
 
 Note that we were a bit sloppy by not showing `[C[+ _]]`.
@@ -2210,7 +2239,8 @@ private[pdbp] trait ObjectLifting[C[+ _]] {
 }
 ```
 
-`liftObject` and it's alias `lift0` are members that *lift* an *object* `z` to a *computation* with result `z`.
+`liftObject` and it's alias `lift0` are members that *lift* an *object* `z` of type `Z` to a *computation* of type `C[Z]` with result `z`.
+The `0` in `lift0` stands for lifting zero parameters.
 
 #### **Describing `trait FunctionLifting`**
 
@@ -2231,6 +2261,7 @@ private[pdbp] trait FunctionLifting[C[+ _]] {
 ```
 
 `liftFunction` and it's alias `lift1` are members that *lift* an *object-level function* to a *computation-level function*.
+The `1` in `lift1` stands for lifting one parameter.
 
 #### **Describing `trait OperatorLifting`**
 
@@ -2252,6 +2283,7 @@ private[pdbp] trait OperatorLifting[C[+ _]] {
 ```
 
 `liftOperator` and it's alias `lift2` are members that *lift* an *object-level operator* to a *computation-level operator*.
+The `2` in `lift2` stands for lifting two parameters.
 
 ### **Describing `trait Lifting` revisited**
 
@@ -2400,6 +2432,17 @@ private[pdbp] trait Lifting[C[+ _]]
 }
 ```
 
+You may argue why we go for *arrows* (cfr. `Program`) instead of applicatives (cfr. `Lifting`).
+Arrows occupy the sweet spot between monads and applcatives as far as power of expression and elegance of use is concerned.
+
+Arrows naturally promote pointfree, composition based programming.
+Agreed, applicatives can also be programmed in a pointfree, composition based way.
+
+Arrows can naturally be given an elegant `Dotty` programming DSL flavor.
+Agreed, applicatives can also be given an elegant `Dotty` programming DSL flavor.
+
+Anyway, applicatives provide less power of expression for application developers.
+
 ### **Defining lifting and programming capabilities in terms of computational capabilities**
 
 #### **Defining lifting capabilities in terms of computational capabilities**
@@ -2451,6 +2494,9 @@ private[pdbp] trait Computation[C[+ _]]
 }  
 ```
 
+Note that `bind` and `result` really provide a lot of, agreed, pointful, power of expression for library developers.
+Also note that the definitions of `lift0`, `lift1`, `lift2`, `lift3`, ... naturally read from left to right.
+
 #### **Defining programming capabilities in terms of computational capabilities**
 
 The programming capabilities `function`, `compose`, `product` and `sum` can be defined in terms of the computational capabilities `bind` and `result`.
@@ -2496,6 +2542,9 @@ private[pdbp] trait Computation[C[+ _]]
 
 }
 ```
+
+Again, note that `bind` and `result` really provide a lot of, agreed, pointful, power of expression for library developers.
+Also, again, note that the definitions of `function`, `compose` and `product` naturally read from left to right.
 
 ### **Defining computational capabilities in terms of programming and applying capabilities**
 
@@ -2559,12 +2608,12 @@ object kleisliUnaryTypeConstructorType {
 }
 ```
 
-A computation of type `Kleisli[>-->]` is referred to as a *Kleisli computation*. 
+A computation of type `Kleisli[>-->]` is referred to as a *kleisli computation*. 
 Think of it as a program without arguments.
 
 #### **Defining computational capabilities in terms of programming and applying capabilities**
 
-The computational capabilities `result` and `bind` can be defined in terms the of the programming capabilities `function` and `compose`, `product` and `apply`.
+The computational capabilities `result` and `bind` can be defined in terms the of the programming capabilities `function`, `compose`, and `product` together with the applying capability `apply`.
 
 ```scala
 package pdbp.program
@@ -2583,13 +2632,13 @@ private[pdbp] trait ProgramWithApplying[>-->[- _, + _]]
     with Resulting[Kleisli[>-->]]
     with Binding[Kleisli[>-->]] {
 
-  private type M = Kleisli[>-->]
+  private type C = Kleisli[>-->]
 
-  override private[pdbp] def result[Z]: Z => M[Z] =
+  override private[pdbp] def result[Z]: Z => C[Z] =
     `z=>(u>-->z)`
 
-  override private[pdbp] def bind[Z, Y](mz: M[Z], `z=>my`: => Z => M[Y]): M[Y] =
-    compose(mz, compose(product(`z>-->u`, function(`z=>my`)), apply))
+  override private[pdbp] def bind[Z, Y](cz: C[Z], `z=>cy`: => Z => C[Y]): C[Y] =
+    compose(cz, compose(product(`z>-->u`, function(`z=>cy`)), apply))
 
 }
 ```
@@ -2651,25 +2700,27 @@ object functionUtils {
 
 So far we have defined program descriptions using the declared programming capabilities of `trait Program[>-->[- _, + _]]`.
 
-Program descriptions can be given a *language level meaning* by defining the programming capabilities of `trait Program[>-->[- _, + _]]` in an `object` that extends `trait Program[>-->[- _, + _]]`. 
+Program descriptions can be given a *language level meaning* by defining the programming capabilities of `trait Program` in an `object` that extends `trait Program`. 
 
-We also refer to an `object` that extends `trait Program[>-->[- _, + _]]` as a program object.
+We also refer to an `object` that extends `trait Program[>-->]` as a program object.
 
 ### **Language level meaning of computations**
 
 So far we have defined computation descriptions using the declared computational capabilities of `trait Computation[C[+ _]]`.
 
-Computation descriptions can be given a *language level meaning* by defining the computational capabilities of `trait Computation[C[+ _]]` in an `object` that extends `trait Computation[C[+ _]]`. 
+Computation descriptions can be given a *language level meaning* by defining the computational capabilities of `trait Computation` in an `object` that extends `trait Computation`. 
 
-We also refer to an `object` that extends `trait Computation[C[+ _]]` as a computation object.
+We also refer to an `object` that extends `trait Computation[C]` as a computation object.
 
 Note that defining the computational capabilities of `trait Computation[C[+ _]]` also defines the programming capabilities of `trait Program[Kleisli[C]]`.
 
-We have already mentioned the design pattern dependency injection by importing an implicit object extending a type class.
-The type classes involved are `trait Program[>-->[- _, + _]]` and `trait Computation[C[+ _]]` (with corresponsing `trait Program[Kleisli[C]]`.)
-Instead of defining program objects and computation objects (with corresponding program objects), we define implicit program objects and implicit computation objects (with corresponding implicit program objects) that are used for dependency injection by `import`.
+We also refer to an `object` that extends `trait Program[[Kleisli[C]]` as a kleisli program object.
 
-Recall that in the [Introduction](#introduction) we mentioned that we go for kleisli programs `Program[Kleisli[C]]` for computations `C`.
+The `PDBP` lobrary promotes using the design pattern *dependency injection by importing an implicit object extending a type class*.
+More about this when dealing with examples.
+
+The type classes involved are `trait Program[>-->[- _, + _]]` and `trait Computation[C[+ _]]` (with corresponsing `trait Program[Kleisli[C]]`.)
+Therefore, instead of defining program objects and computation objects (with corresponding kleisli program objects), we define implicit program objects and implicit computation objects (with corresponding implicit kleisli program objects) that can be used for dependency injection by `import`.
 
 ### **Describing `activeProgram`**
 
@@ -2761,19 +2812,18 @@ import examples.mainPrograms.effectfulReadingAndWriting.MainFactorial
 object mainFactorial extends MainFactorial[`=>A`]()
 ```
 
-The definition of `mainFactorial` uses *dependency injection* by `import` of `implicit object activeProgram`, extending the type class `Program[`=>A`]` (by extending `Computation[Active]`).
-
-*Dependency injection by importing an implicit object extending a type class is a design pattern that is very often used in* `Dotty`.
+The definition of `mainFactorial` uses dependency injection by `import` of `implicit object activeProgram`, extending the type class `Program[`=>A`]` (by extending `Computation[Active]`).
 
 The definition of `object mainFactorial` extends `class MainFactorial[`=>A`]`. 
-The definition of `MainFactorial` uses `factorial` that extends `Factorial[>-->]`.
-The `Factorial[>-->]` defines the program `factorial` using the programming capabilites declared in `Program[>-->]`.
+The definition of `MainFactorial` uses `factorial` that extends `` `Factorial[`=>A`]` ``.
 
-*The dependency injection by importing an implicit object extending a type class design pattern is typically used together with an object extending a class that defines programs using the programming capabilites declared in the type class*.
+The definition of `factorial` in `Factorial[>-->]` used the programming capabilites declared in `Program[>-->]`.
 
-Let's rephrase all this in another way
-  - writing program descriptions using declared programming capabilities
-  - giving a language level meaning to program descriptions by importing an implicit object defining the programming capabilities 
+*Dependency injection by importing an implicit object extending a type class is, typically, used together with an object extending a class that defines values using the capabilites declared in the type class*.
+
+Rephrased for `trait Program`
+
+*Dependency injection by importing an implicit object extending `trait Program` is, typically, used together with an object extending a class that defines programs using the programming capabilites declared in `trait Program`*. 
 
 We can now, finally, define `main` in `object FactorialMain`
 
@@ -2858,13 +2908,13 @@ java.lang.StackOverflowError
 
 We have a problem here. 
 
-The language level meaning `mainFactorial.factorial.factorial` above of the `factorial` description is *not tail recursive*. 
+The language level meaning `mainFactorial.factorialObject.factorial` above of the `factorial` description is *not tail recursive*. 
   - it is not stack safe: it uses the *stack* which overflows for the argument `1000`.
  
-The good news is that it is just one language level meaning of that description.
+The good news is that it is just one (language level) meaning of that description.
 
-The language level meaning `mainFactorial.factorial.factorial` above should (and will) be replaced by a *tail recursive* one. 
-  - it is stack safe: it uses the *heap* which does not run out of memory for the argument `1000`.
+The language level meaning `mainFactorial.factorialObject.factorial` above should (and will!) be replaced by a *tail recursive* one. 
+  - it will be stack safe: it will use the *heap* which does not run out of memory for the argument `1000`.
 
 ## **Running main kleisli programs (language level meaning)**
 
@@ -2944,7 +2994,7 @@ private[pdbp] trait `~U~>`[F[+ _], T[+ _]] {
 
 `` trait `~U~>` `` defines *natural unary type constructor transformations* (`F` stands for from, `T` stands for to, and `U` stands for unary).
 
-Natural unary type constructor transformations are like functions, but they work at the unary type constructor level instead of at the type level.
+Natural unary type constructor transformations are like functions, they have a similar `apply` member but it works at the unary type constructor level instead of at the type level.
 
 ### **Natural binary type constructor transformations**
 
@@ -2962,10 +3012,12 @@ trait `~B~>`[`>-F->`[- _, + _], `>-T->`[- _, + _]] {
 
 `` trait `~B~>` `` defines *natural binary type constructor transformations* (`F` stands for from, `T` stands for to, and `B` stands for binary).
 
+Note that the `apply` member has a different signature (zero parameters instead of one parameter.)
+
 
 ### **Defining natural binary type constructor transformations in terms of natural unary type constructor transformations**
 
-Natural binary type constructor transformations can be defined in terms of natural unary type constructor transformations using keisli program types.
+For kleisli binary type constructor types, natural binary type constructor transformations can be defined in terms of natural unary type constructor transformations.
 
 ```scala
 import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
@@ -2984,8 +3036,8 @@ private[pdbp] trait `~U~>`[F[+ _], T[+ _]]
 
   private type `=>T` = Kleisli[T]
 
-  override def apply[Z, Y]: Z `=>F` Y => Z `=>T` Y  = { `z=>fy` => z =>
-      unaryTransform(`z=>fy`(z))
+  override def apply[Z, Y]: Z `=>F` Y => Z `=>T` Y = { `z=>fy` =>
+    `z=>fy` andThen apply
   }
 
 }
@@ -3006,11 +3058,13 @@ import pdbp.natural.transformation.binary.`~B~>`
 
 trait ProgramMeaning[`>-FP->`[- _, + _]: Program, `>-T->`[- _, + _]] {
 
-  lazy val binaryTransformation: `>-FP->` `~B~>` `>-T->`
+  private[pdbp] lazy val binaryTransformation: `>-FP->` `~B~>` `>-T->`
+
+  lazy val meaning: `>-FP->` `~B~>` `>-T->` = binaryTransformation
 
 }
 ```
-Programs in general and language level meanings of programs in particular can be given a *library level meaning* using a natural binary type constructor transformation `binaryTransformation`.
+Programs in general and language level meanings of programs in particular can be given a *library level meaning* using a natural binary type constructor transformation `meaning`.
 
 
 ### **Library level meaning of computations**
@@ -3040,12 +3094,12 @@ private[pdbp] trait ComputationMeaning[FC[+ _]: Computation, T[+ _]]
 
   private type `=>T` = Kleisli[T]
 
-  override lazy val binaryTransformation: `=>FC` `~B~>` `=>T` = unaryTransformation
+  private[pdbp] override lazy val binaryTransformation: `=>FC` `~B~>` `=>T` = unaryTransformation
 
 }
 ```
 
-Computations in general and language level meanings of computations in particular can be given a library level meaning using a natural unary type constructor transformation `unaryTransformation`, which also gives a library level meaning to the corresponding kleisli programs.
+Computations in general and `implicit object`'s that are language level meanings of computations (and corresponding language level meanings of kleisli programs) in particular can be given a library level meaning using a natural unary type constructor transformation `unaryTransformation`, which also gives a library level meaning, `meaning` to the corresponding kleisli programs.
 
 ### **Describing `activeMeaningOfActive`**
 
@@ -3110,7 +3164,7 @@ package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
 import pdbp.types.active.activeTypes._
 
 import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
-import activeMeaningOfActive.binaryTransformation
+import activeMeaningOfActive.meaning
 
 import examples.objects.active.effectfulReadingAndWriting.mainFactorial
 import mainFactorial.factorialMain
@@ -3119,20 +3173,12 @@ import examples.main.Main
 
 object FactorialMain extends Main[`=>A`] {
 
-  override val mainKleisliProgram: Unit `=>A` Unit = binaryTransformation(factorialMain)
+  override val mainKleisliProgram: Unit `=>A` Unit = meaning(factorialMain)
  
   override val run = mainKleisliProgram(())
 
 }
 ```
-
-Note that `mainKleisliProgram` has
-
-  - type `` Unit `=>A` Unit ``, which is
-  - type `Unit => Active[Unit]`, which is
-  - type `Unit => Unit`
-
-It suffices to evaluate `mainKleisliProgram(())` to run `mainKleisliProgram`.
 
 Ok, so let's use `main` in `object FactorialMain`.
 
@@ -3240,7 +3286,7 @@ and has a
 
 corresponding to the members `result` and `bind` of `trait Computation`.
 
-`type FreeTransformed[C]` is a *free transformed computation*. 
+Think of `FreeTransformed[C]` instances as *free transformed computations*. 
 
 `trait FreeTransformation` transforms 
 
@@ -3257,6 +3303,8 @@ They construct a data structure on the heap.
 Think of `Free[C, Z]` as a *free data type* wrapped around `C` as described in [Data types a la carte](http://www.cs.ru.nl/~W.Swierstra/Publications/DataTypesALaCarte.pdf).
 
 The word *free* refers to the fact that a data structure built using `Result` and `Bind` can be seen as a *free meaning* for the computational capabilities `result` and `bind` of `trait Computation`.
+
+The data structure `Transform(cz)` exposes the programming capabilities of the computation `cz` of type `C[Z]` by, kind of, lifting them to the type `Free[C, Z]`.
 
 ## **Describing `FreeTransformedMeaning`**
 
@@ -3314,7 +3362,7 @@ Note that in `FTFC`, resp. `ftfc`
   - the first `F`, resp `f` stands for *free* (and `T` resp `t` stands for *transformed*)
   - the second `F`, resp `f` stands for *from* (and `C` resp `c` stands for *computation*)
 
-Note that, when *pattern matching*,  we use names like `x2ftfcy` instead of `` `x=>ftfcy` ``.
+Note that, for pattern matching,  we use names like `x2ftfcy` instead of `` `x=>ftfcy` ``.
 
 `tailrecFold`, as it's name suggests, is a *tail recursive folding* of a computation of type `FTFC[Z]`, which is a free data structure wrapping a computation of type `FC[Z]`, back to a computation of type `FC[Z]`. 
 
@@ -3424,17 +3472,6 @@ We can now finally define `main` in `object FactorialMain`
 ```scala
 package examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting
 
-//       _______         __    __        _______
-//      / ___  /\       / /\  / /\      / ___  /\
-//     / /__/ / / _____/ / / / /_/__   / /__/ / /
-//    / _____/ / / ___  / / / ___  /\ /____  / /
-//   / /\____\/ / /__/ / / / /__/ / / \___/ / /
-//  /_/ /      /______/ / /______/ /     /_/ /
-//  \_\/       \______\/  \______\/      \_\/
-//                                           v1.0
-//  Program Description Based Programming Library
-//  author        Luc Duponcheel        2017-2018
-
 import pdbp.types.active.activeTypes._
 
 import pdbp.program.meaning.ofActiveFree.active.implicits.activeMeaningOfActiveFree
@@ -3447,7 +3484,7 @@ import examples.main.Main
 
 object FactorialMain extends Main[`=>A`] {
 
-  override val mainKleisliProgram: Unit `=>A` Unit = binaryTransformation(factorialMain)
+  override val mainKleisliProgram: Unit `=>A` Unit = meaning(factorialMain)
  
   override val run = mainKleisliProgram(())
 
@@ -3475,9 +3512,9 @@ Agreed, the heap can run out of memory, but that's another problem.
 
 In sections `Program` and `Computation` we presented the *basic* programming and computation capabilities. 
 In this section we introduce the first *extra* programming capability: *reading*. 
-We already used a effectful input reading using *producers* of type `Unit >--> Z` that are used together with a effectful output writing using *consumers* of type `Y >--> Unit` to turn programs of type `Z >--> Y` into main programs of type `Unit >--> Unit`. 
+We already used a effectful input reading using *producers* of type `Unit >--> Z` that is used together with a effectful output writing using *consumers* of type `Y >--> Unit` to turn programs of type `Z >--> Y` into main programs of type `Unit >--> Unit`. 
 
-Think, for example, of the capability of this section (reading related) as being able to 
+Think, for example, of the reading capability of this section as being able to 
   - read *configuration*
 
 ### **Describing `Reading`**
@@ -3502,11 +3539,15 @@ trait Reading[R, >-->[- _, + _]] {
 
 }
 ```
+
+Think of `` `z>-->r` `` as a zero-argument program that yields result of type `R`.
+We also say that `` `u>-->r` `` is a program that, out of the blue, produces a result of type `R`. 
   
 Think of `` `z>-->r` `` as a program that transforms any argument of type `Z` to a yield result of type `R`.
-We also say that `` `z>-->r` `` is a program that produces a result of type `R`. 
+We also say that `` `z>-->r` `` is a program that, out of anything, produces a result of type `R`. 
 
 Note that `` `z>-->u` `` and `` `z>-->r` `` are `private[pdbp]`.
+
 Since we are defining a public programming API, it is also convenient to define an `public` alias `read` for `` `z>-->r` ``.
 
 ## **Describing `ReadingTransformation`**
@@ -3514,23 +3555,20 @@ Since we are defining a public programming API, it is also convenient to define 
 The next computation transformer that we describe is `trait ReadingTransformer` that is used to add the *reading* capability to program descriptions.
 Groundbraking work by Martin Odersky, [Simplicity](https://infoscience.epfl.ch/record/229878/files/simplicitly_1.pdf), introduces *implicit functions*. 
 In his POPL article, Martin Odersky argues that implicit functions can be used to replace the reader monad (cfr. our reading capability of program descriptions). 
-Since our goal is to provide an *explicit* program description DSL we add reading as an *explicit* programming capability taking advantage of implicit functions to greatly simplify the definition of `trait ReadingTransformation`. 
-Moreover implicit functions greatly improve the *performance* of the meanings of reading. 
+Since our goal is to provide an *explicit* program description DSL we add reading as an *explicit* programming capability taking advantage of implicit functions to greatly simplify the definition of `trait ReadingTransformation` and their performance.
 
 Implicit functions replace boilerplate repetition of `implicit` parameters by an *implicitly* available global value `implicitly`. 
-You may argue that this is *going back in time* since, for years, using globals has been considered to be harmful. 
+You may argue that this is *going back to the past* since, for years, using globals has been considered to be harmful. 
 In fact, instead it is *going back to the future* since
 
  - the global value `implicitly` is an *immutable* `val` rather than a *mutable* `var` (much less prone to harmful code),
- - more important, the global value `implicitly` is only available in bodies of members having a type that *reflects its availability*.
+ - more important, the global value `implicitly` is only available in bodies of members having a *type* that *reflects* its *availability*.
 
 Our explicit, globally available, reading capability `read` closely corresponds to the implicit, globally available value `implicitly`.
 
 You may argue: why using an explicit `read` member if using an implicitly available `implicitly` value works as well.
 
-  - using the member `read` instead of the value `implicitly` does not really matter so much,
-    - `implicitly` can only be used in a context where the type system allows it to be used
-    - `read` can only be used in a context where the type system allows it to be used.
+We do not have a fully satisfying answer. The best one we can think of is that we prefer to be explicit at the description level and implicit at the meaning level.
 
 .
 ### **Introducing `type` `` `I=>` ``**
@@ -3619,41 +3657,7 @@ The type synonym `` `I=>` `` (and corresponding `RTFC` and `` `=>RTFC` `` ) abov
 In fact, in `` `u>-->r` `` we use it as `implicitly` (not to be confused with the other `implicitly`'s in the code standing for `implicitly[Computation[C]]`). 
 
 You may wonder how it is possible that the definitions above are so simple. 
-The compiler can turn value types into implicit function types whenever it expects them to be.
-
-## **Describing `ReadingTransformedMeaning`**
-
-The transformed computation meaning corresponding to the reading computation transformion `trait ReadingTransformation` is `trait ReadingTransformedMeaning`.
-
-```scala
-package pdbp.computation.meaning.reading
-
-import pdbp.computation.Computation
-
-import pdbp.natural.transformation.unary.`~U~>`
-
-import pdbp.computation.transformation.reading.ReadingTransformation
-import pdbp.computation.transformation.reading.ReadingTransformation._
-
-import pdbp.computation.meaning.ComputationMeaning
-
-trait ReadingTransformedMeaning[R, FC[+ _]: Computation, T[+ _]](
-    implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
-    extends ComputationMeaning[ReadingTransformed[R, FC],
-                               ReadingTransformed[R, T]] {
-
-  private type RTFC = ReadingTransformed[R, FC]
-  private type RTT = ReadingTransformed[R, T]
-
-  override private[pdbp] val unaryTransformation: RTFC `~U~>` RTT =
-    new {
-      override private[pdbp] def apply[Z](rtfcz: RTFC[Z]): RTT[Z] =
-        toBeTransformedMeaning.unaryTransformation(rtfcz(implicitly))
-
-    }
-
-}
-```
+The magic of implicit function types is that the compiler can turn value types into implicit function types whenever it expects them to be.
 
 ###  **Describing `activeIntReadingProgram`**
 
@@ -3826,31 +3830,13 @@ import pdbp.utils.effectfulUtils._
 
 object implicits {
 
-  implicit def readIntFromConsoleEffect: ReadFromConsoleEffect[BigInt] = 
+  implicit val readIntFromConsoleEffect: BigInt = 
     effectfulReadIntFromConsoleFunction("please type an integer to read")(())
 
   // ...
 
 }
 ```
-
-where
-
-```scala
-package pdbp.types.effect.console
-
-import pdbp.types.effect.effectType._
-
-object consoleTypes {
-
-  type ReadFromConsoleEffect[R] = R
-
-  // ...
-
-}
-```
-
-The type alias `ReadFromConsoleEffect[Z]` is simple because the effect of reading a big integer from the console is implemented implicitly at the language level.
 
 Note that, in constrast with `factorialMain` using `activeProgram` and an effectful ``intProducer`, `factorialMain` using `activeIntReadingProgram` and `read` pushes the usage of the language level meaning of the description of the reading from console effect to it's very limits: the definition of `main`.
 
@@ -4009,6 +3995,40 @@ the factorial value of the integer multiplied by the int read is
 7257600
 ```
 
+### **Describing `ReadingTransformedMeaning`**
+
+The transformed computation meaning corresponding to the reading computation transformion `trait ReadingTransformation` is `trait ReadingTransformedMeaning`.
+
+```scala
+package pdbp.computation.meaning.reading
+
+import pdbp.computation.Computation
+
+import pdbp.natural.transformation.unary.`~U~>`
+
+import pdbp.computation.transformation.reading.ReadingTransformation
+import pdbp.computation.transformation.reading.ReadingTransformation._
+
+import pdbp.computation.meaning.ComputationMeaning
+
+trait ReadingTransformedMeaning[R, FC[+ _]: Computation, T[+ _]](
+    implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
+    extends ComputationMeaning[ReadingTransformed[R, FC],
+                               ReadingTransformed[R, T]] {
+
+  private type RTFC = ReadingTransformed[R, FC]
+  private type RTT = ReadingTransformed[R, T]
+
+  override private[pdbp] val unaryTransformation: RTFC `~U~>` RTT =
+    new {
+      override private[pdbp] def apply[Z](rtfcz: RTFC[Z]): RTT[Z] =
+        toBeTransformedMeaning.unaryTransformation(rtfcz(implicitly))
+
+    }
+
+}
+```
+
 ### **Describing `activeIntReadingMeaningOfActiveIntReading`**
 
 The next computation meaning `implicit object` (and corresponding kleisli program meaning `implicit object`) is the *active int reading meaning of active int reading* one defined below
@@ -4152,7 +4172,7 @@ object constType {
 }
 ```
 
-Note that `` `w>-->u` `` is private[pdbp]. Since we are defining a public programming API, it is also convenient to define an `public` member `write` that writes any value of type `Z`, assuming an implicit conversion function of type `Z => W` converting that value to a writable one.
+Note that `` `w>-->u` `` is private[pdbp]. Since we are defining a public programming API, it is also convenient to define a `public` member `write` that writes any value of type `Z`, assuming an implicit function of type `Z => W` converting that value to a writable one.
 
 ## **Describing `WritingTransformation`**
 
@@ -4617,6 +4637,18 @@ object implicits {
     writeToConsoleEffect[BigInt]("the factorial value of the integer read is")
 
 }
+```
+
+Ok, so let's use `main` in `object FactorialOfIntReadWrittenToConsoleMain`.
+
+Let's try `10`.
+
+```scala
+[info] Running examples.main.active.reading.int.writing.toConsole.FactorialOfIntReadWrittenToConsoleMain
+please type an integer to read
+10
+the factorial value of the integer read is
+3628800
 ```
 
 # **Appendices**

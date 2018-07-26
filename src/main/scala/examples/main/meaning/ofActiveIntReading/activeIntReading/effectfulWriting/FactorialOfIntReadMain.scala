@@ -14,7 +14,7 @@ package examples.main.meaning.ofActiveIntReading.activeIntReading.effectfulWriti
 import pdbp.types.active.reading.activeReadingTypes._
 
 import pdbp.program.meaning.ofActiveIntReading.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReading
-import activeIntReadingMeaningOfActiveIntReading.binaryTransformation
+import activeIntReadingMeaningOfActiveIntReading.meaning
 
 import examples.objects.active.reading.int.effectfulWriting.mainFactorialOfIntRead
 import mainFactorialOfIntRead.factorialMain

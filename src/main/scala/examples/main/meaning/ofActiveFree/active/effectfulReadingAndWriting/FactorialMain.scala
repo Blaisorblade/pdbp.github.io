@@ -14,7 +14,7 @@ package examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting
 import pdbp.types.active.activeTypes._
 
 import pdbp.program.meaning.ofActiveFree.active.implicits.activeMeaningOfActiveFree
-import activeMeaningOfActiveFree.binaryTransformation
+import activeMeaningOfActiveFree.meaning
 
 import examples.objects.active.free.effectfulReadingAndWriting.mainFactorial
 import mainFactorial.factorialMain
@@ -23,7 +23,7 @@ import examples.main.Main
 
 object FactorialMain extends Main[`=>A`] {
 
-  override val mainKleisliProgram: Unit `=>A` Unit = binaryTransformation(factorialMain)
+  override val mainKleisliProgram: Unit `=>A` Unit = meaning(factorialMain)
  
   override val run = mainKleisliProgram(())
 

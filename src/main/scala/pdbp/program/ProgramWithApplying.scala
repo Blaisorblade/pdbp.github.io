@@ -25,12 +25,12 @@ private[pdbp] trait ProgramWithApplying[>-->[- _, + _]]
     with Resulting[Kleisli[>-->]]
     with Binding[Kleisli[>-->]] {
 
-  private type M = Kleisli[>-->]
+  private type C = Kleisli[>-->]
 
-  override private[pdbp] def result[Z]: Z => M[Z] =
+  override private[pdbp] def result[Z]: Z => C[Z] =
     `z=>(u>-->z)`
 
-  override private[pdbp] def bind[Z, Y](mz: M[Z], `z=>my`: => Z => M[Y]): M[Y] =
-    compose(mz, compose(product(`z>-->u`, function(`z=>my`)), apply))
+  override private[pdbp] def bind[Z, Y](cz: C[Z], `z=>cy`: => Z => C[Y]): C[Y] =
+    compose(cz, compose(product(`z>-->u`, function(`z=>cy`)), apply))
 
 }
