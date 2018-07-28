@@ -22,7 +22,7 @@ import pdbp.program.Composition
 trait Writing[W: Writable, >-->[- _, + _]] {
   this: Function[>-->] & Composition[>-->] =>
 
-  private[pdbp] val `w>-->u`: W >--> Unit  
+  private[pdbp] val `w>-->u`: W >--> Unit = write(identity)
 
   def write[Z]: (Z => W) `I=>` Z >--> Unit =
     compose(function(implicitly), `w>-->u`)       

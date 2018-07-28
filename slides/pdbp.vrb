@@ -1,0 +1,23 @@
+\frametitle{\begin{center}\ttdg{FactorialOfIntReadWrittenToConsoleMain}\end{center}}
+{\color{DarkGreen}
+\footnotesize{
+\begin{verbatim}
+object FactorialOfIntReadWrittenToConsoleMain
+    extends Main[`=>ARW`[BigInt, ToConsole]] {
+
+  import ... readIntFromConsoleEffect
+  import ... writeFactorialOfIntReadToConsoleEffect
+
+  private type `=>ARW[BigInt, ToConsole]` = `=>ARW`[BigInt, ToConsole]
+
+  override val mainKleisliProgram:
+    Unit `=>ARW[BigInt, ToConsole]` Unit = factorialMain
+
+  override val run = mainKleisliProgram(()) match {
+    case (ToConsole(effect), _) => effect(())
+  }
+
+}
+\end{verbatim}
+}
+}

@@ -30,6 +30,7 @@ private[pdbp] trait ComputationMeaning[FC[+ _]: Computation, T[+ _]]
 
   private type `=>T` = Kleisli[T]
   
-  private[pdbp] override lazy val binaryTransformation: `=>FC` `~B~>` `=>T` = unaryTransformation
+  private[pdbp] override lazy val binaryTransformation: `=>FC` `~B~>` `=>T` = 
+    unaryTransformation
 
 }

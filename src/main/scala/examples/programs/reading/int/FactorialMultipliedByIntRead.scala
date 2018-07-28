@@ -32,4 +32,5 @@ trait FactorialMultipliedByIntRead[>-->[- _, + _]: Program: [>-->[- _, + _]] => 
 
   val factorialMultipliedByIntRead: BigInt >--> BigInt =
       (factorial & read) >--> multiply
+      
 }
