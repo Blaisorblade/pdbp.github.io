@@ -36,11 +36,7 @@ class MainFactorialOfIntReadPointfreeWritingToConsole[
                 : [>-->[- _, + _]] => Reading[BigInt, >-->]
                 : [>-->[- _, + _]] => Writing[ToConsole, >-->]] extends EffectfulUtils[>-->]() {
   
-  private val implicitProgram = implicitly[Program[>-->]]
-
   private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
-
-  import implicitProgram._
 
   import implicitIntReading._
 
@@ -51,6 +47,6 @@ class MainFactorialOfIntReadPointfreeWritingToConsole[
   val factorialMain: (String => ToConsole) `I=>` Unit >--> Unit =
     read >-->
       factorial >-->
-      factorialOfIntConsumer
+      effectfulWriteFactorialOfIntToConsole
 
 }

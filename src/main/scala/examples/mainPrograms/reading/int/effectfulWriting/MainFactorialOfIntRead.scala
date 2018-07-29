@@ -24,11 +24,7 @@ import examples.programs.Factorial
 class MainFactorialOfIntRead[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]]
     extends EffectfulUtils[>-->]() {
 
-  private val implicitProgram = implicitly[Program[>-->]]
-
   private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
-
-  import implicitProgram._
 
   import implicitIntReading._
 
@@ -39,6 +35,6 @@ class MainFactorialOfIntRead[>-->[- _, + _]: Program: [>-->[- _, + _]] => Readin
   val factorialMain: Unit >--> Unit =
     read >-->
       factorial >-->
-      factorialOfIntConsumer
+      effectfulWriteFactorialOfIntToConsole
 
 }

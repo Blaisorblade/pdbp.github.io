@@ -26,8 +26,8 @@ class MainFactorialAsFunction[>-->[- _, + _]: Program] extends EffectfulUtils[>-
   import factorialAsFunction.factorial
 
   val factorialMain: Unit >--> Unit =
-    intProducer >-->
+    effectfulReadIntFromConsole >-->
       factorial >-->
-      factorialOfIntConsumer
+      effectfulWriteFactorialOfIntToConsole 
 
 }

@@ -32,13 +32,9 @@ class MainFactorialOfIntReadWrittenToConsole[
                 : [>-->[- _, + _]] => Reading[BigInt, >-->]
                 : [>-->[- _, + _]] => Writing[ToConsole, >-->]] {
   
-  private val implicitProgram = implicitly[Program[>-->]]
-
   private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
 
   private val implicitToConsoleWriting = implicitly[Writing[ToConsole, >-->]]
-
-  import implicitProgram._
 
   import implicitIntReading._
 

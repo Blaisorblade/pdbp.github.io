@@ -36,7 +36,7 @@ trait Writing[W: Writable, >-->[- _, + _]] {
       compose(`x=>z>-->(x&&z)`(x), compose(and(write, `z>-->y`), `(u&&y)>-->y`))
   }
 
-  def pointfulWriting[Z, Y, X]
+  def pointfulWritingUsing[Z, Y, X]
     : ((Z && Y) => X) => (Z >--> Y) => ((X => W) `I=>` Z >--> Y) = {
     `(z&&y)=>x` => `z>-->y` =>
       compose(compose(product(`let` { `z>-->y` } `in` { function(`(z&&y)=>x`) },

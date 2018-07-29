@@ -36,13 +36,9 @@ class MainFactorialOfIntReadPointfulWritingToConsoleWrittenToConsole[
                 : [>-->[- _, + _]] => Reading[BigInt, >-->]
                 : [>-->[- _, + _]] => Writing[ToConsole, >-->]] {
   
-  private val implicitProgram = implicitly[Program[>-->]]
-
   private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
 
   private val implicitToConsoleWriting = implicitly[Writing[ToConsole, >-->]]
-
-  import implicitProgram._
 
   import implicitIntReading._
 
@@ -52,7 +48,7 @@ class MainFactorialOfIntReadPointfulWritingToConsoleWrittenToConsole[
 
   import pointfulWritingFactorialObject.factorial
 
-  val factorialMain: (BigInt => ToConsole) `I=>` ((String => ToConsole) `I=>` Unit >--> Unit) =
+  val factorialMain: (String => ToConsole) `I=>` ((BigInt => ToConsole) `I=>` Unit >--> Unit) =
     read >-->
       factorial >-->
       write

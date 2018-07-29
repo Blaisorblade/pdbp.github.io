@@ -2148,5 +2148,45 @@ trait Writing[W: Writable, >-->[- _, + _]] {
 }
 \end{frame}
 
+\begin{frame}[fragile]
+\frametitle{\begin{center}\ttdg{factorialMain}\end{center}}
+{\color{DarkGreen}	
+\footnotesize{
+\begin{verbatim}
+  val factorialMain: 
+      (String => ToConsole) `I=>` 
+          ((BigInt => ToConsole) `I=>` Unit >--> Unit) =
+    read >-->
+      factorial >-->
+      write
+\end{verbatim}
+}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}\ttdg{FactorialOfIntReadPointfulWritingToConsoleWrittenToConsoleMain}\end{center}}
+{\color{DarkGreen}	
+\footnotesize{
+\begin{verbatim}
+object FactorialOfIntReadPointfulWritingToConsoleWrittenToConsoleMain 
+    extends Main[`=>ARW`[BigInt, ToConsole]] {
+
+  import ... readIntFromConsoleEffect
+  import ... writeFactorialOfIntReadToConsoleEffect
+  import ... pointfulWriteToConsoleEffect
+
+  private type `=>ARW[BigInt, ToConsole]` = `=>ARW`[BigInt, ToConsole]
+          
+  override val mainKleisliProgram: Unit `=>ARW[BigInt, ToConsole]` Unit = factorialMain
+
+  override val run = mainKleisliProgram(()) match { case (ToConsole(effect), _) => effect(()) }
+
+}
+\end{verbatim}
+}
+}
+\end{frame}
+
 \end{document}
 

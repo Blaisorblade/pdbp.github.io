@@ -22,19 +22,15 @@ import examples.utils.EffectfulUtils
 import examples.programs.reading.int.FactorialMultipliedByIntRead
 
 class MainFactorialMultipliedByIntRead[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]] 
-  extends EffectfulUtils[>-->]() {
-
-  private val implicitProgram = implicitly[Program[>-->]]  
-
-  import implicitProgram._ 
+  extends EffectfulUtils[>-->]() { 
 
   private object factorialMultipliedByIntReadObject extends FactorialMultipliedByIntRead[>-->]()
 
   import factorialMultipliedByIntReadObject.factorialMultipliedByIntRead
 
   val factorialMultipliedByIntReadMain: Unit >--> Unit =
-    intProducer >-->
+    effectfulReadIntFromConsole >-->
       factorialMultipliedByIntRead >-->
-      factorialOfIntMultipliedByIntReadConsumer  
+      effectfulWriteFactorialOfIntToConsole  
 
 }

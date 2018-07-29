@@ -1,4 +1,4 @@
-package pdbp.utils.effects
+package examples.utils.effects
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -17,28 +17,31 @@ import pdbp.utils.effectfulUtils._
 
 object implicits {
 
-  implicit val readIntFromConsoleEffect: BigInt = 
-    effectfulReadIntFromConsoleFunction("please type an integer to read")(())
+  private def readIntFromConsoleEffectWithMessage(message: String): BigInt =
+     effectfulReadIntFromConsoleFunction(message)(())
 
-  def writeLineToConsoleEffect[Z](message: String): Z => ToConsole = { z =>
+  private def writeLineToConsoleEffectWithMessage[Z](message: String): Z => ToConsole = { z =>
     ToConsole( { _ =>
       effectfulWriteLineToConsoleFunction(message)(z)
       } )
   }
 
-  def writeToConsoleEffect[Z](message: String): Z => ToConsole = { z =>
+  private def writeToConsoleEffectWithMessage[Z](message: String): Z => ToConsole = { z =>
     ToConsole( { _ =>
       effectfulWriteToConsoleFunction(message)(z)
       } )
   }  
 
-  implicit val writeFactorialOfIntReadToConsoleEffect: BigInt => ToConsole =
-    writeLineToConsoleEffect("the factorial value of the integer read is")
+  implicit val readIntFromConsoleEffect: BigInt = 
+    readIntFromConsoleEffectWithMessage("please type an integer to read")
+
+  implicit val writeFactorialOfIntReadFromConsoleToConsoleEffect: BigInt => ToConsole =
+    writeLineToConsoleEffectWithMessage("the factorial value of the integer read is")
 
   implicit val pointfreeWriteToConsoleEffect: String => ToConsole =
-    writeToConsoleEffect("")  
+    writeToConsoleEffectWithMessage("")  
 
   implicit val pointfulWriteToConsoleEffect: String => ToConsole =
-    writeToConsoleEffect("")       
+    writeToConsoleEffectWithMessage("")       
 
 }

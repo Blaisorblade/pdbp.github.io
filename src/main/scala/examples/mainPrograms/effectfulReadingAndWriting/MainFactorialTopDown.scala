@@ -26,8 +26,8 @@ class MainFactorialTopDown[>-->[- _, + _]: Program] extends EffectfulUtils[>-->]
   import factorialTopDown.factorial
 
   val factorialMain: Unit >--> Unit =
-    intProducer >-->
+    effectfulReadIntFromConsole >-->
       factorial >-->
-      factorialOfIntConsumer
+      effectfulWriteFactorialOfIntToConsole 
 
 }

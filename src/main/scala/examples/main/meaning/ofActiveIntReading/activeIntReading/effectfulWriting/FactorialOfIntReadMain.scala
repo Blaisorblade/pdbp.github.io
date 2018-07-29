@@ -23,7 +23,7 @@ import examples.main.Main
 
 object FactorialOfIntReadMain extends Main[`=>AR`[BigInt]] {
 
-  import pdbp.utils.effects.implicits.readIntFromConsoleEffect
+  import examples.utils.effects.implicits.readIntFromConsoleEffect
  
   private type `=>AR[BigInt]` = `=>AR`[BigInt]
 

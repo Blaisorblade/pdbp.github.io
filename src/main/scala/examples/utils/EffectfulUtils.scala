@@ -19,19 +19,16 @@ trait EffectfulUtils[>-->[- _, + _]: Function] {
 
   import implicitly._
 
-  private def effectfulReadIntFromConsole(message: String): Unit >--> BigInt =
+  private def effectfulReadIntFromConsoleWithMessage(message: String): Unit >--> BigInt =
     function(effectfulReadIntFromConsoleFunction(message))
 
-  private def effectfulWriteLineToConsole[Y](message: String): Y >--> Unit =
+  private def effectfulWriteLineToConsoleWithMessage[Y](message: String): Y >--> Unit =
     function(effectfulWriteLineToConsoleFunction(message))
 
-  val intProducer: Unit >--> BigInt =
-    effectfulReadIntFromConsole("please type an integer")
+  val effectfulReadIntFromConsole: Unit >--> BigInt =
+    effectfulReadIntFromConsoleWithMessage("please type an integer")
 
-  def factorialOfIntConsumer: BigInt >--> Unit =
-    effectfulWriteLineToConsole("the factorial value of the integer is")
-
-  def factorialOfIntMultipliedByIntReadConsumer: BigInt >--> Unit =
-    effectfulWriteLineToConsole("the factorial value of the integer multiplied by the integer read is")
+  val effectfulWriteFactorialOfIntToConsole: BigInt >--> Unit =
+    effectfulWriteLineToConsoleWithMessage("the factorial value of the integer is")
 
 }

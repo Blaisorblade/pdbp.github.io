@@ -22,9 +22,9 @@ import examples.main.Main
 
 object FactorialOfIntReadPointfreeWritingToConsoleMain extends Main[`=>ARW`[BigInt, ToConsole]] {
 
-  import pdbp.utils.effects.implicits.readIntFromConsoleEffect
+  import examples.utils.effects.implicits.readIntFromConsoleEffect
 
-  import pdbp.utils.effects.implicits.pointfreeWriteToConsoleEffect
+  import examples.utils.effects.implicits.pointfreeWriteToConsoleEffect
 
   private type `=>ARW[BigInt, ToConsole]` = `=>ARW`[BigInt, ToConsole]
           

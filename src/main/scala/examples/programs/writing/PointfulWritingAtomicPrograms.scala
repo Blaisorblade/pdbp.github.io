@@ -36,35 +36,52 @@ trait PointfulWritingAtomicPrograms[W: Writable, >-->[- _, + _] : Function: [>--
 
   import implicitWriting._
 
-  val isZeroInfo: BigInt && Boolean => String = 
-    { case (i, b) => s"[ ${System.nanoTime} ] isZero($i) == $b"}
+  def currentCalendarInMilliseconds: String = {
+    import java.util.Calendar
+    import java.text.SimpleDateFormat
 
-  val subtractOneInfo: BigInt && BigInt => String = 
-    { case (i, j) => s"[ ${System.nanoTime} ] subtractOne($i) == $j"}
+    val calendar = Calendar.getInstance();
+    val simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
 
-  val multiplyInfo: (BigInt && BigInt) && BigInt => String = 
-    { case ((i, j), k) => s"[ ${System.nanoTime} ] multiply($i, $j) == $k"}
+    simpleDateFormat.format(calendar.getTime())
+  }
 
-  def oneInfo[Z]: Z && BigInt => String = 
-    { case (z, i) => s"[ ${System.nanoTime} ] one($z) == $i"}
+  def currentThreadId: Long = Thread.currentThread.getId
+
+  def info(string: String): String = s"INFO [ at $currentCalendarInMilliseconds -- thread $currentThreadId -- $string ]"
+
+  def infoFunction[Z, Y](string: String): Z && Y => String =
+   { case (z, y) => info(s"$string($z) == $y") }
+
+  val isZeroInfoFunction: BigInt && Boolean => String = 
+    infoFunction("isZero")
+
+  val subtractOneInfoFunction: BigInt && BigInt => String = 
+    infoFunction("subtractOne")
+
+  val multiplyInfoFunction: (BigInt && BigInt) && BigInt => String =
+    infoFunction("multiply") 
+
+  def oneInfoFunction[Z]: Z && BigInt => String = 
+    infoFunction("one")
 
   val isZero: (String => W) `I=>` BigInt >--> Boolean =
-    pointfulWriting (isZeroInfo) {
+    pointfulWritingUsing (isZeroInfoFunction) {
       isZeroHelper
     }  
 
   val subtractOne: (String => W) `I=>` BigInt >--> BigInt =
-    pointfulWriting (subtractOneInfo) {
+    pointfulWritingUsing (subtractOneInfoFunction) {
       subtractOneHelper
   }
 
   val multiply: (String => W) `I=>` (BigInt && BigInt) >--> BigInt =
-    pointfulWriting (multiplyInfo) {
+    pointfulWritingUsing (multiplyInfoFunction) {
       multiplyHelper
   } 
 
   def one[Z]: (String => W) `I=>` Z >--> BigInt =
-    pointfulWriting (oneInfo) {
+    pointfulWritingUsing (oneInfoFunction) {
       oneHelper
   }
 
