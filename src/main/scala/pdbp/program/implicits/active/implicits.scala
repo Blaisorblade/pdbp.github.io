@@ -29,8 +29,13 @@ object implicits {
 
     override private[pdbp] def bind[Z, Y](
         az: Active[Z],
-        `z=>ay`: => (Z => Active[Y])): Active[Y] = 
-      `z=>ay`(az)  
+        `z=>ay`: => (Z => Active[Y])): Active[Y] =
+      `z=>ay`(az) 
+
+  override def compose[Z, Y, X](`z=>ay`: Z `=>A` Y,
+                                `y=>ax`: => Y `=>A` X): Z `=>A` X = { z =>
+    bind(`z=>ay`(z), `y=>ax`)
+  }     
 
   }
 

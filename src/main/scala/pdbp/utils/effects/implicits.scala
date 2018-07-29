@@ -20,13 +20,25 @@ object implicits {
   implicit val readIntFromConsoleEffect: BigInt = 
     effectfulReadIntFromConsoleFunction("please type an integer to read")(())
 
-  def writeToConsoleEffect[Y](message: String): Y => ToConsole = { y =>
+  def writeLineToConsoleEffect[Z](message: String): Z => ToConsole = { z =>
     ToConsole( { _ =>
-      effectfulWriteToConsoleFunction(message)(y)
+      effectfulWriteLineToConsoleFunction(message)(z)
       } )
   }
 
+  def writeToConsoleEffect[Z](message: String): Z => ToConsole = { z =>
+    ToConsole( { _ =>
+      effectfulWriteToConsoleFunction(message)(z)
+      } )
+  }  
+
   implicit val writeFactorialOfIntReadToConsoleEffect: BigInt => ToConsole =
-    writeToConsoleEffect[BigInt]("the factorial value of the integer read is")
+    writeLineToConsoleEffect[BigInt]("the factorial value of the integer read is")
+
+  implicit val pointfreeWriteToConsoleEffect: String => ToConsole =
+    writeToConsoleEffect[String]("")  
+
+  implicit val pointfulWriteToConsoleEffect: String => ToConsole =
+    writeToConsoleEffect[String]("")       
 
 }

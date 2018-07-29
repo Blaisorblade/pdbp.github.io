@@ -46,4 +46,16 @@ object productUtils {
       (`(cz&&cy)=>c(z&&y)`(`cz&&cy`), cx)
   }
 
+  def `(x&&y)=>y`[X, Y]: (X && Y) => Y = { (_, y) =>
+    y
+  } 
+
+  def `(u&&y)=>y`[Y]: (Unit && Y) => Y = { (_, y) =>
+    y
+  } 
+
+  def `x=>z=>(x&&z)`[X, Z]: X => Z => (X && Z) = { x => z =>
+    (x, z)
+  } 
+
 }

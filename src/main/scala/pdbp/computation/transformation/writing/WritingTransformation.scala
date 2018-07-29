@@ -11,6 +11,8 @@ package pdbp.computation.transformation.writing
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.types.implicitFunctionType._
+
 import pdbp.types.product.productType._
 
 private[pdbp] object WritingTransformation { 

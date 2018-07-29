@@ -17,20 +17,20 @@ import pdbp.program.Function
 
 import examples.utils.functionUtils._
 
-trait FunctionUtils[>-->[- _, + _] : Function] {
+trait AtomicPrograms[>-->[- _, + _] : Function] extends HelperPrograms[>-->] {
 
-  import implicitly._ 
+  import implicitly._  
 
   val isZero: BigInt >--> Boolean =
-    function(isZeroFunction)
+    isZeroHelper
 
   val subtractOne: BigInt >--> BigInt =
-    function(subtractOneFunction)
+    subtractOneHelper
 
   val multiply: (BigInt && BigInt) >--> BigInt =
-    function(multiplyFunction)
+    multiplyHelper
 
   def one[Z]: Z >--> BigInt =
-    function(oneFunction)
+    oneHelper
 
 }

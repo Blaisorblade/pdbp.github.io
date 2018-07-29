@@ -1,4 +1,4 @@
-package examples.programs
+package examples.programs.writing
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,15 +11,32 @@ package examples.programs
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.types.implicitFunctionType._
+
 import pdbp.program.Program
+
+import pdbp.writable.Writable
+
+import pdbp.program.writing.Writing
 
 import pdbp.program.compositionOperator._
 
-class Factorial[>-->[- _, + _]: Program] extends AtomicPrograms[>-->]() with HelperPrograms[>-->]() {
+import examples.programs.HelperPrograms
 
-  import implicitly._
+class PointfreeWritingFactorial[W: Writable, >-->[- _, + _]: Program: [>-->[- _, + _]] => Writing[W, >-->]] 
+    extends PointfreeAtomicPrograms[W, >-->]() with HelperPrograms[>-->]() {
 
-  val factorial: BigInt >--> BigInt =
+  private val implicitProgram = implicitly[Program[>-->]]
+
+  private val implicitWriting = implicitly[Writing[W, >-->]]
+
+  import implicitProgram._
+
+  import implicitWriting._
+
+  val factorialInfo: String = s"factorial"
+
+  val factorial: (String => W) `I=>` BigInt >--> BigInt = pointfreeWriting(factorialInfo) {
     `if`(isZero) {
       one
     } `else` {
@@ -30,5 +47,6 @@ class Factorial[>-->[- _, + _]: Program] extends AtomicPrograms[>-->]() with Hel
         multiply
       }
     }
+  }  
 
 }

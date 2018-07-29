@@ -22,16 +22,16 @@ trait EffectfulUtils[>-->[- _, + _]: Function] {
   private def effectfulReadIntFromConsole(message: String): Unit >--> BigInt =
     function(effectfulReadIntFromConsoleFunction(message))
 
-  private def effectfulWriteToConsole[Y](message: String): Y >--> Unit =
-    function(effectfulWriteToConsoleFunction(message))
+  private def effectfulWriteLineToConsole[Y](message: String): Y >--> Unit =
+    function(effectfulWriteLineToConsoleFunction(message))
 
   val intProducer: Unit >--> BigInt =
     effectfulReadIntFromConsole("please type an integer")
 
   def factorialOfIntConsumer: BigInt >--> Unit =
-    effectfulWriteToConsole("the factorial value of the integer is")
+    effectfulWriteLineToConsole("the factorial value of the integer is")
 
   def factorialOfIntMultipliedByIntReadConsumer: BigInt >--> Unit =
-    effectfulWriteToConsole("the factorial value of the integer multiplied by the integer read is")
+    effectfulWriteLineToConsole("the factorial value of the integer multiplied by the integer read is")
 
 }

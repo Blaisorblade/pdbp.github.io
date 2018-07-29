@@ -29,7 +29,7 @@ trait EffectfulUtils[C[+ _]: Resulting] {
   }
 
   private def effectfulWriteToConsole[Y](message: String): Y `=>C` Unit = { y =>
-    result(effectfulWriteToConsoleFunction(message)(y))
+    result(effectfulWriteLineToConsoleFunction(message)(y))
   }
 
   val twoDoublesProducer: Unit `=>C` (Double && Double) =

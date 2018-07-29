@@ -14,7 +14,7 @@ package examples.programs
 import pdbp.program.Program
 import pdbp.program.compositionOperator._
 
-class FactorialTopDown[>-->[- _, + _]: Program] extends FunctionUtils[>-->]() {
+class FactorialTopDown[>-->[- _, + _]: Program] extends AtomicPrograms[>-->]() with HelperPrograms[>-->]() {
 
   import implicitly._
 

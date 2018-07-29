@@ -17,7 +17,7 @@ import pdbp.utils.functionUtils._
 
 import pdbp.computation.Lifting
 
-private[pdbp] trait Writable[W]
+trait Writable[W]
     extends Startable[W]
     with Appendable[W]
     with Lifting[Const[W]] {

@@ -11,6 +11,10 @@ package pdbp.computation.transformation.reading.writing
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.types.implicitFunctionType._
+
+import pdbp.types.product.productType._
+
 import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
 import pdbp.writable.Writable
@@ -38,6 +42,6 @@ private[pdbp] trait ReadingWithWritingTransformation[
 
   override private[pdbp] val `w>-->u`: W `=>RTFC` Unit = { w =>
     implicitWriting.`w>-->u`(w)
-  }
+  } 
 
  }     

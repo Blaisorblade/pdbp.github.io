@@ -4631,7 +4631,11 @@ import pdbp.utils.effectfulUtils._
 
 object implicits {
 
-  // ...
+  def writeToConsoleEffect[Z](message: String): Z => ToConsole = { z =>
+    ToConsole( { _ =>
+      effectfulWriteToConsoleFunction(message)(z)
+      } )
+  }
 
   implicit val writeFactorialOfIntReadToConsoleEffect: BigInt => ToConsole =
     writeToConsoleEffect[BigInt]("the factorial value of the integer read is")

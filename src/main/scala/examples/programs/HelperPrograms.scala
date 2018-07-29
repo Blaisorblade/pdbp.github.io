@@ -11,24 +11,26 @@ package examples.programs
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.program.Program
+import pdbp.types.product.productType._
 
-import pdbp.program.compositionOperator._
+import pdbp.program.Function
 
-class Factorial[>-->[- _, + _]: Program] extends AtomicPrograms[>-->]() with HelperPrograms[>-->]() {
+import examples.utils.functionUtils._
 
-  import implicitly._
+trait HelperPrograms[>-->[- _, + _] : Function] {
 
-  val factorial: BigInt >--> BigInt =
-    `if`(isZero) {
-      one
-    } `else` {
-      `let` {
-        subtractOne >-->
-          factorial
-      } `in` {
-        multiply
-      }
-    }
+  import implicitly._ 
+
+  val isZeroHelper: BigInt >--> Boolean =
+    function(isZeroFunction)
+
+  val subtractOneHelper: BigInt >--> BigInt =
+    function(subtractOneFunction)
+
+  val multiplyHelper: (BigInt && BigInt) >--> BigInt =
+    function(multiplyFunction)
+
+  def oneHelper[Z]: Z >--> BigInt =
+    function(oneFunction)
 
 }

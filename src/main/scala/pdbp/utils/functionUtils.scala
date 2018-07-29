@@ -35,4 +35,8 @@ object functionUtils {
     w
   }
 
+  def `y=>y`[Y]: Y => Y = { y =>
+    y
+  }  
+
 }
