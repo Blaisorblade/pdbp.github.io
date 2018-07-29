@@ -25,7 +25,7 @@ import examples.utils.functionUtils._
 
 import examples.programs.HelperPrograms
 
-trait PointfreeAtomicPrograms[W: Writable, >-->[- _, + _] : Function: [>-->[- _, + _]] => Writing[W, >-->]] 
+trait PointfreeWritingAtomicPrograms[W: Writable, >-->[- _, + _] : Function: [>-->[- _, + _]] => Writing[W, >-->]] 
     extends HelperPrograms[>-->] {
 
   private val implicitFunction = implicitly[Function[>-->]]

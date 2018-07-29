@@ -1,20 +1,21 @@
-\frametitle{\begin{center}\ttdg{FactorialOfIntReadWrittenToConsoleMain}\end{center}}
+\frametitle{\begin{center}\ttdg{Writing}\end{center}}
 {\color{DarkGreen}
 \footnotesize{
 \begin{verbatim}
-object FactorialOfIntReadWrittenToConsoleMain
-    extends Main[`=>ARW`[BigInt, ToConsole]] {
+trait Writing[W: Writable, >-->[- _, + _]] {
+  this: Function[>-->] & Composition[>-->] & Construction[>-->] =>
 
-  import ... readIntFromConsoleEffect
-  import ... writeFactorialOfIntReadToConsoleEffect
+  // ...
 
-  private type `=>ARW[BigInt, ToConsole]` = `=>ARW`[BigInt, ToConsole]
-
-  override val mainKleisliProgram:
-    Unit `=>ARW[BigInt, ToConsole]` Unit = factorialMain
-
-  override val run = mainKleisliProgram(()) match {
-    case (ToConsole(effect), _) => effect(())
+  def pointfulWriting[Z, Y, X]
+    : ((Z && Y) => X) => (Z >--> Y) => ((X => W) `I=>` Z >--> Y) = {
+    `(z&&y)=>x` => `z>-->y` =>
+      compose(
+        compose(
+          product(`let` { `z>-->y` } `in` { function(`(z&&y)=>x`) },
+                  `z>-->y`),
+          and(write[X], `y>-->y`)),
+        `(u&&y)>-->y`)
   }
 
 }

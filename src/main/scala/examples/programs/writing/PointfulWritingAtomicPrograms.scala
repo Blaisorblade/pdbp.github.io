@@ -36,13 +36,17 @@ trait PointfulWritingAtomicPrograms[W: Writable, >-->[- _, + _] : Function: [>--
 
   import implicitWriting._
 
-  val isZeroInfo: BigInt && Boolean => String = { case (i, b) => s"[ ${System.nanoTime} ] isZero($i) == $b"}
+  val isZeroInfo: BigInt && Boolean => String = 
+    { case (i, b) => s"[ ${System.nanoTime} ] isZero($i) == $b"}
 
-  val subtractOneInfo: BigInt && BigInt => String = { case (i, j) => s"[ ${System.nanoTime} ] subtractOne($i) == $j"}
+  val subtractOneInfo: BigInt && BigInt => String = 
+    { case (i, j) => s"[ ${System.nanoTime} ] subtractOne($i) == $j"}
 
-  val multiplyInfo: (BigInt && BigInt) && BigInt => String = { case ((i, j), k) => s"[ ${System.nanoTime} ] multiply($i, $j) == $k"}
+  val multiplyInfo: (BigInt && BigInt) && BigInt => String = 
+    { case ((i, j), k) => s"[ ${System.nanoTime} ] multiply($i, $j) == $k"}
 
-  def oneInfo[Z]: Z && BigInt => String = { case (z, i) => s"[ ${System.nanoTime} ] one($z) == $i"}
+  def oneInfo[Z]: Z && BigInt => String = 
+    { case (z, i) => s"[ ${System.nanoTime} ] one($z) == $i"}
 
   val isZero: (String => W) `I=>` BigInt >--> Boolean =
     pointfulWriting (isZeroInfo) {

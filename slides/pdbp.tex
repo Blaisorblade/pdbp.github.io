@@ -863,6 +863,69 @@ use capabilities \emdb{declared} in those type classes
 \end{frame}
 
 \begin{frame}[fragile]
+\frametitle{\begin{center}\ttdg{HelperPrograms}\end{center}}
+{\color{DarkGreen}	
+\footnotesize{
+\begin{verbatim}
+  val isZeroHelper: BigInt >--> Boolean =
+    function(isZeroFunction)
+
+  val subtractOneHelper: BigInt >--> BigInt =
+    function(subtractOneFunction)
+
+  val multiplyHelper: (BigInt && BigInt) >--> BigInt =
+    function(multiplyFunction)
+
+  def oneHelper[Z]: Z >--> BigInt =
+    function(oneFunction)
+\end{verbatim}
+}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}\ttdg{AtomicPrograms}\end{center}}
+{\color{DarkGreen}	
+\footnotesize{
+\begin{verbatim}
+  val isZero: BigInt >--> Boolean =
+    isZeroHelper
+
+  val subtractOne: BigInt >--> BigInt =
+    subtractOneHelper
+
+  val multiply: (BigInt && BigInt) >--> BigInt =
+    multiplyHelper
+
+  def one[Z]: Z >--> BigInt =
+    oneHelper
+\end{verbatim}
+}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}\ttdg{Factorial}\end{center}}
+{\color{DarkGreen}	
+\footnotesize{
+\begin{verbatim}
+  val factorial: BigInt >--> BigInt =
+    `if`(isZero) {
+      one
+    } `else` {
+      `let` {
+        subtractOne >-->
+          factorial
+      } `in` {
+        multiply
+      }
+    }
+\end{verbatim}
+}
+}
+\end{frame}
+
+\begin{frame}[fragile]
 \frametitle{\begin{center}\ttdg{factorialMain}\end{center}}
 {\color{DarkGreen}	
 \footnotesize{
@@ -1897,81 +1960,167 @@ object FactorialOfIntReadWrittenToConsoleMain
 }
 \end{frame}
 
-\end{document}
-
-
-
-
 \begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{Console} \emdb{I/O Effect descriptions}\end{center}}
+\frametitle{\begin{center}\ttdg{Writing}\end{center}}
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
-  type Effect = Unit => Unit
-  
-  case class Console(effect: Effect)
+trait Writing[W: Writable, >-->[- _, + _]] {
+  this: Function[>-->] & Composition[>-->] & Construction[>-->] =>
 
-  // implicit
-  type ReadFromConsoleEffect[Z] = Z
+  // ...
 
-  // explicit
-  type WriteToConsoleEffect[Z] = Z => Effect
+  def pointfreeWriting[Z, Y, X]: 
+      X => Z >--> Y => ((X => W) `I=>` Z >--> Y) = {
+    x => `z>-->y` =>
+      compose(`x=>z>-->(x&&z)`(x), 
+        compose(and(write, `z>-->y`), `(u&&y)>-->y`))
+  }
+
+}
 \end{verbatim}
 }
 }
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{factorialOfIntReadWithConsoleEffectMain} part 1\end{center}}
+\frametitle{\begin{center}\ttdg{Writing}\end{center}}
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
-  val readInt: 
-    Unit >--> BigInt = 
-    `u>-->r`
+trait Writing[W: Writable, >-->[- _, + _]] {
+  this: Function[>-->] & Composition[>-->] & Construction[>-->] =>
 
-  def `z>-->console`[Z]
-    : implicit WriteToConsoleEffect[Z] => Z >--> Console = 
-    function { z =>
-      val implicitWriteToConsoleEffect = implicitly
-      Console(implicitWriteToConsoleEffect(z))  
-    }
+  // ...
 
-  def writeToConsole[Z]
-    : implicit WriteToConsoleEffect[Z] => Z >--> Unit =
-    `z>-->console` >--> `w>-->u`
+  def pointfulWriting[Z, Y, X]
+    : ((Z && Y) => X) => (Z >--> Y) => ((X => W) `I=>` Z >--> Y) = {
+    `(z&&y)=>x` => `z>-->y` =>
+      compose(
+        compose(
+          product(`let` { `z>-->y` } `in` { function(`(z&&y)=>x`) },
+                  `z>-->y`),
+          and(write[X], `y>-->y`)),
+        `(u&&y)>-->y`)
+  }
+
+}
 \end{verbatim}
 }
 }
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{factorialOfIntReadWithConsoleEffectMain} part 2\end{center}}
+\frametitle{\begin{center}\ttdg{PointfreeWritingAtomicPrograms}\end{center}}
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
-  def factorialOfIntReadWithConsoleEffectMain
-    (implicit effect: WriteToConsoleEffect[BigInt])
-    : Unit >--> Unit =
-    readInt >-->
-      factorial >-->
-      writeToConsole 
+  val isZeroInfo: String = s"isZero"
+
+  val subtractOneInfo: String = s"subtractOne"
+
+  val multiplyInfo: String = s"multiply"
+
+  val oneInfo: String = s"one"
 \end{verbatim}
 }
 }
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{programMeaning} part 2\end{center}}
+\frametitle{\begin{center}\ttdg{PointfreeWritingAtomicPrograms}\end{center}}
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
-  trait ProgramMeaning[
-    `>-p->`[- _, + _]: Program, 
-    `>-m->`[- _, + _]] {
+  val isZero: (String => W) `I=>` BigInt >--> Boolean = 
+    pointfreeWriting(isZeroInfo) {
+      isZeroHelper
+    }  
 
-    def programMeaning: `>-p->` --> `>-m->`
+  val subtractOne: (String => W) `I=>` BigInt >--> BigInt = 
+    pointfreeWriting(subtractOneInfo) {
+      subtractOneHelper
+    }  
 
+  val multiply: (String => W) `I=>` (BigInt && BigInt) >--> BigInt = 
+    pointfreeWriting(multiplyInfo) {
+      multiplyHelper
+    }  
+
+  def one[Z]: (String => W) `I=>` Z >--> BigInt = 
+    pointfreeWriting(oneInfo) {
+      oneHelper
+    } 
+\end{verbatim}
+}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}\ttdg{PointfreeWritingFactorial}\end{center}}
+{\color{DarkGreen}	
+\footnotesize{
+\begin{verbatim}
+  val factorial: (String => W) `I=>` BigInt >--> BigInt = 
+    `if`(isZero) {
+       one
+    } `else` {
+      `let` {
+        subtractOne >-->
+          factorial
+      } `in` {
+        multiply
+       }
+     }
+\end{verbatim}
+}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}\ttdg{PointfulWritingAtomicPrograms}\end{center}}
+{\color{DarkGreen}	
+\footnotesize{
+\begin{verbatim}
+  val isZeroInfo: BigInt && Boolean => String = 
+    { case (i, b) => s"[ ${System.nanoTime} ] isZero($i) == $b"}
+
+  val subtractOneInfo: BigInt && BigInt => String = 
+    { case (i, j) => s"[ ${System.nanoTime} ] subtractOne($i) == $j"}
+
+  val multiplyInfo: (BigInt && BigInt) && BigInt => String = 
+    { case ((i, j), k) => s"[ ${System.nanoTime} ] multiply($i, $j) == $k"}
+
+  def oneInfo[Z]: Z && BigInt => String = 
+    { case (z, i) => s"[ ${System.nanoTime} ] one($z) == $i"}
+\end{verbatim}
+}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}\ttdg{PointfulWritingAtomicPrograms}\end{center}}
+{\color{DarkGreen}	
+\footnotesize{
+\begin{verbatim}
+  val isZero: (String => W) `I=>` BigInt >--> Boolean =
+    pointfulWriting (isZeroInfo) {
+      isZeroHelper
+    }  
+
+  val subtractOne: (String => W) `I=>` BigInt >--> BigInt =
+    pointfulWriting (subtractOneInfo) {
+      subtractOneHelper
+  }
+
+  val multiply: (String => W) `I=>` (BigInt && BigInt) >--> BigInt =
+    pointfulWriting (multiplyInfo) {
+      multiplyHelper
+  } 
+
+  def one[Z]: (String => W) `I=>` Z >--> BigInt =
+    pointfulWriting (oneInfo) {
+      oneHelper
   } 
 \end{verbatim}
 }
@@ -1979,54 +2128,25 @@ object FactorialOfIntReadWrittenToConsoleMain
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{\begin{center}Running part 1\end{center}}
-\begin{itemize}
-\item<2-> type classes
-\item<3-> dependency injection by \ttdg{import}
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{\begin{center}Running part 2\end{center}}
+\frametitle{\begin{center}\ttdg{PointfulWritingFactorial}\end{center}}
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
-  val executeWrittenToConsoleEffect: Console && Unit => Unit = {
-    case (Console(effect), _) =>
-      effect(())
-  }
+  val factorial: (String => W) `I=>` BigInt >--> BigInt =
+    `if`(isZero) {
+      one
+     } `else` {
+       `let` {
+         subtractOne >-->
+           factorial
+       } `in` {
+         multiply
+       }
+    }
 \end{verbatim}
 }
 }
 \end{frame}
-
-\begin{frame}[fragile]
-\frametitle{\begin{center}Running part 3\end{center}}
-{\color{DarkGreen}	
-\footnotesize{
-\begin{verbatim}
-  implicit val implicitReadIntFromConsoleEffect
-    : ReadFromConsoleEffect[BigInt] =
-    readIntFromConsoleEffect(
-      "please type an integer to read") 
-
-  implicit val implicitWriteIntToConsoleEffect
-    : WriteToConsoleEffect[BigInt] =
-    writeToConsoleEffect(
-      "the factorial value of the integer read is")
-      
-
-  val effectfulMain: Unit = 
-    executeWrittenToConsoleEffect(
-      programMeaning(
-        factorialOfIntReadWithConsoleEffectMain)(()))
-\end{verbatim}
-}
-}
-\end{frame}
-
-
 
 \end{document}
-
 

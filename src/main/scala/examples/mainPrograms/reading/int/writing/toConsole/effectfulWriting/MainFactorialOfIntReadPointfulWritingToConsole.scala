@@ -40,13 +40,9 @@ class MainFactorialOfIntReadPointfulWritingToConsole[
 
   private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
 
-  //private val implicitToConsoleWriting = implicitly[Writing[ToConsole, >-->]]
-
   import implicitProgram._
 
   import implicitIntReading._
-
-  //import implicitToConsoleWriting._
 
   private object pointfulWritingFactorialObject extends PointfulWritingFactorial[ToConsole, >-->]
 

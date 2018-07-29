@@ -36,19 +36,20 @@ class PointfulWritingFactorial[W: Writable, >-->[- _, + _]: Program: [>-->[- _, 
 
   import implicitWriting._
 
-  val factorialInfo: (BigInt && BigInt) => String = { case (i, j) => s"[ ${System.nanoTime} ] factorial($i) == $j"}
+  val factorial: (String => W) `I=>` BigInt >--> BigInt =
+    `if`(isZero) {
+      one
+     } `else` {
+       `let` {
+         subtractOne >-->
+           factorial
+       } `in` {
+         multiply
+       }
+    }
 
-  // val factorialHelper: (String => W) `I=>` BigInt >--> BigInt =
-  //   `if`(isZero) {
-  //     one
-  //    } `else` {
-  //      `let` {
-  //        subtractOne >-->
-  //          factorialHelper
-  //      } `in` {
-  //        multiply
-  //      }
-  //   }
+  // val factorialInfo: (BigInt && BigInt) => String = 
+  //   { case (i, j) => s"[ ${System.nanoTime} ] factorial($i) == $j"}    
 
   // val factorial: (String => W) `I=>` BigInt >--> BigInt = {
   //   pointfulWriting (factorialInfo) { 
@@ -56,19 +57,19 @@ class PointfulWritingFactorial[W: Writable, >-->[- _, + _]: Program: [>-->[- _, 
   //   } 
   // } 
 
-  val factorial: (String => W) `I=>` BigInt >--> BigInt = {
-    pointfulWriting (factorialInfo) { 
-      `if`(isZero) {
-        one
-       } `else` {
-         `let` {
-           subtractOne >-->
-             factorial
-         } `in` {
-           multiply
-         }
-      }
-    } 
-  }     
+  // val factorial: (String => W) `I=>` BigInt >--> BigInt = {
+  //   pointfulWriting (factorialInfo) { 
+  //     `if`(isZero) {
+  //       one
+  //      } `else` {
+  //        `let` {
+  //          subtractOne >-->
+  //            factorial
+  //        } `in` {
+  //          multiply
+  //        }
+  //     }
+  //   } 
+  // }     
 
 }

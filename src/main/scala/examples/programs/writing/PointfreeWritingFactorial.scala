@@ -24,7 +24,7 @@ import pdbp.program.compositionOperator._
 import examples.programs.HelperPrograms
 
 class PointfreeWritingFactorial[W: Writable, >-->[- _, + _]: Program: [>-->[- _, + _]] => Writing[W, >-->]] 
-    extends PointfreeAtomicPrograms[W, >-->]() with HelperPrograms[>-->]() {
+    extends PointfreeWritingAtomicPrograms[W, >-->]() with HelperPrograms[>-->]() {
 
   private val implicitProgram = implicitly[Program[>-->]]
 
@@ -34,19 +34,16 @@ class PointfreeWritingFactorial[W: Writable, >-->[- _, + _]: Program: [>-->[- _,
 
   import implicitWriting._
 
-  val factorialInfo: String = s"factorial"
-
-  val factorial: (String => W) `I=>` BigInt >--> BigInt = pointfreeWriting(factorialInfo) {
+  val factorial: (String => W) `I=>` BigInt >--> BigInt = 
     `if`(isZero) {
-      one
+       one
     } `else` {
       `let` {
         subtractOne >-->
           factorial
       } `in` {
         multiply
-      }
-    }
-  }  
+       }
+     }
 
 }

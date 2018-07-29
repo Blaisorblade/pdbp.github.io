@@ -15,23 +15,25 @@ import pdbp.types.product.productType._
 
 object functionUtils {
 
+  def sleep() = {} // Thread.sleep(1)
+
   val isZeroFunction: BigInt => Boolean = { i =>
-    Thread.sleep(10)
+    sleep()
     i == 0
   }
 
   val subtractOneFunction: BigInt => BigInt = { i =>
-    Thread.sleep(10)
+    sleep()
     i - 1
   }
 
   val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
-    Thread.sleep(10)
+    sleep()
     i * j
   }
 
   def oneFunction[Z]: Z => BigInt = { z =>
-    Thread.sleep(10)
+    sleep()
     1
   }
 
