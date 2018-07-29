@@ -53,35 +53,23 @@ trait PointfulWritingAtomicPrograms[W: Writable, >-->[- _, + _] : Function: [>--
   def infoFunction[Z, Y](string: String): Z && Y => String =
    { case (z, y) => info(s"$string($z) == $y") }
 
-  val isZeroInfoFunction: BigInt && Boolean => String = 
-    infoFunction("isZero")
-
-  val subtractOneInfoFunction: BigInt && BigInt => String = 
-    infoFunction("subtractOne")
-
-  val multiplyInfoFunction: (BigInt && BigInt) && BigInt => String =
-    infoFunction("multiply") 
-
-  def oneInfoFunction[Z]: Z && BigInt => String = 
-    infoFunction("one")
-
   val isZero: (String => W) `I=>` BigInt >--> Boolean =
-    pointfulWritingUsing (isZeroInfoFunction) {
+    pointfulWritingUsing (infoFunction("isZero")) {
       isZeroHelper
     }  
 
   val subtractOne: (String => W) `I=>` BigInt >--> BigInt =
-    pointfulWritingUsing (subtractOneInfoFunction) {
+    pointfulWritingUsing (infoFunction("subtractOne")) {
       subtractOneHelper
   }
 
   val multiply: (String => W) `I=>` (BigInt && BigInt) >--> BigInt =
-    pointfulWritingUsing (multiplyInfoFunction) {
+    pointfulWritingUsing (infoFunction("multiply")) {
       multiplyHelper
   } 
 
   def one[Z]: (String => W) `I=>` Z >--> BigInt =
-    pointfulWritingUsing (oneInfoFunction) {
+    pointfulWritingUsing (infoFunction("one")) {
       oneHelper
   }
 

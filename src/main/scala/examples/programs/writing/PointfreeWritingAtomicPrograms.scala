@@ -36,31 +36,23 @@ trait PointfreeWritingAtomicPrograms[W: Writable, >-->[- _, + _] : Function: [>-
 
   import implicitWriting._
 
-  val isZeroInfo: String = s"isZero"
-
-  val subtractOneInfo: String = s"subtractOne"
-
-  val multiplyInfo: String = s"multiply"
-
-  val oneInfo: String = s"one"
-
   val isZero: (String => W) `I=>` BigInt >--> Boolean = 
-    pointfreeWriting(isZeroInfo) {
+    pointfreeWriting("isZero") {
       isZeroHelper
     }  
 
   val subtractOne: (String => W) `I=>` BigInt >--> BigInt = 
-    pointfreeWriting(subtractOneInfo) {
+    pointfreeWriting("subtractOne") {
       subtractOneHelper
     }  
 
   val multiply: (String => W) `I=>` (BigInt && BigInt) >--> BigInt = 
-    pointfreeWriting(multiplyInfo) {
+    pointfreeWriting("multiply") {
       multiplyHelper
     }  
 
   def one[Z]: (String => W) `I=>` Z >--> BigInt = 
-    pointfreeWriting(oneInfo) {
+    pointfreeWriting("one") {
       oneHelper
     }  
 
