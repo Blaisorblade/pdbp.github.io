@@ -73,7 +73,6 @@ scalafmt src/main/scala/examples/main/active/effectfulReadingAndWriting/Factoria
 scalafmt src/main/scala/examples/main/Main.scala
 scalafmt src/main/scala/examples/utils/effects/implicits.scala
 scalafmt src/main/scala/examples/utils/functionUtils.scala
-scalafmt src/main/scala/examples/utils/EffectfulUtils.scala
 scalafmt src/main/scala/examples/objects/active/reading/int/effectfulWriting/mainFactorialMultipliedByIntRead.scala
 scalafmt src/main/scala/examples/objects/active/reading/int/effectfulWriting/mainFactorialOfIntRead.scala
 scalafmt src/main/scala/examples/objects/active/reading/int/writing/toConsole/effectfulWriting/mainFactorialOfIntReadPointfreeWritingToConsole.scala
@@ -84,8 +83,7 @@ scalafmt src/main/scala/examples/objects/active/effectfulReadingAndWriting/mainF
 scalafmt src/main/scala/examples/objects/active/free/effectfulReadingAndWriting/mainFactorial.scala
 scalafmt src/main/scala/examples/programs/writing/PointfreeWritingFactorial.scala
 scalafmt src/main/scala/examples/main/meaning/ofActive/active/effectfulReadingAndWriting/FactorialMain.scala
-scalafmt src/main/scala/examples/mainPrograms/reading/int/effectfulWriting/MainFactorialOfIntRead.scala
-scalafmt src/main/scala/examples/mainPrograms/effectfulReadingAndWriting/MainFactorial..scala
+scalafmt src/main/scala/examples/mainPrograms/effectfulReadingAndWriting/MainFactorial.scala
 scalafmt src/main/scala/examples/mainPrograms/effectfulReadingAndWriting/MainFactorialTopDown.scala
 scalafmt src/main/scala/examples/mainPrograms/effectfulReadingAndWriting/MainFactorialAsFunction.scala
 
