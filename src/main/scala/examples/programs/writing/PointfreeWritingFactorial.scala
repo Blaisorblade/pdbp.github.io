@@ -23,7 +23,7 @@
 
 // import examples.programs.HelperPrograms
 
-// class PointfreeWritingFactorial[W: Writable, >-->[- _, + _]: Program: [>-->[- _, + _]] => Writing[W, >-->]] 
+// class PointfreeWritingFactorial[W: Writable, >-->[- _, + _]: Program: [>-->[- _, + _]] => Writing[W, >-->]]
 //     extends PointfreeWritingAtomicPrograms[W, >-->]() with HelperPrograms[>-->]() {
 
 //   private val implicitProgram = implicitly[Program[>-->]]
@@ -34,7 +34,7 @@
 
 //   import implicitWriting._
 
-//   val factorial: (String => W) `I=>` BigInt >--> BigInt = 
+//   val factorial: (String => W) `I=>` BigInt >--> BigInt =
 //     `if`(isZero) {
 //        one
 //     } `else` {

@@ -11,8 +11,8 @@ package pdbp.types.kleisli
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-object kleisliUnaryTypeConstructorType {
+private[pdbp] object kleisliUnaryTypeConstructorType {
 
-  type Kleisli[>-->[- _, + _]] = [+Y] => Unit >--> Y
+  private[pdbp] type Kleisli[>-->[- _, + _]] = [+Y] => Unit >--> Y
 
 }

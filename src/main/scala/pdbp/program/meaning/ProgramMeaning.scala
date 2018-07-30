@@ -15,7 +15,8 @@ import pdbp.program.Program
 
 import pdbp.natural.transformation.binary.`~B~>`
 
-trait ProgramMeaning[`>-FP->`[- _, + _]: Program, `>-T->`[- _, + _]] {
+private[pdbp] trait ProgramMeaning[
+    `>-FP->`[- _, + _]: Program, `>-T->`[- _, + _]] {
 
   private[pdbp] lazy val binaryTransformation: `>-FP->` `~B~>` `>-T->`
 

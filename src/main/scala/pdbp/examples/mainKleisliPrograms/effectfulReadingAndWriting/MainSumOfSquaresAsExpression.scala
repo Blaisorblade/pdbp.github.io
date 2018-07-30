@@ -19,18 +19,19 @@ import pdbp.examples.utils.EffectfulUtils
 
 import pdbp.examples.kleisliPrograms.SumOfSquaresAsExpression
 
-class MainSumOfSquaresAsExpression[C[+ _]: Computation] extends EffectfulUtils[C]() {
+class MainSumOfSquaresAsExpression[C[+ _]: Computation]
+    extends EffectfulUtils[C]() {
 
   private object sumOfSquaresAsExpression extends SumOfSquaresAsExpression[C]
 
   import sumOfSquaresAsExpression.sumOfSquares
 
   val sumOfSquaresMain: Unit `=>C` Unit = { u =>
-    twoDoublesProducer(u) bind { (z, y) => 
-      sumOfSquares(z, y) bind { x => 
-        sumOfSquaresOfTwoDoublesConsumer(x) 
+    twoDoublesProducer(u) bind { (z, y) =>
+      sumOfSquares(z, y) bind { x =>
+        sumOfSquaresOfTwoDoublesConsumer(x)
       }
-    }  
+    }
   }
 
 }

@@ -14,4 +14,3 @@ package pdbp.types.effect.toConsole
 import pdbp.types.effect.effectType._
 
 case class ToConsole(effect: Effect)
-

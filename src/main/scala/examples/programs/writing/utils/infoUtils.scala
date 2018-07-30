@@ -26,21 +26,22 @@ object infoUtils {
 
   def currentCalendarInMilliseconds: String = {
     val calendar = Calendar.getInstance();
-    val millisecondsSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+    val millisecondsSimpleDateFormat = new SimpleDateFormat(
+      "yyyy-MM-dd HH:mm:ss.SSS")
     millisecondsSimpleDateFormat.format(calendar.getTime())
   }
 
   def currentThreadId: Long = Thread.currentThread.getId
 
-  def infoFunction[Z, Y](string: String): Z && Y => String = { 
-    case (z, y) => 
+  def infoFunction[Z, Y](string: String): Z && Y => String = {
+    case (z, y) =>
       s"INFO -- time $currentCalendarInMilliseconds -- thread $currentThreadId -- evaluating $string($z) yielding $y"
   }
 
   def info[W: Writable, Z, Y,  >-->[- _, + _] : [>-->[- _, + _]] => Writing[W, >-->]]
       (string: String): (Z >--> Y) => ((String => W) `I=>` Z >--> Y) = {
-      val implicitWriting = implicitly[Writing[W, >-->]]  
-      implicitWriting.writeUsing(infoFunction(string))
+    val implicitWriting = implicitly[Writing[W, >-->]]
+    implicitWriting.writeUsing(infoFunction(string))
   }
 
 }

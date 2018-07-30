@@ -24,7 +24,7 @@ import pdbp.computation.Computation
 import pdbp.computation.transformation.ComputationTransformation
 import pdbp.computation.transformation.writing.WritingTransformation
 
-private[pdbp] trait ActiveWritingProgram[W : Writable]
+private[pdbp] trait ActiveWritingProgram[W: Writable]
     extends Computation[ActiveWriting[W]]
     with Program[`=>AW`[W]]
     with Writing[W, `=>AW`[W]]

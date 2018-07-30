@@ -21,7 +21,9 @@ import examples.utils.EffectfulUtils
 
 import examples.programs.Factorial
 
-class MainFactorialOfIntRead[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]]
+class MainFactorialOfIntRead[
+    >-->[- _, + _]: Program
+                  : [>-->[- _, + _]] => Reading[BigInt, >-->]]
     extends EffectfulUtils[>-->]() {
 
   private val implicitIntReading = implicitly[Reading[BigInt, >-->]]

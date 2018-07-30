@@ -30,7 +30,7 @@ trait Construction[>-->[- _, + _]] {
     product(compose(`(z&&y)>-->z`, `z>-->x`), compose(`(z&&y)>-->y`, `y>-->w`))
 
   def left[Z, X, Y](`z>-->x`: Z >--> X): (Z && Y) >--> (X && Y) =
-    and(`z>-->x`, `y>-->y`)  
+    and(`z>-->x`, `y>-->y`)
 
   def `let`[Z, Y, X](`z>-->y`: Z >--> Y): In[Z, Y, X] =
     new In[Z, Y, X] {

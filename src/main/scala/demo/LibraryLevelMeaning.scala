@@ -23,7 +23,7 @@ trait Meaning[F[+ _], T[+ _]] {
   def meaning: NaturalTransformation[F, T]
 }
 
-object LibraryLevelMeaning {  
+object LibraryLevelMeaning {
 
   trait ContainingMeaningOfContaining[F[+ _]: Containing, T[+ _]: Containing]
       extends Meaning[F, T] {

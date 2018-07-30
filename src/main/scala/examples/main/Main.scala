@@ -14,13 +14,13 @@ package examples.main
 trait Main[>-->[- _, + _]] {
 
   val mainKleisliProgram: Unit >--> Unit
- 
+
   val run: Unit
 
   def main(args: Array[String]): Unit = {
 
     run
 
-  }    
+  }
 
 }

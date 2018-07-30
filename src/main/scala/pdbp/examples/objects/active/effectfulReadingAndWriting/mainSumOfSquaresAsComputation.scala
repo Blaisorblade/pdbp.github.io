@@ -18,4 +18,5 @@ import implicits.activeProgram
 
 import pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting.MainSumOfSquaresAsComputation
 
-object mainSumOfSquaresAsComputation extends MainSumOfSquaresAsComputation[Active]()
+object mainSumOfSquaresAsComputation
+    extends MainSumOfSquaresAsComputation[Active]()

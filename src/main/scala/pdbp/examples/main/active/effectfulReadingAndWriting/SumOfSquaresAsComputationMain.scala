@@ -21,7 +21,7 @@ import examples.main.Main
 object SumOfSquaresAsComputationMain extends Main[`=>A`] {
 
   override val mainKleisliProgram: Unit `=>A` Unit = sumOfSquaresMain
- 
+
   override val run = mainKleisliProgram(())
 
 }

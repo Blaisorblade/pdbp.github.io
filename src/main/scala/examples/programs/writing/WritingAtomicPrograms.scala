@@ -29,7 +29,10 @@ import examples.programs.writing.utils.infoUtils
 
 import examples.programs.writing.utils.infoUtils.{info => _, _}
 
-trait WritingAtomicPrograms[W: Writable, >-->[- _, + _] : Function: [>-->[- _, + _]] => Writing[W, >-->]]
+trait WritingAtomicPrograms[
+    W: Writable, 
+    >-->[- _, + _]: Function
+                  : [>-->[- _, + _]] => Writing[W, >-->]]
     extends HelperPrograms[>-->] {
 
   private val implicitFunction = implicitly[Function[>-->]]
@@ -40,27 +43,27 @@ trait WritingAtomicPrograms[W: Writable, >-->[- _, + _] : Function: [>-->[- _, +
 
   import implicitWriting._
 
-  def info[Z, Y](string: String): (Z >--> Y) => ((String => W) `I=>` Z >--> Y) = 
+  def info[Z, Y](string: String): (Z >--> Y) => ((String => W) `I=>` Z >--> Y) =
     infoUtils.info(string)
 
   val isZero: (String => W) `I=>` BigInt >--> Boolean =
     info("isZero") {
       isZeroHelper
-    }  
+    }
 
   val subtractOne: (String => W) `I=>` BigInt >--> BigInt =
     info("subtractOne") {
       subtractOneHelper
-  }
+    }
 
   val multiply: (String => W) `I=>` (BigInt && BigInt) >--> BigInt =
     info("multiply") {
       multiplyHelper
-  } 
+    }
 
   def one[Z]: (String => W) `I=>` Z >--> BigInt =
     info("one") {
       oneHelper
-  }
+    }
 
 }

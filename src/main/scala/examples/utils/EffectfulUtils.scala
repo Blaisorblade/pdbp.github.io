@@ -19,16 +19,19 @@ trait EffectfulUtils[>-->[- _, + _]: Function] {
 
   import implicitly._
 
-  private def effectfulReadIntFromConsoleWithMessage(message: String): Unit >--> BigInt =
+  private def effectfulReadIntFromConsoleWithMessage(
+      message: String): Unit >--> BigInt =
     function(effectfulReadIntFromConsoleFunction(message))
 
-  private def effectfulWriteLineToConsoleWithMessage[Y](message: String): Y >--> Unit =
+  private def effectfulWriteLineToConsoleWithMessage[Y](
+      message: String): Y >--> Unit =
     function(effectfulWriteLineToConsoleFunction(message))
 
   val effectfulReadIntFromConsole: Unit >--> BigInt =
     effectfulReadIntFromConsoleWithMessage("please type an integer")
 
   val effectfulWriteFactorialOfIntToConsole: BigInt >--> Unit =
-    effectfulWriteLineToConsoleWithMessage("the factorial value of the integer is")
+    effectfulWriteLineToConsoleWithMessage(
+      "the factorial value of the integer is")
 
 }

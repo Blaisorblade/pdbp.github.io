@@ -31,5 +31,4 @@ object implicits {
       extends FreeTransformedMeaning[Active, Active]()
       with ComputationMeaning[ActiveFree, Active]()
       with ProgramMeaning[`=>AF`, `=>A`]()
-}    
-  
+}

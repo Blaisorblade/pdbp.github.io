@@ -21,7 +21,7 @@ private[pdbp] object FreeTransformation {
                                                  `z=>fcy`: Z => Free[C, Y])
       extends Free[C, Y]
 
-  type FreeTransformed[C[+ _]] = [+Z] => Free[C, Z]
+  private[pdbp] type FreeTransformed[C[+ _]] = [+Z] => Free[C, Z]
 
 }
 
@@ -49,11 +49,12 @@ private[pdbp] trait FreeTransformation[FC[+ _]: Computation]
       Transform(fcz)
   }
 
-  override private[pdbp] def result[Z]: Z => FTFC[Z] = 
+  override private[pdbp] def result[Z]: Z => FTFC[Z] =
     Result(_)
 
-  override private[pdbp] def bind[Z, Y](ftfcz: FTFC[Z],
-                                        `z=>ftfcy`: => (Z => FTFC[Y])): FTFC[Y] =
-    Bind(ftfcz, `z=>ftfcy`)     
+  override private[pdbp] def bind[Z, Y](
+      ftfcz: FTFC[Z],
+      `z=>ftfcy`: => (Z => FTFC[Y])): FTFC[Y] =
+    Bind(ftfcz, `z=>ftfcy`)
 
 }

@@ -28,6 +28,6 @@ class MainFactorial[>-->[- _, + _]: Program] extends EffectfulUtils[>-->]() {
   val factorialMain: Unit >--> Unit =
     effectfulReadIntFromConsole >-->
       factorial >-->
-      effectfulWriteFactorialOfIntToConsole  
+      effectfulWriteFactorialOfIntToConsole
 
 }

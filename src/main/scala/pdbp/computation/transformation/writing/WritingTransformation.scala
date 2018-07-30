@@ -15,9 +15,9 @@ import pdbp.types.implicitFunctionType._
 
 import pdbp.types.product.productType._
 
-private[pdbp] object WritingTransformation { 
+private[pdbp] object WritingTransformation {
 
-  type WritingTransformed[W, FC[+ _]] = [+Z] => FC[W && Z]
+  private[pdbp] type WritingTransformed[W, FC[+ _]] = [+Z] => FC[W && Z]
 
 }
 
@@ -65,11 +65,12 @@ private[pdbp] trait WritingTransformation[W: Writable, FC[+ _]: Computation]
     resultFC((start, z))
   }
 
-  override private[pdbp] def bind[Z, Y](wtfcz: WTFC[Z],
-                                        `z=>wtfcy`: => (Z => WTFC[Y])): WTFC[Y] =
+  override private[pdbp] def bind[Z, Y](
+      wtfcz: WTFC[Z],
+      `z=>wtfcy`: => (Z => WTFC[Y])): WTFC[Y] =
     bindFC(wtfcz, { (leftW, z) =>
-      bindFC(`z=>wtfcy`(z), { (rightW, y) => 
-      resultFC(append(leftW, rightW), y)
+      bindFC(`z=>wtfcy`(z), { (rightW, y) =>
+        resultFC(append(leftW, rightW), y)
       })
     })
 

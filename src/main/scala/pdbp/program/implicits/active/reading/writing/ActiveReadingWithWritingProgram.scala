@@ -29,10 +29,11 @@ import pdbp.computation.transformation.ComputationTransformation
 
 import pdbp.computation.transformation.reading.writing.ReadingWithWritingTransformation
 
-trait ActiveReadingWithWritingProgram[R, W: Writable]
+private[pdbp] trait ActiveReadingWithWritingProgram[R, W: Writable]
     extends Computation[ActiveReadingWithWriting[R, W]]
     with Program[`=>ARW`[R, W]]
     with Reading[R, `=>ARW`[R, W]]
     with Writing[W, `=>ARW`[R, W]]
-    with ComputationTransformation[ActiveWriting[W], ActiveReadingWithWriting[R, W]]
+    with ComputationTransformation[ActiveWriting[W],
+                                   ActiveReadingWithWriting[R, W]]
     with ReadingWithWritingTransformation[R, W, ActiveWriting[W]]

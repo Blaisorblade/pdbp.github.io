@@ -17,9 +17,9 @@ import pdbp.program.Function
 
 import examples.utils.functionUtils._
 
-trait HelperPrograms[>-->[- _, + _] : Function] {
+trait HelperPrograms[>-->[- _, + _]: Function] {
 
-  import implicitly._ 
+  import implicitly._
 
   val isZeroHelper: BigInt >--> Boolean =
     function(isZeroFunction)

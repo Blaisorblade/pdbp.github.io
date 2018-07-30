@@ -29,9 +29,9 @@ import pdbp.computation.transformation.writing.WritingTransformation
 object implicits {
 
   implicit object activeWritingToConsoleProgram
-    extends ActiveWritingProgram[ToConsole]()
-    with ComputationTransformation[Active, ActiveWriting[ToConsole]]()
-    with WritingTransformation[ToConsole, Active]()
-    with Writing[ToConsole, `=>AW`[ToConsole]]()
+      extends ActiveWritingProgram[ToConsole]()
+      with ComputationTransformation[Active, ActiveWriting[ToConsole]]()
+      with WritingTransformation[ToConsole, Active]()
+      with Writing[ToConsole, `=>AW`[ToConsole]]()
 
 }

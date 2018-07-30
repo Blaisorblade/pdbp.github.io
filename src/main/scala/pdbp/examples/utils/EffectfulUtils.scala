@@ -28,8 +28,9 @@ trait EffectfulUtils[C[+ _]: Resulting] {
     result(effectfulReadTwoDoublesFromConsoleFunction(message)(()))
   }
 
-  private def effectfulWriteLineToConsole[Y](message: String): Y `=>C` Unit = { y =>
-    result(effectfulWriteLineToConsoleFunction(message)(y))
+  private def effectfulWriteLineToConsole[Y](message: String): Y `=>C` Unit = {
+    y =>
+      result(effectfulWriteLineToConsoleFunction(message)(y))
   }
 
   val twoDoublesProducer: Unit `=>C` (Double && Double) =

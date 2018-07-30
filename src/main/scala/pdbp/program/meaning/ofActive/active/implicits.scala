@@ -26,4 +26,4 @@ object implicits {
       extends MeaningOfActive[Active]()
       with ComputationMeaning[Active, Active]()
       with ProgramMeaning[`=>A`, `=>A`]()
-}    
+}

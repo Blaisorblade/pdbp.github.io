@@ -34,7 +34,8 @@ import examples.programs.writing.WritingFactorial
 class MainFactorialOfIntReadWritingToConsole[
   >-->[- _, + _]: Program
                 : [>-->[- _, + _]] => Reading[BigInt, >-->]
-                : [>-->[- _, + _]] => Writing[ToConsole, >-->]] extends EffectfulUtils[>-->]() {
+                : [>-->[- _, + _]] => Writing[ToConsole, >-->]] 
+  extends EffectfulUtils[>-->]() {
   
   private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
 

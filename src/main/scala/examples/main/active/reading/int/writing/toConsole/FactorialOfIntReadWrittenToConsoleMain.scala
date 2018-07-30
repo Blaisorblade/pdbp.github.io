@@ -20,16 +20,20 @@ import mainFactorialOfIntReadWrittenToConsole.factorialMain
 
 import examples.main.Main
 
-object FactorialOfIntReadWrittenToConsoleMain extends Main[`=>ARW`[BigInt, ToConsole]] {
+object FactorialOfIntReadWrittenToConsoleMain
+    extends Main[`=>ARW`[BigInt, ToConsole]] {
 
   import examples.utils.effects.implicits.readIntFromConsoleEffect
 
   import examples.utils.effects.implicits.writeFactorialOfIntReadFromConsoleToConsoleEffect
 
   private type `=>ARW[BigInt, ToConsole]` = `=>ARW`[BigInt, ToConsole]
-          
-  override val mainKleisliProgram: Unit `=>ARW[BigInt, ToConsole]` Unit = factorialMain
 
-  override val run = mainKleisliProgram(()) match { case (ToConsole(effect), _) => effect(()) }
+  override val mainKleisliProgram: Unit `=>ARW[BigInt, ToConsole]` Unit =
+    factorialMain
+
+  override val run = mainKleisliProgram(()) match {
+    case (ToConsole(effect), _) => effect(())
+  }
 
 }

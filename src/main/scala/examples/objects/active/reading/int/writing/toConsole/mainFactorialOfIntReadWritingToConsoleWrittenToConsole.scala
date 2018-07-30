@@ -21,4 +21,5 @@ import implicits.activeIntReadingWithWritingToConsoleProgram
 import examples.mainPrograms.reading.int.writing.toConsole.MainFactorialOfIntReadWritingToConsoleWrittenToConsole
 
 object mainFactorialOfIntReadWritingToConsoleWrittenToConsole
-    extends MainFactorialOfIntReadWritingToConsoleWrittenToConsole[`=>ARW`[BigInt, ToConsole]]()
+    extends MainFactorialOfIntReadWritingToConsoleWrittenToConsole[
+      `=>ARW`[BigInt, ToConsole]]()

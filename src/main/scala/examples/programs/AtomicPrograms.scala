@@ -17,8 +17,7 @@ import pdbp.program.Function
 
 import examples.utils.functionUtils._
 
-trait AtomicPrograms[>-->[- _, + _] : Function] 
-    extends HelperPrograms[>-->] {
+trait AtomicPrograms[>-->[- _, + _]: Function] extends HelperPrograms[>-->] {
 
   val isZero: BigInt >--> Boolean =
     isZeroHelper

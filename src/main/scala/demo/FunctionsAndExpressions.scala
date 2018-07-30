@@ -18,59 +18,66 @@ object FunctionsAndExpressions {
 
   private type &&[+Z, +Y] = Tuple2[Z, Y]
 
-    import scala.math.{sqrt => squareRoot}
+  import scala.math.{sqrt => squareRoot}
 
-    private val result01: Double = squareRoot(z * z + y * y)
+  private val result01: Double = squareRoot(z * z + y * y)
 
-    private val square: Double => Double =
-      z => z * z
+  private val square: Double => Double =
+    z => z * z
 
-    private val result02: Double = squareRoot(square(z) + square(y))
+  private val result02: Double = squareRoot(square(z) + square(y))
 
-    private val sum: Double && Double => Double =
-      (z, y) => z + y
+  private val sum: Double && Double => Double =
+    (z, y) => z + y
 
-    private val result03: Double = squareRoot(sum(square(z), square(y)))
+  private val result03: Double = squareRoot(sum(square(z), square(y)))
 
-    private val squares: Double && Double => Double && Double =
-      (z, y) => (square(z), square(y))
+  private val squares: Double && Double => Double && Double =
+    (z, y) => (square(z), square(y))
 
-    private val result04: Double = squareRoot(sum(squares(z, y)))
+  private val result04: Double = squareRoot(sum(squares(z, y)))
 
-    private val result05: Double = (squares andThen sum andThen squareRoot)(z, y)
+  private val result05: Double = (squares andThen sum andThen squareRoot)(z, y)
 
-    private val result06: Double = (squares andThen sum andThen squareRoot) apply (z, y)
+  private val result06
+    : Double = (squares andThen sum andThen squareRoot) apply (z, y)
 
-    import bindingOperator.BindingOperator
+  import bindingOperator.BindingOperator
 
-    private val result07: Double = (z, y) bind (squares andThen sum andThen squareRoot)
+  private val result07
+    : Double = (z, y) bind (squares andThen sum andThen squareRoot)
 
-    private val result08: Double = (z, y) bind squares bind sum bind squareRoot
+  private val result08: Double = (z, y) bind squares bind sum bind squareRoot
 
-    // private val result09: Double = (z, y) bind (squares bind sum bind squareRoot)
+  // private val result09: Double = (z, y) bind (squares bind sum bind squareRoot)
 
-    private val squareRootOfSumOfSquares: Double && Double => Double = 
-      squares andThen sum andThen squareRoot
+  private val squareRootOfSumOfSquares: Double && Double => Double =
+    squares andThen sum andThen squareRoot
 
-    private val result10: Double = squareRootOfSumOfSquares(z, y)
+  private val result10: Double = squareRootOfSumOfSquares(z, y)
 
-    private val result11: Double = squareRootOfSumOfSquares apply (z, y)  
+  private val result11: Double = squareRootOfSumOfSquares apply (z, y)
 
-    private val result12: Double = (z, y) bind squareRootOfSumOfSquares  
+  private val result12: Double = (z, y) bind squareRootOfSumOfSquares
 
-    private val bindToSquaresAndThenBindToSumAndThenBindToSquareRoot: Double && Double => Double  = 
-      _ bind squares bind sum bind squareRoot
+  private val bindToSquaresAndThenBindToSumAndThenBindToSquareRoot
+    : Double && Double => Double =
+    _ bind squares bind sum bind squareRoot
 
-    private val result13: Double = bindToSquaresAndThenBindToSumAndThenBindToSquareRoot(z, y)
+  private val result13: Double =
+    bindToSquaresAndThenBindToSumAndThenBindToSquareRoot(z, y)
 
-    private val result14: Double = bindToSquaresAndThenBindToSumAndThenBindToSquareRoot apply (z, y)  
+  private val result14
+    : Double = bindToSquaresAndThenBindToSumAndThenBindToSquareRoot apply (z, y)
 
-    private val toSquaresAndThenBindToSumAndThenBindToSquareRoot: Double && Double => Double  = 
-      bindToSquaresAndThenBindToSumAndThenBindToSquareRoot
+  private val toSquaresAndThenBindToSumAndThenBindToSquareRoot
+    : Double && Double => Double =
+    bindToSquaresAndThenBindToSumAndThenBindToSquareRoot
 
-    private val result15: Double = (z, y) bind toSquaresAndThenBindToSumAndThenBindToSquareRoot  
+  private val result15
+    : Double = (z, y) bind toSquaresAndThenBindToSumAndThenBindToSquareRoot
 
-  def main(args: Array[String]): Unit = {      
+  def main(args: Array[String]): Unit = {
 
     println(result01)
     println(result02)

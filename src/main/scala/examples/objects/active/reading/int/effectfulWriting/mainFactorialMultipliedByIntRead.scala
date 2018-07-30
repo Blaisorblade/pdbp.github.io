@@ -18,5 +18,5 @@ import implicits.activeIntReadingProgram
 
 import examples.mainPrograms.reading.int.effectfulWriting.MainFactorialMultipliedByIntRead
 
-object mainFactorialMultipliedByIntRead 
+object mainFactorialMultipliedByIntRead
     extends MainFactorialMultipliedByIntRead[`=>AR`[BigInt]]()

@@ -19,7 +19,8 @@ import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.meaning.ComputationMeaning
 
-private[pdbp] trait MeaningOfActive[TR[+ _]: Resulting] extends ComputationMeaning[Active, TR] {
+private[pdbp] trait MeaningOfActive[TR[+ _]: Resulting]
+    extends ComputationMeaning[Active, TR] {
 
   override private[pdbp] val unaryTransformation: Active `~U~>` TR =
     new {

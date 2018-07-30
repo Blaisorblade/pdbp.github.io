@@ -19,7 +19,8 @@ import examples.utils.EffectfulUtils
 
 import examples.programs.FactorialAsFunction
 
-class MainFactorialAsFunction[>-->[- _, + _]: Program] extends EffectfulUtils[>-->]() {
+class MainFactorialAsFunction[>-->[- _, + _]: Program]
+    extends EffectfulUtils[>-->]() {
 
   private object factorialAsFunction extends FactorialAsFunction[>-->]
 
@@ -28,6 +29,6 @@ class MainFactorialAsFunction[>-->[- _, + _]: Program] extends EffectfulUtils[>-
   val factorialMain: Unit >--> Unit =
     effectfulReadIntFromConsole >-->
       factorial >-->
-      effectfulWriteFactorialOfIntToConsole 
+      effectfulWriteFactorialOfIntToConsole
 
 }

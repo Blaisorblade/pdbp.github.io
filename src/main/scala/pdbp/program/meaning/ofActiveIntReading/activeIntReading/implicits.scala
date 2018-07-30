@@ -32,4 +32,4 @@ object implicits {
       extends ReadingTransformedMeaning[BigInt, Active, Active]()
       with ComputationMeaning[ActiveReading[BigInt], ActiveReading[BigInt]]()
       with ProgramMeaning[`=>AR`[BigInt], `=>AR`[BigInt]]()
-}    
+}

@@ -19,7 +19,8 @@ import examples.utils.EffectfulUtils
 
 import examples.programs.FactorialTopDown
 
-class MainFactorialTopDown[>-->[- _, + _]: Program] extends EffectfulUtils[>-->]() {
+class MainFactorialTopDown[>-->[- _, + _]: Program]
+    extends EffectfulUtils[>-->]() {
 
   private object factorialTopDown extends FactorialTopDown[>-->]
 
@@ -28,6 +29,6 @@ class MainFactorialTopDown[>-->[- _, + _]: Program] extends EffectfulUtils[>-->]
   val factorialMain: Unit >--> Unit =
     effectfulReadIntFromConsole >-->
       factorial >-->
-      effectfulWriteFactorialOfIntToConsole 
+      effectfulWriteFactorialOfIntToConsole
 
 }

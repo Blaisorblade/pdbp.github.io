@@ -35,7 +35,7 @@
 //   >-->[- _, + _]: Program
 //                 : [>-->[- _, + _]] => Reading[BigInt, >-->]
 //                 : [>-->[- _, + _]] => Writing[ToConsole, >-->]] extends EffectfulUtils[>-->]() {
-  
+
 //   private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
 
 //   import implicitIntReading._

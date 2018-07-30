@@ -24,11 +24,11 @@ import examples.main.Main
 object FactorialOfIntReadMain extends Main[`=>AR`[BigInt]] {
 
   import examples.utils.effects.implicits.readIntFromConsoleEffect
- 
+
   private type `=>AR[BigInt]` = `=>AR`[BigInt]
 
   override val mainKleisliProgram: Unit `=>AR[BigInt]` Unit = factorialMain
- 
+
   override val run = mainKleisliProgram(())
 
 }

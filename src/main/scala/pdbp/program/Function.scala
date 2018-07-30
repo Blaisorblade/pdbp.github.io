@@ -48,11 +48,11 @@ trait Function[>-->[- _, + _]] {
   def `(z&&y&&x)>-->(y&&x)`[Z, Y, X]: (Z && Y && X) >--> (Y && X) =
     function(`(z&&y&&x)=>(y&&x)`)
 
-    def `(z&&y&&x)>-->(x&&y)`[Z, Y, X]: (Z && Y && X) >--> (X && Y) =
-    function(`(z&&y&&x)=>(x&&y)`)  
+  def `(z&&y&&x)>-->(x&&y)`[Z, Y, X]: (Z && Y && X) >--> (X && Y) =
+    function(`(z&&y&&x)=>(x&&y)`)
 
   def `(z&&y&&x)>-->y`[Z, Y, X]: (Z && Y && X) >--> Y =
-    function(`(z&&y&&x)=>y`)    
+    function(`(z&&y&&x)=>y`)
 
   def `(x&&y)>-->y`[X, Y]: (X && Y) >--> Y =
     function(`(x&&y)=>y`)
@@ -62,10 +62,10 @@ trait Function[>-->[- _, + _]] {
 
   def `x=>z>-->(x&&z)`[X, Z]: X => Z >--> (X && Z) = { x =>
     function(`x=>z=>(x&&z)`(x))
-  }   
+  }
 
   def `y>-->y`[Y]: Y >--> Y =
-    function(`y=>y`)   
+    function(`y=>y`)
 
   def `(y||x)>-->(y||x)`[Y, X]: (Y || X) >--> (Y || X) =
     function(`(y||x)=>(y||x)`)

@@ -28,10 +28,11 @@ import examples.programs.HelperPrograms
 import examples.programs.writing.utils.infoUtils._
 
 class WritingFactorial[
-    W: Writable, 
+    W: Writable,
     >-->[- _, + _]: Program
-                  : [>-->[- _, + _]] => Writing[W, >-->]] 
-    extends WritingAtomicPrograms[W, >-->]() with HelperPrograms[>-->]() {
+                  : [>-->[- _, + _]] => Writing[W, >-->]]
+    extends WritingAtomicPrograms[W, >-->]() 
+    with HelperPrograms[>-->]() {
 
   private val implicitProgram = implicitly[Program[>-->]]
 
@@ -41,19 +42,18 @@ class WritingFactorial[
 
   import implicitWriting._
 
-  val factorial: (String => W) `I=>` BigInt >--> BigInt = {
-    info("factorial") { 
-    `if`(isZero) {
-      one
-     } `else` {
-       `let` {
-         subtractOne >-->
-           factorial
-       } `in` {
-         multiply
-       }
-    } 
-    } 
-  }       
+  val factorial: (String => W) `I=>` BigInt >--> BigInt =
+    info("factorial") {
+      `if`(isZero) {
+        one
+      } `else` {
+        `let` {
+          subtractOne >-->
+            factorial
+        } `in` {
+          multiply
+        }
+      }
+    }
 
 }

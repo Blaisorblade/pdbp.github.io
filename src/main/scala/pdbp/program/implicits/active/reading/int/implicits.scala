@@ -26,9 +26,9 @@ import pdbp.computation.transformation.reading.ReadingTransformation
 object implicits {
 
   implicit object activeIntReadingProgram
-    extends ActiveReadingProgram[BigInt]()
-    with ComputationTransformation[Active, ActiveReading[BigInt]]()
-    with ReadingTransformation[BigInt, Active]()
-    with Reading[BigInt, `=>AR`[BigInt]]
+      extends ActiveReadingProgram[BigInt]()
+      with ComputationTransformation[Active, ActiveReading[BigInt]]()
+      with ReadingTransformation[BigInt, Active]()
+      with Reading[BigInt, `=>AR`[BigInt]]
 
 }

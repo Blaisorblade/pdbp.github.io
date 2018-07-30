@@ -32,10 +32,10 @@ import examples.utils.EffectfulUtils
 import examples.programs.writing.WritingFactorial
 
 class MainFactorialOfIntReadWritingToConsoleWrittenToConsole[
-  >-->[- _, + _]: Program
-                : [>-->[- _, + _]] => Reading[BigInt, >-->]
-                : [>-->[- _, + _]] => Writing[ToConsole, >-->]] {
-  
+    >-->[- _, + _]: Program
+                  : [>-->[- _, + _]] => Reading[BigInt, >-->]
+                  : [>-->[- _, + _]] => Writing[ToConsole, >-->]] {
+
   private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
 
   private val implicitToConsoleWriting = implicitly[Writing[ToConsole, >-->]]
@@ -44,11 +44,13 @@ class MainFactorialOfIntReadWritingToConsoleWrittenToConsole[
 
   import implicitToConsoleWriting._
 
-  private object writingFactorialObject extends WritingFactorial[ToConsole, >-->]
+  private object writingFactorialObject
+      extends WritingFactorial[ToConsole, >-->]
 
   import writingFactorialObject.factorial
 
-  val factorialMain: (String => ToConsole) `I=>` ((BigInt => ToConsole) `I=>` Unit >--> Unit) =
+  val factorialMain
+    : (String => ToConsole) `I=>` ((BigInt => ToConsole) `I=>` Unit >--> Unit) =
     read >-->
       factorial >-->
       write

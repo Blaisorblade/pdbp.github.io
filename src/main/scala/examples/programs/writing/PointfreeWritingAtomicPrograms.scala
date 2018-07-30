@@ -25,7 +25,7 @@
 
 // import examples.programs.HelperPrograms
 
-// trait PointfreeWritingAtomicPrograms[W: Writable, >-->[- _, + _] : Function: [>-->[- _, + _]] => Writing[W, >-->]] 
+// trait PointfreeWritingAtomicPrograms[W: Writable, >-->[- _, + _] : Function: [>-->[- _, + _]] => Writing[W, >-->]]
 //     extends HelperPrograms[>-->] {
 
 //   private val implicitFunction = implicitly[Function[>-->]]
@@ -36,24 +36,24 @@
 
 //   import implicitWriting._
 
-//   val isZero: (String => W) `I=>` BigInt >--> Boolean = 
+//   val isZero: (String => W) `I=>` BigInt >--> Boolean =
 //     pointfreeWriting("isZero") {
 //       isZeroHelper
-//     }  
+//     }
 
-//   val subtractOne: (String => W) `I=>` BigInt >--> BigInt = 
+//   val subtractOne: (String => W) `I=>` BigInt >--> BigInt =
 //     pointfreeWriting("subtractOne") {
 //       subtractOneHelper
-//     }  
+//     }
 
-//   val multiply: (String => W) `I=>` (BigInt && BigInt) >--> BigInt = 
+//   val multiply: (String => W) `I=>` (BigInt && BigInt) >--> BigInt =
 //     pointfreeWriting("multiply") {
 //       multiplyHelper
-//     }  
+//     }
 
-//   def one[Z]: (String => W) `I=>` Z >--> BigInt = 
+//   def one[Z]: (String => W) `I=>` Z >--> BigInt =
 //     pointfreeWriting("one") {
 //       oneHelper
-//     }  
+//     }
 
 // }

@@ -24,9 +24,9 @@ object FactorialMultipliedByIntReadMain extends Main[`=>AR`[BigInt]] {
 
   private type `=>AR[BigInt]` = `=>AR`[BigInt]
 
-  override val mainKleisliProgram: Unit `=>AR[BigInt]` Unit = factorialMultipliedByIntReadMain
-    
+  override val mainKleisliProgram: Unit `=>AR[BigInt]` Unit =
+    factorialMultipliedByIntReadMain
+
   override val run = mainKleisliProgram(())
 
 }
-

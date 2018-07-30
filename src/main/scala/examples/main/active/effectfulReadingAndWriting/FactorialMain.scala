@@ -21,7 +21,7 @@ import examples.main.Main
 object FactorialMain extends Main[`=>A`] {
 
   override val mainKleisliProgram: Unit `=>A` Unit = factorialMain
- 
+
   override val run = mainKleisliProgram(())
 
 }

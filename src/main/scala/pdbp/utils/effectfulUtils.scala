@@ -24,25 +24,26 @@ object effectfulUtils {
       i
   }
 
-   def effectfulReadTwoDoublesFromConsoleFunction(message: String): Unit => (Double && Double) = {
-    _ =>
-      println(s"$message")
-      val d1 = readDouble()
-      println(s"$message")
-      val d2 = readDouble()     
-      (d1, d2)
-  } 
-
-  def effectfulWriteLineToConsoleFunction[Y](message: String): Y => Unit = { y =>
+  def effectfulReadTwoDoublesFromConsoleFunction(
+      message: String): Unit => (Double && Double) = { _ =>
     println(s"$message")
-    val u = println(s"$y")
-    u
+    val d1 = readDouble()
+    println(s"$message")
+    val d2 = readDouble()
+    (d1, d2)
+  }
+
+  def effectfulWriteLineToConsoleFunction[Y](message: String): Y => Unit = {
+    y =>
+      println(s"$message")
+      val u = println(s"$y")
+      u
   }
 
   def effectfulWriteToConsoleFunction[Y](message: String): Y => Unit = { y =>
     print(s"$message")
     val u = println(s"$y")
     u
-  }  
+  }
 
 }

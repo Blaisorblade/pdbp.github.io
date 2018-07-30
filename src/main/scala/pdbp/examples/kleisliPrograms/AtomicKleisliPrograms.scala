@@ -17,7 +17,8 @@ import pdbp.computation.Resulting
 
 import pdbp.examples.utils.functionUtils._
 
-trait AtomicKleisliPrograms[C[+ _]: Resulting] extends HelperKleisliPrograms[C] {
+trait AtomicKleisliPrograms[C[+ _]: Resulting]
+    extends HelperKleisliPrograms[C] {
 
   type `=>C` = [-Z, +Y] => Z => C[Y]
 

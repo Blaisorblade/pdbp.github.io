@@ -19,7 +19,9 @@ import pdbp.program.constructionOperators._
 
 import examples.programs.Factorial
 
-trait FactorialMultipliedByIntRead[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]]
+class FactorialMultipliedByIntRead[
+    >-->[- _, + _]: Program
+                  : [>-->[- _, + _]] => Reading[BigInt, >-->]]
     extends Factorial[>-->] {
 
   private val implicitProgram = implicitly[Program[>-->]]
@@ -31,6 +33,6 @@ trait FactorialMultipliedByIntRead[>-->[- _, + _]: Program: [>-->[- _, + _]] => 
   import implicitIntReading._
 
   val factorialMultipliedByIntRead: BigInt >--> BigInt =
-      (factorial & read) >--> multiply
-      
+    (factorial & read) >--> multiply
+
 }

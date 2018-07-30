@@ -21,6 +21,6 @@ object functionUtils {
 
   val sumFunction: Double && Double => Double = { (z, y) =>
     z + y
-  }  
+  }
 
 }

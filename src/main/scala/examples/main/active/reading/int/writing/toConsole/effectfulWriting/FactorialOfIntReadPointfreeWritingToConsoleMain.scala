@@ -27,7 +27,7 @@
 //   import examples.utils.effects.implicits.pointfreeWriteToConsoleEffect
 
 //   private type `=>ARW[BigInt, ToConsole]` = `=>ARW`[BigInt, ToConsole]
-          
+
 //   override val mainKleisliProgram: Unit `=>ARW[BigInt, ToConsole]` Unit = factorialMain
 
 //   override val run = mainKleisliProgram(()) match { case (ToConsole(effect), _) => effect(()) }
