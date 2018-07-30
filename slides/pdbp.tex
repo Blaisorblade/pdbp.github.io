@@ -1993,7 +1993,7 @@ trait Writing[W: Writable, >-->[- _, + _]] {
 
   // ...
 
-  def pointfulWriting[Z, Y, X]
+  def writeUsing[Z, Y, X]
     : ((Z && Y) => X) => (Z >--> Y) => ((X => W) `I=>` Z >--> Y) = {
     `(z&&y)=>x` => `z>-->y` =>
       compose(
@@ -2078,7 +2078,7 @@ trait Writing[W: Writable, >-->[- _, + _]] {
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{PointfulWritingAtomicPrograms}\end{center}}
+\frametitle{\begin{center}\ttdg{WritingAtomicPrograms}\end{center}}
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
@@ -2099,27 +2099,27 @@ trait Writing[W: Writable, >-->[- _, + _]] {
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{PointfulWritingAtomicPrograms}\end{center}}
+\frametitle{\begin{center}\ttdg{WritingAtomicPrograms}\end{center}}
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
   val isZero: (String => W) `I=>` BigInt >--> Boolean =
-    pointfulWriting (isZeroInfo) {
+    writeUsing (isZeroInfo) {
       isZeroHelper
     }  
 
   val subtractOne: (String => W) `I=>` BigInt >--> BigInt =
-    pointfulWriting (subtractOneInfo) {
+    writeUsing (subtractOneInfo) {
       subtractOneHelper
   }
 
   val multiply: (String => W) `I=>` (BigInt && BigInt) >--> BigInt =
-    pointfulWriting (multiplyInfo) {
+    writeUsing (multiplyInfo) {
       multiplyHelper
   } 
 
   def one[Z]: (String => W) `I=>` Z >--> BigInt =
-    pointfulWriting (oneInfo) {
+    writeUsing (oneInfo) {
       oneHelper
   } 
 \end{verbatim}
@@ -2128,11 +2128,12 @@ trait Writing[W: Writable, >-->[- _, + _]] {
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{PointfulWritingFactorial}\end{center}}
+\frametitle{\begin{center}\ttdg{WritingFactorial}\end{center}}
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
-  val factorial: (String => W) `I=>` BigInt >--> BigInt =
+  val factorial: (String => W) `I=>` BigInt >--> BigInt = {
+    writeUsing (infoFunction("factorial")){ 
     `if`(isZero) {
       one
      } `else` {
@@ -2142,7 +2143,9 @@ trait Writing[W: Writable, >-->[- _, + _]] {
        } `in` {
          multiply
        }
-    }
+    } 
+    } 
+  } 
 \end{verbatim}
 }
 }
@@ -2165,11 +2168,11 @@ trait Writing[W: Writable, >-->[- _, + _]] {
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{FactorialOfIntReadPointfulWritingToConsoleWrittenToConsoleMain}\end{center}}
+\frametitle{\begin{center}\ttdg{FactorialOfIntReadWritingToConsoleWrittenToConsoleMain}\end{center}}
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
-object FactorialOfIntReadPointfulWritingToConsoleWrittenToConsoleMain 
+object FactorialOfIntReadWritingToConsoleWrittenToConsoleMain 
     extends Main[`=>ARW`[BigInt, ToConsole]] {
 
   import ... readIntFromConsoleEffect

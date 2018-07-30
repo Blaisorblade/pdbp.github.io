@@ -25,7 +25,12 @@ import pdbp.program.compositionOperator._
 
 import examples.programs.HelperPrograms
 
-class WritingFactorial[W: Writable, >-->[- _, + _]: Program: [>-->[- _, + _]] => Writing[W, >-->]] 
+import examples.programs.writing.utils.infoUtils._
+
+class WritingFactorial[
+    W: Writable, 
+    >-->[- _, + _]: Program
+                  : [>-->[- _, + _]] => Writing[W, >-->]] 
     extends WritingAtomicPrograms[W, >-->]() with HelperPrograms[>-->]() {
 
   private val implicitProgram = implicitly[Program[>-->]]
@@ -37,7 +42,7 @@ class WritingFactorial[W: Writable, >-->[- _, + _]: Program: [>-->[- _, + _]] =>
   import implicitWriting._
 
   val factorial: (String => W) `I=>` BigInt >--> BigInt = {
-    writeUsing (infoFunction("factorial")){ 
+    info("factorial") { 
     `if`(isZero) {
       one
      } `else` {

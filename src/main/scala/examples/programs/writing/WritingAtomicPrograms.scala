@@ -25,6 +25,10 @@ import examples.utils.functionUtils._
 
 import examples.programs.HelperPrograms
 
+import examples.programs.writing.utils.infoUtils
+
+import examples.programs.writing.utils.infoUtils.{info => _, _}
+
 trait WritingAtomicPrograms[W: Writable, >-->[- _, + _] : Function: [>-->[- _, + _]] => Writing[W, >-->]]
     extends HelperPrograms[>-->] {
 
@@ -36,40 +40,26 @@ trait WritingAtomicPrograms[W: Writable, >-->[- _, + _] : Function: [>-->[- _, +
 
   import implicitWriting._
 
-  def currentCalendarInMilliseconds: String = {
-    import java.util.Calendar
-    import java.text.SimpleDateFormat
-
-    val calendar = Calendar.getInstance();
-    val millisecondsSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
-
-    millisecondsSimpleDateFormat.format(calendar.getTime())
-  }
-
-  def currentThreadId: Long = Thread.currentThread.getId
-
-  def info(string: String): String = s"INFO -- $currentCalendarInMilliseconds -- thread $currentThreadId -- $string"
-
-  def infoFunction[Z, Y](string: String): Z && Y => String =
-   { case (z, y) => info(s"$string($z) == $y") }
+  def info[Z, Y](string: String): (Z >--> Y) => ((String => W) `I=>` Z >--> Y) = 
+    infoUtils.info(string)
 
   val isZero: (String => W) `I=>` BigInt >--> Boolean =
-    writeUsing (infoFunction("isZero")) {
+    info("isZero") {
       isZeroHelper
     }  
 
   val subtractOne: (String => W) `I=>` BigInt >--> BigInt =
-    writeUsing (infoFunction("subtractOne")) {
+    info("subtractOne") {
       subtractOneHelper
   }
 
   val multiply: (String => W) `I=>` (BigInt && BigInt) >--> BigInt =
-    writeUsing (infoFunction("multiply")) {
+    info("multiply") {
       multiplyHelper
   } 
 
   def one[Z]: (String => W) `I=>` Z >--> BigInt =
-    writeUsing (infoFunction("one")) {
+    info("one") {
       oneHelper
   }
 
