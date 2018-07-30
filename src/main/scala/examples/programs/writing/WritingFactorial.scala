@@ -25,8 +25,8 @@ import pdbp.program.compositionOperator._
 
 import examples.programs.HelperPrograms
 
-class PointfulWritingFactorial[W: Writable, >-->[- _, + _]: Program: [>-->[- _, + _]] => Writing[W, >-->]] 
-    extends PointfulWritingAtomicPrograms[W, >-->]() with HelperPrograms[>-->]() {
+class WritingFactorial[W: Writable, >-->[- _, + _]: Program: [>-->[- _, + _]] => Writing[W, >-->]] 
+    extends WritingAtomicPrograms[W, >-->]() with HelperPrograms[>-->]() {
 
   private val implicitProgram = implicitly[Program[>-->]]
 
@@ -36,7 +36,8 @@ class PointfulWritingFactorial[W: Writable, >-->[- _, + _]: Program: [>-->[- _, 
 
   import implicitWriting._
 
-  val factorial: (String => W) `I=>` BigInt >--> BigInt =
+  val factorial: (String => W) `I=>` BigInt >--> BigInt = {
+    writeUsing (infoFunction("factorial")){ 
     `if`(isZero) {
       one
      } `else` {
@@ -46,30 +47,8 @@ class PointfulWritingFactorial[W: Writable, >-->[- _, + _]: Program: [>-->[- _, 
        } `in` {
          multiply
        }
-    }
-
-  // val factorialInfo: (BigInt && BigInt) => String = 
-  //   { case (i, j) => s"[ ${System.nanoTime} ] factorial($i) == $j"}    
-
-  // val factorial: (String => W) `I=>` BigInt >--> BigInt = {
-  //   pointfulWriting (factorialInfo) { 
-  //     factorialHelper
-  //   } 
-  // } 
-
-  // val factorial: (String => W) `I=>` BigInt >--> BigInt = {
-  //   pointfulWriting (factorialInfo) { 
-  //     `if`(isZero) {
-  //       one
-  //      } `else` {
-  //        `let` {
-  //          subtractOne >-->
-  //            factorial
-  //        } `in` {
-  //          multiply
-  //        }
-  //     }
-  //   } 
-  // }     
+    } 
+    } 
+  }       
 
 }

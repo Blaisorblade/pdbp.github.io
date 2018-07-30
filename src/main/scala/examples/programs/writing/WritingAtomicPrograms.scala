@@ -25,7 +25,7 @@ import examples.utils.functionUtils._
 
 import examples.programs.HelperPrograms
 
-trait PointfulWritingAtomicPrograms[W: Writable, >-->[- _, + _] : Function: [>-->[- _, + _]] => Writing[W, >-->]]
+trait WritingAtomicPrograms[W: Writable, >-->[- _, + _] : Function: [>-->[- _, + _]] => Writing[W, >-->]]
     extends HelperPrograms[>-->] {
 
   private val implicitFunction = implicitly[Function[>-->]]
@@ -41,35 +41,35 @@ trait PointfulWritingAtomicPrograms[W: Writable, >-->[- _, + _] : Function: [>--
     import java.text.SimpleDateFormat
 
     val calendar = Calendar.getInstance();
-    val simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+    val millisecondsSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
 
-    simpleDateFormat.format(calendar.getTime())
+    millisecondsSimpleDateFormat.format(calendar.getTime())
   }
 
   def currentThreadId: Long = Thread.currentThread.getId
 
-  def info(string: String): String = s"INFO [ at $currentCalendarInMilliseconds -- thread $currentThreadId -- $string ]"
+  def info(string: String): String = s"INFO -- $currentCalendarInMilliseconds -- thread $currentThreadId -- $string"
 
   def infoFunction[Z, Y](string: String): Z && Y => String =
    { case (z, y) => info(s"$string($z) == $y") }
 
   val isZero: (String => W) `I=>` BigInt >--> Boolean =
-    pointfulWritingUsing (infoFunction("isZero")) {
+    writeUsing (infoFunction("isZero")) {
       isZeroHelper
     }  
 
   val subtractOne: (String => W) `I=>` BigInt >--> BigInt =
-    pointfulWritingUsing (infoFunction("subtractOne")) {
+    writeUsing (infoFunction("subtractOne")) {
       subtractOneHelper
   }
 
   val multiply: (String => W) `I=>` (BigInt && BigInt) >--> BigInt =
-    pointfulWritingUsing (infoFunction("multiply")) {
+    writeUsing (infoFunction("multiply")) {
       multiplyHelper
   } 
 
   def one[Z]: (String => W) `I=>` Z >--> BigInt =
-    pointfulWritingUsing (infoFunction("one")) {
+    writeUsing (infoFunction("one")) {
       oneHelper
   }
 

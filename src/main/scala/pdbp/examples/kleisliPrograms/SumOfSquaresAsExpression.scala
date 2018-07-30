@@ -15,7 +15,7 @@ import pdbp.types.product.productType._
 
 import pdbp.computation.Resulting
 
-import examples.utils.functionUtils._
+import pdbp.examples.utils.functionUtils._
 
 class SumOfSquaresAsExpression[C[+ _]: Resulting] {
 

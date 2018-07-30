@@ -15,16 +15,14 @@ import pdbp.types.product.productType._
 
 import pdbp.computation.Resulting
 
-import examples.utils.functionUtils._
+import pdbp.examples.utils.functionUtils._
 
-trait ResultingUtils[C[+ _]: Resulting] {
-
-  import implicitly._
+trait AtomicKleisliPrograms[C[+ _]: Resulting] extends HelperKleisliPrograms[C] {
 
   type `=>C` = [-Z, +Y] => Z => C[Y]
 
-  val square: Double `=>C` Double = squareFunction andThen result
+  val square: Double `=>C` Double = squareHelper
 
-  val sum: (Double && Double) `=>C` Double = sumFunction andThen result
+  val sum: (Double && Double) `=>C` Double = sumHelper
 
 }

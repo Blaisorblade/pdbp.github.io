@@ -1,4 +1,4 @@
-package examples.mainPrograms.reading.int.writing.toConsole
+package examples.mainPrograms.reading.int.writing.toConsole.effectfulWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -29,28 +29,24 @@ import examples.utils.EffectfulUtils
 
 import examples.utils.EffectfulUtils
 
-import examples.programs.writing.PointfulWritingFactorial
+import examples.programs.writing.WritingFactorial
 
-class MainFactorialOfIntReadPointfulWritingToConsoleWrittenToConsole[
+class MainFactorialOfIntReadWritingToConsole[
   >-->[- _, + _]: Program
                 : [>-->[- _, + _]] => Reading[BigInt, >-->]
-                : [>-->[- _, + _]] => Writing[ToConsole, >-->]] {
+                : [>-->[- _, + _]] => Writing[ToConsole, >-->]] extends EffectfulUtils[>-->]() {
   
   private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
 
-  private val implicitToConsoleWriting = implicitly[Writing[ToConsole, >-->]]
-
   import implicitIntReading._
 
-  import implicitToConsoleWriting._
+  private object writingFactorialObject extends WritingFactorial[ToConsole, >-->]
 
-  private object pointfulWritingFactorialObject extends PointfulWritingFactorial[ToConsole, >-->]
+  import writingFactorialObject.factorial
 
-  import pointfulWritingFactorialObject.factorial
-
-  val factorialMain: (String => ToConsole) `I=>` ((BigInt => ToConsole) `I=>` Unit >--> Unit) =
+  val factorialMain: (String => ToConsole) `I=>` Unit >--> Unit =
     read >-->
       factorial >-->
-      write
+      effectfulWriteFactorialOfIntToConsole
 
 }

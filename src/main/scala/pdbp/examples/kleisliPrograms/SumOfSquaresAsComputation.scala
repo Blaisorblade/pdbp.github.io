@@ -18,7 +18,8 @@ import pdbp.computation.Computation
 import pdbp.computation.bindingOperator._
 
 class SumOfSquaresAsComputation[C[+ _]: Computation]
-    extends ResultingUtils[C]() {
+    extends AtomicKleisliPrograms[C]() 
+    with HelperKleisliPrograms[C]() {
 
   import implicitly._
 

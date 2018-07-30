@@ -1,4 +1,4 @@
-package examples.main.active.reading.int.writing.toConsole
+package examples.main.active.reading.int.writing.toConsole.effectfulWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -15,16 +15,14 @@ import pdbp.types.effect.toConsole.ToConsole
 
 import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
 
-import examples.objects.active.reading.int.writing.toConsole.mainFactorialOfIntReadPointfulWritingToConsoleWrittenToConsole
-import mainFactorialOfIntReadPointfulWritingToConsoleWrittenToConsole.factorialMain
+import examples.objects.active.reading.int.writing.toConsole.effectfulWriting.mainFactorialOfIntReadWritingToConsole
+import mainFactorialOfIntReadWritingToConsole.factorialMain
 
 import examples.main.Main
 
-object FactorialOfIntReadPointfulWritingToConsoleWrittenToConsoleMain extends Main[`=>ARW`[BigInt, ToConsole]] {
+object FactorialOfIntReadWritingToConsoleMain extends Main[`=>ARW`[BigInt, ToConsole]] {
 
   import examples.utils.effects.implicits.readIntFromConsoleEffect
-
-  import examples.utils.effects.implicits.writeFactorialOfIntReadFromConsoleToConsoleEffect
 
   import examples.utils.effects.implicits.pointfulWriteToConsoleEffect
 

@@ -18,7 +18,7 @@ import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
 import pdbp.program.implicits.active.reading.int.writing.toConsole.implicits
 import implicits.activeIntReadingWithWritingToConsoleProgram
 
-import examples.mainPrograms.reading.int.writing.toConsole.effectfulWriting.MainFactorialOfIntReadPointfulWritingToConsole
+import examples.mainPrograms.reading.int.writing.toConsole.effectfulWriting.MainFactorialOfIntReadWritingToConsole
 
-object mainFactorialOfIntReadPointfulWritingToConsole
-    extends MainFactorialOfIntReadPointfulWritingToConsole[`=>ARW`[BigInt, ToConsole]]()
+object mainFactorialOfIntReadWritingToConsole
+    extends MainFactorialOfIntReadWritingToConsole[`=>ARW`[BigInt, ToConsole]]()

@@ -31,18 +31,26 @@ trait Writing[W: Writable, >-->[- _, + _]] {
   def write[Z]: (Z => W) `I=>` Z >--> Unit =
     compose(function(implicitly), `w>-->u`)
 
-  def pointfreeWriting[Z, Y, X]: X => Z >--> Y => ((X => W) `I=>` Z >--> Y) = {
-    x => `z>-->y` =>
-      compose(`x=>z>-->(x&&z)`(x), compose(and(write, `z>-->y`), `(u&&y)>-->y`))
-  }
+  // def pointfreeWriting[Z, Y, X](x: X): 
+  //     Z >--> Y => ((X => W) `I=>` Z >--> Y) = {
+  //   `z>-->y` =>
+  //     compose(`x=>z>-->(x&&z)`(x), compose(and(write, `z>-->y`), `(u&&y)>-->y`))
+  // }
 
-  def pointfulWritingUsing[Z, Y, X]
-    : ((Z && Y) => X) => (Z >--> Y) => ((X => W) `I=>` Z >--> Y) = {
-    `(z&&y)=>x` => `z>-->y` =>
-      compose(compose(product(`let` { `z>-->y` } `in` { function(`(z&&y)=>x`) },
-                              `z>-->y`),
-                      and(write[X], `y>-->y`)),
-              `(u&&y)>-->y`)
+  def writeUsing[Z, Y, X](`(z&&y)=>x`: ((Z && Y) => X)):
+      (Z >--> Y) => ((X => W) `I=>` Z >--> Y) = {
+    `z>-->y` =>
+      val `(z&&y)>-->x` = function(`(z&&y)=>x`)
+      val `z>-->(x&&y)`= 
+        `let` { 
+          `z>-->y` 
+          } `in` { `let` { 
+            `(z&&y)>-->x` 
+            } `in` { 
+              `(z&&y&&x)>-->(x&&y)` 
+            } 
+          }
+      compose(compose(`z>-->(x&&y)`, left(write)), `(u&&y)>-->y`)
   }
 
 }

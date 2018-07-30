@@ -1,4 +1,4 @@
-package examples.utils
+package pdbp.examples.utils
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -15,20 +15,12 @@ import pdbp.types.product.productType._
 
 object functionUtils {
 
-  val isZeroFunction: BigInt => Boolean = { i =>
-    i == 0
+  val squareFunction: Double => Double = { z =>
+    z * z
   }
 
-  val subtractOneFunction: BigInt => BigInt = { i =>
-    i - 1
-  }
-
-  val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
-    i * j
-  }
-
-  def oneFunction[Z]: Z => BigInt = { z =>
-    1
-  }
+  val sumFunction: Double && Double => Double = { (z, y) =>
+    z + y
+  }  
 
 }

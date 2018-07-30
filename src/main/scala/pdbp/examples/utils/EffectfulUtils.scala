@@ -23,19 +23,19 @@ trait EffectfulUtils[C[+ _]: Resulting] {
 
   type `=>C` = [-Z, +Y] => Z => C[Y]
 
-  private def effectfulReadTwoDoublesFromConsole(
+  private def effectfulReadTwoDoublesFromConsoleWithMessage(
       message: String): Unit `=>C` (Double && Double) = { _ =>
     result(effectfulReadTwoDoublesFromConsoleFunction(message)(()))
   }
 
-  private def effectfulWriteToConsole[Y](message: String): Y `=>C` Unit = { y =>
+  private def effectfulWriteLineToConsole[Y](message: String): Y `=>C` Unit = { y =>
     result(effectfulWriteLineToConsoleFunction(message)(y))
   }
 
   val twoDoublesProducer: Unit `=>C` (Double && Double) =
-    effectfulReadTwoDoublesFromConsole("please type a double")
+    effectfulReadTwoDoublesFromConsoleWithMessage("please type a double")
 
   val sumOfSquaresOfTwoDoublesConsumer: Double `=>C` Unit =
-    effectfulWriteToConsole("the sum of the squares of the doubles is")
+    effectfulWriteLineToConsole("the sum of the squares of the doubles is")
 
 }

@@ -1,4 +1,4 @@
-package examples.utils
+package pdbp.examples.kleisliPrograms
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -13,22 +13,18 @@ package examples.utils
 
 import pdbp.types.product.productType._
 
-object functionUtils {
+import pdbp.computation.Resulting
 
-  val isZeroFunction: BigInt => Boolean = { i =>
-    i == 0
-  }
+import pdbp.examples.utils.functionUtils._
 
-  val subtractOneFunction: BigInt => BigInt = { i =>
-    i - 1
-  }
+trait HelperKleisliPrograms[C[+ _]: Resulting] {
 
-  val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
-    i * j
-  }
+  import implicitly._
 
-  def oneFunction[Z]: Z => BigInt = { z =>
-    1
-  }
+  type `=>C` = [-Z, +Y] => Z => C[Y]
+
+  val squareHelper: Double `=>C` Double = squareFunction andThen result
+
+  val sumHelper: (Double && Double) `=>C` Double = sumFunction andThen result
 
 }

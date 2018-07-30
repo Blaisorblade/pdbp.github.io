@@ -20,8 +20,6 @@ import examples.utils.functionUtils._
 trait AtomicPrograms[>-->[- _, + _] : Function] 
     extends HelperPrograms[>-->] {
 
-  import implicitly._  
-
   val isZero: BigInt >--> Boolean =
     isZeroHelper
 
