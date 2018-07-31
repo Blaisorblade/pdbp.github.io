@@ -47,7 +47,7 @@ First, let me be clear about the following
  - both this document and the library it describes are opiniated.
 
 Second, this document is work in progress
- - major changes are documented in section [Changes](#changes).
+ - expect frequent changes.
 
 ## **History**
 
@@ -5569,6 +5569,4 @@ object Variance {
 ```
 
 The code above shows that, for the `Dotty` compiler, it is perfectly fine to use a `SuperZ => SubY` where a `Z => Y` is expected. 
-
-## **Changes**
 

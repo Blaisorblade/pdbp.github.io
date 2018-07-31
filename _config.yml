@@ -1,1 +1,6 @@
 theme: jekyll-theme-cayman
+
+output: 
+  html_document:
+     css: styles.css
+     self_contained: yes
