@@ -11,7 +11,7 @@ h5:before { counter-increment: h5counter; content: counter(h2counter) "." counte
 h6:before { counter-increment: h6counter; content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) "." counter(h6counter) ".\0000a0\0000a0"; } 
 </style>
 
-## **Program Description Based Programming**
+# **Program Description Based Programming**
 
 This document describes a [`Dotty`](http://dotty.epfl.ch/) library `PDBP`.
 
