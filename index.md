@@ -13,7 +13,7 @@ h6:before { counter-increment: h6counter; content: counter(h2counter) "." counte
 
 # **Program Description Based Programming**
 
-This document describes a [`Dotty`](http://dotty.epfl.ch/) library `PDBP`.
+This document describes a [`Dotty`](http://dotty.epfl.ch/) library [`PDBP`](https://github.com/PDBP/pdbp.github.io).
 
 Below is the logo of the library
 
@@ -86,7 +86,9 @@ Before starting, let's present a bit of history.
 In 1977, [John Backus](https://en.wikipedia.org/wiki/John_Backus) was an [ACM](https://www.acm.org/) [A.M. Turing Award Winner](https://amturing.acm.org/award_winners/backus_0703524.cfm).
 The title of his Turing Award winning lecture was 
 
-*Can programming be liberated from the von Neumann style? A functional style and it's algebra of programs.*
+*Can programming be liberated from the von Neumann style?* 
+
+*A functional style and it's algebra of programs.*
 
 This document builds upon the ideas of this influential lecture.
 
@@ -98,7 +100,7 @@ It is perfectly fine to read this introduction diagonally.
 
 ### **Introducing `FP`**
 
-In his Turing Award winning lecture, John Backus describes the [*function level* programming language `FP`](https://en.wikipedia.org/wiki/FP_(programming_language)). 
+In his Turing Award winning lecture, John Backus describes the [`FP` programming language](https://en.wikipedia.org/wiki/FP_(programming_language)). 
 
 The `FP` programming language consists of *objects*, *programs*, *forms* and *definitions*, where
 
@@ -113,7 +115,7 @@ The `FP` forms are
  - *Construction*
  - *Condition*
 
-Think forms as *program templates*, programs transformed by them as *program fragments*, or *program components*, and resulting programs as *composite programs*.
+Think of a form as a *program template*, programs transformed by them as *program fragments*, or *program components*, and the resulting program as *composite program*.
 
 #### **Aggregation**
 
@@ -122,7 +124,7 @@ It does have *sequences of objects* and it is possible to define `FP` programs t
 
 ### **Introducing `PDBP`**
 
-This document describes a *library*, `PDBP`, that is written in the [`Dotty` programming language](http://dotty.epfl.ch/). 
+This document describes the [`PDBP` library](https://github.com/PDBP/pdbp.github.io) that is written in the [`Dotty` programming language](http://dotty.epfl.ch/). 
 The `PDBP` library implements the `FP` programming language.
 
 ### **Objects and values**
@@ -154,7 +156,7 @@ In 1998, John Hughes described arrows and used arrows in `Haskell` in
 [*Generalizing monads to arrows*](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.29.4575&rep=rep1&type=pdf).
 
 `trait Program` is about *program descriptions*.
-Program descriptions are *defined* in terms of *programming capabilities* that are *declared* as *members* (`def`'s or `val`'s) of `trait Program`.
+Program descriptions are *defined* in terms of *programming capabilities* that are *declared* as *members* of `trait Program`.
 
 By abuse of notation, we often simply refer to program descriptions as *programs*. 
 We hope that this does not lead to any confusion.
@@ -198,9 +200,9 @@ So
   - we simply write that a function transforms arguments to a result, and
   - we simply write that a program transforms an argument to a result.
 
-Note that we used both (*zero or more*) arguments (for functions) and (*one*) argument (for programs).
+Note that we use both (*zero or more*) arguments (for functions) and (*one*) argument (for programs).
 
-How one argument can be used to represent zero or more arguments will be explained soon.
+One argument can be used to represent zero or more arguments using *products* (explained later in this document).
 
 To finish, let's state that
 
@@ -219,9 +221,9 @@ import pdbp.program.Program
 private[pdbp] trait Computation[C[+ _]]
     extends Resulting[C]
     with Binding[C]
-
-    with Sequencing[C]
     // ...
+    with Sequencing[C]
+    
     with Program[[-Z, + Y] => Z => C[Y]]
     // ...
 ```
@@ -234,7 +236,7 @@ In 1992, Philip Wadler used monads in `Haskell` in
 [*The essence of functional programming*](http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=E09A5FD9362F6780675ADF29471B7428?doi=10.1.1.38.9516&rep=rep1&type=pdf).
 
 `trait Computation` is about *computation descriptions*. 
-Computation descriptions are defined in terms of *computational capabilities* that are declared as members (`def`'s or `val`'s) of `trait Computation`.
+Computation descriptions are defined in terms of *computational capabilities* that are declared as members of `trait Computation`.
 
 By abuse of notation, we often simply refer to computation descriptions as *computations*. 
 We hope that this does not lead to any confusion.
@@ -252,8 +254,8 @@ When there is no danger of confusion
   - we simply write result, not mentioning expression or computation.
 
 So
-  - we simply write that an expression has a result, and
-  - we simply write that a computation has a result.
+  - we simply write that an expression yields (or has) a result, and
+  - we simply write that a computation yields (or has) a result.
 
 To finish, lt's state that
 
@@ -261,10 +263,11 @@ To finish, lt's state that
 
 ### **Introducing `type Kleisli` for binary type constructors**
 
-`Program[[-Z, + Y] => Z => C[Y]]`, mixed-in by `trait Computation`, states that computations have more power of expression than programs.
-You may argue that `Program[[-Z, + Y] => Z => C[Y]]` is a bit verbose.
+`Program[[-Z, + Y] => Z => C[Y]]` is mixed-in by `trait Computation`.
+This states that computations have more power of expression than programs.
 
-Using the *type alias* `type Kleisli`, named after [Heinrich Kleisli](https://en.wikipedia.org/wiki/Heinrich_Kleisli), below
+You may argue that `Program[[-Z, + Y] => Z => C[Y]]` is a bit verbose.
+Using the *type alias* `type Kleisli`, named after [Heinrich Kleisli](https://en.wikipedia.org/wiki/Heinrich_Kleisli)
 
 ```scala
 package pdbp.types.kleisli
@@ -288,9 +291,9 @@ import pdbp.program.Program
 private[pdbp] trait Computation[C[+ _]]
     extends Resulting[C]
     with Binding[C]
-
-    with Sequencing[C]    
     // ...
+    with Sequencing[C]    
+    
     with Program[Kleisli[C]]
     // ...
 ``` 
@@ -309,11 +312,7 @@ In 2008, Sam Lindley, Philip Wadler and Jeremy Yallop compared the *power of exp
  - applicatives have least power of expression, and 
  - arrows (cfr. `Program`) are in between.
 
-Indeed
- - if `C` is a computation (an instance of the `Computation` type class), 
- - then `Kleisli[C]` is a program (an instance of the `Program` type class).
-
-Note that we use *instance* in a somewhat informal way.
+Recall that `Program[Kleisli[C]]` is mixed-in by `trait Computation`.
 
 ### **Elegance of use**
 
@@ -325,10 +324,10 @@ Recall that
  - Monads (cfr `Computation`) naturally lead to a pointful programming style. 
  - Arrows (cfr. `Program`) naturally lead to a pointfree programming style. 
 
-Note that
+On the other hand
 
- - Monad based computations can, using [*Kleisli categories*](https://en.wikipedia.org/wiki/Kleisli_category), use a pointfree programming style. 
- - Arrow based programs can, using [*arrow calculus*](http://homepages.inf.ed.ac.uk/slindley/papers/arrow-calculus.pdf), use a pointful programming style.
+ - Monad based computations *can*, using [*Kleisli categories*](https://en.wikipedia.org/wiki/Kleisli_category), use a pointfree programming style. 
+ - Arrow based programs *can*, using [*arrow calculus*](http://homepages.inf.ed.ac.uk/slindley/papers/arrow-calculus.pdf), use a pointful programming style.
 
 Traditionally, the pointfree programming style has been considered to be elegant by some programmers and *abstruse* by other programmers. 
 Luckily, the `Dotty` programming language comes to the rescue for the latter ones. 
@@ -343,8 +342,8 @@ Personally, we consider program oriented composition based programming to be mor
 ### **Our choice**
 
 `PDBP` goes for
- - a powerful, computation oriented, and (slightly less) elegant, result binding based, programming API for library developers, and 
- - a (slightly less) powerful, program oriented, and elegant, composition based, programming API for application developers.
+ - A powerful, computation oriented, and (slightly less) elegant, result binding based, programming API for library developers. 
+ - A (slightly less) powerful, program oriented, and elegant, composition based, programming API for application developers.
 
 #### **About functions and expressions (for those who are a bit impatient)**
 
@@ -355,11 +354,14 @@ Recall that
 
 Think of
 
- - Functions as *expression templates* with, to be filled in, *unknown parts* (its parameters).
- - Programs as *computation templates* with a, to be filled in, *unknown part* (its parameter).
+ - A functions as an *expression template* with, to be filled in, *unknown parts* (its parameters).
+ - A programs as a *computation template* with a, to be filled in, *unknown part* (its parameter).
 
 [AppendixFunctionsAndExpressions](#appendixfunctionsandexpressions) has demo code that compares 
- - pointful, expression oriented, and function application (argument binding) based programming, with
+ - pointful, expression oriented, and function application (argument binding) based programming, 
+  
+with
+ 
  - pointfree, function oriented, and function composition based programming. 
 
 #### **About descriptions (for those who are a bit impatient)**
@@ -414,15 +416,15 @@ Below is an informal description of the program templates of the `factorial` pro
  - `first >--> second` is part of the `Dotty` program description DSL related to `Composition`
    - think of `first` as a *first* function that transforms an argument and `second`as a *second* function that transforms the result yielded by the first function,
  - `` `let` { constructNewUsingCurrent } `in` { useBothNewAndCurrent } `` is part of the `Dotty` program description DSL related to `Construction`
-   - note that `let` and `in` are between backticks,
+   - note that `` `let` `` and `` `in` `` are between backticks,
    - think of `constructNewUsingCurrent` as a function that *constructs* a *new* value using the *current* one,
    - think of `useBothNewAndCurrent` as a function that uses both the *new* value and the *current* value, 
-     - furthermore, the new value and the old current value together, become the new current value,
+     - the new value and the old current value together, become the new current value,
  - `` `if`(predicate) { trueCase } `else` { falseCase } `` is part of the `Dotty` program description DSL related to `Condition`
-   - note that `if` and `else` are between backticks,
+   - note that `` `if` `` and `` `else` `` are between backticks,
    - think of `predicate` as a predicate (`Boolean`-valued function) that tests the current value,
-   - if the result yielded by that test is `true`, then function `trueCase` takes over control,
-   - if the result yielded by that test is `false`, then function `falseCase` takes over control.
+     - if the result yielded by that test is `true`, then function `trueCase` takes over control,
+     - if the result yielded by that test is `false`, then function `falseCase` takes over control.
 
 Agreed, at first sight the pointfree `factorial` code above may seem a bit abstruse.
 
@@ -430,26 +432,29 @@ Agreed, we explained the pointfree code above in a pointful way.
 
 But,
 
-once you get used to powerful program templates
+once you get used to program templates
+
  - ` ... >--> ... `, 
  - `` `if`(...) { ... } `else` { ... } ``,  
- - `` `let` { ... } `in` { ... } ``. 
-and to simple program fragments
- - `isZero` 
- - `one`
- - `subtractOne`
- - `multiply`
+ - `` `let` { ... } `in` { ... } ``, 
+
+and to program fragments like
+
+ - `isZero`, 
+ - `one`,
+ - `subtractOne`,
+ - `multiply`,
 
 you will, hopefully, start appreciating the power of expression and elegance of use of pointfree code.
 
 ### **`FP` versus `PDBP`**
 
-There is an important difference between `FP` programs and `PDBP` programs (program descriptions, remember). 
+There is an important difference between `FP` programs and `PDBP` programs. 
 
  - `FP` programs are `FP` *language* based.
  - `PDBP` programs are `Dotty` *library* based.
 
-Exploiting the *flexibility* that comes with this difference is one of the most important themes of the `PDBP` library.
+Exploiting the *flexibility* that comes with this difference is the most important theme of the `PDBP` library.
 
 #### **Heteregeneous versus homogeneous**
 
