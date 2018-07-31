@@ -1,5 +1,3 @@
-# **Program Description Based Programming**
-
 <style type="text/css"> body { margin: auto; max-width: 44em; font-family: Calibri, sans-serif; font-size: 18pt; } /* automatic heading numbering */ h1 { counter-reset: h2counter; } 
 h2 { counter-reset: h3counter; } 
 h3 { counter-reset: h4counter; } 
@@ -12,6 +10,25 @@ h4:before { counter-increment: h4counter; content: counter(h2counter) "." counte
 h5:before { counter-increment: h5counter; content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) ".\0000a0\0000a0"; } 
 h6:before { counter-increment: h6counter; content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) "." counter(h6counter) ".\0000a0\0000a0"; } 
 </style>
+
+## **Program Description Based Programming**
+
+This document describes a [`Dotty`](http://dotty.epfl.ch/) library `PDBP`.
+
+Below is the logo of the library
+
+```scala
+    //       _______         __    __        _______
+    //      / ___  /\       / /\  / /\      / ___  /\
+    //     / /__/ / / _____/ / / / /_/__   / /__/ / /
+    //    / _____/ / / ___  / / / ___  /\ /____  / /
+    //   / /\____\/ / /__/ / / / /__/ / / \___/ / /
+    //  /_/ /      /______/ / /______/ /     /_/ /
+    //  \_\/       \______\/  \______\/      \_\/
+    //                                           v1.0
+    //  Program Description Based Programming Library
+    //  author        Luc Duponcheel        2017-2018
+```
 
 ## **About me**
 
@@ -107,21 +124,6 @@ It does have *sequences of objects* and it is possible to define `FP` programs t
 
 This document describes a *library*, `PDBP`, that is written in the [`Dotty` programming language](http://dotty.epfl.ch/). 
 The `PDBP` library implements the `FP` programming language.
-
-Below is the logo of the library
-
-```scala
-    //       _______         __    __        _______
-    //      / ___  /\       / /\  / /\      / ___  /\
-    //     / /__/ / / _____/ / / / /_/__   / /__/ / /
-    //    / _____/ / / ___  / / / ___  /\ /____  / /
-    //   / /\____\/ / /__/ / / / /__/ / / \___/ / /
-    //  /_/ /      /______/ / /______/ /     /_/ /
-    //  \_\/       \______\/  \______\/      \_\/
-    //                                           v1.0
-    //  Program Description Based Programming Library
-    //  author        Luc Duponcheel        2017-2018
-```
 
 ### **Objects and values**
 
