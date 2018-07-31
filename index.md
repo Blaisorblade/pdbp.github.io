@@ -9,14 +9,16 @@ I worked as a
 I am retired now.
 
 I am having fun with my wife Maritza
+
   - cycling with our race bicycles
-    - climbing mountains, ... ,
-  - gardening in our green house
-    - lettuce, cauliflower, tomato, bell pepper, ... .
+    - climbing mountains, ...
 
 Below is a link to picture, taken by a friend, of me and my wife, cycling in the French Alps.
 
 [Luc and Maritza](./pictures/LucAndMaritza.JPG)
+
+  - gardening in our green house
+    - lettuce, cauliflower, tomato, bell pepper, ... .
 
 Below is a link to picture of a radish I picked out of my greenhouse some time ago.
 
@@ -30,13 +32,14 @@ Below is a link to picture of a typical lunch using vegetables of my greenhouse.
 
 [Lunch](./pictures/Lunch.png)
 
-As a hobby I am having fun
+As a hobby I am still having fun
+
   - programming 
     - bridging the gap between mathematical theory and programming practice.
 
 I hope you enjoy the document below.
 
-All comments are welcome at [ pdbp.blog at gmail.com ].
+All comments are welcome [ pdbp.blog at gmail point com ].
 
 ## **Warning**      
 

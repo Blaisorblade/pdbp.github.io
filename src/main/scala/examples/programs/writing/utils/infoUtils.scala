@@ -35,10 +35,10 @@ object infoUtils {
 
   def infoFunction[Z, Y](string: String): Z && Y => String = {
     case (z, y) =>
-      s"INFO -- time $currentCalendarInMilliseconds -- thread $currentThreadId -- evaluating $string($z) yielding $y"
+      s"INFO -- time $currentCalendarInMilliseconds -- thread $currentThreadId -- evaluating $string($z) yields $y"
   }
 
-  def info[W: Writable, Z, Y,  >-->[- _, + _] : [>-->[- _, + _]] => Writing[W, >-->]]
+  def info[W: Writable, Z, Y,  >-->[- _, + _]: [>-->[- _, + _]] => Writing[W, >-->]]
       (string: String): (Z >--> Y) => ((String => W) `I=>` Z >--> Y) = {
     val implicitWriting = implicitly[Writing[W, >-->]]
     implicitWriting.writeUsing(infoFunction(string))
