@@ -542,7 +542,7 @@ Of course, eventually, for being useful at all, application code using `PDBP` ma
  - in `PDBP`
    - The meaning of I/O effects is defined *at the boundaries of application code*.
 
-Reading and writing capabilities are (more or less, more details later in this document) declared as
+Reading and writing capabilities are, more or less, declared as
 
 ```scala
   trait Reading[R, >-->[- _, + _]] {
@@ -566,8 +566,9 @@ and
   }
 ```
 
-If `program` is a program of type `Z >--> Y`, then `read >--> program >--> write` is a program of type `Unit >--> Unit`.
-A program of type `Unit >--> Unit` is referred to as a *main program*.
+More details about `Reading` and `Writing` later in this document.
+
+If `program` is a program of type `Z >--> Y`, then `read >--> program >--> write` is a program, referred to as a *main program*, of type `Unit >--> Unit`.
 
 Note that `read` and `write` *describe* reading and writing effects in a *pure* way.
 They come into play when *defining* main program descriptions.
