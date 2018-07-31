@@ -1774,7 +1774,7 @@ We also simply refer to
   - a producer program as a *producer*,
   - a consumer program as a *consumer*.
 
-### **Describing `MainFactorial` using an effectful `intProducer` and `factorialOfIntConsumer`**
+### **Describing `MainFactorial` using an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole`**
 
 Consider
 
@@ -1869,13 +1869,13 @@ object effectfulUtils {
 *You may, rightly*, argue that we are cheating here!*
 
 We promised to use `function` only for *pure* (a.k.a. as *effectfree*) functions.
-Both `intProducer` and `factorialOfIntConsumer` are programs that *execute effects* in an *impure* (a.k.a. as *effectful*) way.
+Both `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole` are programs that *execute effects* in an *impure* (a.k.a. as *effectful*) way.
 
 More precisely,
   - the function `effectfulReadIntFromConsoleFunction` that is used by `effectfulReadIntFromConsole` executes* the effects `println("message")` and `readInt()`,
   - the function `effectfulWriteToConsoleFunction` that is used by `effectfulWriteToConsole` executes the effects `println("message")` and `println(s"$y")`.
 
-Both `intProducer` and `factorialOfIntConsumer` above should (and will!) be replaced by programs that *describe effects* in an pure way.
+Both `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole` above should (and will!) be replaced by programs that *describe effects* in an pure way.
 
 More precisely,
   - we will extend the `PDBP` program description DSL with a *reading* programming capability, `read`
@@ -1883,7 +1883,7 @@ More precisely,
   - the `PDBP` program description DSL with a *writing* programming capability, `write`
     - in this case to write to the console
  
-#### **Describing `MainFactorialAsFunction` using an effectful `intProducer` and `factorialOfIntConsumer`**
+#### **Describing `MainFactorialAsFunction` using an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole`**
 
 `MainFactorialAsFunction` is similar to `MainFactorial`
 
@@ -1905,14 +1905,14 @@ trait MainFactorialAsFunction[>-->[- _, + _]: Program] extends EffectfulUtils[>-
   import factorialAsFunction.factorial
 
   val factorialMain: Unit >--> Unit =
-    intProducer >-->
+    effectfulReadIntFromConsole >-->
       factorial >-->
-      factorialOfIntConsumer
+      effectfulWriteFactorialOfIntToConsole
 
 }
 ```
 
-#### **Describing `MainFactorialTopDown` using an effectful `intProducer` and `factorialOfIntConsumer`**
+#### **Describing `MainFactorialTopDown` using an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole`**
 
 `MainFactorialTopDown` is similar to `MainFactorial`
 
@@ -1934,14 +1934,12 @@ trait MainFactorialTopDown[>-->[- _, + _]: Program] extends EffectfulUtils[>-->]
   import factorialTopDown.factorial
 
   val factorialMain: Unit >--> Unit =
-    intProducer >-->
+    effectfulReadIntFromConsole >-->
       factorial >-->
-      factorialOfIntConsumer
+      effectfulWriteFactorialOfIntToConsole
 
 }
 ```
-
-# UNTIL HERE
 
 ## **Describing `trait Computation`**
 
@@ -2006,7 +2004,7 @@ We write
 
  - result if we want to be explicit about being at the usage site.
 
-We also write that a computation yields a result.
+We also write that a computation yields a (or has a) result.
 
 #### **`PDBP` library users versus `PDBP` library developers**
 
@@ -2015,7 +2013,7 @@ Note that all computational capabilities are defined as `private [pdbp]`.
 We do not want to expose the pointful computational capabilies to the *users* of the `PDBP` library. 
 We only expose pointfree programming capabilities to the users of the `PDBP` library. 
 It is convenient to have pointful computational capabilies available for the *developers* of the `PDBP` library. 
-It is also *simpler* (not necessarily *easier*, though) to define `Computation` instances since `Computation` has less undefined declared capabilities than `Program`.
+It is also *simpler* (not necessarily *easier*, though) to define `Computation` `object`'s since `Computation` has less undefined declared capabilities than `Program`.
 
 #### **Variance**
 
@@ -2115,7 +2113,8 @@ import pdbp.computation.Computation
 import pdbp.computation.bindingOperator._
 
 class SumOfSquaresAsComputation[C[+ _]: Computation]
-    extends ResultingUtils[C]() {
+    extends AtomicKleisliPrograms[C]()
+    with HelperKleisliPrograms[C]() {
 
   import implicitly._
 
@@ -2127,7 +2126,31 @@ class SumOfSquaresAsComputation[C[+ _]: Computation]
         }
       }
     }
-  }  
+  }
+
+}
+```
+
+where
+
+```scala
+package pdbp.examples.kleisliPrograms
+package pdbp.examples.kleisliPrograms
+
+import pdbp.types.product.productType._
+
+import pdbp.computation.Resulting
+
+import pdbp.examples.utils.functionUtils._
+
+trait AtomicKleisliPrograms[C[+ _]: Resulting]
+    extends HelperKleisliPrograms[C] {
+
+  type `=>C` = [-Z, +Y] => Z => C[Y]
+
+  val square: Double `=>C` Double = squareHelper
+
+  val sum: (Double && Double) `=>C` Double = sumHelper
 
 }
 ```
@@ -2141,17 +2164,17 @@ import pdbp.types.product.productType._
 
 import pdbp.computation.Resulting
 
-import examples.utils.functionUtils._
+import pdbp.examples.utils.functionUtils._
 
-trait ResultingUtils[C[+ _]: Resulting] {
+trait HelperKleisliPrograms[C[+ _]: Resulting] {
 
   import implicitly._
 
   type `=>C` = [-Z, +Y] => Z => C[Y]
 
-  val square: Double `=>C` Double = squareFunction andThen result
+  val squareHelper: Double `=>C` Double = squareFunction andThen result
 
-  val sum: (Double && Double) `=>C` Double = sumFunction andThen result
+  val sumHelper: (Double && Double) `=>C` Double = sumFunction andThen result
 
 }
 ```
@@ -2159,6 +2182,8 @@ trait ResultingUtils[C[+ _]: Resulting] {
 where
 
 ```scala
+package pdbp.examples.utils.functionUtils._
+
 object functionUtils {
 
   // ...
@@ -2169,12 +2194,14 @@ object functionUtils {
 
   val sumFunction: Double && Double => Double = { (z, y) =>
     z + y
-  }  
+  } 
+
+  // ... 
 
 }
 ```
 
-Since the atomic computations, `square` and `sum` used by `sumOfSquares` are very fine-grained this gives us a lot of flexibility to give a meaning to `sumOfSquares`.
+Since the atomic kleisli programs , `square` and `sum` used by `sumOfSquares` are very fine-grained this gives us a lot of flexibility to give a meaning to `sumOfSquares`.
 
 #### **`sumOfSquares` as expression**
 
@@ -2187,7 +2214,7 @@ import pdbp.types.product.productType._
 
 import pdbp.computation.Resulting
 
-import examples.utils.functionUtils._
+import pdbp.examples.utils.functionUtils._
 
 class SumOfSquaresAsExpression[C[+ _]: Resulting] {
 
@@ -2205,7 +2232,7 @@ class SumOfSquaresAsExpression[C[+ _]: Resulting] {
 }
 ```
 
-Since the atomic program `sumOfSquaresFunction andThen result` used by `sumOfSquares` is very coarse-grained this gives us almost no flexibility to give a meaning to `sumOfSquares`.
+Since the atomic kleisli program `sumOfSquares` is very coarse-grained this gives us almost no flexibility to give a meaning to `sumOfSquares`.
 
 ### **main kleisli programs**
 
@@ -2231,7 +2258,7 @@ We also simply refer to
 
 Note that the code for a main kleisli program is more complex (and, as a consequence, imho, less elegant) than the code for a main program.
 
-### Describing `MainSumOfSquaresAsComputation` using an effectful `twoDoublesProducer` and `sumOfSquaresOfTwoDoublesConsumer`**
+### **Describing `MainSumOfSquaresAsComputation` using an effectful `twoDoublesProducer` and `sumOfSquaresOfTwoDoublesConsumer`**
 
 Consider
 
@@ -2246,17 +2273,19 @@ import pdbp.examples.utils.EffectfulUtils
 
 import pdbp.examples.kleisliPrograms.SumOfSquaresAsComputation
 
-class MainSumOfSquaresAsComputation[C[+ _]: Computation] extends EffectfulUtils[C]() {
+class MainSumOfSquaresAsComputation[C[+ _]: Computation]
+    extends EffectfulUtils[C]() {
 
-  private object sumOfSquaresAsKleisliProgram extends SumOfSquaresAsComputation[C]
+  private object sumOfSquaresAsComputation extends SumOfSquaresAsComputation[C]
+
   import sumOfSquaresAsComputation.sumOfSquares
 
   val sumOfSquaresMain: Unit `=>C` Unit = { u =>
-    twoDoublesProducer(u) bind { (z, y) => 
-      sumOfSquares(z, y) bind { x => 
-        sumOfSquaresOfTwoDoublesConsumer(x) 
+    twoDoublesProducer(u) bind { (z, y) =>
+      sumOfSquares(z, y) bind { x =>
+        sumOfSquaresOfTwoDoublesConsumer(x)
       }
-    }  
+    }
   }
 
 }
@@ -2279,20 +2308,21 @@ trait EffectfulUtils[C[+ _]: Resulting] {
 
   type `=>C` = [-Z, +Y] => Z => C[Y]
 
-  private def effectfulReadTwoDoublesFromConsole(
+  private def effectfulReadTwoDoublesFromConsoleWithMessage(
       message: String): Unit `=>C` (Double && Double) = { _ =>
     result(effectfulReadTwoDoublesFromConsoleFunction(message)(()))
   }
 
-  private def effectfulWriteToConsole[Y](message: String): Y `=>C` Unit = { y =>
-    result(effectfulWriteToConsoleFunction(message)(y))
+  private def effectfulWriteLineToConsole[Y](message: String): Y `=>C` Unit = {
+    y =>
+      result(effectfulWriteLineToConsoleFunction(message)(y))
   }
 
   val twoDoublesProducer: Unit `=>C` (Double && Double) =
-    effectfulReadTwoDoublesFromConsole("please type a double")
+    effectfulReadTwoDoublesFromConsoleWithMessage("please type a double")
 
   val sumOfSquaresOfTwoDoublesConsumer: Double `=>C` Unit =
-    effectfulWriteToConsole("the sum of the squares of the doubles is")
+    effectfulWriteLineToConsole("the sum of the squares of the doubles is")
 
 }
 ```
@@ -2304,14 +2334,14 @@ object effectfulUtils {
 
   // ...
 
-   def effectfulReadTwoDoublesFromConsoleFunction(message: String): Unit => (Double && Double) = {
-    _ =>
-      println(s"$message")
-      val d1 = readDouble()
-      println(s"$message")
-      val d2 = readDouble()     
-      (d1, d2)
-  } 
+  def effectfulReadTwoDoublesFromConsoleFunction(
+      message: String): Unit => (Double && Double) = { _ =>
+    println(s"$message")
+    val d1 = readDouble()
+    println(s"$message")
+    val d2 = readDouble()
+    (d1, d2)
+  }
 
   // ...
 
@@ -2333,18 +2363,19 @@ import pdbp.examples.utils.EffectfulUtils
 
 import pdbp.examples.kleisliPrograms.SumOfSquaresAsExpression
 
-class MainSumOfSquaresAsExpression[C[+ _]: Computation] extends EffectfulUtils[C]() {
+class MainSumOfSquaresAsExpression[C[+ _]: Computation]
+    extends EffectfulUtils[C]() {
 
   private object sumOfSquaresAsExpression extends SumOfSquaresAsExpression[C]
 
   import sumOfSquaresAsExpression.sumOfSquares
 
   val sumOfSquaresMain: Unit `=>C` Unit = { u =>
-    twoDoublesProducer(u) bind { (z, y) => 
-      sumOfSquares(z, y) bind { x => 
-        sumOfSquaresOfTwoDoublesConsumer(x) 
+    twoDoublesProducer(u) bind { (z, y) =>
+      sumOfSquares(z, y) bind { x =>
+        sumOfSquaresOfTwoDoublesConsumer(x)
       }
-    }  
+    }
   }
 
 }
@@ -2493,7 +2524,7 @@ private[pdbp] trait Lifting[C[+ _]]
 ```
 
 Lifting does not stop with objects (`lift0`), unary functions (`lift1`) and binary operators (`lift2`).
-It is possible to define lifting for ternary operators and so on ... .
+It is possible to define `lift3`, for lifting ternary operators and so on ... .
 
   - `lift3` is defined in terms of `lift2`
 
@@ -2721,7 +2752,7 @@ Also, again, note that the definitions of `function`, `compose` and `product` na
 Consider 
 
 ```scala
-package pdbp.demo.program
+package pdbp.program
 
 import pdbp.types.product.productType._
 
@@ -2735,9 +2766,9 @@ private[pdbp] trait Applying[>-->[- _, + _]] {
 Think of `apply` as a program that *applies* a program of type `Z >--> Y` to an argument of type `Z`.
 It transforms the argument of type `Z` to yield a result of type `Y`.
 
-#### **Augmenting computational capabilities with applying capabilities**
+#### **Augmenting computational capabilities with the applying capability**
 
-Computational capabilities can, trivially, be augmented with with applying capabilities.
+Computational capabilities can, trivially, be augmented with the applying capability.
 
 ```scala
 package pdbp.computation
@@ -2884,7 +2915,7 @@ Note that defining the computational capabilities of `trait Computation[C[+ _]]`
 
 We also refer to an `object` that extends `trait Program[[Kleisli[C]]` as a kleisli program object.
 
-The `PDBP` lobrary promotes using the design pattern *dependency injection by importing an implicit object extending a type class*.
+The `PDBP` library promotes using the design pattern *dependency injection by importing an implicit object extending a type class*.
 More about this when dealing with examples.
 
 The type classes involved are `trait Program[>-->[- _, + _]]` and `trait Computation[C[+ _]]` (with corresponsing `trait Program[Kleisli[C]]`.)
@@ -2917,6 +2948,11 @@ object implicits {
         az: Active[Z],
         `z=>ay`: => (Z => Active[Y])): Active[Y] =
       `z=>ay`(az)
+
+    override def compose[Z, Y, X](`z=>ay`: Z `=>A` Y,
+                                  `y=>ax`: => Y `=>A` X): Z `=>A` X = { z =>
+      bind(`z=>ay`(z), `y=>ax`)
+    }
 
   }
 
@@ -2963,7 +2999,7 @@ object functionUtils {
 
 ## **Running main programs (language level meaning)**
 
-### **Running `factorialMain` using  `activeProgram` and an effectful `intProducer` and `factorialOfIntConsumer`**
+### **Running `factorialMain` using  `activeProgram` and an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole`**
 
 Consider
 
@@ -2980,9 +3016,9 @@ import examples.mainPrograms.effectfulReadingAndWriting.MainFactorial
 object mainFactorial extends MainFactorial[`=>A`]()
 ```
 
-The definition of `mainFactorial` uses dependency injection by `import` of `implicit object activeProgram`, extending the type class `Program[`=>A`]` (by extending `Computation[Active]`).
+The definition of `mainFactorial` uses dependency injection by `import` of `implicit object activeProgram`, extending the type class `` Program[`=>A`] `` (by extending `Computation[Active]`).
 
-The definition of `object mainFactorial` extends `class MainFactorial[`=>A`]`. 
+The definition of `object mainFactorial` extends `` class MainFactorial[`=>A`] ``. 
 The definition of `MainFactorial` uses `factorial` that extends `` `Factorial[`=>A`]` ``.
 
 The definition of `factorial` in `Factorial[>-->]` used the programming capabilites declared in `Program[>-->]`.
@@ -3162,7 +3198,7 @@ private[pdbp] trait `~U~>`[F[+ _], T[+ _]] {
 
 `` trait `~U~>` `` defines *natural unary type constructor transformations* (`F` stands for from, `T` stands for to, and `U` stands for unary).
 
-Natural unary type constructor transformations are like functions, they have a similar `apply` member but it works at the unary type constructor level instead of at the type level.
+Natural unary type constructor transformations are like functions, they have an `apply` member but it works at the unary type constructor level instead of at the type level.
 
 ### **Natural binary type constructor transformations**
 
@@ -3232,16 +3268,13 @@ trait ProgramMeaning[`>-FP->`[- _, + _]: Program, `>-T->`[- _, + _]] {
 
 }
 ```
-Programs in general and language level meanings of programs in particular can be given a *library level meaning* using a natural binary type constructor transformation `meaning`.
+Programs in general and meanings of programs in particular can be given a *library level meaning* using a natural binary type constructor transformation `meaning`.
 
 
 ### **Library level meaning of computations**
 
-Language level meanings of computations can be given a library level meaning as follows
-
 ```scala
 package pdbp.computation.meaning
-
 
 import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
@@ -3262,12 +3295,13 @@ private[pdbp] trait ComputationMeaning[FC[+ _]: Computation, T[+ _]]
 
   private type `=>T` = Kleisli[T]
 
-  private[pdbp] override lazy val binaryTransformation: `=>FC` `~B~>` `=>T` = unaryTransformation
+  private[pdbp] override lazy val binaryTransformation: `=>FC` `~B~>` `=>T` =
+    unaryTransformation
 
 }
 ```
 
-Computations in general and `implicit object`'s that are language level meanings of computations (and corresponding language level meanings of kleisli programs) in particular can be given a library level meaning using a natural unary type constructor transformation `unaryTransformation`, which also gives a library level meaning, `meaning` to the corresponding kleisli programs.
+Computations (and corresponding kleisli programs) in general and meanings of computations (and corresponding meanings of kleisli programs) in particular can be given a library level meaning using a natural unary type constructor transformation `unaryTransformation`, which also gives a library level meaning, `meaning` to the corresponding kleisli programs.
 
 ### **Describing `activeMeaningOfActive`**
 
@@ -3307,7 +3341,8 @@ import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.meaning.ComputationMeaning
 
-private[pdbp] trait MeaningOfActive[TR[+ _]: Resulting] extends ComputationMeaning[Active, TR] {
+private[pdbp] trait MeaningOfActive[TR[+ _]: Resulting]
+    extends ComputationMeaning[Active, TR] {
 
   override private[pdbp] val unaryTransformation: Active `~U~>` TR =
     new {
@@ -3322,7 +3357,7 @@ private[pdbp] trait MeaningOfActive[TR[+ _]: Resulting] extends ComputationMeani
 
 ## **Running main programs (library level meaning)**
 
-### **Running `factorialMain` using an effectful `intProducer` and `factorialOfIntConsumer` and `activeMeaningOfActive`**
+### **Running `factorialMain` using an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole` and `activeMeaningOfActive`**
 
 We can now finally define `main` in `object FactorialMain`
 
@@ -3384,7 +3419,7 @@ Monad transformers were introduced in [Monad Transformers and Modular Interprete
 
 I have contributed to monad transformers myself by combining them with *catamorpisms* in [Using Catamorphisms, Subtypes and Monad Transformers for Writing Modular Functional Interpreters](http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=97555A49D9F56885C9EA225088EA73BA?doi=10.1.1.11.7093&rep=rep1&type=pdf).
 
-## **Describing `FreeTransformation`**
+### **Describing `FreeTransformation`**
 
 The first computation transformer that we describe is `trait FreeTransformation`.
 
@@ -3408,17 +3443,18 @@ private[pdbp] trait FreeTransformation[FC[+ _]: Computation]
 
   private type FTFC = FreeTransformed[FC]
 
-  override private[pdbp] val transform = new {
+  override private[pdbp] val transform: FC `~U~>` FTFC = new {
     override private[pdbp] def apply[Z](fcz: FC[Z]): FTFC[Z] =
       Transform(fcz)
   }
 
-  override private[pdbp] def result[Z]: Z => FTFC[Z] = 
+  override private[pdbp] def result[Z]: Z => FTFC[Z] =
     Result(_)
 
-  override private[pdbp] def bind[Z, Y](ftfcz: FTFC[Z],
-                                        `z=>ftfcy`: => (Z => FTFC[Y])): FTFC[Y] =
-    Bind(ftfcz, `z=>ftfcy`)     
+  override private[pdbp] def bind[Z, Y](
+      ftfcz: FTFC[Z],
+      `z=>ftfcy`: => (Z => FTFC[Y])): FTFC[Y] =
+    Bind(ftfcz, `z=>ftfcy`)
 
 }
 ```
@@ -3454,7 +3490,7 @@ and has a
 
 corresponding to the members `result` and `bind` of `trait Computation`.
 
-Think of `FreeTransformed[C]` instances as *free transformed computations*. 
+Think of `FreeTransformed[C]` `objects`'s as *free transformed computations*. 
 
 `trait FreeTransformation` transforms 
 
@@ -3470,18 +3506,16 @@ They construct a data structure on the heap.
 
 Think of `Free[C, Z]` as a *free data type* wrapped around `C` as described in [Data types a la carte](http://www.cs.ru.nl/~W.Swierstra/Publications/DataTypesALaCarte.pdf).
 
-The word *free* refers to the fact that a data structure built using `Result` and `Bind` can be seen as a *free meaning* for the computational capabilities `result` and `bind` of `trait Computation`.
+The data structure `Transform(cz)` exposes the programming capabilities of the computation `cz` of type `C[Z]` by transforming them to the type `Free[C, Z]`.
 
-The data structure `Transform(cz)` exposes the programming capabilities of the computation `cz` of type `C[Z]` by, kind of, lifting them to the type `Free[C, Z]`.
+The word *free* refers to the fact that a data structure built using `Result` and `Bind` can be seen as a *free meaning* for the computational capabilities `result` and `bind` of `trait Computation`. In a way it is the most abstract meaning one can think of because there are no constraints involved. Anyway, it *is* a meaning, it is *not* a description.
 
-## **Describing `FreeTransformedMeaning`**
+### **Describing `FreeTransformedMeaning`**
 
 The transformed computation meaning corresponding to the free computation transformation `trait FreeTransformation` is `trait FreeTransformedMeaning`.
 
 ```scala
 package pdbp.computation.meaning.free
-
-import pdbp.computation.Computation
 
 import pdbp.natural.transformation.unary.`~U~>`
 
@@ -3534,7 +3568,7 @@ Note that, for pattern matching,  we use names like `x2ftfcy` instead of `` `x=>
 
 `tailrecFold`, as it's name suggests, is a *tail recursive folding* of a computation of type `FTFC[Z]`, which is a free data structure wrapping a computation of type `FC[Z]`, back to a computation of type `FC[Z]`. 
 
-The computation of type `FC[Z]` can be given a meaning using `toBeTransformedMeaning.unaryTransformation`.
+The computation  `tailrecFold(ftfcz)` of type `FC[Z]` can be given a meaning using `toBeTransformedMeaning.unaryTransformation`.
 Therefore the computation of type `FTFC[Z]` can be given a meaning as well.
 
 Note that
@@ -3618,7 +3652,7 @@ object implicits {
 }
 ```
 
-### **Running `factorialMain` using an effectful `intProducer` and `factorialOfIntConsumer`, `activeFreeProgram` and `activeMeaningOfActiveFree`**
+### **Running `factorialMain` using an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole`, `activeFreeProgram` and `activeMeaningOfActiveFree`**
 
 Consider
 
@@ -3708,7 +3742,7 @@ trait Reading[R, >-->[- _, + _]] {
 }
 ```
 
-Think of `` `z>-->r` `` as a zero-argument program that yields result of type `R`.
+Think of `` `u>-->r` `` as a zero-argument program that yields result of type `R`.
 We also say that `` `u>-->r` `` is a program that, out of the blue, produces a result of type `R`. 
   
 Think of `` `z>-->r` `` as a program that transforms any argument of type `Z` to a yield result of type `R`.
@@ -3738,7 +3772,6 @@ You may argue: why using an explicit `read` member if using an implicitly availa
 
 We do not have a fully satisfying answer. The best one we can think of is that we prefer to be explicit at the description level and implicit at the meaning level.
 
-.
 ### **Introducing `type` `` `I=>` ``**
 
 Implicit function types `implicit Z => Y` are types like all other ones.
@@ -3791,18 +3824,18 @@ private[pdbp] trait ReadingTransformation[R, FC[+ _]: Computation]
 
   override private[pdbp] val transform: FC `~U~>` RTFC = new {
     override private[pdbp] def apply[Z](fcz: FC[Z]): RTFC[Z] =
-    fcz
+      fcz
   }
 
-  override private[pdbp] def result[Z]: Z => RTFC[Z] = { z =>
-    resultFC(z)
-  } 
+  override private[pdbp] def result[Z]: Z => RTFC[Z] =
+    resultFC(_)
 
-  override private[pdbp] def bind[Z, Y](rtfcz: RTFC[Z],
-                                        `z>=rtfcy`: => (Z => RTFC[Y])): RTFC[Y] =
-    bindFC(rtfcz, `z>=rtfcy`(_)) 
+  override private[pdbp] def bind[Z, Y](
+      rtfcz: RTFC[Z],
+      `z>=rtfcy`: => (Z => RTFC[Y])): RTFC[Y] =
+    bindFC(rtfcz, `z>=rtfcy`(_))
 
-  private[pdbp] override val `u>-->r`: Unit `=>RTFC` R = { _ =>
+  private[pdbp] override def `u>-->r`: Unit `=>RTFC` R = { _ =>
     resultFC(implicitly)
   }
 
@@ -3900,7 +3933,7 @@ object activeReadingTypes {
 
 Note that, since there is a type parameter `R` involved, we first define a `trait` and second a corresponding `implicit object` (for `BigInt`).
 
-### **Describing `MainFactorialOfIntRead` using `read` and an effectful `factorialOfIntConsumer`**
+### **Describing `MainFactorialOfIntRead` using `read` and an effectful `effectfulWriteFactorialOfIntToConsole`**
 
 Consider
 
@@ -3917,33 +3950,30 @@ import examples.utils.EffectfulUtils
 
 import examples.programs.Factorial
 
-class MainFactorialOfIntRead[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]]
+class MainFactorialOfIntRead[
+    >-->[- _, + _]: Program
+                  : [>-->[- _, + _]] => Reading[BigInt, >-->]]
     extends EffectfulUtils[>-->]() {
-
-  private val implicitProgram = implicitly[Program[>-->]]
 
   private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
 
-  import implicitProgram._
-
   import implicitIntReading._
 
-  private object factorial extends Factorial[>-->]
+  private object factorialObject extends Factorial[>-->]
 
-  import factorial.factorial
+  import factorialObject.factorial
 
   val factorialMain: Unit >--> Unit =
     read >-->
       factorial >-->
-      factorialOfIntConsumer
+      effectfulWriteFactorialOfIntToConsole
 
 }
 ```
 
-We replaced `intProducer` that *executes* an effect by `read` that *describes* an effect.
+We replaced `effectfulReadIntFromConsole` that *executes* an effect by `read` that *describes* an effect.
 
-
-### **Running `factorialMain` using `activeIntReadingProgram`, `read` and an effectful `factorialOfIntConsumer`**
+### **Running `factorialMain` using `activeIntReadingProgram`, `read` and an effectful `effectfulWriteFactorialOfIntToConsole`**
 
 Consider
 
@@ -4006,7 +4036,7 @@ object implicits {
 }
 ```
 
-Note that, in constrast with `factorialMain` using `activeProgram` and an effectful ``intProducer`, `factorialMain` using `activeIntReadingProgram` and `read` pushes the usage of the language level meaning of the description of the reading from console effect to it's very limits: the definition of `main`.
+Note that, in constrast with `factorialMain` using `activeProgram` and an effectful `effectfulReadIntFromConsole`, `factorialMain` using `activeIntReadingProgram` and `read` pushes the usage of the language level meaning of the description of the reading from console effect to it's very limits: the definition of `main`.
 
 Ok, so let’s use `main` in `objectFactorialOfIntReadMain`.
 
@@ -4020,7 +4050,7 @@ the factorial value of the integer is
 3628800
 ```
 
-We used `read` as an effectfree alternative for the effectful `intProducer` at the beginning of a program.
+We used `read` as an effectfree alternative for the effectful `effectfulReadIntFromConsole` at the beginning of a program.
 
 We can also use `read` anywhere in a program.
 
@@ -4039,7 +4069,9 @@ import pdbp.program.constructionOperators._
 
 import examples.programs.Factorial
 
-trait FactorialMultipliedByIntRead[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]]
+class FactorialMultipliedByIntRead[
+    >-->[- _, + _]: Program
+                  : [>-->[- _, + _]] => Reading[BigInt, >-->]]
     extends Factorial[>-->] {
 
   private val implicitProgram = implicitly[Program[>-->]]
@@ -4051,12 +4083,12 @@ trait FactorialMultipliedByIntRead[>-->[- _, + _]: Program: [>-->[- _, + _]] => 
   import implicitIntReading._
 
   val factorialMultipliedByIntRead: BigInt >--> BigInt =
-      (factorial & read) >--> multiply
+    (factorial & read) >--> multiply
 
 }
 ```
 
-### **Describing `MainFactorialMultipliedByIntRead` using an effectful `intProducer` and `factorialOfIntConsumer`**
+### **Describing `MainFactorialMultipliedByIntRead` using an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntMultipliedByIntReadToConsole`**
 
 Consider
 
@@ -4073,21 +4105,20 @@ import examples.utils.EffectfulUtils
 
 import examples.programs.reading.int.FactorialMultipliedByIntRead
 
-class MainFactorialMultipliedByIntRead[>-->[- _, + _]: Program: [>-->[- _, + _]] => Reading[BigInt, >-->]] 
-  extends EffectfulUtils[>-->]() {
+class MainFactorialMultipliedByIntRead[
+    >-->[- _, + _]: Program
+                  : [>-->[- _, + _]] => Reading[BigInt, >-->]] 
+    extends EffectfulUtils[>-->]() {
 
-  private val implicitProgram = implicitly[Program[>-->]]  
+  private object factorialMultipliedByIntReadObject
+      extends FactorialMultipliedByIntRead[>-->]
 
-  import implicitProgram._ 
-
-  private object factorialMultipliedByIntRead extends FactorialMultipliedByIntRead[>-->]()
-
-  import factorialMultipliedByIntRead.factorialMultipliedByIntRead
+  import factorialMultipliedByIntReadObject.factorialMultipliedByIntRead
 
   val factorialMultipliedByIntReadMain: Unit >--> Unit =
-    intProducer >-->
+    effectfulReadIntFromConsole >-->
       factorialMultipliedByIntRead >-->
-      factorialOfIntMultipliedByIntReadConsumer  
+      effectfulWriteFactorialOfIntMultipliedByIntReadToConsole
 
 }
 ```
@@ -4099,13 +4130,14 @@ trait EffectfulUtils[>-->[- _, + _]: Function] {
 
   // ...
 
-  def factorialOfIntMultipliedByIntReadConsumer: BigInt >--> Unit =
-    effectfulWriteToConsole("the factorial value of the integer multiplied by the int read is")
+  val effectfulFactorialOfIntMultipliedByIntReadConsumer: BigInt >--> Unit =
+    effectfulWriteLineToConsoleWithMessage(
+      "the factorial value of the integer multiplied by the integer read is")
 
 }
 ```
 
-### **Running `factorialMultipliedByIntReadMain` using `activeIntReadingProgram`, and an effectful `intProducer` and `factorialOfIntConsumer`**
+### **Running `factorialMultipliedByIntReadMain` using `activeIntReadingProgram`, and an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntMultipliedByIntReadToConsole`**
 
 Consider
 
@@ -4736,7 +4768,7 @@ class MainFactorialOfIntReadWrittenToConsole[
 }
 ```
 
-We replaced `factorialOfIntConsumer` that executes an effect by `write` that describes an effect.
+We replaced `effectfulWriteFactorialOfIntToConsole` that executes an effect by `write` that describes an effect.
 
 ## **Running `factorialMain` using `activeIntReadingWithWritingToConsoleProgram`, `read` and `write`**
 
@@ -5405,7 +5437,7 @@ object LibraryLevelMeaning {
 
 ### **Exploiting similarity**
 
-So far we have defined `meaning` for `Containing` descriptions in terms of `Containing` instances.
+So far we have defined `meaning` for `Containing` descriptions in terms of `Containing` `object`'s.
 
 `Containing` and `Covering` describe similar concepts. Maybe you can think of
 

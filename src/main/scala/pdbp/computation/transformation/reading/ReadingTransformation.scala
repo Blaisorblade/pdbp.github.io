@@ -49,9 +49,8 @@ private[pdbp] trait ReadingTransformation[R, FC[+ _]: Computation]
       fcz
   }
 
-  override private[pdbp] def result[Z]: Z => RTFC[Z] = { z =>
-    resultFC(z)
-  }
+  override private[pdbp] def result[Z]: Z => RTFC[Z] =
+    resultFC(_)
 
   override private[pdbp] def bind[Z, Y](
       rtfcz: RTFC[Z],

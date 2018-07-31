@@ -34,6 +34,6 @@ class MainFactorialMultipliedByIntRead[
   val factorialMultipliedByIntReadMain: Unit >--> Unit =
     effectfulReadIntFromConsole >-->
       factorialMultipliedByIntRead >-->
-      effectfulWriteFactorialOfIntToConsole
+      effectfulWriteFactorialOfIntMultipliedByIntReadToConsole
 
 }
