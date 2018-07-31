@@ -4028,8 +4028,13 @@ import pdbp.utils.effectfulUtils._
 
 object implicits {
 
-  implicit val readIntFromConsoleEffect: BigInt = 
-    effectfulReadIntFromConsoleFunction("please type an integer to read")(())
+  // ...
+
+  private def readIntFromConsoleEffectWithMessage(message: String): BigInt =
+    effectfulReadIntFromConsoleFunction(message)(())
+
+  implicit val readIntFromConsoleEffect: BigInt =
+    readIntFromConsoleEffectWithMessage("please type an integer to read")
 
   // ...
 
@@ -4277,28 +4282,58 @@ Consider
 ```scala
 package pdbp.program.writing
 
+import pdbp.types.implicitFunctionType._
+
+import pdbp.types.product.productType._
+
 import pdbp.writable.Writable
 
 import pdbp.program.Function
 
 import pdbp.program.Composition
 
-trait Writing[W: Writable, >-->[- _, + _]] {
-  this: Function[>-->] & Composition[>-->] =>
+import pdbp.program.Construction
 
-  private[pdbp] val `w>-->u`: W >--> Unit  
+trait Writing[W: Writable, >-->[- _, + _]] {
+  this: Function[>-->] & Composition[>-->] & Construction[>-->] =>
+
+  private[pdbp] val `w>-->u`: W >--> Unit = write(identity)
 
   def write[Z]: (Z => W) `I=>` Z >--> Unit =
-    compose(function(implicitly), `w>-->u`)        
+    compose(function(implicitly), `w>-->u`)
+
+  def writeUsing[Z, Y, X](
+      `(z&&y)=>x`: ((Z && Y) => X)): (Z >--> Y) => ((X => W) `I=>` Z >--> Y) = {
+    `z>-->y` =>
+      val `(z&&y)>-->x` = function(`(z&&y)=>x`)
+      val `z>-->(x&&y)` =
+        `let` {
+          `z>-->y`
+        } `in` {
+          `let` {
+            `(z&&y)>-->x`
+          } `in` {
+            `(z&&y&&x)>-->(x&&y)`
+          }
+        }
+      compose(compose(`z>-->(x&&y)`, left(write)), `(u&&y)>-->y`)
+  }
 
 }
 ```
-
-
+`Writable` is described later in this section.
 
 Think of `` `w>-->u` `` as a program that *writes* a *writable* value of type `W`.
 
-where
+Note that `` `w>-->u` `` is private[pdbp]. Since we are defining a public programming API, it is also convenient to define a `public` member `write` and a public member `writeUsing`. 
+
+
+Think of `write` as a program that *writes* a value of type `Z` that can `implicitly` be converted (using a function of type ``Z => W) to a `Writable` of type `W`.
+
+Think of ` `writeUsing(`(z&&y)=>x`)(`z>-->y`) `` as the program `z>-->y` that also writes a value of type `X` that is yielded by transforming an argument of type `Z` and a corresponding result of type `Y` to a result of type `X` 
+
+
+### **Describing `Writable`**
 
 ```scala
 package pdbp.writable
@@ -4372,8 +4407,6 @@ object constType {
 }
 ```
 
-Note that `` `w>-->u` `` is private[pdbp]. Since we are defining a public programming API, it is also convenient to define a `public` member `write` that writes any value of type `Z`, assuming an implicit function of type `Z => W` converting that value to a writable one.
-
 ## **Describing `WritingTransformation`**
 
 The next computation transformer that we describe is `trait WritingTransformer` that is used to add the writing capability to program descriptions.
@@ -4425,11 +4458,12 @@ private[pdbp] trait WritingTransformation[W: Writable, FC[+ _]: Computation]
     resultFC((start, z))
   }
 
-  override private[pdbp] def bind[Z, Y](wtfcz: WTFC[Z],
-                                        `z=>wtfcy`: => (Z => WTFC[Y])): WTFC[Y] =
+  override private[pdbp] def bind[Z, Y](
+      wtfcz: WTFC[Z],
+      `z=>wtfcy`: => (Z => WTFC[Y])): WTFC[Y] =
     bindFC(wtfcz, { (leftW, z) =>
-      bindFC(`z=>wtfcy`(z), { (rightW, y) => 
-      resultFC(append(leftW, rightW), y)
+      bindFC(`z=>wtfcy`(z), { (rightW, y) =>
+        resultFC(append(leftW, rightW), y)
       })
     })
 
@@ -4617,12 +4651,16 @@ import pdbp.computation.transformation.reading.writing.ReadingWithWritingTransfo
 object implicits {
 
   implicit object activeIntReadingWithWritingToConsoleProgram
-    extends ActiveReadingWithWritingProgram[BigInt, ToConsole]()
-    with ComputationTransformation[ActiveWriting[ToConsole], ActiveReadingWithWriting[BigInt, ToConsole]]()
-    with ReadingTransformation[BigInt, ActiveWriting[ToConsole]]()
-    with ReadingWithWritingTransformation[BigInt, ToConsole, ActiveWriting[ToConsole]]()
-    with Reading[BigInt, `=>ARW`[BigInt, ToConsole]]()
-    with Writing[ToConsole, `=>ARW`[BigInt, ToConsole]]()
+      extends ActiveReadingWithWritingProgram[BigInt, ToConsole]()
+      with ComputationTransformation[
+        ActiveWriting[ToConsole],
+        ActiveReadingWithWriting[BigInt, ToConsole]]()
+      with ReadingTransformation[BigInt, ActiveWriting[ToConsole]]()
+      with ReadingWithWritingTransformation[BigInt,
+                                            ToConsole,
+                                            ActiveWriting[ToConsole]]()
+      with Reading[BigInt, `=>ARW`[BigInt, ToConsole]]()
+      with Writing[ToConsole, `=>ARW`[BigInt, ToConsole]]()
 
 }
 ```
@@ -4650,12 +4688,13 @@ import pdbp.computation.transformation.ComputationTransformation
 
 import pdbp.computation.transformation.reading.writing.ReadingWithWritingTransformation
 
-trait ActiveReadingWithWritingProgram[R, W: Writable]
+private[pdbp] trait ActiveReadingWithWritingProgram[R, W: Writable]
     extends Computation[ActiveReadingWithWriting[R, W]]
     with Program[`=>ARW`[R, W]]
     with Reading[R, `=>ARW`[R, W]]
     with Writing[W, `=>ARW`[R, W]]
-    with ComputationTransformation[ActiveWriting[W], ActiveReadingWithWriting[R, W]]
+    with ComputationTransformation[ActiveWriting[W],
+                                   ActiveReadingWithWriting[R, W]]
     with ReadingWithWritingTransformation[R, W, ActiveWriting[W]]
 ```
 
@@ -4684,6 +4723,10 @@ where
 ```scala
 package pdbp.computation.transformation.reading.writing
 
+import pdbp.types.implicitFunctionType._
+
+import pdbp.types.product.productType._
+
 import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
 import pdbp.writable.Writable
@@ -4696,9 +4739,9 @@ import pdbp.computation.transformation.reading.ReadingTransformation
 import pdbp.computation.transformation.reading.ReadingTransformation._
 
 private[pdbp] trait ReadingWithWritingTransformation[
-    R,
-    W : Writable, 
-    FC[+ _]: Computation : [FC[+ _]] => Writing[W, Kleisli[FC]]]
+    R, W: Writable, 
+    FC[+ _]: Computation
+           : [FC[+ _]] => Writing[W, Kleisli[FC]]]
     extends ReadingTransformation[R, FC]
     with Writing[W, Kleisli[ReadingTransformed[R, FC]]] {
 
@@ -4713,7 +4756,7 @@ private[pdbp] trait ReadingWithWritingTransformation[
     implicitWriting.`w>-->u`(w)
   }
 
- } 
+} 
 ```
 
 ### **Describing `MainFactorialOfIntReadWrittenToConsole` using `read` and `write`**
@@ -4770,13 +4813,12 @@ class MainFactorialOfIntReadWrittenToConsole[
 
 We replaced `effectfulWriteFactorialOfIntToConsole` that executes an effect by `write` that describes an effect.
 
-## **Running `factorialMain` using `activeIntReadingWithWritingToConsoleProgram`, `read` and `write`**
+## **Running `factorialMain` using `mainFactorialOfIntReadWrittenToConsole`, `read` and `write`**
 
 Consider
 
 ```scala
 package examples.objects.active.reading.int.writing.toConsole
-
 
 import pdbp.types.effect.toConsole.ToConsole
 
@@ -4805,22 +4847,26 @@ import mainFactorialOfIntReadWrittenToConsole.factorialMain
 
 import examples.main.Main
 
-object FactorialOfIntReadWrittenToConsoleMain extends Main[`=>ARW`[BigInt, ToConsole]] {
+object FactorialOfIntReadWrittenToConsoleMain
+    extends Main[`=>ARW`[BigInt, ToConsole]] {
 
-  import pdbp.utils.effects.implicits.readIntFromConsoleEffect
+  import examples.utils.effects.implicits.readIntFromConsoleEffect
 
-  import pdbp.utils.effects.implicits.writeFactorialOfIntReadToConsoleEffect
+  import examples.utils.effects.implicits.writeFactorialOfIntReadFromConsoleToConsoleEffect
 
   private type `=>ARW[BigInt, ToConsole]` = `=>ARW`[BigInt, ToConsole]
-          
-  override val mainKleisliProgram: Unit `=>ARW[BigInt, ToConsole]` Unit = factorialMain
 
-  override val run = mainKleisliProgram(()) match { case (ToConsole(effect), _) => effect(()) }
+  override val mainKleisliProgram: Unit `=>ARW[BigInt, ToConsole]` Unit =
+    factorialMain
+
+  override val run = mainKleisliProgram(()) match {
+    case (ToConsole(effect), _) => effect(())
+  }
 
 }
 ```
 
-where `writeFactorialOfIntReadToConsoleEffect`  executes the effect that is described by `write`.
+where `writeFactorialOfIntReadFromConsoleToConsoleEffect`  executes the effect that is described by `write`.
 
 ```scala
 package pdbp.utils.effects
@@ -4831,14 +4877,21 @@ import pdbp.utils.effectfulUtils._
 
 object implicits {
 
-  def writeToConsoleEffect[Z](message: String): Z => ToConsole = { z =>
-    ToConsole( { _ =>
-      effectfulWriteToConsoleFunction(message)(z)
-      } )
+  // ...
+
+  private def writeLineToConsoleEffectWithMessage[Z](
+      message: String): Z => ToConsole = { z =>
+    ToConsole({ _ =>
+      effectfulWriteLineToConsoleFunction(message)(z)
+    })
   }
 
-  implicit val writeFactorialOfIntReadToConsoleEffect: BigInt => ToConsole =
-    writeToConsoleEffect[BigInt]("the factorial value of the integer read is")
+  implicit val writeFactorialOfIntReadFromConsoleToConsoleEffect
+    : BigInt => ToConsole =
+    writeLineToConsoleEffectWithMessage(
+      "the factorial value of the integer read is")
+
+  // ...    
 
 }
 ```
@@ -4854,6 +4907,9 @@ please type an integer to read
 the factorial value of the integer read is
 3628800
 ```
+
+# UNTIL HERE (TODO: use `writeUsing`)
+
 
 # **Appendices**
 
