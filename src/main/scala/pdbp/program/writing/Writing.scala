@@ -49,8 +49,3 @@ trait Writing[W: Writable, >-->[- _, + _]] {
   }
 
 }
-// def pointfreeWriting[Z, Y, X](x: X):
-//     Z >--> Y => ((X => W) `I=>` Z >--> Y) = {
-//   `z>-->y` =>
-//     compose(`x=>z>-->(x&&z)`(x), compose(and(write, `z>-->y`), `(u&&y)>-->y`))
-// }

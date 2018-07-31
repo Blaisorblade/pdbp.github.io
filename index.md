@@ -463,7 +463,7 @@ Exploiting the *flexibility* that comes with this difference is the most importa
  - `PDBP` is *homogeneous*,
    - in `Dotty`, everything is an object (value), in particular programs are objects (values).
 
-In a way you can look at programming with `PDBP` as passing around values having programming capabilities, or simply, passing around programming capabilities in particular and passing around capabilities in general.
+In a way you can look at programming with `PDBP` as passing around values having programming capabilities, or simply, passing around programming capabilities in particular and *passing around capabilities* in general.
 
 #### **Meaning of programs**
 
@@ -473,7 +473,9 @@ In a way you can look at programming with `PDBP` as passing around values having
  - in `PDBP,`
    - programs can have *many meanings* where
      - the meaning is language level (`object` implementation of a `trait`), or
-     - the meaning is library level (using a *natural transformation*, see below).
+     - the meaning is library level (using a *natural transformation).
+
+Natural transformations are explained later in this document.
 
 Consider, again, the `factorial` program below.
 
@@ -498,8 +500,8 @@ The stack safe meaning uses the *heap* instead of the *stack*.
 
 For those who are a bit impatient
 
- - [AppendixLanguageLevelMeaning](#appendixlanguagelevelmeaning) has demo code where meanings are described at the *language level*.
- - [AppendixLibraryLevelMeaning](#appendixlibrarylevelmeaning) has demo code where meanings are described at the *library level*.
+ - [AppendixLanguageLevelMeaning](#appendixlanguagelevelmeaning) has demo code describing meanings at the *language level*.
+ - [AppendixLibraryLevelMeaning](#appendixlibrarylevelmeaning) has demo code describing meanings at the *library level*.
 
 #### **Extra programming capabilities**
 
@@ -538,7 +540,40 @@ Of course, eventually, for being useful at all, application code using `PDBP` ma
  - in `FP`
    - I/O effects are executed *in the middle of library code*.
  - in `PDBP`
-   - I/O effects are executed *at the boundaries of application code*.
+   - The meaning of I/O effects is defined *at the boundaries of application code*.
+
+Reading and writing capabilities are (more or less, more details later in this document) declared as
+
+```scala
+  trait Reading[R, >-->[- _, + _]] {
+    // ...
+
+    def read: Unit >--> R
+
+    // ...
+  }
+```
+
+and
+
+```scala
+  trait Writing[W: Writable, >-->[- _, + _]] {
+    // ...
+
+    def write[Y]: implicit (Y => W) => Y >--> Unit
+  
+    // ...
+  }
+```
+
+If `program` is a program of type `Z >--> Y`, then `read >--> program >--> write` is a program of type `Unit >--> Unit`.
+A program of type `Unit >--> Unit` is referred to as a *main program*.
+
+Note that `read` and `write` *describe* reading and writing effects in a *pure* way.
+They come into play when *defining* main program descriptions.
+
+The *meanings* of `read` and `write` *execute* reading and writing effects in an *impure* way.
+They only come into play when, eventually, *using* main program descriptions in `def main(args: Array[String]): Unit`.
 
 ### **Main goal of the `PDBP` library**
 
@@ -547,7 +582,7 @@ The *main goal* of the `PDBP` library is to illustrate that program description 
  - *powerful*
    -  as a library developer you can use the full expressive power of monads,
  - *elegant*
-   - as an application developer you can use the elegance of  `Dotty` DSL syntax,
+   - as an application developer you can use the elegance of `Dotty` DSL syntax,
  - *flexible*
    - as a library developer you can define many meanings,
    - as an application developer you can use many meanings,
