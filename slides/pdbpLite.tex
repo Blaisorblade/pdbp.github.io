@@ -1060,6 +1060,13 @@ with members \ttdg{read} resp. \ttdg{write} that \emdb{describe effects}
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
+  implicit object activeMeaningOfActive
+      extends MeaningOfActive[Active]()
+      with ComputationMeaning[Active, Active]()
+      with ProgramMeaning[`=>A`, `=>A`]()
+
+  import ... activeMeaningOfActive
+
   implicit object activeMeaningOfActiveFree
       extends FreeTransformedMeaning[Active, Active]()
       with ComputationMeaning[ActiveFree, Active]()
@@ -1228,10 +1235,12 @@ with members \ttdg{read} resp. \ttdg{write} that \emdb{describe effects}
   import  ... activeProgram
 
   implicit object activeIntReadingProgram
-    extends ActiveReadingProgram[BigInt]()
-    with ComputationTransformation[Active, ActiveReading[BigInt]]()
-    with ReadingTransformation[BigInt, Active]()
-    with Reading[BigInt, `=>AR`[BigInt]]
+      extends ActiveReadingProgram[BigInt]()
+      with Computation[ActiveReading[BigInt]]()
+      with Program[`=>AR`[BigInt]]()
+      with Reading[BigInt, `=>AR`[BigInt]]()      
+      with ReadingTransformation[BigInt, Active]()
+      with ComputationTransformation[Active, ActiveReading[BigInt]]()
 \end{verbatim}
 }
 }
@@ -1481,19 +1490,34 @@ with members \ttdg{read} resp. \ttdg{write} that \emdb{describe effects}
   import ... activeWritingToConsoleProgram
 
   implicit object activeIntReadingWithWritingToConsoleProgram
-    extends ActiveReadingWithWritingProgram[BigInt, ToConsole]()
-    with ComputationTransformation[ActiveWriting[
-      ToConsole], ActiveReadingWithWriting[BigInt, ToConsole]]()
-    with ReadingTransformation[BigInt, ActiveWriting[ToConsole]]()
-    with ReadingWithWritingTransformation[
-      BigInt, ToConsole, ActiveWriting[ToConsole]]()
-    with Reading[BigInt, `=>ARW`[BigInt, ToConsole]]()
-    with Writing[ToConsole, `=>ARW`[BigInt, ToConsole]]()
+      extends ActiveReadingWithWritingProgram[BigInt, ToConsole]()
+      with Computation[ActiveReadingWithWriting[BigInt, ToConsole]]()
+      with Program[`=>ARW`[BigInt, ToConsole]]()                                            
+      with Reading[BigInt, `=>ARW`[BigInt, ToConsole]]()
+      with Writing[ToConsole, `=>ARW`[BigInt, ToConsole]]()
+      // ...
 \end{verbatim}
 }
 }
 \end{frame}
 
+\begin{frame}[fragile]
+\frametitle{\begin{center}\ttdg{activeIntReadingWithWritingToConsoleProgram}\end{center}}
+{\color{DarkGreen}	
+\footnotesize{
+\begin{verbatim}
+      // ...
+      with ReadingWithWritingTransformation[BigInt,
+                                            ToConsole,
+                                            ActiveWriting[ToConsole]]()
+      with ReadingTransformation[BigInt, ActiveWriting[ToConsole]]()
+      with ComputationTransformation[
+        ActiveWriting[ToConsole],
+        ActiveReadingWithWriting[BigInt, ToConsole]]()
+\end{verbatim}
+}
+}
+\end{frame}
 \begin{frame}[fragile]
 \frametitle{\begin{center}\ttdg{infoUtils}\end{center}}
 {\color{DarkGreen}	
@@ -1507,7 +1531,8 @@ with members \ttdg{read} resp. \ttdg{write} that \emdb{describe effects}
   def info[
       W: Writable, Z, Y,  
       >-->[- _, + _]: [>-->[- _, + _]] => Writing[W, >-->]]
-      (string: String): (Z >--> Y) => ((String => W) `I=>` Z >--> Y) = {
+      (string: String): 
+      (Z >--> Y) => ((String => W) `I=>` Z >--> Y) = {
     val implicitWriting = implicitly[Writing[W, >-->]]
     implicitWriting.writeUsing(infoFunction(string))
   }
@@ -1613,21 +1638,21 @@ object FactorialOfIntReadWritingToConsoleWrittenToConsoleMain
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
-please type an integer to read
-2
-INFO -- 2018-08-01 18:00:42.639 -- isZero(2) => false
-INFO -- 2018-08-01 18:00:42.645 -- subtractOne(2) => 1
-INFO -- 2018-08-01 18:00:42.646 -- isZero(1) => false
-INFO -- 2018-08-01 18:00:42.647 -- subtractOne(1) => 0
-INFO -- 2018-08-01 18:00:42.647 -- isZero(0) => true
-INFO -- 2018-08-01 18:00:42.648 -- one(0) => 1
-INFO -- 2018-08-01 18:00:42.648 -- factorial(0) => 1
-INFO -- 2018-08-01 18:00:42.649 -- multiply((1,1)) => 1
-INFO -- 2018-08-01 18:00:42.649 -- factorial(1) => 1
-INFO -- 2018-08-01 18:00:42.650 -- multiply((2,1)) => 2
-INFO -- 2018-08-01 18:00:42.650 -- factorial(2) => 2
-the factorial value of the integer read is
-2
+  please type an integer to read  
+  2
+  INFO -- 2018-08-01 18:00:42.639 -- isZero(2) => false
+  INFO -- 2018-08-01 18:00:42.645 -- subtractOne(2) => 1
+  INFO -- 2018-08-01 18:00:42.646 -- isZero(1) => false
+  INFO -- 2018-08-01 18:00:42.647 -- subtractOne(1) => 0
+  INFO -- 2018-08-01 18:00:42.647 -- isZero(0) => true
+  INFO -- 2018-08-01 18:00:42.648 -- one(0) => 1
+  INFO -- 2018-08-01 18:00:42.648 -- factorial(0) => 1
+  INFO -- 2018-08-01 18:00:42.649 -- multiply((1,1)) => 1
+  INFO -- 2018-08-01 18:00:42.649 -- factorial(1) => 1
+  INFO -- 2018-08-01 18:00:42.650 -- multiply((2,1)) => 2
+  INFO -- 2018-08-01 18:00:42.650 -- factorial(2) => 2
+  the factorial value of the integer read is
+  2
 \end{verbatim}
 }
 }

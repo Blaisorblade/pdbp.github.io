@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.7.27)  1 AUG 2018 18:27
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.7.27)  1 AUG 2018 20:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2347,11 +2347,24 @@ Package pdftex.def Info: png/PDBP.png used on input line 1056.
 \openout4 = `pdbpLite.vrb'.
 
  (./pdbpLite.vrb)
+Overfull \vbox (0.79083pt too high) detected at line 1077
+ []
+
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1070.
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1077.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [149
+
+]
+\openout4 = `pdbpLite.vrb'.
+
+ (./pdbpLite.vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1098.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [150
 
 ]
 \openout4 = `pdbpLite.vrb'.
@@ -2360,31 +2373,20 @@ Package pdftex.def Info: png/PDBP.png used on input line 1070.
 (./pdbpLite.vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1091.
+Package pdftex.def Info: png/PDBP.png used on input line 1119.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [150
+ [151
 
 ]
 \openout4 = `pdbpLite.vrb'.
 
  (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1112.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
-
-[151
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
-Overfull \vbox (10.54082pt too high) detected at line 1134
+Overfull \vbox (10.54082pt too high) detected at line 1141
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1134.
+Package pdftex.def Info: png/PDBP.png used on input line 1141.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [152
 
@@ -2392,12 +2394,12 @@ Package pdftex.def Info: png/PDBP.png used on input line 1134.
 \openout4 = `pdbpLite.vrb'.
 
  (./pdbpLite.vrb)
-Overfull \vbox (10.54082pt too high) detected at line 1156
+Overfull \vbox (10.54082pt too high) detected at line 1163
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1156.
+Package pdftex.def Info: png/PDBP.png used on input line 1163.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [153
 
@@ -2407,7 +2409,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 1156.
  (./pdbpLite.vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1169.
+Package pdftex.def Info: png/PDBP.png used on input line 1176.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [154
 
@@ -2418,7 +2420,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 1169.
 (./pdbpLite.vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1190.
+Package pdftex.def Info: png/PDBP.png used on input line 1197.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [155
 
@@ -2428,7 +2430,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 1190.
  (./pdbpLite.vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1204.
+Package pdftex.def Info: png/PDBP.png used on input line 1211.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
 
 [156
@@ -2439,7 +2441,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 1204.
  (./pdbpLite.vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1221.
+Package pdftex.def Info: png/PDBP.png used on input line 1228.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [157
 
@@ -2447,15 +2449,15 @@ Package pdftex.def Info: png/PDBP.png used on input line 1221.
 \openout4 = `pdbpLite.vrb'.
 
  (./pdbpLite.vrb
-Overfull \hbox (9.28145pt too wide) in paragraph at lines 12--12
-[]    \OT1/cmtt/m/n/9 with ComputationTransformation[Active, ActiveReading[BigI
-nt]]()[] 
+Overfull \hbox (18.73134pt too wide) in paragraph at lines 14--14
+[]      \OT1/cmtt/m/n/9 with ComputationTransformation[Active, ActiveReading[Bi
+gInt]]()[] 
  []
 
 )
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1238.
+Package pdftex.def Info: png/PDBP.png used on input line 1247.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [158
 
@@ -2463,12 +2465,12 @@ Package pdftex.def Info: png/PDBP.png used on input line 1238.
 \openout4 = `pdbpLite.vrb'.
 
  (./pdbpLite.vrb)
-Overfull \vbox (18.34082pt too high) detected at line 1261
+Overfull \vbox (18.34082pt too high) detected at line 1270
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1261.
+Package pdftex.def Info: png/PDBP.png used on input line 1270.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [159
 
@@ -2478,7 +2480,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 1261.
  (./pdbpLite.vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1273.
+Package pdftex.def Info: png/PDBP.png used on input line 1282.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [160
 
@@ -2489,7 +2491,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 1273.
 (./pdbpLite.vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1294.
+Package pdftex.def Info: png/PDBP.png used on input line 1303.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [161
 
@@ -2497,12 +2499,12 @@ Package pdftex.def Info: png/PDBP.png used on input line 1294.
 \openout4 = `pdbpLite.vrb'.
 
  (./pdbpLite.vrb)
-Overfull \vbox (10.54082pt too high) detected at line 1316
+Overfull \vbox (10.54082pt too high) detected at line 1325
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1316.
+Package pdftex.def Info: png/PDBP.png used on input line 1325.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [162
 
@@ -2510,12 +2512,12 @@ Package pdftex.def Info: png/PDBP.png used on input line 1316.
 \openout4 = `pdbpLite.vrb'.
 
  (./pdbpLite.vrb)
-Overfull \vbox (65.54082pt too high) detected at line 1343
+Overfull \vbox (65.54082pt too high) detected at line 1352
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1343.
+Package pdftex.def Info: png/PDBP.png used on input line 1352.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [163
 
@@ -2525,7 +2527,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 1343.
  (./pdbpLite.vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1356.
+Package pdftex.def Info: png/PDBP.png used on input line 1365.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [164
 
@@ -2536,7 +2538,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 1356.
 (./pdbpLite.vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1371.
+Package pdftex.def Info: png/PDBP.png used on input line 1380.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [165
 
@@ -2546,7 +2548,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 1371.
  (./pdbpLite.vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1386.
+Package pdftex.def Info: png/PDBP.png used on input line 1395.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
 
 [166
@@ -2557,7 +2559,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 1386.
  (./pdbpLite.vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1397.
+Package pdftex.def Info: png/PDBP.png used on input line 1406.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [167
 
@@ -2568,7 +2570,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 1397.
 File: png/PDBP.png Graphic file (type png)
 
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1418.
+Package pdftex.def Info: png/PDBP.png used on input line 1427.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [168
 
@@ -2578,7 +2580,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 1418.
  (./pdbpLite.vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1431.
+Package pdftex.def Info: png/PDBP.png used on input line 1440.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [169
 
@@ -2587,12 +2589,12 @@ Package pdftex.def Info: png/PDBP.png used on input line 1431.
 
 
 (./pdbpLite.vrb)
-Overfull \vbox (51.34082pt too high) detected at line 1457
+Overfull \vbox (51.34082pt too high) detected at line 1466
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1457.
+Package pdftex.def Info: png/PDBP.png used on input line 1466.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [170
 
@@ -2602,7 +2604,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 1457.
  (./pdbpLite.vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1473.
+Package pdftex.def Info: png/PDBP.png used on input line 1482.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [171
 
@@ -2611,23 +2613,29 @@ Package pdftex.def Info: png/PDBP.png used on input line 1473.
 
 
 (./pdbpLite.vrb
-Overfull \hbox (4.5565pt too wide) in paragraph at lines 17--17
-[]    \OT1/cmtt/m/n/9 with ReadingTransformation[BigInt, ActiveWriting[ToConsol
-e]]()[] 
+Overfull \hbox (4.5565pt too wide) in paragraph at lines 15--15
+[]      \OT1/cmtt/m/n/9 extends ActiveReadingWithWritingProgram[BigInt, ToConso
+le]()[] 
+ []
+
+
+Overfull \hbox (18.73134pt too wide) in paragraph at lines 15--15
+[]      \OT1/cmtt/m/n/9 with Computation[ActiveReadingWithWriting[BigInt, ToCon
+sole]]()[] 
  []
 
 )
-Overfull \hbox (11.33963pt too wide) in paragraph at lines 1495--1495
+Overfull \hbox (11.33963pt too wide) in paragraph at lines 1502--1502
  \OT1/cmtt/m/n/14.4 activeIntReadingWithWritingToConsoleProgram[] 
  []
 
 
-Overfull \vbox (29.79083pt too high) detected at line 1495
+Overfull \vbox (6.54082pt too high) detected at line 1502
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1495.
+Package pdftex.def Info: png/PDBP.png used on input line 1502.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [172
 
@@ -2635,26 +2643,46 @@ Package pdftex.def Info: png/PDBP.png used on input line 1495.
 \openout4 = `pdbpLite.vrb'.
 
  (./pdbpLite.vrb
-Overfull \hbox (14.0064pt too wide) in paragraph at lines 17--17
-[]      \OT1/cmtt/m/n/9 s"INFO -- $currentCalendarInMilliseconds -- $string($z)
- => $y"[] 
+Overfull \hbox (28.18123pt too wide) in paragraph at lines 13--13
+[]                                            \OT1/cmtt/m/n/9 ActiveWriting[ToC
+onsole]]()[] 
  []
 
 
-Overfull \hbox (32.90617pt too wide) in paragraph at lines 17--17
-[]      \OT1/cmtt/m/n/9 (string: String): (Z >--> Y) => ((String => W) `I=>` Z 
->--> Y) = {[] 
+Overfull \hbox (14.0064pt too wide) in paragraph at lines 13--13
+[]      \OT1/cmtt/m/n/9 with ReadingTransformation[BigInt, ActiveWriting[ToCons
+ole]]()[] 
  []
 
 )
-Overfull \vbox (7.34082pt too high) detected at line 1517
+Overfull \hbox (11.33963pt too wide) in paragraph at lines 1520--1520
+ \OT1/cmtt/m/n/14.4 activeIntReadingWithWritingToConsoleProgram[] 
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1517.
+Package pdftex.def Info: png/PDBP.png used on input line 1520.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [173
+
+]
+\openout4 = `pdbpLite.vrb'.
+
+ (./pdbpLite.vrb
+Overfull \hbox (14.0064pt too wide) in paragraph at lines 18--18
+[]      \OT1/cmtt/m/n/9 s"INFO -- $currentCalendarInMilliseconds -- $string($z)
+ => $y"[] 
+ []
+
+)
+Overfull \vbox (18.34082pt too high) detected at line 1542
+ []
+
+File: png/PDBP.png Graphic file (type png)
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1542.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [174
 
 ]
 \openout4 = `pdbpLite.vrb'.
@@ -2666,25 +2694,12 @@ igInt =[]
  []
 
 )
-Overfull \vbox (0.79083pt too high) detected at line 1538
+Overfull \vbox (0.79083pt too high) detected at line 1563
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1538.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [174
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
-Overfull \vbox (21.54082pt too high) detected at line 1561
- []
-
-File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1561.
+Package pdftex.def Info: png/PDBP.png used on input line 1563.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [175
 
@@ -2692,12 +2707,12 @@ Package pdftex.def Info: png/PDBP.png used on input line 1561.
 \openout4 = `pdbpLite.vrb'.
 
  (./pdbpLite.vrb)
-Overfull \vbox (6.54082pt too high) detected at line 1581
+Overfull \vbox (21.54082pt too high) detected at line 1586
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1581.
+Package pdftex.def Info: png/PDBP.png used on input line 1586.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [176
 
@@ -2705,12 +2720,12 @@ Package pdftex.def Info: png/PDBP.png used on input line 1581.
 \openout4 = `pdbpLite.vrb'.
 
  (./pdbpLite.vrb)
-Overfull \vbox (94.54082pt too high) detected at line 1609
+Overfull \vbox (6.54082pt too high) detected at line 1606
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1609.
+Package pdftex.def Info: png/PDBP.png used on input line 1606.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [177
 
@@ -2718,7 +2733,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 1609.
 \openout4 = `pdbpLite.vrb'.
 
  (./pdbpLite.vrb)
-Overfull \vbox (42.39082pt too high) detected at line 1634
+Overfull \vbox (94.54082pt too high) detected at line 1634
  []
 
 File: png/PDBP.png Graphic file (type png)
@@ -2726,6 +2741,19 @@ File: png/PDBP.png Graphic file (type png)
 Package pdftex.def Info: png/PDBP.png used on input line 1634.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [178
+
+]
+\openout4 = `pdbpLite.vrb'.
+
+ (./pdbpLite.vrb)
+Overfull \vbox (42.39082pt too high) detected at line 1659
+ []
+
+File: png/PDBP.png Graphic file (type png)
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1659.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [179
 
 ]
 \tf@nav=\write6
@@ -2737,11 +2765,11 @@ Package pdftex.def Info: png/PDBP.png used on input line 1634.
 \tf@snm=\write8
 \openout8 = `pdbpLite.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1636.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1636.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1661.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1661.
  (./pdbpLite.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1636.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1636.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1661.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1661.
 
 Package rerunfilecheck Info: File `pdbpLite.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
@@ -2753,13 +2781,13 @@ LaTeX Font Warning: Size substitutions with differences
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1636.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1661.
  ) 
 Here is how much of TeX's memory you used:
- 17329 strings out of 494953
- 324440 string characters out of 6180977
+ 17337 strings out of 494953
+ 324523 string characters out of 6180977
  386583 words of memory out of 5000000
- 19525 multiletter control sequences out of 15000+600000
+ 19529 multiletter control sequences out of 15000+600000
  8668 words of font info for 32 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  48i,15n,51p,388b,542s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -2773,10 +2801,10 @@ onts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/ty
 pe1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
 blic/amsfonts/cm/cmtt12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
 msfonts/cm/cmtt9.pfb>
-Output written on pdbpLite.pdf (178 pages, 1504527 bytes).
+Output written on pdbpLite.pdf (179 pages, 1505144 bytes).
 PDF statistics:
- 1069 PDF objects out of 1200 (max. 8388607)
- 859 compressed objects within 9 object streams
- 357 named destinations out of 1000 (max. 500000)
+ 1074 PDF objects out of 1200 (max. 8388607)
+ 863 compressed objects within 9 object streams
+ 359 named destinations out of 1000 (max. 500000)
  69 words of extra memory for PDF output out of 10000 (max. 10000000)
 

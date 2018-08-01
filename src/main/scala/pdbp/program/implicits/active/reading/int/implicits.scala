@@ -14,11 +14,15 @@ package pdbp.program.implicits.active.reading.int
 import pdbp.types.active.activeTypes._
 import pdbp.types.active.reading.activeReadingTypes._
 
+import pdbp.program.Program
+
 import pdbp.program.reading.Reading
 
 import pdbp.program.implicits.active.reading.ActiveReadingProgram
 
 import pdbp.program.implicits.active.implicits.activeProgram
+
+import pdbp.computation.Computation
 
 import pdbp.computation.transformation.ComputationTransformation
 import pdbp.computation.transformation.reading.ReadingTransformation
@@ -27,8 +31,10 @@ object implicits {
 
   implicit object activeIntReadingProgram
       extends ActiveReadingProgram[BigInt]()
-      with ComputationTransformation[Active, ActiveReading[BigInt]]()
+      with Computation[ActiveReading[BigInt]]()
+      with Program[`=>AR`[BigInt]]()
+      with Reading[BigInt, `=>AR`[BigInt]]()      
       with ReadingTransformation[BigInt, Active]()
-      with Reading[BigInt, `=>AR`[BigInt]]
+      with ComputationTransformation[Active, ActiveReading[BigInt]]()
 
 }

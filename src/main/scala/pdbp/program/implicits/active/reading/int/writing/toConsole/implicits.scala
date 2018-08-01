@@ -18,6 +18,8 @@ import pdbp.types.effect.toConsole.ToConsole
 
 import pdbp.writable.implicits.toConsole.implicits.toConsoleWritable
 
+import pdbp.program.Program
+
 import pdbp.program.reading.Reading
 
 import pdbp.program.writing.Writing
@@ -25,6 +27,8 @@ import pdbp.program.writing.Writing
 import pdbp.program.implicits.active.reading.writing.ActiveReadingWithWritingProgram
 
 import pdbp.program.implicits.active.writing.toConsole.implicits.activeWritingToConsoleProgram
+
+import pdbp.computation.Computation
 
 import pdbp.computation.transformation.ComputationTransformation
 import pdbp.computation.transformation.reading.ReadingTransformation
@@ -35,14 +39,16 @@ object implicits {
 
   implicit object activeIntReadingWithWritingToConsoleProgram
       extends ActiveReadingWithWritingProgram[BigInt, ToConsole]()
-      with ComputationTransformation[
-        ActiveWriting[ToConsole],
-        ActiveReadingWithWriting[BigInt, ToConsole]]()
-      with ReadingTransformation[BigInt, ActiveWriting[ToConsole]]()
+      with Computation[ActiveReadingWithWriting[BigInt, ToConsole]]()
+      with Program[`=>ARW`[BigInt, ToConsole]]()                                            
+      with Reading[BigInt, `=>ARW`[BigInt, ToConsole]]()
+      with Writing[ToConsole, `=>ARW`[BigInt, ToConsole]]()
       with ReadingWithWritingTransformation[BigInt,
                                             ToConsole,
                                             ActiveWriting[ToConsole]]()
-      with Reading[BigInt, `=>ARW`[BigInt, ToConsole]]()
-      with Writing[ToConsole, `=>ARW`[BigInt, ToConsole]]()
+      with ReadingTransformation[BigInt, ActiveWriting[ToConsole]]()
+      with ComputationTransformation[
+        ActiveWriting[ToConsole],
+        ActiveReadingWithWriting[BigInt, ToConsole]]()
 
 }

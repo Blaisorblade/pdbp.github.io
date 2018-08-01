@@ -1,4 +1,4 @@
-package pdbp.program.implicits.active.free
+package examples.main.active.free.effectfulReadingAndWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -12,22 +12,23 @@ package pdbp.program.implicits.active.free
 //  author        Luc Duponcheel        2017-2018
 
 import pdbp.types.active.activeTypes._
+
 import pdbp.types.active.free.activeFreeTypes._
 
-import pdbp.program.Program
+import pdbp.program.meaning.ofActiveFree.active.implicits.activeMeaningOfActiveFree
+import activeMeaningOfActiveFree.meaning
 
-import pdbp.computation.Computation
+import examples.objects.active.free.effectfulReadingAndWriting.mainFactorial
+import mainFactorial.factorialMain
 
-import pdbp.computation.transformation.ComputationTransformation
-import pdbp.computation.transformation.free.FreeTransformation
+import examples.main.Main
 
-import pdbp.program.implicits.active.implicits.activeProgram
+object FactorialMain extends Main[`=>AF`] {
 
-object implicits {
-  implicit object activeFreeProgram
-      extends Computation[ActiveFree]
-      with Program[`=>AF`]
-      with FreeTransformation[Active]()
-      with ComputationTransformation[Active, ActiveFree]()
+  override val mainKleisliProgram: Unit `=>AF` Unit = factorialMain
+
+  val mainKleisliProgramMeaning: Unit `=>A` Unit = meaning(mainKleisliProgram)
+
+  override val run: Unit = mainKleisliProgramMeaning(())
 
 }
