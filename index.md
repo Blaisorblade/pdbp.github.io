@@ -13,10 +13,11 @@ h6:before { counter-increment: h6counter; content: counter(h2counter) "." counte
 
 # **Program Description Based Programming**
 
-This document describes a [`Dotty`](http://dotty.epfl.ch/) library [`PDBP`](https://github.com/PDBP/pdbp.github.io).
+This document describes the [`PDBP` library](https://github.com/PDBP/pdbp.github.io) written in the
+[`Dotty` programming language](http://dotty.epfl.ch/). The `Dotty` language will, eventually, evolve to version `3.0` of the [`Scala` programming language](https://www.scala-lang.org/).
 
 Below is the logo of the library
-
+version
 ```scala
     //       _______         __    __        _______
     //      / ___  /\       / /\  / /\      / ___  /\
