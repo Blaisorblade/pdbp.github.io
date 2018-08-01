@@ -25,10 +25,6 @@ import pdbp.program.compositionOperator._
 
 import pdbp.writable.implicits.toConsole.implicits.toConsoleWritable
 
-import examples.utils.EffectfulUtils
-
-import examples.utils.EffectfulUtils
-
 import examples.programs.writing.WritingFactorial
 
 class MainFactorialOfIntReadWritingToConsoleWrittenToConsole[

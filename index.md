@@ -4813,7 +4813,7 @@ class MainFactorialOfIntReadWrittenToConsole[
 
 We replaced `effectfulWriteFactorialOfIntToConsole` that executes an effect by `write` that describes an effect.
 
-## **Running `factorialMain` using `mainFactorialOfIntReadWrittenToConsole`, `read` and `write`**
+### **Running `factorialMain` using `mainFactorialOfIntReadWrittenToConsole`, `read` and `write`**
 
 Consider
 
@@ -4908,8 +4908,485 @@ the factorial value of the integer read is
 3628800
 ```
 
-# UNTIL HERE (TODO: use `writeUsing`)
+We used `write` as an effectfree alternative for the effectful `effectfulWriteFactorialOfIntToConsole` at the end of a program.
 
+We can also use `writeUsing` anywhere in a program.
+
+### **Describing `WritingFactorial`**
+
+Consider
+
+```scala
+package examples.programs.writing
+
+import pdbp.types.implicitFunctionType._
+
+import pdbp.types.product.productType._
+
+import pdbp.program.Program
+
+import pdbp.writable.Writable
+
+import pdbp.program.writing.Writing
+
+import pdbp.program.compositionOperator._
+
+import examples.programs.HelperPrograms
+
+import examples.programs.writing.utils.infoUtils._
+
+class WritingFactorial[
+    W: Writable,
+    >-->[- _, + _]: Program
+                  : [>-->[- _, + _]] => Writing[W, >-->]]
+    extends WritingAtomicPrograms[W, >-->]() 
+    with HelperPrograms[>-->]() {
+
+  private val implicitProgram = implicitly[Program[>-->]]
+
+  private val implicitWriting = implicitly[Writing[W, >-->]]
+
+  import implicitProgram._
+
+  import implicitWriting._
+
+  val factorial: (String => W) `I=>` BigInt >--> BigInt =
+    info("factorial") {
+      `if`(isZero) {
+        one
+      } `else` {
+        `let` {
+          subtractOne >-->
+            factorial
+        } `in` {
+          multiply
+        }
+      }
+    }
+
+}
+```
+
+where
+
+```scala
+package examples.programs.writing
+
+import pdbp.types.implicitFunctionType._
+
+import pdbp.types.product.productType._
+
+import pdbp.program.Function
+
+import pdbp.writable.Writable
+
+import pdbp.program.writing.Writing
+
+import examples.utils.functionUtils._
+
+import examples.programs.HelperPrograms
+
+import examples.programs.writing.utils.infoUtils
+
+import examples.programs.writing.utils.infoUtils.{info => _, _}
+
+trait WritingAtomicPrograms[
+    W: Writable, 
+    >-->[- _, + _]: Function
+                  : [>-->[- _, + _]] => Writing[W, >-->]]
+    extends HelperPrograms[>-->] {
+
+  private val implicitFunction = implicitly[Function[>-->]]
+
+  private val implicitWriting = implicitly[Writing[W, >-->]]
+
+  import implicitFunction._
+
+  import implicitWriting._
+
+  def info[Z, Y](string: String): (Z >--> Y) => ((String => W) `I=>` Z >--> Y) =
+    infoUtils.info(string)
+
+  val isZero: (String => W) `I=>` BigInt >--> Boolean =
+    info("isZero") {
+      isZeroHelper
+    }
+
+  val subtractOne: (String => W) `I=>` BigInt >--> BigInt =
+    info("subtractOne") {
+      subtractOneHelper
+    }
+
+  val multiply: (String => W) `I=>` (BigInt && BigInt) >--> BigInt =
+    info("multiply") {
+      multiplyHelper
+    }
+
+  def one[Z]: (String => W) `I=>` Z >--> BigInt =
+    info("one") {
+      oneHelper
+    }
+
+}
+```
+
+where
+
+```scala
+package examples.programs.writing.utils
+
+import java.util.Calendar
+import java.text.SimpleDateFormat
+
+import pdbp.types.implicitFunctionType._
+
+import pdbp.types.product.productType._
+
+import pdbp.writable.Writable
+
+import pdbp.program.writing.Writing
+
+object infoUtils {
+
+  def currentCalendarInMilliseconds: String = {
+    val calendar = Calendar.getInstance();
+    val millisecondsSimpleDateFormat = new SimpleDateFormat(
+      "yyyy-MM-dd HH:mm:ss.SSS")
+    millisecondsSimpleDateFormat.format(calendar.getTime())
+  }
+
+  def currentThreadId: Long = Thread.currentThread.getId
+
+  def infoFunction[Z, Y](string: String): Z && Y => String = {
+    case (z, y) =>
+      s"INFO\n\t--" + 
+      s"time $currentCalendarInMilliseconds\n\t--" +
+      s"thread $currentThreadId\n\t--" +
+      s"evaluating $string($z) yields $y"
+  }
+
+  def info[W: Writable, Z, Y,  >-->[- _, + _]: [>-->[- _, + _]] => Writing[W, >-->]]
+      (string: String): (Z >--> Y) => ((String => W) `I=>` Z >--> Y) = {
+    val implicitWriting = implicitly[Writing[W, >-->]]
+    import implicitWriting._
+    writeUsing(infoFunction(string))
+  }
+
+}
+```
+
+### **Describing `MainFactorialOfIntReadWritingToConsoleWrittenToConsole` using `read` and `write`**
+
+Consider
+
+```scala
+package examples.mainPrograms.reading.int.writing.toConsole
+
+import pdbp.types.implicitFunctionType._
+
+import pdbp.types.effect.toConsole.ToConsole
+
+import pdbp.program.Program
+
+import pdbp.program.reading.Reading
+
+import pdbp.program.writing.Writing
+
+import pdbp.program.compositionOperator._
+
+import pdbp.writable.implicits.toConsole.implicits.toConsoleWritable
+
+import examples.programs.writing.WritingFactorial
+
+class MainFactorialOfIntReadWritingToConsoleWrittenToConsole[
+    >-->[- _, + _]: Program
+                  : [>-->[- _, + _]] => Reading[BigInt, >-->]
+                  : [>-->[- _, + _]] => Writing[ToConsole, >-->]] {
+
+  private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
+
+  private val implicitToConsoleWriting = implicitly[Writing[ToConsole, >-->]]
+
+  import implicitIntReading._
+
+  import implicitToConsoleWriting._
+
+  private object writingFactorialObject
+      extends WritingFactorial[ToConsole, >-->]
+
+  import writingFactorialObject.factorial
+
+  val factorialMain
+    : (String => ToConsole) `I=>` ((BigInt => ToConsole) `I=>` Unit >--> Unit) =
+    read >-->
+      factorial >-->
+      write
+
+}
+```
+
+### **Running factorialMain using `mainFactorialOfIntReadWritingToConsoleWrittenToConsole`, `read` and `write`**
+
+Consider
+
+```scala
+package examples.objects.active.reading.int.writing.toConsole
+
+import pdbp.types.effect.toConsole.ToConsole
+
+import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
+
+import pdbp.program.implicits.active.reading.int.writing.toConsole.implicits
+import implicits.activeIntReadingWithWritingToConsoleProgram
+
+import examples.mainPrograms.reading.int.writing.toConsole.MainFactorialOfIntReadWritingToConsoleWrittenToConsole
+
+object mainFactorialOfIntReadWritingToConsoleWrittenToConsole
+    extends MainFactorialOfIntReadWritingToConsoleWrittenToConsole[
+      `=>ARW`[BigInt, ToConsole]]()
+```
+
+We can now, finally, define main in object `FactorialOfIntReadWritingToConsoleWrittenToConsoleMain`.
+
+```scala
+package examples.main.active.reading.int.writing.toConsole
+
+import pdbp.types.effect.toConsole.ToConsole
+
+import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
+
+import examples.objects.active.reading.int.writing.toConsole.mainFactorialOfIntReadWritingToConsoleWrittenToConsole
+import mainFactorialOfIntReadWritingToConsoleWrittenToConsole.factorialMain
+
+import examples.main.Main
+
+object FactorialOfIntReadWritingToConsoleWrittenToConsoleMain
+    extends Main[`=>ARW`[BigInt, ToConsole]] {
+
+  import examples.utils.effects.implicits.readIntFromConsoleEffect
+
+  import examples.utils.effects.implicits.writeFactorialOfIntReadFromConsoleToConsoleEffect
+
+  import examples.utils.effects.implicits.writeToConsoleEffect
+
+  private type `=>ARW[BigInt, ToConsole]` = `=>ARW`[BigInt, ToConsole]
+
+  override val mainKleisliProgram: Unit `=>ARW[BigInt, ToConsole]` Unit =
+    factorialMain
+
+  override val run = mainKleisliProgram(()) match {
+    case (ToConsole(effect), _) => effect(())
+  }
+
+}
+```
+
+where `writeToConsoleEffect` executes the effect that is described by `write` as part of the definition of `writeUsing`.
+
+
+```scala
+object implicits {
+
+  // ...
+
+  private def writeToConsoleEffectWithMessage[Z](
+      message: String): Z => ToConsole = { z =>
+    ToConsole({ _ =>
+      effectfulWriteToConsoleFunction(message)(z)
+    })
+  }
+
+  implicit val writeToConsoleEffect: String => ToConsole =
+    writeToConsoleEffectWithMessage("")
+
+  // ...
+
+}
+```
+
+Ok, so let’s use `main` in `object FactorialOfIntReadWritingToConsoleWrittenToConsoleMain`.
+
+Let’s try 10.
+
+```scala
+[info] Running examples.main.active.reading.int.writing.toConsole.FactorialOfIntReadWritingToConsoleWrittenToConsoleMain
+please type an integer to read
+10
+INFO
+ --time 2018-08-01 10:53:14.909
+ --thread 252
+ --evaluating isZero(10) yields false
+INFO
+ --time 2018-08-01 10:53:14.918
+ --thread 252
+ --evaluating subtractOne(10) yields 9
+INFO
+ --time 2018-08-01 10:53:14.919
+ --thread 252
+ --evaluating isZero(9) yields false
+INFO
+ --time 2018-08-01 10:53:14.920
+ --thread 252
+ --evaluating subtractOne(9) yields 8
+INFO
+ --time 2018-08-01 10:53:14.920
+ --thread 252
+ --evaluating isZero(8) yields false
+INFO
+ --time 2018-08-01 10:53:14.921
+ --thread 252
+ --evaluating subtractOne(8) yields 7
+INFO
+ --time 2018-08-01 10:53:14.921
+ --thread 252
+ --evaluating isZero(7) yields false
+INFO
+ --time 2018-08-01 10:53:14.922
+ --thread 252
+ --evaluating subtractOne(7) yields 6
+INFO
+ --time 2018-08-01 10:53:14.923
+ --thread 252
+ --evaluating isZero(6) yields false
+INFO
+ --time 2018-08-01 10:53:14.923
+ --thread 252
+ --evaluating subtractOne(6) yields 5
+INFO
+ --time 2018-08-01 10:53:14.924
+ --thread 252
+ --evaluating isZero(5) yields false
+INFO
+ --time 2018-08-01 10:53:14.924
+ --thread 252
+ --evaluating subtractOne(5) yields 4
+INFO
+ --time 2018-08-01 10:53:14.925
+ --thread 252
+ --evaluating isZero(4) yields false
+INFO
+ --time 2018-08-01 10:53:14.925
+ --thread 252
+ --evaluating subtractOne(4) yields 3
+INFO
+ --time 2018-08-01 10:53:14.926
+ --thread 252
+ --evaluating isZero(3) yields false
+INFO
+ --time 2018-08-01 10:53:14.926
+ --thread 252
+ --evaluating subtractOne(3) yields 2
+INFO
+ --time 2018-08-01 10:53:14.927
+ --thread 252
+ --evaluating isZero(2) yields false
+INFO
+ --time 2018-08-01 10:53:14.927
+ --thread 252
+ --evaluating subtractOne(2) yields 1
+INFO
+ --time 2018-08-01 10:53:14.928
+ --thread 252
+ --evaluating isZero(1) yields false
+INFO
+ --time 2018-08-01 10:53:14.928
+ --thread 252
+ --evaluating subtractOne(1) yields 0
+INFO
+ --time 2018-08-01 10:53:14.929
+ --thread 252
+ --evaluating isZero(0) yields true
+INFO
+ --time 2018-08-01 10:53:14.930
+ --thread 252
+ --evaluating one(0) yields 1
+INFO
+ --time 2018-08-01 10:53:14.931
+ --thread 252
+ --evaluating factorial(0) yields 1
+INFO
+ --time 2018-08-01 10:53:14.931
+ --thread 252
+ --evaluating multiply((1,1)) yields 1
+INFO
+ --time 2018-08-01 10:53:14.931
+ --thread 252
+ --evaluating factorial(1) yields 1
+INFO
+ --time 2018-08-01 10:53:14.932
+ --thread 252
+ --evaluating multiply((2,1)) yields 2
+INFO
+ --time 2018-08-01 10:53:14.932
+ --thread 252
+ --evaluating factorial(2) yields 2
+INFO
+ --time 2018-08-01 10:53:14.933
+ --thread 252
+ --evaluating multiply((3,2)) yields 6
+INFO
+ --time 2018-08-01 10:53:14.933
+ --thread 252
+ --evaluating factorial(3) yields 6
+INFO
+ --time 2018-08-01 10:53:14.933
+ --thread 252
+ --evaluating multiply((4,6)) yields 24
+INFO
+ --time 2018-08-01 10:53:14.934
+ --thread 252
+ --evaluating factorial(4) yields 24
+INFO
+ --time 2018-08-01 10:53:14.934
+ --thread 252
+ --evaluating multiply((5,24)) yields 120
+INFO
+ --time 2018-08-01 10:53:14.934
+ --thread 252
+ --evaluating factorial(5) yields 120
+INFO
+ --time 2018-08-01 10:53:14.935
+ --thread 252
+ --evaluating multiply((6,120)) yields 720
+INFO
+ --time 2018-08-01 10:53:14.935
+ --thread 252
+ --evaluating factorial(6) yields 720
+INFO
+ --time 2018-08-01 10:53:14.935
+ --thread 252
+ --evaluating multiply((7,720)) yields 5040
+INFO
+ --time 2018-08-01 10:53:14.936
+ --thread 252
+ --evaluating factorial(7) yields 5040
+INFO
+ --time 2018-08-01 10:53:14.936
+ --thread 252
+ --evaluating multiply((8,5040)) yields 40320
+INFO
+ --time 2018-08-01 10:53:14.936
+ --thread 252
+ --evaluating factorial(8) yields 40320
+INFO
+ --time 2018-08-01 10:53:14.937
+ --thread 252
+ --evaluating multiply((9,40320)) yields 362880
+INFO
+ --time 2018-08-01 10:53:14.937
+ --thread 252
+ --evaluating factorial(9) yields 362880
+INFO
+ --time 2018-08-01 10:53:14.937
+ --thread 252
+ --evaluating multiply((10,362880)) yields 3628800
+INFO
+ --time 2018-08-01 10:53:14.937
+ --thread 252
+ --evaluating factorial(10) yields 3628800
+the factorial value of the integer read is
+3628800
+```
 
 # **Appendices**
 

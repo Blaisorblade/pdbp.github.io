@@ -40,12 +40,10 @@ object implicits {
   implicit val writeFactorialOfIntReadFromConsoleToConsoleEffect
     : BigInt => ToConsole =
     writeLineToConsoleEffectWithMessage(
-      "the factorial value of the integer read is")
-
-  implicit val pointfreeWriteToConsoleEffect: String => ToConsole =
-    writeToConsoleEffectWithMessage("")
-
-  implicit val pointfulWriteToConsoleEffect: String => ToConsole =
+      "the factorial value of the integer read is"
+    )
+    
+  implicit val writeToConsoleEffect: String => ToConsole =
     writeToConsoleEffectWithMessage("")
 
 }

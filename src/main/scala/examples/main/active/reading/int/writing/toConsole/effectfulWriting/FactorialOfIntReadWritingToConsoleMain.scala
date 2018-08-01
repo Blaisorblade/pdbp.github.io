@@ -25,7 +25,7 @@ object FactorialOfIntReadWritingToConsoleMain
 
   import examples.utils.effects.implicits.readIntFromConsoleEffect
 
-  import examples.utils.effects.implicits.pointfulWriteToConsoleEffect
+  import examples.utils.effects.implicits.writeToConsoleEffect
 
   private type `=>ARW[BigInt, ToConsole]` = `=>ARW`[BigInt, ToConsole]
 

@@ -35,7 +35,10 @@ object infoUtils {
 
   def infoFunction[Z, Y](string: String): Z && Y => String = {
     case (z, y) =>
-      s"INFO -- time $currentCalendarInMilliseconds -- thread $currentThreadId -- evaluating $string($z) yields $y"
+      s"INFO\n --" + 
+      s"time $currentCalendarInMilliseconds\n --" +
+      s"thread $currentThreadId\n --" +
+      s"evaluating $string($z) yields $y"
   }
 
   def info[W: Writable, Z, Y,  >-->[- _, + _]: [>-->[- _, + _]] => Writing[W, >-->]]
