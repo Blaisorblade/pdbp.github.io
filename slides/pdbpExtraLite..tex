@@ -148,7 +148,33 @@ Luc Duponcheel}}}
 }
 \begin{center}
 \begin{itemize}
-\item<2-> \ttdg{factorial} \emdb{uses} capabilities \emdb{declared} in \\ type class \ttdg{trait Program[>-->[- \_, + \_]]}
+\item<2-> \ttdg{factorial} \emdb{description} uses the capabilities \emdb{declared} in \\ type class \ttdg{trait Program[>-->[- \_, + \_]]}
+\end{itemize}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}\ttdg{factorial} definitions\end{center}}
+{\color{DarkGreen}	
+\footnotesize{
+\begin{verbatim}
+  val factorial: BigInt >--> BigInt =
+    `if`(isZero) {
+      one
+    } `else` {
+      `let` {
+        subtractOne >-->
+          factorial
+      } `in` {
+        multiply
+      }
+    }
+\end{verbatim}
+}
+}
+\begin{center}
+\begin{itemize}
+\item<2-> \ttdg{factorial} \emdb{definitions} use \ttdg{implicit object}'s \emdb{defining} the capabilities of \\ type class \ttdg{trait Program[>-->[- \_, + \_]]}
 \end{itemize}
 \end{center}
 \end{frame}
@@ -174,7 +200,7 @@ Luc Duponcheel}}}
 }
 \begin{center}
 \begin{itemize}
-\item<2-> different \ttdg{implicit object}'s \emdb{define} capabilities of \\ type class \ttdg{trait Program[>-->[- \_, + \_]]}
+\item<2-> \ttdg{factorial} \emdb{meanings} use \emdb{natural transformations}
 \end{itemize}
 \end{center}
 \end{frame}
@@ -248,9 +274,9 @@ Luc Duponcheel}}}
     | Unit >--> Z >--> Y >--> Unit |
      -----------------------------
                               v
-                              |     ----------------
-          --------????--------  => | Unit >--> Unit |                
-         |                          ----------------
+                              |      ----------------
+          --------????--------   => | Unit >--> Unit |                
+         |                           ----------------
          v                 
      ------------------------------  
     | Unit >--> Z >--> Y >--> Unit |
@@ -338,7 +364,7 @@ Luc Duponcheel}}}
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{\begin{center}Monads versus arrows\end{center}}
+\frametitle{\begin{center}Arrows versus monads\end{center}}
 \begin{itemize}
 \item<2-> \emdb{arrows} (\ttdg{trait Program[>-->[- \_, + \_]]}) \\ generalize \emdb{functions}
 \begin{itemize}
@@ -346,21 +372,28 @@ Luc Duponcheel}}}
 \item<4-> \ttdg{val `z=>x` = `z=>y` andThen `y=>x`}
 \item<5-> \ttdg{val `z>-->x` = `z>-->y` >--> `y>-->z`}
 \end{itemize}
-\item<6-> \emdb{monads} (\ttdg{trait Computation[C[+ \_]]}) \\ generalize \emdb{expressions} 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}Arrows versus monads\end{center}}
 \begin{itemize}
-\item<7-> \emdb{binding} based, \emdb{pointful} functional programming
-\item<8-> \ttdg{\{ val z = ez ; \{ val y = ey ; ex(z, y) \} \} }
-\item<9-> \ttdg{mz bind \{ z => my bind \{ y => mx(z, y) \} \} }
-\item<10-> \ttdg{mz bind \{ z => my bind \{ y => result(ex(z, y)) \} \} }
+\item<2-> \emdb{monads} (\ttdg{trait Computation[C[+ \_]]}) \\ generalize \emdb{expressions} 
+\begin{itemize}
+\item<3-> \emdb{binding} based, \emdb{pointful} functional programming
+\item<4-> \ttdg{\{ val z = ez ; \{ val y = ey ; ex(z, y) \} \} }
+\item<5-> \ttdg{mz bind \{ z => my bind \{ y => mx(z, y) \} \} }
+\item<6-> \ttdg{mz bind \{ z => my bind \{ y => result(ex(z, y)) \} \} }
 \end{itemize}
 \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{\begin{center}Monads versus arrows\end{center}}
+\frametitle{\begin{center}Arrows versus monads\end{center}}
 \begin{itemize}
-\item<2-> \emdb{monads} can also be programmed \emdb{pointfree} (\emdb{kleisli arrows}) 
-\item<3-> \emdb{arrows} can also be programmed \emdb{pointful} (\emdb{arrow calculus})
+\item<2-> \emdb{arrows} can be programmed \emdb{pointful} (\emdb{arrow calculus})
+\item<3-> \emdb{monads} can be programmed \emdb{pointfree} (\emdb{kleisli arrows}) 
 \end{itemize}
 \end{frame}
 
@@ -448,26 +481,28 @@ provides \emdb{elegance of use} for \emdb{application} developers
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{PDBP} library design decisions (cfr. \ttdg{Haskell})\end{center}}
+\frametitle{\begin{center}\ttdg{PDBP} library design decisions\end{center}}
 \begin{itemize}
-\item<2-> \emdb{description} separated from \emdb{meaning}
+\item<2-> \emdb{description} separated from \emdb{definition} and \emdb{meaning}
+\end{itemize}
+\begin{itemize}
 \item<3-> \emdb{description}
 \begin{itemize}
 \item<4-> \ttdg{trait}'s (\emdb{type classes}) \emdb{declare} capabilities 
 \end{itemize}
-\item<5-> \emdb{language level} meaning
+\item<5-> \emdb{definition}
 \begin{itemize}
 \item<6-> \ttdg{implicit object}'s (\ttdg{extend} \ttdg{trait}'s) \emdb{define} capabilities 
 \end{itemize}
-\item<7-> \emdb{library level} meaning
+\item<7-> \emdb{meaning}
 \begin{itemize}
-\item<8-> \emdb{natural transformations}
+\item<8-> \ttdg{implicit object}'s having \emdb{natural transformation} member
 \end{itemize}
 \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{PDBP} library design decisions (cfr. \ttdg{Haskell})\end{center}}
+\frametitle{\begin{center}\ttdg{PDBP} library design decisions\end{center}}
 \begin{itemize}
 \item<2-> \emdb{dependency injection} by \ttdg{implicit import}
 \end{itemize}
@@ -548,9 +583,11 @@ use capabilities \emdb{declared} in those \ttdg{trait}'s
 \end{verbatim}
 }
 }
-\item<3-> pure functions are \emdb{atomic programs}
+\end{itemize}
+\begin{itemize}
+\item<3-> \emdb{pure functions} are \emdb{atomic programs}
 \begin{itemize}	
-\item<4-> up to you to define granularity
+\item<4-> up to you to define \emdb{granularity}
 \end{itemize}
 \end{itemize}
 \end{frame}
@@ -588,6 +625,8 @@ use capabilities \emdb{declared} in those \ttdg{trait}'s
 \end{verbatim}
 }
 }
+\end{itemize}
+\begin{itemize}
 \item<4->
 {\color{DarkGreen}
 \footnotesize{
@@ -619,6 +658,8 @@ use capabilities \emdb{declared} in those \ttdg{trait}'s
 \end{verbatim}
 }
 }
+\end{itemize}
+\begin{itemize}
 \item<4->
 {\color{DarkGreen}
 \footnotesize{
@@ -807,9 +848,9 @@ use capabilities \emdb{declared} in those \ttdg{trait}'s
 \footnotesize{
 \begin{verbatim}
   val factorialMain: Unit >--> Unit =
-    producer >-->
+    effectfulReadIntFromConsole >-->
       factorial >-->
-      consumer
+      effectfulWriteFactorialOfIntToConsole
 \end{verbatim}
 }
 }
@@ -874,11 +915,11 @@ use capabilities \emdb{declared} in those \ttdg{trait}'s
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
-import ... activeMeaningOfActive
-import activeMeaningOfActive.meaning
-
 import ... mainFactorial
 import mainFactorial.factorialMain
+
+import ... activeMeaningOfActive
+import activeMeaningOfActive.meaning
 
 object FactorialMain {
 
@@ -896,51 +937,16 @@ object FactorialMain {
 \begin{frame}[fragile]
 \frametitle{\begin{center}Problems and Solutions\end{center}}
 \begin{itemize}
-\item<2-> Problem: obvious \ttdg{factorial} meaning \\
-implementing \ttdg{>-->} as \ttdg{`=>A`} \emdb{is not stack safe}
+\item<2-> Problem: the \ttdg{factorial} semantics above \emdb{is not stack safe}
 \begin{itemize}
 \item<3-> Solution: \ttdg{FreeTransformation} and \ttdg{FreeTransformedMeaning}
 \end{itemize}
-\item<4-> Problem: obvious \ttdg{producer} and \ttdg{consumer} \emdb{execute effects}
+\item<4-> Problem: \ttdg{effectfulReadIntFromConsole} and \ttdg{effectfulWriteFactorialOfIntToConsole} \emdb{execute effects}
 \begin{itemize}
 \item<5-> Solution: \ttdg{Reading} resp. \ttdg{Writing} extensions of \ttdg{Program}
 with members \ttdg{read} resp. \ttdg{write} that \emdb{describe effects}
 \end{itemize}
 \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{NaturalBinaryTypeConstructorTransformation}\end{center}}
-{\color{DarkGreen}	
-\footnotesize{
-\begin{verbatim}
-  trait `-B->`[`>-F->`[- _, + _], `>-T->`[- _, + _]] {
-
-    def apply[Z, Y]: Z `>-F->` Y => Z `>-T->` Y
-
-  }
-\end{verbatim}
-}
-}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{NaturalUnaryTypeConstructorTransformation}\end{center}}
-{\color{DarkGreen}	
-\footnotesize{
-\begin{verbatim}
-  private[pdbp] trait `-U->`[F[+ _], T[+ _]]
-      extends `-B->`[Kleisli[F], Kleisli[T]] {
-
-    private[pdbp] def apply[Z](fz: F[Z]): T[Z]
-
-    // ...
-    }
-
-  }
-\end{verbatim}
-}
-}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -1031,6 +1037,7 @@ with members \ttdg{read} resp. \ttdg{write} that \emdb{describe effects}
       with Transformation[C, FreeTransformed[C]] {
 
     // unfold
+
     // transform => Transform
     // result => Result
     // bind => Bind
@@ -1068,6 +1075,7 @@ with members \ttdg{read} resp. \ttdg{write} that \emdb{describe effects}
   implicit object activeFreeProgram
       extends Computation[ActiveFree]
       with Program[`=>AF`]
+
       with FreeTransformation[Active]()
       with ComputationTransformation[Active, ActiveFree]()
 \end{verbatim}
@@ -1085,12 +1093,13 @@ with members \ttdg{read} resp. \ttdg{write} that \emdb{describe effects}
     implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
     extends ComputationMeaning[FreeTransformed[FC], T] {
 
-    // tailrecFold
+    // fold (tail recursive)
+
     // Transform(fcz) => fcz
     // Result(z) => result(z)
-    // Bind(Result(y), y2ftfcz) => tailrecFold(y2ftfcz(y))
+    // Bind(Result(y), y2ftfcz) => fold(y2ftfcz(y))
     // Bind(Bind(fcx, x2ftfcy), y2ftfcz) => 
-    //   tailrecFold(Bind(fcx, Bind(x2ftfcy, y2ftfcz)))
+    //   fold(Bind(fcx, Bind(x2ftfcy, y2ftfcz)))
 
   }       
 \end{verbatim}
@@ -1108,6 +1117,7 @@ with members \ttdg{read} resp. \ttdg{write} that \emdb{describe effects}
   implicit object activeMeaningOfActiveFree
       extends FreeTransformedMeaning[Active, Active]()
       with ComputationMeaning[ActiveFree, Active]()
+
       with ProgramMeaning[`=>AF`, `=>A`]()    
 \end{verbatim}
 }
@@ -1119,11 +1129,12 @@ with members \ttdg{read} resp. \ttdg{write} that \emdb{describe effects}
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
-import ... activeMeaningOfActiveFree
-import activeMeaningOfActiveFree.meaning
-
+// same mainFactorial description
 import ... mainFactorial
 import mainFactorial.factorialMain
+
+import ... activeMeaningOfActiveFree
+import activeMeaningOfActiveFree.meaning
 
 object FactorialMain {
 
@@ -1226,6 +1237,7 @@ object FactorialMain {
       extends ComputationTransformation[
         FC, ReadingTransformed[R, FC]]
       with Computation[ReadingTransformed[R, FC]]
+
       with Program[Kleisli[ReadingTransformed[R, FC]]]
       with Reading[R, Kleisli[ReadingTransformed[R, FC]]] {
 
@@ -1245,7 +1257,7 @@ object FactorialMain {
   val factorialMain: Unit >--> Unit =
     read >-->
       factorial >-->
-      consumer
+      effectfulWriteFactorialOfIntToConsole
 \end{verbatim}
 }
 }
@@ -1279,7 +1291,8 @@ object FactorialMain {
       extends ActiveReadingProgram[BigInt]()
       with Computation[ActiveReading[BigInt]]()
       with Program[`=>AR`[BigInt]]()
-      with Reading[BigInt, `=>AR`[BigInt]]()      
+      with Reading[BigInt, `=>AR`[BigInt]]()  
+
       with ReadingTransformation[BigInt, Active]()
       with ComputationTransformation[Active, ActiveReading[BigInt]]()
 \end{verbatim}
@@ -1288,15 +1301,18 @@ object FactorialMain {
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{activeIntReadingProgram}\end{center}}
+\frametitle{\begin{center}\ttdg{activeIntReadingMeaningOfActiveIntReading}\end{center}}
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
   import ... activeIntReadingProgram
 
   implicit object activeIntReadingMeaningOfActiveIntReading
-      extends ReadingTransformedMeaning[BigInt, Active, Active]()
-      with ComputationMeaning[ActiveReading[BigInt], ActiveReading[BigInt]]()
+      extends ReadingTransformedMeaning[
+        BigInt, Active, Active]()
+      with ComputationMeaning[
+        ActiveReading[BigInt], ActiveReading[BigInt]]()
+
       with ProgramMeaning[`=>AR`[BigInt], `=>AR`[BigInt]]()
 \end{verbatim}
 }
@@ -1308,15 +1324,16 @@ object FactorialMain {
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
-import ... activeIntReadingMeaningOfActiveIntReading
-import activeIntReadingMeaningOfActiveIntReading.meaning
-
+// same factorial description
 import ... mainFactorialOfIntRead
 import mainFactorialOfIntRead.factorialMain
 
+import ... activeIntReadingMeaningOfActiveIntReading
+import activeIntReadingMeaningOfActiveIntReading.meaning
+
 object FactorialOfIntReadMain {
 
-  import ... readIntFromConsoleEffect
+  import ... readIntFromConsoleEffect // executes read effect
 
   def main(args: Array[String]): Unit = {
 
@@ -1406,7 +1423,7 @@ object FactorialOfIntReadMain {
             `(z&&y&&x)>-->(x&&y)`
           }
         }
-      compose(compose(`z>-->(x&&y)`, left(`z>-w->u`), 
+      compose(compose(`z>-->(x&&y)`, left(write), 
         `(u&&y)>-->y`)
   }          
 \end{verbatim}
@@ -1478,6 +1495,7 @@ object FactorialOfIntReadMain {
       extends ComputationTransformation[
         FC, WritingTransformed[W, FC]]
       with Computation[WritingTransformed[W, FC]]
+
       with Program[Kleisli[WritingTransformed[W, FC]]]
       with Writing[W, Kleisli[WritingTransformed[W, FC]]] {
 
@@ -1503,7 +1521,26 @@ object FactorialOfIntReadMain {
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{ToConsole}\end{center}}
+\frametitle{\begin{center}\ttdg{WritingToConsoleTransformedMeaning}\end{center}}
+{\color{DarkGreen}	
+\footnotesize{
+\begin{verbatim}
+  private[pdbp] trait WritingToConsoleTransformedMeaning[
+      FC[+ _]: Computation,
+      T[+ _]]
+      (implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
+      extends ComputationMeaning[WritingTransformed[ToConsole, FC], T] {
+
+    // executes effect
+
+}       
+\end{verbatim}
+}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}\ttdg{toConsoleWritable}\end{center}}
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
@@ -1612,56 +1649,6 @@ object FactorialOfIntReadMain {
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{WritingTransformation}\end{center}}
-{\color{DarkGreen}	
-\footnotesize{
-\begin{verbatim}
-private[pdbp] trait WritingTransformation[W: Writable, FC[+ _]: Computation]
-    extends ComputationTransformation[FC, WritingTransformed[W, FC]]
-    with Computation[WritingTransformed[W, FC]]
-    with Program[Kleisli[WritingTransformed[W, FC]]]
-    with Writing[W, Kleisli[WritingTransformed[W, FC]]] {
-
-      // uses Writing capabilities of W
-
-    }    
-\end{verbatim}
-}
-}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{FreeTransformedMeaning}\end{center}}
-{\color{DarkGreen}	
-\footnotesize{
-\begin{verbatim}
-private[pdbp] trait WritingToConsoleTransformedMeaning[FC[+ _]: Computation,
-T[+ _]](implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
-    extends ComputationMeaning[WritingTransformed[ToConsole, FC], T] {
-
-  //...
-
-      override private[pdbp] def apply[Z](wtfcz: WTFC[Z]): T[Z] = {
-        def executing(wtfcz: WTFC[Z]): FC[Z] =
-          bind(wtfcz, {
-            case (ToConsole(effect), z) =>
-              effect(())
-              result(z)
-          })
-        toBeTransformedMeaning.unaryTransformation(executing(wtfcz))
-      }
-    
-
-    // ...
-
-}       
-\end{verbatim}
-}
-}
-\end{frame}
-
-
-\begin{frame}[fragile]
 \frametitle{\begin{center}\ttdg{activeWritingToConsoleProgram}\end{center}}
 {\color{DarkGreen}	
 \footnotesize{
@@ -1671,10 +1658,13 @@ T[+ _]](implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
 
   implicit object activeWritingToConsoleProgram
       extends ActiveWritingProgram[ToConsole]()
-      with ComputationTransformation[Active, ActiveWriting[ToConsole]]()
-      with WritingTransformation[ToConsole, Active]()
+      with Computation[ActiveWriting[ToConsole]]()
+      with Program[`=>AW`[ToConsole]]()
       with Writing[ToConsole, `=>AW`[ToConsole]]()
-      // ...
+
+      with ComputationTransformation[
+        Active, ActiveWriting[ToConsole]]()
+      with WritingTransformation[ToConsole, Active]()
 \end{verbatim}
 }
 }
@@ -1691,9 +1681,10 @@ T[+ _]](implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
   implicit object activeIntReadingWithWritingToConsoleProgram
       extends ActiveReadingWithWritingProgram[BigInt, ToConsole]()
       with Computation[ActiveReadingWithWriting[BigInt, ToConsole]]()
-      with Program[`=>ARW`[BigInt, ToConsole]]()                                            
+      with Program[`=>ARW`[BigInt, ToConsole]]()     
       with Reading[BigInt, `=>ARW`[BigInt, ToConsole]]()
       with Writing[ToConsole, `=>ARW`[BigInt, ToConsole]]()
+
       // ...
 \end{verbatim}
 }
@@ -1701,64 +1692,22 @@ T[+ _]](implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{activeIntReadingWithWritingToConsoleProgram}\end{center}}
+\frametitle{\begin{center}\ttdg{activeIntReadingMeaning} \\ \ttdg{OfActiveIntReadingWithWritingToConsole}\end{center}}
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
-      // ...
-      with ReadingWithWritingTransformation[BigInt,
-                                            ToConsole,
-                                            ActiveWriting[ToConsole]]()
-      with ReadingTransformation[BigInt, ActiveWriting[ToConsole]]()
-      with ComputationTransformation[
-        ActiveWriting[ToConsole],
-        ActiveReadingWithWriting[BigInt, ToConsole]]()
-\end{verbatim}
-}
-}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole}\end{center}}
-{\color{DarkGreen}	
-\footnotesize{
-\begin{verbatim}
-object implicits {
-
   import ... activeMeaningOfActiveWritingToConsole
 
-  implicit object activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole
-      extends ReadingTransformedMeaning[BigInt,
-                                        ActiveWriting[ToConsole],
-                                        Active]()
-      with ComputationMeaning[ActiveReadingWithWriting[BigInt, ToConsole],
-                              ActiveReading[BigInt]]()
-      with ProgramMeaning[`=>ARW`[BigInt, ToConsole], `=>AR`[BigInt]]()
-
-}
-\end{verbatim}
-}
-}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole}\end{center}}
-{\color{DarkGreen}	
-\footnotesize{
-\begin{verbatim}
-object implicits {
-
-  import ... activeMeaningOfActiveWritingToConsole
-
-  implicit object activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole
-      extends ReadingTransformedMeaning[BigInt,
-                                        ActiveWriting[ToConsole],
-                                        Active]()
-      with ComputationMeaning[ActiveReadingWithWriting[BigInt, ToConsole],
-                              ActiveReading[BigInt]]()
-      with ProgramMeaning[`=>ARW`[BigInt, ToConsole], `=>AR`[BigInt]]()
-
-}
+  implicit object 
+    activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole
+      extends ReadingTransformedMeaning[
+        BigInt, ActiveWriting[ToConsole], Active]()
+      with ComputationMeaning[
+        ActiveReadingWithWriting[BigInt, ToConsole],
+        ActiveReading[BigInt]]()
+      with ProgramMeaning[
+        `=>ARW`[BigInt, ToConsole], 
+        `=>AR`[BigInt]]()
 \end{verbatim}
 }
 }
@@ -1767,7 +1716,7 @@ object implicits {
 \begin{frame}[fragile]
 \frametitle{\begin{center}\ttdg{FactorialOfIntRead \\ WritingToConsoleWrittenToConsoleMain}\end{center}}
 {\color{DarkGreen}	
-\footnotesize{
+\scriptsize{
 \begin{verbatim}
 import ... activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole
 import activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole.meaning
@@ -1777,14 +1726,12 @@ import mainFactorialOfIntReadWritingToConsoleWrittenToConsole.factorialMain
 
 object FactorialOfIntReadWritingToConsoleWrittenToConsoleMain {
 
-  import ... readIntFromConsoleEffect
-  import ... writeFactorialOfIntReadFromConsoleToConsoleEffect
-  import ... writeToConsoleEffect
+  import ... readIntFromConsoleEffect // executes read effect
+  import ... writeFactorialOfIntReadFromConsoleToConsoleEffect // executes write effect
+  import ... writeToConsoleEffect // executes write effect via writeUsing
 
   def main(args: Array[String]): Unit = {
-
     meaning(factorialMain)(())
-
   }
 
 }

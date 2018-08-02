@@ -18,10 +18,14 @@ import pdbp.types.active.writing.activeWritingTypes._
 
 import pdbp.writable.implicits.toConsole.implicits.toConsoleWritable
 
+import pdbp.program.Program
+
 import pdbp.program.writing.Writing
 
 import pdbp.program.implicits.active.writing.ActiveWritingProgram
 import pdbp.program.implicits.active.implicits.activeProgram
+
+import pdbp.computation.Computation
 
 import pdbp.computation.transformation.ComputationTransformation
 import pdbp.computation.transformation.writing.WritingTransformation
@@ -30,8 +34,10 @@ object implicits {
 
   implicit object activeWritingToConsoleProgram
       extends ActiveWritingProgram[ToConsole]()
+      with Computation[ActiveWriting[ToConsole]]()
+      with Program[`=>AW`[ToConsole]]()
+      with Writing[ToConsole, `=>AW`[ToConsole]]()
       with ComputationTransformation[Active, ActiveWriting[ToConsole]]()
       with WritingTransformation[ToConsole, Active]()
-      with Writing[ToConsole, `=>AW`[ToConsole]]()
 
 }

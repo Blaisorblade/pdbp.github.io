@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.7.27)  2 AUG 2018 17:18
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.7.27)  2 AUG 2018 21:42
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**pdbpLite.tex
-(./pdbpLite.tex
+**pdbpExtraLite..tex
+(./pdbpExtraLite..tex
 LaTeX2e <2016/02/01>
 Babel <3.9q> and hyphenation patterns for 3 language(s) loaded.
 (/usr/share/texlive/texmf-dist/tex/latex/beamer/beamer.cls
@@ -703,8 +703,8 @@ Package: beamerthemeSingapore 2010/06/17  (rcs-revision d02a7cf4d8ae)
 (/usr/share/texlive/texmf-dist/tex/latex/beamer/themes/outer/beamerouterthememi
 niframes.sty
 Package: beamerouterthememiniframes 2010/06/17  (rcs-revision d02a7cf4d8ae)
-)) (./pdbpLite.aux)
-\openout1 = `pdbpLite.aux'.
+)) (./pdbpExtraLite..aux)
+\openout1 = `pdbpExtraLite..aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 34.
 LaTeX Font Info:    ... okay on input line 34.
@@ -799,9 +799,9 @@ LaTeX Info: Redefining \ref on input line 34.
 LaTeX Info: Redefining \pageref on input line 34.
 LaTeX Info: Redefining \nameref on input line 34.
 
-(./pdbpLite.out) (./pdbpLite.out)
+(./pdbpExtraLite..out) (./pdbpExtraLite..out)
 \@outlinefile=\write5
-\openout5 = `pdbpLite.out'.
+\openout5 = `pdbpExtraLite..out'.
 
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  OT1/cmr/m/n --> OT1/cmss/m/n on input line 34.
@@ -871,10 +871,11 @@ orem-dictionary/translator-theorem-dictionary-English.dict
 Dictionary: translator-theorem-dictionary, Language: English 
 )
 LaTeX Info: Redefining \includegraphics on input line 34.
- (./pdbpLite.nav)
-<png/PDBP.png, id=15, 466.74374pt x 635.37375pt>
+
+(./pdbpExtraLite..nav) <png/PDBP.png, id=15, 466.74374pt x 635.37375pt>
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
+
+<use png/PDBP.png>
 Package pdftex.def Info: png/PDBP.png used on input line 34.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
 
@@ -892,9 +893,9 @@ Package pdftex.def Info: png/PDBP.png used on input line 63.
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./png/PDBP.png>]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb
+ (./pdbpExtraLite..vrb
 LaTeX Font Info:    Try loading font information for OMS+cmss on input line 3.
 LaTeX Font Info:    No file OMScmss.fd. on input line 3.
 
@@ -910,7 +911,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 74.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [2
 
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
 Package pdftex.def Info: png/PDBP.png used on input line 74.
@@ -918,39 +919,41 @@ Package pdftex.def Info: png/PDBP.png used on input line 74.
  [3
 
 ]
-(./pdbpLite.vrb)
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
 Package pdftex.def Info: png/PDBP.png used on input line 74.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [4
 
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
+
+<use png/PDBP.png>
 Package pdftex.def Info: png/PDBP.png used on input line 74.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
-
-[5
+ [5
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb <png/Backus.png, id=49, 133.49875pt x 161.60374pt>
+ (./pdbpExtraLite..vrb
+<png/Backus.png, id=49, 133.49875pt x 161.60374pt>
 File: png/Backus.png Graphic file (type png)
-
-<use png/Backus.png>
+ <use png/Backus.png>
 Package pdftex.def Info: png/Backus.png used on input line 2.
 (pdftex.def)             Requested size: 49.56487pt x 60.0pt.
 )
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
+
+<use png/PDBP.png>
 Package pdftex.def Info: png/PDBP.png used on input line 83.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [6
 
- <./png/Backus.png>] (./pdbpLite.vrb
+ <./png/Backus.png>] (./pdbpExtraLite..vrb
 File: png/Backus.png Graphic file (type png)
+
 <use png/Backus.png>
 Package pdftex.def Info: png/Backus.png used on input line 2.
 (pdftex.def)             Requested size: 49.56487pt x 60.0pt.
@@ -961,7 +964,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 83.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [7
 
-] (./pdbpLite.vrb
+] (./pdbpExtraLite..vrb
 File: png/Backus.png Graphic file (type png)
 
 <use png/Backus.png>
@@ -975,9 +978,9 @@ Package pdftex.def Info: png/PDBP.png used on input line 83.
  [8
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb
+ (./pdbpExtraLite..vrb
 <png/PipeQuestion.png, id=66, 792.9625pt x 460.72125pt>
 File: png/PipeQuestion.png Graphic file (type png)
 
@@ -994,7 +997,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 94.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [9
 
- <./png/PipeQuestion.png>] (./pdbpLite.vrb
+ <./png/PipeQuestion.png>] (./pdbpExtraLite..vrb
 File: png/PipeQuestion.png Graphic file (type png)
 
 <use png/PipeQuestion.png>
@@ -1010,7 +1013,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 94.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [10
 
-] (./pdbpLite.vrb
+] (./pdbpExtraLite..vrb
 File: png/PipeQuestion.png Graphic file (type png)
  <use png/PipeQuestion.png>
 Package pdftex.def Info: png/PipeQuestion.png used on input line 2.
@@ -1025,7 +1028,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 94.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [11
 
-] (./pdbpLite.vrb
+] (./pdbpExtraLite..vrb
 File: png/PipeQuestion.png Graphic file (type png)
  <use png/PipeQuestion.png>
 Package pdftex.def Info: png/PipeQuestion.png used on input line 2.
@@ -1040,7 +1043,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 94.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [12
 
-] (./pdbpLite.vrb
+] (./pdbpExtraLite..vrb
 File: png/PipeQuestion.png Graphic file (type png)
  <use png/PipeQuestion.png>
 Package pdftex.def Info: png/PipeQuestion.png used on input line 2.
@@ -1056,9 +1059,9 @@ Package pdftex.def Info: png/PDBP.png used on input line 94.
  [13
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb
+ (./pdbpExtraLite..vrb
 <png/Pipe.png, id=93, 376.40625pt x 260.975pt>
 File: png/Pipe.png Graphic file (type png)
  <use png/Pipe.png>
@@ -1074,9 +1077,10 @@ Package pdftex.def Info: png/PDBP.png used on input line 102.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [14
 
- <./png/Pipe.png>] (./pdbpLite.vrb
+ <./png/Pipe.png>] (./pdbpExtraLite..vrb
 File: png/Pipe.png Graphic file (type png)
- <use png/Pipe.png>
+
+<use png/Pipe.png>
 Package pdftex.def Info: png/Pipe.png used on input line 2.
 (pdftex.def)             Requested size: 201.92384pt x 140.0pt.
 )
@@ -1090,9 +1094,9 @@ Package pdftex.def Info: png/PDBP.png used on input line 102.
  [15
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
 Overfull \vbox (20.12pt too high) detected at line 128
  []
 
@@ -1102,7 +1106,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 128.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [16
 
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 Overfull \vbox (20.12pt too high) detected at line 128
  []
 
@@ -1113,9 +1117,9 @@ Package pdftex.def Info: png/PDBP.png used on input line 128.
  [17
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
 Overfull \vbox (34.02417pt too high) detected at line 154
  []
 
@@ -1125,7 +1129,7 @@ Package pdftex.def Info: png/PDBP.png used on input line 154.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [18
 
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 Overfull \vbox (34.02417pt too high) detected at line 154
  []
 
@@ -1136,10 +1140,10 @@ Package pdftex.def Info: png/PDBP.png used on input line 154.
  [19
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
-Overfull \vbox (34.02417pt too high) detected at line 180
+ (./pdbpExtraLite..vrb)
+Overfull \vbox (44.82419pt too high) detected at line 180
  []
 
 File: png/PDBP.png Graphic file (type png)
@@ -1148,8 +1152,8 @@ Package pdftex.def Info: png/PDBP.png used on input line 180.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [20
 
-] (./pdbpLite.vrb)
-Overfull \vbox (34.02417pt too high) detected at line 180
+] (./pdbpExtraLite..vrb)
+Overfull \vbox (44.82419pt too high) detected at line 180
  []
 
 File: png/PDBP.png Graphic file (type png)
@@ -1159,1333 +1163,1331 @@ Package pdftex.def Info: png/PDBP.png used on input line 180.
  [21
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
+Overfull \vbox (20.12pt too high) detected at line 206
+ []
+
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 189.
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 206.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [22
 
-]
-\openout4 = `pdbpLite.vrb'.
+] (./pdbpExtraLite..vrb)
+Overfull \vbox (20.12pt too high) detected at line 206
+ []
 
-
-(./pdbpLite.vrb)
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 198.
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 206.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [23
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 210.
+Package pdftex.def Info: png/PDBP.png used on input line 215.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
-
-[24
+ [24
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 225.
+Package pdftex.def Info: png/PDBP.png used on input line 224.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [25
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
 
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 239.
+Package pdftex.def Info: png/PDBP.png used on input line 236.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [26
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
-Overfull \vbox (81.79092pt too high) detected at line 262
- []
-
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 262.
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 251.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [27
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 279.
+Package pdftex.def Info: png/PDBP.png used on input line 265.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [28
 
 ]
-(./pdbpLite.vrb)
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb
+Overfull \hbox (3.13927pt too wide) in paragraph at lines 19--19
+[]          \OT1/cmtt/m/n/10.95 --------????--------   => | Unit >--> Unit |[] 
+
+ []
+
+)
+Overfull \vbox (81.79092pt too high) detected at line 288
+ []
+
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 279.
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 288.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [29
 
-] (./pdbpLite.vrb)
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 279.
+Package pdftex.def Info: png/PDBP.png used on input line 305.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [30
 
-[30
-
-] (./pdbpLite.vrb)
+]
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 279.
+Package pdftex.def Info: png/PDBP.png used on input line 305.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [31
 
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
 
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 279.
+Package pdftex.def Info: png/PDBP.png used on input line 305.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [32
 
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 279.
+Package pdftex.def Info: png/PDBP.png used on input line 305.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [33
 
 ]
-\openout4 = `pdbpLite.vrb'.
-
-
-(./pdbpLite.vrb)
-Overfull \vbox (60.59084pt too high) detected at line 311
- []
-
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 311.
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 305.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [34
 
-] (./pdbpLite.vrb)
-Overfull \vbox (60.59084pt too high) detected at line 311
- []
-
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
+
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 311.
+Package pdftex.def Info: png/PDBP.png used on input line 305.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [35
 
-] (./pdbpLite.vrb)
-Overfull \vbox (60.59084pt too high) detected at line 311
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
+Overfull \vbox (60.59084pt too high) detected at line 337
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 311.
+Package pdftex.def Info: png/PDBP.png used on input line 337.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [36
 
-] (./pdbpLite.vrb)
-Overfull \vbox (60.59084pt too high) detected at line 311
+] (./pdbpExtraLite..vrb)
+Overfull \vbox (60.59084pt too high) detected at line 337
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 311.
+Package pdftex.def Info: png/PDBP.png used on input line 337.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [37
 
-] (./pdbpLite.vrb)
-Overfull \vbox (60.59084pt too high) detected at line 311
+] (./pdbpExtraLite..vrb)
+Overfull \vbox (60.59084pt too high) detected at line 337
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 311.
+Package pdftex.def Info: png/PDBP.png used on input line 337.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [38
 
-] (./pdbpLite.vrb)
-Overfull \vbox (60.59084pt too high) detected at line 311
+] (./pdbpExtraLite..vrb)
+Overfull \vbox (60.59084pt too high) detected at line 337
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 311.
+Package pdftex.def Info: png/PDBP.png used on input line 337.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [39
 
-]
-\openout4 = `pdbpLite.vrb'.
+] (./pdbpExtraLite..vrb)
+Overfull \vbox (60.59084pt too high) detected at line 337
+ []
 
- (./pdbpLite.vrb)
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 322.
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 337.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [40
 
-]
-(./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
+Overfull \vbox (60.59084pt too high) detected at line 337
+ []
+
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 322.
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 337.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [41
 
-] (./pdbpLite.vrb)
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 322.
+Package pdftex.def Info: png/PDBP.png used on input line 348.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [42
 
-[42
-
-] (./pdbpLite.vrb)
+]
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 322.
+Package pdftex.def Info: png/PDBP.png used on input line 348.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [43
 
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
 
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 322.
+Package pdftex.def Info: png/PDBP.png used on input line 348.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [44
 
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 322.
+Package pdftex.def Info: png/PDBP.png used on input line 348.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [45
 
 ]
-\openout4 = `pdbpLite.vrb'.
-
-
-(./pdbpLite.vrb)
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 330.
+Package pdftex.def Info: png/PDBP.png used on input line 348.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [46
 
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 330.
+
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 348.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [47
 
-[47
+]
+\openout4 = `pdbpExtraLite..vrb'.
 
-] (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 330.
+Package pdftex.def Info: png/PDBP.png used on input line 356.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [48
 
 ]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
-
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 338.
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 356.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [49
 
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 338.
+
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 356.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [50
 
 ]
-(./pdbpLite.vrb)
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 338.
+Package pdftex.def Info: png/PDBP.png used on input line 364.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [51
 
 ]
-\openout4 = `pdbpLite.vrb'.
+(./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 364.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [52
 
- (./pdbpLite.vrb
-LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 12.
+] (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
 
-LaTeX Font Info:    No file OMScmtt.fd. on input line 12.
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 364.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [53
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 376.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [54
+
+]
+(./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 376.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [55
+
+] (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 376.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [56
+
+] (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 376.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [57
+
+]
+(./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 376.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [58
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb
+LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 6.
+LaTeX Font Info:    No file OMScmtt.fd. on input line 6.
 
 
 LaTeX Font Warning: Font shape `OMS/cmtt/m/n' undefined
 (Font)              using `OMS/cmsy/m/n' instead
-(Font)              for symbol `textbraceleft' on input line 12.
+(Font)              for symbol `textbraceleft' on input line 6.
 
 )
-Overfull \vbox (5.29085pt too high) detected at line 357
- []
-
 File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 357.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [52
-
-] (./pdbpLite.vrb)
-Overfull \vbox (5.29085pt too high) detected at line 357
- []
-
-File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 357.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [53
-
-] (./pdbpLite.vrb)
-Overfull \vbox (5.29085pt too high) detected at line 357
- []
-
-File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 357.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [54
-
-] (./pdbpLite.vrb)
-Overfull \vbox (5.29085pt too high) detected at line 357
- []
-
-File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 357.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [55
-
-] (./pdbpLite.vrb)
-Overfull \vbox (5.29085pt too high) detected at line 357
- []
-
-File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 357.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [56
-
-] (./pdbpLite.vrb)
-Overfull \vbox (5.29085pt too high) detected at line 357
- []
-
-File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 357.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [57
-
-] (./pdbpLite.vrb)
-Overfull \vbox (5.29085pt too high) detected at line 357
- []
-
-File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 357.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [58
-
-] (./pdbpLite.vrb)
-Overfull \vbox (5.29085pt too high) detected at line 357
- []
-
-File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 357.
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 390.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [59
 
-] (./pdbpLite.vrb)
-Overfull \vbox (5.29085pt too high) detected at line 357
- []
-
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 357.
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 390.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [60
 
-] (./pdbpLite.vrb)
-Overfull \vbox (5.29085pt too high) detected at line 357
- []
-
+]
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 357.
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 390.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [61
 
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 365.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [62
-
-]
-(./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 365.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [63
-
-] (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 365.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
-
-[64
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 377.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [65
-
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
 
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 377.
+Package pdftex.def Info: png/PDBP.png used on input line 390.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [62
+
+] (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 390.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [63
+
+]
+(./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 390.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [64
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 398.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [65
+
+] (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 398.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [66
 
-] (./pdbpLite.vrb)
+]
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 377.
+Package pdftex.def Info: png/PDBP.png used on input line 398.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [67
 
 ]
-(./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 377.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [68
+\openout4 = `pdbpExtraLite..vrb'.
 
-] (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 377.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
-
-[69
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 390.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [70
-
-] (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
 
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 390.
+Package pdftex.def Info: png/PDBP.png used on input line 410.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [68
+
+] (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 410.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [69
+
+]
+(./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 410.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [70
+
+] (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 410.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [71
 
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 390.
+Package pdftex.def Info: png/PDBP.png used on input line 410.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [72
 
 ]
-(./pdbpLite.vrb)
+\openout4 = `pdbpExtraLite..vrb'.
+
+
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 390.
+Package pdftex.def Info: png/PDBP.png used on input line 423.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [73
 
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 390.
+
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 423.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [74
 
-[74
-
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 390.
+Package pdftex.def Info: png/PDBP.png used on input line 423.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [75
 
 ]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
-
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 411.
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 423.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [76
 
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 428.
+
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 423.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [77
 
-]
-(./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 428.
+Package pdftex.def Info: png/PDBP.png used on input line 423.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [78
 
-] (./pdbpLite.vrb)
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 428.
+Package pdftex.def Info: png/PDBP.png used on input line 444.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [79
 
-[79
+]
+\openout4 = `pdbpExtraLite..vrb'.
 
-] (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 428.
+
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 461.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [80
 
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
-
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 428.
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 461.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [81
 
-] (./pdbpLite.vrb)
+]
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 428.
+Package pdftex.def Info: png/PDBP.png used on input line 461.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [82
 
-]
-\openout4 = `pdbpLite.vrb'.
-
-
-(./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 448.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [83
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 467.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
-
-[84
-
-] (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 467.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [85
-
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
 
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 467.
+Package pdftex.def Info: png/PDBP.png used on input line 461.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [83
+
+] (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 461.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [84
+
+]
+(./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 461.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [85
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 481.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [86
 
-] (./pdbpLite.vrb)
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 467.
+Package pdftex.def Info: png/PDBP.png used on input line 502.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [87
 
 ]
-(./pdbpLite.vrb)
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 467.
+Package pdftex.def Info: png/PDBP.png used on input line 502.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [88
 
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 467.
+
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 502.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [89
 
-[89
-
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 467.
+Package pdftex.def Info: png/PDBP.png used on input line 502.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [90
 
-] (./pdbpLite.vrb)
+]
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
-
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 467.
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 502.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [91
 
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 479.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [92
-
-]
-(./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 479.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [93
-
-] (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 479.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
-
-[94
-
-] (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 479.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [95
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
 
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 490.
+Package pdftex.def Info: png/PDBP.png used on input line 502.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [92
+
+] (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 502.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [93
+
+]
+(./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 502.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [94
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 514.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [95
+
+] (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 514.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [96
 
 ]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 501.
+Package pdftex.def Info: png/PDBP.png used on input line 514.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [97
 
-]
-\openout4 = `pdbpLite.vrb'.
-
-
-(./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 509.
+
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 514.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [98
 
-] (./pdbpLite.vrb)
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 509.
+Package pdftex.def Info: png/PDBP.png used on input line 525.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [99
 
-[99
+]
+\openout4 = `pdbpExtraLite..vrb'.
 
-] (./pdbpLite.vrb)
+
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 509.
+Package pdftex.def Info: png/PDBP.png used on input line 536.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [100
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
 
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 517.
+Package pdftex.def Info: png/PDBP.png used on input line 544.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [101
 
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 517.
+Package pdftex.def Info: png/PDBP.png used on input line 544.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [102
 
 ]
-(./pdbpLite.vrb)
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 517.
+Package pdftex.def Info: png/PDBP.png used on input line 544.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [103
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 521.
+
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 552.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [104
 
-[104
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 538.
+Package pdftex.def Info: png/PDBP.png used on input line 552.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [105
 
 ]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
-
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 556.
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 552.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [106
 
-] (./pdbpLite.vrb)
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
+
+<use png/PDBP.png>
 Package pdftex.def Info: png/PDBP.png used on input line 556.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [107
 
 ]
-(./pdbpLite.vrb)
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 556.
+Package pdftex.def Info: png/PDBP.png used on input line 573.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [108
 
-] (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 556.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
-
-[109
-
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 570.
+Package pdftex.def Info: png/PDBP.png used on input line 593.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [110
+ [109
 
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
 
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 570.
+Package pdftex.def Info: png/PDBP.png used on input line 593.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [110
+
+] (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 593.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [111
 
 ]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 601.
+Package pdftex.def Info: png/PDBP.png used on input line 593.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [112
 
 ]
-(./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 601.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [113
+\openout4 = `pdbpExtraLite..vrb'.
 
-] (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 601.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
-
-[114
-
-] (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 601.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [115
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
 
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 632.
+Package pdftex.def Info: png/PDBP.png used on input line 607.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [113
+
+] (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 607.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [114
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+
+(./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 640.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [115
+
+] (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 640.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [116
 
-] (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 632.
+Package pdftex.def Info: png/PDBP.png used on input line 640.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [117
 
 ]
-(./pdbpLite.vrb)
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 632.
+Package pdftex.def Info: png/PDBP.png used on input line 640.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [118
 
-] (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 632.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
-
-[119
-
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 673.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [119
+
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 651.
+Package pdftex.def Info: png/PDBP.png used on input line 673.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [120
 
 ]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
-
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 662.
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 673.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [121
 
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 685.
+
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 673.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [122
 
 ]
-(./pdbpLite.vrb)
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 685.
+Package pdftex.def Info: png/PDBP.png used on input line 692.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [123
 
-] (./pdbpLite.vrb)
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 685.
+Package pdftex.def Info: png/PDBP.png used on input line 703.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
-
-[124
+ [124
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 713.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [125
-
-] (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
 
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 713.
+Package pdftex.def Info: png/PDBP.png used on input line 726.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [125
+
+] (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 726.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [126
 
-] (./pdbpLite.vrb)
+]
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 713.
+Package pdftex.def Info: png/PDBP.png used on input line 726.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [127
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
-
-(./pdbpLite.vrb)
-Overfull \vbox (54.54082pt too high) detected at line 739
- []
-
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
+
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 739.
+Package pdftex.def Info: png/PDBP.png used on input line 754.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [128
 
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 760.
+Package pdftex.def Info: png/PDBP.png used on input line 754.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [129
 
 ]
-\openout4 = `pdbpLite.vrb'.
-
-
-(./pdbpLite.vrb)
-Overfull \vbox (0.79083pt too high) detected at line 781
- []
-
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 781.
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 754.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [130
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
+Overfull \vbox (54.54082pt too high) detected at line 780
+ []
+
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 802.
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 780.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [131
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
-
-(./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 816.
+Package pdftex.def Info: png/PDBP.png used on input line 801.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [132
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 833.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
 
-[133
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
-Overfull \vbox (21.54082pt too high) detected at line 856
+(./pdbpExtraLite..vrb)
+Overfull \vbox (0.79083pt too high) detected at line 822
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 856.
+Package pdftex.def Info: png/PDBP.png used on input line 822.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [133
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 843.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [134
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 870.
+Package pdftex.def Info: png/PDBP.png used on input line 857.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [135
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
-
-(./pdbpLite.vrb)
-Overfull \vbox (29.34082pt too high) detected at line 894
- []
-
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
+
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 894.
+Package pdftex.def Info: png/PDBP.png used on input line 874.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [136
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
+Overfull \vbox (21.54082pt too high) detected at line 897
+ []
+
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 910.
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 897.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [137
 
 ]
-(./pdbpLite.vrb)
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 910.
+Package pdftex.def Info: png/PDBP.png used on input line 911.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [138
 
-] (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 910.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
-
-[139
-
-] (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 910.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [140
-
-] (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
-
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 910.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [141
-
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
-Overfull \hbox (3.92964pt too wide) in paragraph at lines 925--925
- \OT1/cmtt/m/n/14.4 NaturalBinaryTypeConstructorTransformation[] 
+
+(./pdbpExtraLite..vrb)
+Overfull \vbox (29.34082pt too high) detected at line 935
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 925.
+Package pdftex.def Info: png/PDBP.png used on input line 935.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [139
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 950.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [140
+
+]
+(./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 950.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [141
+
+] (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 950.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [142
 
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
+] (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 944.
+Package pdftex.def Info: png/PDBP.png used on input line 950.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [143
 
 ]
-\openout4 = `pdbpLite.vrb'.
-
-
-(./pdbpLite.vrb)
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 960.
+Package pdftex.def Info: png/PDBP.png used on input line 950.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [144
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 980.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
 
-[145
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 966.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [145
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 999.
+Package pdftex.def Info: png/PDBP.png used on input line 986.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [146
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
-
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1020.
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1005.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [147
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
-Overfull \vbox (7.34082pt too high) detected at line 1042
- []
-
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
+
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1042.
+Package pdftex.def Info: png/PDBP.png used on input line 1026.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [148
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
+Overfull \vbox (18.34082pt too high) detected at line 1049
+ []
+
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1059.
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1049.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [149
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
-
-(./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1076.
+Package pdftex.def Info: png/PDBP.png used on input line 1066.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [150
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
-Overfull \vbox (21.54082pt too high) detected at line 1099
- []
 
+(./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1099.
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1084.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [151
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
+Overfull \vbox (32.54082pt too high) detected at line 1108
+ []
+
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1115.
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1108.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [152
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
-
-(./pdbpLite.vrb)
-Overfull \vbox (29.34082pt too high) detected at line 1139
- []
-
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1139.
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1125.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [153
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+
+(./pdbpExtraLite..vrb)
+Overfull \vbox (40.34082pt too high) detected at line 1150
+ []
+
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1160.
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1150.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [154
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
-
-(./pdbpLite.vrb)
-Overfull \vbox (10.54082pt too high) detected at line 1182
- []
-
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1182.
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1171.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [155
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
-Overfull \vbox (10.54082pt too high) detected at line 1204
+
+(./pdbpExtraLite..vrb)
+Overfull \vbox (10.54082pt too high) detected at line 1193
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1204.
+Package pdftex.def Info: png/PDBP.png used on input line 1193.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [156
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
+Overfull \vbox (10.54082pt too high) detected at line 1215
+ []
+
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1217.
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1215.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [157
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
-
-(./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1238.
+Package pdftex.def Info: png/PDBP.png used on input line 1228.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [158
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+
+(./pdbpExtraLite..vrb)
+Overfull \vbox (10.54082pt too high) detected at line 1250
+ []
+
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1252.
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1250.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
-
-[159
+ [159
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
+ (./pdbpExtraLite..vrb)
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1269.
+Package pdftex.def Info: png/PDBP.png used on input line 1264.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [160
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb
-Overfull \hbox (18.73134pt too wide) in paragraph at lines 14--14
+
+(./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1281.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [161
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb
+Overfull \hbox (18.73134pt too wide) in paragraph at lines 15--15
 []      \OT1/cmtt/m/n/9 with ComputationTransformation[Active, ActiveReading[Bi
 gInt]]()[] 
  []
@@ -2493,358 +2495,368 @@ gInt]]()[]
 )
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1288.
+Package pdftex.def Info: png/PDBP.png used on input line 1301.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [161
+ [162
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb
-Overfull \hbox (56.5309pt too wide) in paragraph at lines 11--11
-[]      \OT1/cmtt/m/n/9 with ComputationMeaning[ActiveReading[BigInt], ActiveRe
-ading[BigInt]]()[] 
+ (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1320.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [163
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+
+(./pdbpExtraLite..vrb)
+Overfull \vbox (62.34082pt too high) detected at line 1347
+ []
+
+File: png/PDBP.png Graphic file (type png)
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1347.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [164
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1359.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [165
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+
+(./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1380.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [166
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
+Overfull \vbox (43.54082pt too high) detected at line 1405
+ []
+
+File: png/PDBP.png Graphic file (type png)
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1405.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [167
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
+Overfull \vbox (65.54082pt too high) detected at line 1432
+ []
+
+File: png/PDBP.png Graphic file (type png)
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1432.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [168
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1445.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [169
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+
+(./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1460.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [170
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1475.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [171
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1486.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [172
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+
+(./pdbpExtraLite..vrb)
+Overfull \vbox (10.54082pt too high) detected at line 1508
+ []
+
+File: png/PDBP.png Graphic file (type png)
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1508.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [173
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1521.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [174
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+
+(./pdbpExtraLite..vrb
+Overfull \hbox (4.5565pt too wide) in paragraph at lines 14--14
+[]      \OT1/cmtt/m/n/9 (implicit toBeTransformedMeaning: ComputationMeaning[FC
+, T])[] 
+ []
+
+
+Overfull \hbox (32.90617pt too wide) in paragraph at lines 14--14
+[]      \OT1/cmtt/m/n/9 extends ComputationMeaning[WritingTransformed[ToConsole
+, FC], T] {[] 
  []
 
 )
 File: png/PDBP.png Graphic file (type png)
  <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1304.
+Package pdftex.def Info: png/PDBP.png used on input line 1540.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [162
+ [175
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
-Overfull \vbox (51.34082pt too high) detected at line 1330
+ (./pdbpExtraLite..vrb)
+Overfull \vbox (51.34082pt too high) detected at line 1566
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1330.
+Package pdftex.def Info: png/PDBP.png used on input line 1566.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [163
+ [176
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1342.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [164
-
-]
-\openout4 = `pdbpLite.vrb'.
-
-
-(./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1363.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [165
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
-Overfull \vbox (10.54082pt too high) detected at line 1385
- []
-
-File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1385.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [166
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
-Overfull \vbox (65.54082pt too high) detected at line 1412
- []
-
-File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1412.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [167
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1425.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [168
-
-]
-\openout4 = `pdbpLite.vrb'.
-
-
-(./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1440.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [169
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1455.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
-
-[170
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1466.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [171
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
-
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1487.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [172
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1500.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [173
-
-]
-\openout4 = `pdbpLite.vrb'.
-
-
-(./pdbpLite.vrb)
-Overfull \vbox (51.34082pt too high) detected at line 1526
- []
-
-File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1526.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [174
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb
+ (./pdbpExtraLite..vrb
 Overfull \hbox (14.0064pt too wide) in paragraph at lines 18--18
 []      \OT1/cmtt/m/n/9 s"INFO -- $currentCalendarInMilliseconds -- $string($z)
  => $y"[] 
  []
 
 )
-Overfull \vbox (18.34082pt too high) detected at line 1549
+Overfull \vbox (18.34082pt too high) detected at line 1589
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1549.
+Package pdftex.def Info: png/PDBP.png used on input line 1589.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [175
+ [177
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb
+ (./pdbpExtraLite..vrb
 Overfull \hbox (14.0064pt too wide) in paragraph at lines 16--16
 []  \OT1/cmtt/m/n/9 val multiply: (String => W) `I=>` (BigInt && BigInt) >--> B
 igInt =[] 
  []
 
 )
-Overfull \vbox (0.79083pt too high) detected at line 1570
+Overfull \vbox (0.79083pt too high) detected at line 1610
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1570.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [176
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
-Overfull \vbox (21.54082pt too high) detected at line 1593
- []
-
-File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1593.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [177
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb)
-File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1609.
+Package pdftex.def Info: png/PDBP.png used on input line 1610.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [178
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
-
-(./pdbpLite.vrb
-Overfull \hbox (32.90617pt too wide) in paragraph at lines 14--14
-[]      \OT1/cmtt/m/n/9 with ComputationTransformation[Active, ActiveWriting[To
-Console]]()[] 
+ (./pdbpExtraLite..vrb)
+Overfull \vbox (21.54082pt too high) detected at line 1633
  []
 
-)
 File: png/PDBP.png Graphic file (type png)
- <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1628.
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1633.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [179
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb
-Overfull \hbox (4.5565pt too wide) in paragraph at lines 15--15
+ (./pdbpExtraLite..vrb)
+File: png/PDBP.png Graphic file (type png)
+ <use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1649.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [180
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+
+(./pdbpExtraLite..vrb)
+Overfull \vbox (11.79083pt too high) detected at line 1671
+ []
+
+File: png/PDBP.png Graphic file (type png)
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1671.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [181
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb
+Overfull \hbox (4.5565pt too wide) in paragraph at lines 16--16
 []      \OT1/cmtt/m/n/9 extends ActiveReadingWithWritingProgram[BigInt, ToConso
 le]()[] 
  []
 
 
-Overfull \hbox (18.73134pt too wide) in paragraph at lines 15--15
+Overfull \hbox (18.73134pt too wide) in paragraph at lines 16--16
 []      \OT1/cmtt/m/n/9 with Computation[ActiveReadingWithWriting[BigInt, ToCon
 sole]]()[] 
  []
 
 )
-Overfull \hbox (11.33963pt too wide) in paragraph at lines 1648--1648
+Overfull \hbox (11.33963pt too wide) in paragraph at lines 1692--1692
  \OT1/cmtt/m/n/14.4 activeIntReadingWithWritingToConsoleProgram[] 
  []
 
 
-Overfull \vbox (6.54082pt too high) detected at line 1648
+Overfull \vbox (17.54082pt too high) detected at line 1692
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1648.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [180
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb
-Overfull \hbox (28.18123pt too wide) in paragraph at lines 13--13
-[]                                            \OT1/cmtt/m/n/9 ActiveWriting[ToC
-onsole]]()[] 
- []
-
-
-Overfull \hbox (14.0064pt too wide) in paragraph at lines 13--13
-[]      \OT1/cmtt/m/n/9 with ReadingTransformation[BigInt, ActiveWriting[ToCons
-ole]]()[] 
- []
-
-)
-Overfull \hbox (11.33963pt too wide) in paragraph at lines 1666--1666
- \OT1/cmtt/m/n/14.4 activeIntReadingWithWritingToConsoleProgram[] 
- []
-
-File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1666.
-(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
- [181
-
-]
-\openout4 = `pdbpLite.vrb'.
-
- (./pdbpLite.vrb
-Overfull \hbox (32.90617pt too wide) in paragraph at lines 24--24
-[]\OT1/cmtt/m/n/9 import ... activeIntReadingMeaningOfActiveIntReadingWithWriti
-ngToConsole[] 
- []
-
-
-Overfull \hbox (51.80595pt too wide) in paragraph at lines 24--24
-[]\OT1/cmtt/m/n/9 import activeIntReadingMeaningOfActiveIntReadingWithWritingTo
-Console.meaning[] 
- []
-
-
-Overfull \hbox (47.08101pt too wide) in paragraph at lines 24--24
-[]\OT1/cmtt/m/n/9 import mainFactorialOfIntReadWritingToConsoleWrittenToConsole
-.factorialMain[] 
- []
-
-)
-Overfull \vbox (105.54082pt too high) detected at line 1695
- []
-
-File: png/PDBP.png Graphic file (type png)
-<use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1695.
+Package pdftex.def Info: png/PDBP.png used on input line 1692.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [182
 
 ]
-\openout4 = `pdbpLite.vrb'.
+\openout4 = `pdbpExtraLite..vrb'.
 
- (./pdbpLite.vrb)
-Overfull \vbox (42.39082pt too high) detected at line 1720
+ (./pdbpExtraLite..vrb)
+Overfull \vbox (29.79083pt too high) detected at line 1714
  []
 
 File: png/PDBP.png Graphic file (type png)
 <use png/PDBP.png>
-Package pdftex.def Info: png/PDBP.png used on input line 1720.
+Package pdftex.def Info: png/PDBP.png used on input line 1714.
 (pdftex.def)             Requested size: 36.72777pt x 50.0pt.
  [183
 
 ]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb
+Overfull \hbox (15.71477pt too wide) in paragraph at lines 24--24
+[]\OT1/cmtt/m/n/8 import activeIntReadingMeaningOfActiveIntReadingWithWritingTo
+Console.meaning[] 
+ []
+
+
+Overfull \hbox (11.4647pt too wide) in paragraph at lines 24--24
+[]\OT1/cmtt/m/n/8 import mainFactorialOfIntReadWritingToConsoleWrittenToConsole
+.factorialMain[] 
+ []
+
+
+Overfull \hbox (62.46544pt too wide) in paragraph at lines 24--24
+[]  \OT1/cmtt/m/n/8 import ... writeFactorialOfIntReadFromConsoleToConsoleEffec
+t // executes write effect[] 
+ []
+
+
+Overfull \hbox (2.96458pt too wide) in paragraph at lines 24--24
+[]  \OT1/cmtt/m/n/8 import ... writeToConsoleEffect // executes write effect vi
+s writeUsing[] 
+ []
+
+)
+Overfull \vbox (76.95749pt too high) detected at line 1743
+ []
+
+File: png/PDBP.png Graphic file (type png)
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1743.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [184
+
+]
+\openout4 = `pdbpExtraLite..vrb'.
+
+ (./pdbpExtraLite..vrb)
+Overfull \vbox (42.39082pt too high) detected at line 1768
+ []
+
+File: png/PDBP.png Graphic file (type png)
+<use png/PDBP.png>
+Package pdftex.def Info: png/PDBP.png used on input line 1768.
+(pdftex.def)             Requested size: 36.72777pt x 50.0pt.
+ [185
+
+]
 \tf@nav=\write6
-\openout6 = `pdbpLite.nav'.
+\openout6 = `pdbpExtraLite..nav'.
 
 \tf@toc=\write7
-\openout7 = `pdbpLite.toc'.
+\openout7 = `pdbpExtraLite..toc'.
 
 \tf@snm=\write8
-\openout8 = `pdbpLite.snm'.
+\openout8 = `pdbpExtraLite..snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1722.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1722.
- (./pdbpLite.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1722.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1722.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1770.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1770.
+ (./pdbpExtraLite..aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1770.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1770.
 
-Package rerunfilecheck Info: File `pdbpLite.out' has not changed.
+Package rerunfilecheck Info: File `pdbpExtraLite..out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
 
 
@@ -2854,16 +2866,16 @@ LaTeX Font Warning: Size substitutions with differences
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1722.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1770.
  ) 
 Here is how much of TeX's memory you used:
- 17359 strings out of 494953
- 324765 string characters out of 6180977
+ 17374 strings out of 494953
+ 327226 string characters out of 6180977
  387583 words of memory out of 5000000
- 19535 multiletter control sequences out of 15000+600000
- 8668 words of font info for 32 fonts, out of 8000000 for 9000
+ 19541 multiletter control sequences out of 15000+600000
+ 9136 words of font info for 34 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 48i,15n,51p,388b,542s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 48i,15n,51p,394b,542s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss17.pfb></usr/share/texl
@@ -2873,11 +2885,12 @@ dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/f
 onts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/ty
 pe1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
 blic/amsfonts/cm/cmtt12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmtt9.pfb>
-Output written on pdbpLite.pdf (183 pages, 1507483 bytes).
+msfonts/cm/cmtt8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmtt9.pfb>
+Output written on pdbpExtraLite..pdf (185 pages, 1515491 bytes).
 PDF statistics:
- 1099 PDF objects out of 1200 (max. 8388607)
- 884 compressed objects within 9 object streams
- 367 named destinations out of 1000 (max. 500000)
+ 1113 PDF objects out of 1200 (max. 8388607)
+ 895 compressed objects within 9 object streams
+ 371 named destinations out of 1000 (max. 500000)
  69 words of extra memory for PDF output out of 10000 (max. 10000000)
 

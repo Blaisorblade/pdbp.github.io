@@ -28,8 +28,11 @@ trait Writing[W: Writable, >-->[- _, + _]] {
 
   private[pdbp] val `w>-->u`: W >--> Unit = write(identity)
 
-  def write[Z]: (Z => W) `I=>` Z >--> Unit =
+  private[pdbp] def `z>-w->u`[Z]: (Z => W) `I=>` Z >--> Unit =
     compose(function(implicitly), `w>-->u`)
+
+  def write[Z]: (Z => W) `I=>` Z >--> Unit =
+     `z>-w->u`    
 
   def writeUsing[Z, Y, X](
       `(z&&y)=>x`: ((Z && Y) => X)): (Z >--> Y) => ((X => W) `I=>` Z >--> Y) = {
@@ -45,7 +48,7 @@ trait Writing[W: Writable, >-->[- _, + _]] {
             `(z&&y&&x)>-->(x&&y)`
           }
         }
-      compose(compose(`z>-->(x&&y)`, left(write)), `(u&&y)>-->y`)
+      compose(compose(`z>-->(x&&y)`, left(`z>-w->u`)), `(u&&y)>-->y`)
   }
 
 }
