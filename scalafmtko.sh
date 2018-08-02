@@ -36,6 +36,7 @@ sed -i "s/private\[pdbp\] trait /private\[pdbp\] class /g" src/main/scala/pdbp/p
 sed -i "s/private\[pdbp\] trait /private\[pdbp\] class /g" src/main/scala/pdbp/program/implicits/active/writing/ActiveWritingProgram.scala
 sed -i "s/private\[pdbp\] trait /private\[pdbp\] class /g" src/main/scala/pdbp/program/meaning/ProgramMeaning.scala
 sed -i "s/private\[pdbp\] trait /private\[pdbp\] class /g" src/main/scala/pdbp/computation/meaning/reading/ReadingTransformedMeaning.scala
+sed -i "s/private\[pdbp\] trait /private\[pdbp\] class /g" src/main/scala/pdbp/computation/meaning/writing/toConsole/WritingToConsoleTransformedMeaning.scala
 sed -i "s/private\[pdbp\] trait /private\[pdbp\] class /g" src/main/scala/pdbp/computation/meaning/ofActive/MeaningOfActive.scala
 sed -i "s/private\[pdbp\] trait /private\[pdbp\] class /g" src/main/scala/pdbp/computation/meaning/free/FreeTransformedMeaning.scala
 sed -i "s/private\[pdbp\] trait /private\[pdbp\] class /g" src/main/scala/pdbp/computation/meaning/ComputationMeaning.scala
@@ -75,6 +76,9 @@ scalafmt src/main/scala/pdbp/program/writing/Writing.scala
 
 echo src/main/scala/pdbp/computation/meaning/reading/ReadingTransformedMeaning.scala
 scalafmt src/main/scala/pdbp/computation/meaning/reading/ReadingTransformedMeaning.scala
+
+echo src/main/scala/pdbp/computation/meaning/writing/toConsole/WritingToConsoleTransformedMeaning.scala
+scalafmt src/main/scala/pdbp/computation/meaning/writing/toConsole/WritingToConsoleTransformedMeaning.scala
 
 echo src/main/scala/pdbp/computation/meaning/ofActive/MeaningOfActive.scala
 scalafmt src/main/scala/pdbp/computation/meaning/ofActive/MeaningOfActive.scala
@@ -168,6 +172,7 @@ sed -i "s/private\[pdbp\] class /private\[pdbp\] trait /g" src/main/scala/pdbp/p
 sed -i "s/private\[pdbp\] class /private\[pdbp\] trait /g" src/main/scala/pdbp/program/implicits/active/writing/ActiveWritingProgram.scala
 sed -i "s/private\[pdbp\] class /private\[pdbp\] trait /g" src/main/scala/pdbp/program/meaning/ProgramMeaning.scala
 sed -i "s/private\[pdbp\] class /private\[pdbp\] trait /g" src/main/scala/pdbp/computation/meaning/reading/ReadingTransformedMeaning.scala
+sed -i "s/private\[pdbp\] class /private\[pdbp\] trait /g" src/main/scala/pdbp/computation/meaning/writing/toConsole/WritingToConsoleTransformedMeaning.scala
 sed -i "s/private\[pdbp\] class /private\[pdbp\] trait /g" src/main/scala/pdbp/computation/meaning/ofActive/MeaningOfActive.scala
 sed -i "s/private\[pdbp\] class /private\[pdbp\] trait /g" src/main/scala/pdbp/computation/meaning/free/FreeTransformedMeaning.scala
 sed -i "s/private\[pdbp\] class /private\[pdbp\] trait /g" src/main/scala/pdbp/computation/meaning/ComputationMeaning.scala
@@ -187,6 +192,7 @@ echo src/main/scala/examples/programs/writing/WritingAtomicPrograms.scala
 echo src/main/scala/examples/programs/writing/WritingFactorial.scala
 echo src/main/scala/examples/mainPrograms/reading/int/effectfulWriting/MainFactorialMultipliedByIntRead.scala
 echo src/main/scala/examples/mainPrograms/reading/int/effectfulWriting/MainFactorialOfIntRead.scala
+echo src/main/scala/examples/mainPrograms/writing/toConsole/effectfulReading/MainFactorialWrittenToConsole.scala
 echo src/main/scala/examples/mainPrograms/reading/int/writing/toConsole/MainFactorialOfIntReadWrittenToConsole.scala
 echo src/main/scala/examples/mainPrograms/reading/int/writing/toConsole/MainFactorialOfIntReadWritingToConsoleWrittenToConsole.scala
 echo src/main/scala/examples/mainPrograms/reading/int/writing/toConsole/effectfulWriting/MainFactorialOfIntReadWritingToConsole.scala

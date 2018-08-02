@@ -26,5 +26,3 @@ object SumOfSquaresAsComputationMain {
   }
 
 }
-
-

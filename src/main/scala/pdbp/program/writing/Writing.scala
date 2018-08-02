@@ -32,8 +32,7 @@ trait Writing[W: Writable, >-->[- _, + _]] {
     compose(function(implicitly), `w>-->u`)
 
   def writeUsing[Z, Y, X](
-      `(z&&y)=>x`: ((Z && Y) => X)): 
-      (Z >--> Y) => ((X => W) `I=>` Z >--> Y) = {
+      `(z&&y)=>x`: ((Z && Y) => X)): (Z >--> Y) => ((X => W) `I=>` Z >--> Y) = {
     `z>-->y` =>
       val `(z&&y)>-->x` = function(`(z&&y)=>x`)
       val `z>-->(x&&y)` =

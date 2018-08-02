@@ -13,9 +13,7 @@ package examples.main.active.reading.int.writing.toConsole
 
 import pdbp.types.effect.toConsole.ToConsole
 
-// import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
-
-import pdbp.program.meaning.ofActiveToConsoleWriting.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole
+import pdbp.program.meaning.ofActiveIntReadingWithWritingToConsole.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole
 import activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole.meaning
 
 import examples.objects.active.reading.int.writing.toConsole.mainFactorialOfIntReadWrittenToConsole

@@ -34,4 +34,3 @@ class SumOfSquaresAsComputation[C[+ _]: Computation]
   }
 
 }
-

@@ -13,7 +13,7 @@ package examples.main.active.writing.toConsole.effectfulReading
 
 import pdbp.types.effect.toConsole.ToConsole
 
-import pdbp.program.meaning.ofActiveToConsoleWriting.active.implicits.activeMeaningOfActiveWritingToConsole
+import pdbp.program.meaning.ofActiveWritingToConsole.active.implicits.activeMeaningOfActiveWritingToConsole
 import activeMeaningOfActiveWritingToConsole.meaning
 
 import examples.objects.active.writing.toConsole.effectfulReading.mainFactorialWrittenToConsole

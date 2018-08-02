@@ -40,7 +40,7 @@ object implicits {
   implicit object activeIntReadingWithWritingToConsoleProgram
       extends ActiveReadingWithWritingProgram[BigInt, ToConsole]()
       with Computation[ActiveReadingWithWriting[BigInt, ToConsole]]()
-      with Program[`=>ARW`[BigInt, ToConsole]]()                                            
+      with Program[`=>ARW`[BigInt, ToConsole]]()
       with Reading[BigInt, `=>ARW`[BigInt, ToConsole]]()
       with Writing[ToConsole, `=>ARW`[BigInt, ToConsole]]()
       with ReadingWithWritingTransformation[BigInt,

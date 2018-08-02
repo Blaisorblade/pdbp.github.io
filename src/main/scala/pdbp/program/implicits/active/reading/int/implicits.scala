@@ -33,7 +33,7 @@ object implicits {
       extends ActiveReadingProgram[BigInt]()
       with Computation[ActiveReading[BigInt]]()
       with Program[`=>AR`[BigInt]]()
-      with Reading[BigInt, `=>AR`[BigInt]]()      
+      with Reading[BigInt, `=>AR`[BigInt]]()
       with ReadingTransformation[BigInt, Active]()
       with ComputationTransformation[Active, ActiveReading[BigInt]]()
 

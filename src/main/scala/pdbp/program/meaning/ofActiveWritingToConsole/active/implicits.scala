@@ -1,4 +1,4 @@
-package pdbp.program.meaning.ofActiveToConsoleWriting.activeIntReading
+package pdbp.program.meaning.ofActiveWritingToConsole.active
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -14,27 +14,23 @@ package pdbp.program.meaning.ofActiveToConsoleWriting.activeIntReading
 import pdbp.types.effect.toConsole.ToConsole
 
 import pdbp.types.active.activeTypes._
-import pdbp.types.active.reading.activeReadingTypes._
 import pdbp.types.active.writing.activeWritingTypes._
-import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
 
 import pdbp.program.meaning.ProgramMeaning
 
 import pdbp.computation.meaning.ComputationMeaning
 
-import pdbp.computation.meaning.reading.ReadingTransformedMeaning
+import pdbp.computation.meaning.writing.toConsole.WritingToConsoleTransformedMeaning
 
 import pdbp.program.implicits.active.implicits.activeProgram
 import pdbp.program.implicits.active.writing.toConsole.implicits.activeWritingToConsoleProgram
-import pdbp.program.implicits.active.reading.int.writing.toConsole.implicits.activeIntReadingWithWritingToConsoleProgram
 
 object implicits {
 
-  import pdbp.program.meaning.ofActiveToConsoleWriting.active.implicits.activeMeaningOfActiveWritingToConsole
+  import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
 
-  implicit object activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole
-       extends ReadingTransformedMeaning[BigInt, ActiveWriting[ToConsole], Active]()
-       with ComputationMeaning[ActiveReadingWithWriting[BigInt, ToConsole], ActiveReading[BigInt]]()
-       with ProgramMeaning[`=>ARW`[BigInt, ToConsole], `=>AR`[BigInt]]()
-
+  implicit object activeMeaningOfActiveWritingToConsole
+      extends WritingToConsoleTransformedMeaning[Active, Active]()
+      with ComputationMeaning[ActiveWriting[ToConsole], Active]()
+      with ProgramMeaning[`=>AW`[ToConsole], `=>A`]()
 }

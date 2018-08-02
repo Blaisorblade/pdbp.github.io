@@ -36,10 +36,11 @@ trait EffectfulUtils[>-->[- _, + _]: Function] {
 
   val effectfulWriteFactorialOfIntReadToConsole: BigInt >--> Unit =
     effectfulWriteLineToConsoleWithMessage(
-      "the factorial value of the integer read is")    
+      "the factorial value of the integer read is")
 
-  val effectfulWriteFactorialOfIntMultipliedByIntReadToConsole: BigInt >--> Unit = 
+  val effectfulWriteFactorialOfIntMultipliedByIntReadToConsole
+    : BigInt >--> Unit =
     effectfulWriteLineToConsoleWithMessage(
-      "the factorial value of the integer multiplied by the integer read is")    
+      "the factorial value of the integer multiplied by the integer read is")
 
 }

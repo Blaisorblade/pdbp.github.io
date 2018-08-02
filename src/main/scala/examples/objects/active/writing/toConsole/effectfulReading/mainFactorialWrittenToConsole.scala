@@ -20,4 +20,5 @@ import implicits.activeWritingToConsoleProgram
 
 import examples.mainPrograms.writing.toConsole.effectfulReading.MainFactorialWrittenToConsole
 
-object mainFactorialWrittenToConsole extends MainFactorialWrittenToConsole[`=>AW`[ToConsole]]()
+object mainFactorialWrittenToConsole
+    extends MainFactorialWrittenToConsole[`=>AW`[ToConsole]]()

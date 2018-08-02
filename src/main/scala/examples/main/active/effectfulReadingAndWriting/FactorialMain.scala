@@ -25,5 +25,3 @@ object FactorialMain {
 
   }
 }
-
-
