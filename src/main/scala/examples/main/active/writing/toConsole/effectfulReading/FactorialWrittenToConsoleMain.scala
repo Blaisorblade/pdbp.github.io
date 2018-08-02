@@ -1,4 +1,4 @@
-package examples.main.active.effectfulReadingAndWriting
+package examples.main.active.writing.toConsole.effectfulReading
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,19 +11,22 @@ package examples.main.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
-import activeMeaningOfActive.meaning
+import pdbp.types.effect.toConsole.ToConsole
 
-import examples.objects.active.effectfulReadingAndWriting.mainFactorial
-import mainFactorial.factorialMain
+import pdbp.program.meaning.ofActiveToConsoleWriting.active.implicits.activeMeaningOfActiveWritingToConsole
+import activeMeaningOfActiveWritingToConsole.meaning
 
-object FactorialMain {
+import examples.objects.active.writing.toConsole.effectfulReading.mainFactorialWrittenToConsole
+import mainFactorialWrittenToConsole.factorialMain
+
+object FactorialWrittenToConsoleMain {
+
+  import examples.utils.effects.implicits.writeFactorialOfIntToConsoleEffect
 
   def main(args: Array[String]): Unit = {
 
     meaning(factorialMain)(())
 
   }
+
 }
-
-

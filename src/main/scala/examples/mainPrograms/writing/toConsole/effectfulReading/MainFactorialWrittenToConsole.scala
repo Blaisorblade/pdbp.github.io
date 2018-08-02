@@ -1,4 +1,4 @@
-package examples.mainPrograms.reading.int.effectfulWriting
+package examples.mainPrograms.writing.toConsole.effectfulReading
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,9 +11,13 @@ package examples.mainPrograms.reading.int.effectfulWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.types.implicitFunctionType._
+
+import pdbp.types.effect.toConsole.ToConsole
+
 import pdbp.program.Program
 
-import pdbp.program.reading.Reading
+import pdbp.program.writing.Writing
 
 import pdbp.program.compositionOperator._
 
@@ -21,22 +25,22 @@ import examples.utils.EffectfulUtils
 
 import examples.programs.Factorial
 
-class MainFactorialOfIntRead[
+class MainFactorialWrittenToConsole[
     >-->[- _, + _]: Program
-                  : [>-->[- _, + _]] => Reading[BigInt, >-->]]
+                  : [>-->[- _, + _]] => Writing[ToConsole, >-->]]
     extends EffectfulUtils[>-->]() {
 
-  private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
+  private val implicitIntWriting = implicitly[Writing[ToConsole, >-->]]
 
-  import implicitIntReading._
+  import implicitIntWriting._
 
   private object factorialObject extends Factorial[>-->]
 
   import factorialObject.factorial
 
-  val factorialMain: Unit >--> Unit =
-    read >-->
+  val factorialMain: (BigInt => ToConsole) `I=>` Unit >--> Unit =
+    effectfulReadIntFromConsole >-->
       factorial >-->
-      effectfulWriteFactorialOfIntReadToConsole
+      write
 
 }

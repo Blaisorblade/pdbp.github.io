@@ -1,4 +1,4 @@
-package examples.main
+package examples.objects.active.writing.toConsole.effectfulReading
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,14 +11,13 @@ package examples.main
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-trait Main[>-->[- _, + _]] {
+import pdbp.types.effect.toConsole.ToConsole
 
-  val run: Unit
+import pdbp.types.active.writing.activeWritingTypes._
 
-  def main(args: Array[String]): Unit = {
+import pdbp.program.implicits.active.writing.toConsole.implicits
+import implicits.activeWritingToConsoleProgram
 
-    run
+import examples.mainPrograms.writing.toConsole.effectfulReading.MainFactorialWrittenToConsole
 
-  }
-
-}
+object mainFactorialWrittenToConsole extends MainFactorialWrittenToConsole[`=>AW`[ToConsole]]()

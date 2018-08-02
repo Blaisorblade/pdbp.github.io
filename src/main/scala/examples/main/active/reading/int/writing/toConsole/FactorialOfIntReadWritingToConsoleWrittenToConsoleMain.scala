@@ -13,15 +13,15 @@ package examples.main.active.reading.int.writing.toConsole
 
 import pdbp.types.effect.toConsole.ToConsole
 
-import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
+// import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
+
+import pdbp.program.meaning.ofActiveToConsoleWriting.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole
+import activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole.meaning
 
 import examples.objects.active.reading.int.writing.toConsole.mainFactorialOfIntReadWritingToConsoleWrittenToConsole
 import mainFactorialOfIntReadWritingToConsoleWrittenToConsole.factorialMain
 
-import examples.main.Main
-
-object FactorialOfIntReadWritingToConsoleWrittenToConsoleMain
-    extends Main[`=>ARW`[BigInt, ToConsole]] {
+object FactorialOfIntReadWritingToConsoleWrittenToConsoleMain {
 
   import examples.utils.effects.implicits.readIntFromConsoleEffect
 
@@ -29,13 +29,10 @@ object FactorialOfIntReadWritingToConsoleWrittenToConsoleMain
 
   import examples.utils.effects.implicits.writeToConsoleEffect
 
-  private type `=>ARW[BigInt, ToConsole]` = `=>ARW`[BigInt, ToConsole]
+  def main(args: Array[String]): Unit = {
 
-  override val mainKleisliProgram: Unit `=>ARW[BigInt, ToConsole]` Unit =
-    factorialMain
+    meaning(factorialMain)(())
 
-  override val run = mainKleisliProgram(()) match {
-    case (ToConsole(effect), _) => effect(())
   }
 
 }

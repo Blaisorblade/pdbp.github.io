@@ -27,14 +27,18 @@ trait EffectfulUtils[>-->[- _, + _]: Function] {
       message: String): Y >--> Unit =
     function[Y, Unit](effectfulWriteLineToConsoleFunction(message))
 
-  lazy val effectfulReadIntFromConsole: Unit >--> BigInt =
+  val effectfulReadIntFromConsole: Unit >--> BigInt =
     effectfulReadIntFromConsoleWithMessage("please type an integer")
 
-  lazy val effectfulWriteFactorialOfIntToConsole: BigInt >--> Unit =
+  val effectfulWriteFactorialOfIntToConsole: BigInt >--> Unit =
     effectfulWriteLineToConsoleWithMessage(
       "the factorial value of the integer is")
 
-  lazy val effectfulWriteFactorialOfIntMultipliedByIntReadToConsole: BigInt >--> Unit = 
+  val effectfulWriteFactorialOfIntReadToConsole: BigInt >--> Unit =
+    effectfulWriteLineToConsoleWithMessage(
+      "the factorial value of the integer read is")    
+
+  val effectfulWriteFactorialOfIntMultipliedByIntReadToConsole: BigInt >--> Unit = 
     effectfulWriteLineToConsoleWithMessage(
       "the factorial value of the integer multiplied by the integer read is")    
 
