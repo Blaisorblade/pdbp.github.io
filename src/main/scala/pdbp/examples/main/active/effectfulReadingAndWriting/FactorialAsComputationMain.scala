@@ -1,4 +1,4 @@
-package pdbp.examples.utils
+package pdbp.examples.main.active.effectfulReadingAndWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,32 +11,18 @@ package pdbp.examples.utils
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.product.productType._
+import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
+import activeMeaningOfActive.meaning
 
-object functionUtils {
+import pdbp.examples.objects.active.effectfulReadingAndWriting.mainFactorialAsComputation
+import mainFactorialAsComputation.factorialMain
 
-  val isZeroFunction: BigInt => Boolean = { i =>
-    i == 0
-  }
+object FactorialAsComputationMain {
 
-  val subtractOneFunction: BigInt => BigInt = { i =>
-    i - 1
-  }
+  def main(args: Array[String]): Unit = {
 
-  val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
-    i * j
-  }
+    meaning(factorialMain)(())
 
-  def oneFunction[Z]: Z => BigInt = { z =>
-    1
-  }  
-
-  val squareFunction: Double => Double = { z =>
-    z * z
-  }
-
-  val sumFunction: Double && Double => Double = { (z, y) =>
-    z + y
   }
 
 }

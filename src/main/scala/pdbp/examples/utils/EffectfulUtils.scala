@@ -23,20 +23,32 @@ trait EffectfulUtils[C[+ _]: Resulting] {
 
   type `=>C` = [-Z, +Y] => Z => C[Y]
 
+  private def effectfulReadIntFromConsoleWithMessage(
+      message: String): Unit `=>C` BigInt = { _ =>
+    result(effectfulReadIntFromConsoleFunction(message)(()))
+  }
+
   private def effectfulReadTwoDoublesFromConsoleWithMessage(
       message: String): Unit `=>C` (Double && Double) = { _ =>
     result(effectfulReadTwoDoublesFromConsoleFunction(message)(()))
   }
 
-  private def effectfulWriteLineToConsole[Y](message: String): Y `=>C` Unit = {
+  private def effectfulWriteLineToConsoleWithMessage[Y](message: String): Y `=>C` Unit = {
     y =>
       result(effectfulWriteLineToConsoleFunction(message)(y))
   }
 
+  val effectfulReadIntFromConsole: Unit `=>C` BigInt =
+    effectfulReadIntFromConsoleWithMessage("please type an integer")  
+
   val twoDoublesProducer: Unit `=>C` (Double && Double) =
     effectfulReadTwoDoublesFromConsoleWithMessage("please type a double")
 
+  val effectfulWriteFactorialOfIntToConsole: BigInt `=>C` Unit =
+    effectfulWriteLineToConsoleWithMessage(
+      "the factorial value of the integer is")
+
   val sumOfSquaresOfTwoDoublesConsumer: Double `=>C` Unit =
-    effectfulWriteLineToConsole("the sum of the squares of the doubles is")
+    effectfulWriteLineToConsoleWithMessage("the sum of the squares of the doubles is")
 
 }

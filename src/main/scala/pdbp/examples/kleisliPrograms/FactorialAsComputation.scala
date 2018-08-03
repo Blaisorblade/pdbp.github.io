@@ -13,25 +13,28 @@ package pdbp.examples.kleisliPrograms
 
 import pdbp.types.product.productType._
 
-import pdbp.computation.Resulting
+import pdbp.computation.Computation
 
-import pdbp.examples.utils.functionUtils._
+import pdbp.computation.bindingOperator._
 
-trait AtomicKleisliPrograms[C[+ _]: Resulting]
-    extends HelperKleisliPrograms[C] {
+class FactorialAsComputation[C[+ _]: Computation]
+    extends AtomicKleisliPrograms[C]()
+    with HelperKleisliPrograms[C]() {
 
-  type `=>C` = [-Z, +Y] => Z => C[Y]
+  import implicitly._
 
-  val isZero: BigInt `=>C` Boolean = isZeroHelper
-
-  val subtractOne: BigInt `=>C` BigInt = subtractOneHelper
-
-  val multiply: (BigInt && BigInt) `=>C` BigInt = multiplyHelper
-
-  def one[Z]: Z `=>C` BigInt = oneHelper
-
-  val square: Double `=>C` Double = squareHelper
-
-  val sum: (Double && Double) `=>C` Double = sumHelper
+  val factorial: BigInt `=>C` BigInt = { z =>
+    isZero(z) bind { b =>
+      if (b) {
+        one(z)
+      } else {
+        subtractOne(z) bind { y =>
+          factorial(y) bind { x =>
+            multiply((z, x))
+          }
+        }
+      }
+    }
+  }
 
 }
