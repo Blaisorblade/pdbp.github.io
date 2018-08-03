@@ -18,5 +18,4 @@ import implicits.activeProgram
 
 import pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting.MainFactorialAsComputation
 
-object mainFactorialAsComputation
-    extends MainFactorialAsComputation[Active]()
+object mainFactorialAsComputation extends MainFactorialAsComputation[Active]()

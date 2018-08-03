@@ -29,7 +29,7 @@ object functionUtils {
 
   def oneFunction[Z]: Z => BigInt = { z =>
     1
-  }  
+  }
 
   val squareFunction: Double => Double = { z =>
     z * z

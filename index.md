@@ -63,6 +63,10 @@ Below is a link to picture of a typical lunch using vegetables of my greenhouse.
 
 [Lunch](./pictures/Lunch.png)
 
+Below is a link to picture of the first jalapeños I picked out of my greenhouse some time ago.
+
+[Jalapeños](./pictures/Jalapenos.png)
+
 As a hobby I am still having fun
 
   - programming 

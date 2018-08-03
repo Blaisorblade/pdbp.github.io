@@ -25,9 +25,11 @@ trait HelperKleisliPrograms[C[+ _]: Resulting] {
 
   val isZeroHelper: BigInt `=>C` Boolean = isZeroFunction andThen result
 
-  val subtractOneHelper: BigInt `=>C` BigInt = subtractOneFunction andThen result
+  val subtractOneHelper
+    : BigInt `=>C` BigInt = subtractOneFunction andThen result
 
-  val multiplyHelper: (BigInt && BigInt) `=>C` BigInt = multiplyFunction andThen result
+  val multiplyHelper
+    : (BigInt && BigInt) `=>C` BigInt = multiplyFunction andThen result
 
   def oneHelper[Z]: Z `=>C` BigInt = oneFunction andThen result
 
@@ -36,4 +38,3 @@ trait HelperKleisliPrograms[C[+ _]: Resulting] {
   val sumHelper: (Double && Double) `=>C` Double = sumFunction andThen result
 
 }
-

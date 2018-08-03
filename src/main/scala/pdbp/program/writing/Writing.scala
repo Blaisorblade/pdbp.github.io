@@ -32,7 +32,7 @@ trait Writing[W: Writable, >-->[- _, + _]] {
     compose(function(implicitly), `w>-->u`)
 
   def write[Z]: (Z => W) `I=>` Z >--> Unit =
-     `z>-w->u`    
+    `z>-w->u`
 
   def writeUsing[Z, Y, X](
       `(z&&y)=>x`: ((Z && Y) => X)): (Z >--> Y) => ((X => W) `I=>` Z >--> Y) = {
