@@ -127,7 +127,7 @@ scalafmt src/main/scala/demo/Variance.scala
 echo "."
 scalafmt src/main/scala/demo/bindingOperator.scala
 echo "."
-scalafmt src/main/scala/demo/LanguageLevelMeaning.scala
+scalafmt src/main/scala/demo/definingDescriptions.scala
 echo "."
 scalafmt src/main/scala/examples/programs/FactorialTopDown.scala
 echo "."

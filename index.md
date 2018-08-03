@@ -545,8 +545,8 @@ The stack safe meaning uses the *heap* instead of the *stack*.
 
 For those who are a bit impatient
 
- - [AppendixLanguageLevelMeaning](#appendixlanguagelevelmeaning) has demo code describing meanings at the *language level*.
- - [AppendixLibraryLevelMeaning](#appendixlibrarylevelmeaning) has demo code describing meanings at the *library level*.
+ - [AppendixImplementingDescriptions](#Appendiximplementingdescriptions) has demo code describing meanings at the *language level*.
+ - [AppendixMeaningOfImplementedDescriptions](#appendixmeaningofimplementeddescriptions) has demo code describing meanings at the *library level*.
 
 #### **Extra programming capabilities**
 
@@ -5675,7 +5675,7 @@ Again, we have also already defined some, agreed, very simple, descriptions, `co
 
 Note, again, that, at this moment, no definitions of the declared capabilities have been provided yet.
 
-## **AppendixLanguageLevelMeaning**
+## **AppendixImplementingDescriptions**
 
 ### **Defining declared `contain` capability for `Box`**
 
@@ -5926,7 +5926,7 @@ is the same for `usingSomeValuesCoveredByCap` and `usingSomeValuesCoveredByFez`.
 
 In this case we talk about only two lines of code, but, hopefully, you get the point.
 
-## **AppendixLibraryLevelMeaning**
+## **AppendixMeaningOfImplementedDescriptions**
 
 So far we have described language defined meanings.
 

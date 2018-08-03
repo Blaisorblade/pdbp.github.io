@@ -27,9 +27,9 @@ sed -i "s/trait /class /g" src/main/scala/examples/programs/AtomicPrograms.scala
 sed -i "s/trait /class /g" src/main/scala/examples/programs/HelperPrograms.scala
 sed -i "s/trait /class /g" src/main/scala/examples/utils/EffectfulUtils.scala
 #demo
-sed -i "s/trait /class /g" src/main/scala/demo/LibraryLevelMeaning.scala
+sed -i "s/trait /class /g" src/main/scala/demo/meaningsOfImplementedDescriptions.scala
 sed -i "s/trait /class /g" src/main/scala/demo/ProductInTermsOfLetAndIn.scala
-sed -i "s/trait /class /g" src/main/scala/demo/DefiningDescriptions.scala
+sed -i "s/trait /class /g" src/main/scala/demo/definingDescriptions.scala
 sed -i "s/trait /class /g" src/main/scala/demo/SumInTermsOfIfAndElse.scala
 
 sed -i "s/private\[pdbp\] trait /private\[pdbp\] class /g" src/main/scala/pdbp/program/implicits/active/reading/writing/ActiveReadingWithWritingProgram.scala
@@ -124,14 +124,14 @@ scalafmt src/main/scala/examples/utils/EffectfulUtils.scala
 
 #demo
 
-echo src/main/scala/demo/LibraryLevelMeaning.scala
-scalafmt src/main/scala/demo/LibraryLevelMeaning.scala
+echo src/main/scala/demo/meaningsOfImplementedDescriptions.scala
+scalafmt src/main/scala/demo/meaningsOfImplementedDescriptions.scala
 
 echo src/main/scala/demo/ProductInTermsOfLetAndIn.scala
 scalafmt src/main/scala/demo/ProductInTermsOfLetAndIn.scala
 
-echo src/main/scala/demo/DefiningDescriptions.scala
-scalafmt src/main/scala/demo/DefiningDescriptions.scala
+echo src/main/scala/demo/definingDescriptions.scala
+scalafmt src/main/scala/demo/definingDescriptions.scala
 
 echo src/main/scala/demo/SumInTermsOfIfAndElse.scala
 scalafmt src/main/scala/demo/SumInTermsOfIfAndElse.scala
@@ -163,9 +163,9 @@ sed -i "s/class /trait /g" src/main/scala/examples/programs/AtomicPrograms.scala
 sed -i "s/class /trait /g" src/main/scala/examples/programs/HelperPrograms.scala
 sed -i "s/class /trait /g" src/main/scala/examples/utils/EffectfulUtils.scala
 #demo
-sed -i "s/class /trait /g" src/main/scala/demo/LibraryLevelMeaning.scala
+sed -i "s/class /trait /g" src/main/scala/demo/meaningsOfImplementedDescriptions.scala
 sed -i "s/class /trait /g" src/main/scala/demo/ProductInTermsOfLetAndIn.scala
-sed -i "s/class /trait /g" src/main/scala/demo/DefiningDescriptions.scala
+sed -i "s/class /trait /g" src/main/scala/demo/definingDescriptions.scala
 sed -i "s/class /trait /g" src/main/scala/demo/SumInTermsOfIfAndElse.scala
 
 sed -i "s/private\[pdbp\] class /private\[pdbp\] trait /g" src/main/scala/pdbp/program/implicits/active/reading/writing/ActiveReadingWithWritingProgram.scala
