@@ -300,11 +300,13 @@ Luc Duponcheel}}}
 \item<4-> \ttdg{FP} is a \emdb{language} \\
 \ttdg{PDBP} is a \emdb{library}
 \begin{itemize}
-\item<5-> \ttdg{FP} \emdb{semantics} is \emdb{fixed} \\ 
+\item<5-> \ttdg{FP} is \emdb{heterogeneous} (programs are not objects) \\ 
+\ttdg{PDBP} is \emdb{homogeneous} (programs are objects)
+\item<6-> \ttdg{FP} \emdb{semantics} is \emdb{fixed} \\ 
 \ttdg{PDBP} \emdb{semantics} is \emdb{not fixed}
-\item<6-> \ttdg{FP} \emdb{capabilities} are \emdb{fixed} \\ 
+\item<7-> \ttdg{FP} \emdb{capabilities} are \emdb{fixed} \\ 
 \ttdg{PDBP} \emdb{capabilities} are \emdb{not fixed}
-\item<7-> \ttdg{FP} \emdb{effects} are \emdb{impure} \\ 
+\item<8-> \ttdg{FP} \emdb{effects} are \emdb{impure} \\ 
 \ttdg{PDBP} \emdb{effects} are \emdb{pure}
 \end{itemize}
 \end{itemize}
@@ -402,11 +404,11 @@ Luc Duponcheel}}}
 \begin{frame}[fragile]
 \frametitle{\begin{center}Arrows versus monads (kleisli arrows)\end{center}}
 \begin{itemize}
-\item<2-> \ttdg{ val function: Z => Y = { z => ey(x) }}
+\item<2-> \ttdg{val function: Z => Y = { z => ey(x) }}
 \begin{itemize}
 \item<3-> expression is used to define function
 \end{itemize}
-\item<4-> \ttdg{ val kleisliArrow: Z => M[Y] = { z => my(x) }}
+\item<4-> \ttdg{val kleisliArrow: Z => M[Y] = { z => my(x) }}
 \begin{itemize}
 \item<5-> monad is used to define kleisli arrow
 \end{itemize}

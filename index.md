@@ -153,7 +153,7 @@ trait Program[>-->[- _, + _]]
     with Aggregation[>-->]
 ```
 
-There is a one-to-one correspondence between `FP` forms and `trait`'s that are *mixed-in* by `trait Program` (agreed, we treat Aggregation as an `FP` form although, sttrictly speaking, it is not an `FP` form).
+There is a one-to-one correspondence between `FP` forms and `trait`'s that are *mixed-in* by `trait Program` (agreed, we treat Aggregation as an `FP` form although, strictly speaking, it is not an `FP` form).
 
 `trait Program` closely resembles *arrows*.
 
@@ -172,7 +172,7 @@ Below is a link to a picture of the painting.
 
 [Ceci n'est pas une pipe](./pictures/Pipe.png)
 
-The painting is not a pipe, it is a *description* of a pipe (you may even argue that the picture is a description of the painting which is a description of a pipe).
+The painting is not a pipe, it is a *description* of a pipe (you may even argue that the picture is a description of a painting which is a description of a pipe).
 
 `trait Program` exposes a *pointfree* programming API for *application developers*.
 All it's capabilities are `public`, the default in `Dotty`.
@@ -249,6 +249,44 @@ We hope that this does not lead to any confusion.
 `trait Computation` exposes a *pointful* programming API for *library developers*.
 All it's capabilities are `private[pdbp]`.
 
+Below is a `factorial` program written using `trait Computation`'s API .
+
+```scala
+  val factorial: BigInt `=>C` BigInt = { z =>
+    isZero(z) bind { b =>
+      if (b) {
+        one(z)
+      } else {
+        subtractOne(z) bind { y =>
+          factorial(y) bind { x =>
+            multiply((y, x))
+          }
+        }
+      }
+    }
+  }
+```
+
+There is an error in the  `factorial` program above (did you spot it?). Here is a correct `factorial` program 
+
+```scala
+  val factorial: BigInt `=>C` BigInt = { z =>
+    isZero(z) bind { b =>
+      if (b) {
+        one(z)
+      } else {
+        subtractOne(z) bind { y =>
+          factorial(y) bind { x =>
+            multiply((z, x))
+          }
+        }
+      }
+    }
+  }
+```
+
+The point we want to make is that pointful programming, because it is more complex than pointfree programming, comes with it's difficulties.
+
 In a way computations generalize *expressions*. 
 
  - An expression *evaluation* yields an *expression result*. 
@@ -262,14 +300,56 @@ So
   - we simply write that an expression yields (or has) a result, and
   - we simply write that a computation yields (or has) a result.
 
-To finish, lt's state that
+To finish, let's state that
 
  - pointful programming using `trait Computation` is *computation oriented* and *result binding* based.
 
-### **Introducing `type Kleisli` for binary type constructors**
+### **Power of expression**
 
-`Program[[-Z, + Y] => Z => C[Y]]` is mixed-in by `trait Computation`.
-This states that computations have more power of expression than programs.
+In 2008, Conor McBride and Ross Paterson described *applicatives* (a.k.a. *idioms*) and used applicatives in `Haskell` in 
+[*Applicative programming with effects*](http://www.staff.city.ac.uk/~ross/papers/Applicative.pdf).
+
+In 2008, Sam Lindley, Philip Wadler and Jeremy Yallop compared the *power of expression* of monads, arrows and idioms in 
+[*Idioms are oblivious, arrows are meticulous, monads are promiscuous*](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.187.6750&rep=rep1&type=pdf). 
+
+ - Monads (cfr. `Computation`) have most power of expression, 
+ - applicatives (cfr. `Lifting`, described later) have least power of expression, and 
+ - arrows (cfr. `Program`) are in between.
+
+Recall that `Program[[-Z, + Y] => Z => C[Y]]` is mixed-in by `trait Computation`.
+
+### **Elegance of use**
+
+Programming is not only about power of expression. 
+It is also, and probably even more, about *elegance of use*. 
+
+Recall that
+
+ - Monads (cfr `Computation`) naturally lead to a pointful programming style. 
+ - Arrows (cfr. `Program`) naturally lead to a pointfree programming style. 
+
+On the other hand
+
+ - Monad based computations *can* use a pointfree programming style, cfr. [*Kleisli categories*](https://en.wikipedia.org/wiki/Kleisli_category). 
+ - Arrow based programs *can* use a pointful programming style, cfr. [*arrow calculus*](http://homepages.inf.ed.ac.uk/slindley/papers/arrow-calculus.pdf).
+
+Traditionally, the pointfree programming style has been considered to be elegant by some programmers and *abstruse* by other programmers. 
+Luckily, the `Dotty` programming language comes to the rescue for the latter ones. 
+`Dotty` is a *strongly typed*, *scalable* programming language. 
+It is possible to *extend the language* in a *type safe* way at the *library* level with *internal domain specific languages*. 
+
+By using a *domain specific language for the domain of programs*, program description based programming can be done in a very elegant way.
+
+Of course, elegance of use is a highly subjective concept.
+Personally, we consider program oriented composition based programming to be more elegant than computation oriented result binding based programming. 
+
+### **Our choice**
+
+`PDBP` goes for
+ - A (slightly less) powerful, program oriented, and elegant, composition based, programming API for application developers.
+ - A powerful, computation oriented, and (slightly less) elegant, result binding based, programming API for library developers. 
+
+### **Introducing `type Kleisli` for binary type constructors**
 
 You may argue that `Program[[-Z, + Y] => Z => C[Y]]` is a bit verbose.
 Using the *type alias* `type Kleisli`, named after [Heinrich Kleisli](https://en.wikipedia.org/wiki/Heinrich_Kleisli)
@@ -305,51 +385,6 @@ private[pdbp] trait Computation[C[+ _]]
 
 A program of type `Kleisli[C]` is referred to as a *kleisli program* (note that we use a lower case *k*). 
 
-### **Power of expression**
-
-In 2008, Conor McBride and Ross Paterson described *applicatives* (a.k.a. *idioms*) and used applicatives in `Haskell` in 
-[*Applicative programming with effects*](http://www.staff.city.ac.uk/~ross/papers/Applicative.pdf).
-
-In 2008, Sam Lindley, Philip Wadler and Jeremy Yallop compared the *power of expression* of monads, arrows and idioms in 
-[*Idioms are oblivious, arrows are meticulous, monads are promiscuous*](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.187.6750&rep=rep1&type=pdf). 
-
- - Monads (cfr. `Computation`) have most power of expression, 
- - applicatives have least power of expression, and 
- - arrows (cfr. `Program`) are in between.
-
-Recall that `Program[Kleisli[C]]` is mixed-in by `trait Computation`.
-
-### **Elegance of use**
-
-Programming is not only about power of expression. 
-It is also, and probably even more, about *elegance of use*. 
-
-Recall that
-
- - Monads (cfr `Computation`) naturally lead to a pointful programming style. 
- - Arrows (cfr. `Program`) naturally lead to a pointfree programming style. 
-
-On the other hand
-
- - Monad based computations *can*, using [*Kleisli categories*](https://en.wikipedia.org/wiki/Kleisli_category), use a pointfree programming style. 
- - Arrow based programs *can*, using [*arrow calculus*](http://homepages.inf.ed.ac.uk/slindley/papers/arrow-calculus.pdf), use a pointful programming style.
-
-Traditionally, the pointfree programming style has been considered to be elegant by some programmers and *abstruse* by other programmers. 
-Luckily, the `Dotty` programming language comes to the rescue for the latter ones. 
-`Dotty` is a *strongly typed*, *scalable* programming language. 
-It is possible to *extend the language* in a *type safe* way at the *library* level with *internal domain specific languages*. 
-
-By using a *domain specific language for the domain of programs*, program description based programming can be done in a very elegant way.
-
-Of course, elegance of use is a highly subjective concept.
-Personally, we consider program oriented composition based programming to be more elegant than computation oriented result binding based programming. 
-
-### **Our choice**
-
-`PDBP` goes for
- - A powerful, computation oriented, and (slightly less) elegant, result binding based, programming API for library developers. 
- - A (slightly less) powerful, program oriented, and elegant, composition based, programming API for application developers.
-
 #### **About functions and expressions (for those who are a bit impatient)**
 
 Recall that
@@ -359,10 +394,13 @@ Recall that
 
 Think of
 
- - A functions as an *expression template* with, to be filled in, *unknown parts* (its parameters).
- - A programs as a *computation template* with a, to be filled in, *unknown part* (its parameter).
+ - A function as an *expression template* with, to be filled in, *unknown parts* (its parameters).
+   - for example `val function: Z => Y = { z => ey(x) }`
+ - A kleisli program as a *computation template* with a, to be filled in, *unknown part* (its parameter).
+   - for example `val kleislProgram: Z => C[Y] = { z => cy(x) }`
 
 [AppendixFunctionsAndExpressions](#appendixfunctionsandexpressions) has demo code that compares 
+
  - pointful, expression oriented, and function application (argument binding) based programming, 
   
 with
@@ -468,17 +506,17 @@ Exploiting the *flexibility* that comes with this difference is the most importa
  - `PDBP` is *homogeneous*,
    - in `Dotty`, everything is an object (value), in particular programs are objects (values).
 
-In a way you can look at programming with `PDBP` as passing around values having programming capabilities, or simply, passing around programming capabilities in particular and *passing around capabilities* in general.
+In a way you can look at programming with `PDBP` as passing around values having programming capabilities, or simply, passing around programming capabilities.
 
-#### **Meaning of programs**
+#### **Semantics of programs**
 
  - in `FP`,
-   - programs have *one meaning* where
-     - the meaning is language defined (according to the implementation of `FP`). 
+   - programs have *fixed semantics*
+   - the implementation of `FP` defines the semantics of programs.
  - in `PDBP,`
-   - programs can have *many meanings* where
-     - the meaning is language level (`object` implementation of a `trait`), or
-     - the meaning is library level (using a *natural transformation).
+   - programs have *flexible, two level, semantics* using
+     - *program implementations* that depend on `implicit object`'s that `extend trait Program`), and
+     - *program meanings* that use *natural transformations* to define the semantics of program by transforming program implementations.
 
 Natural transformations are explained later in this document.
 
@@ -500,8 +538,10 @@ Consider, again, the `factorial` program below.
 
 Note that `factorial` is a *recursive* program description (`factorial` uses `factorial`).
 
-It can be given both a *stack unsafe* (*non tail recursive*) language level meaning and a *stack safe* (*tail recursive*) library level meaning.
+It can be given both a *stack unsafe* (*non tail recursive*) meaning and a *stack safe* (*tail recursive*) meaning.
 The stack safe meaning uses the *heap* instead of the *stack*.
+
+# UNTIL HERE
 
 For those who are a bit impatient
 

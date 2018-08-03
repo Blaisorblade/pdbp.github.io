@@ -22,8 +22,10 @@ import pdbp.computation.meaning.ComputationMeaning
 import pdbp.computation.meaning.ofActive.MeaningOfActive
 
 object implicits {
+
   implicit object activeMeaningOfActive
       extends MeaningOfActive[Active]()
       with ComputationMeaning[Active, Active]()
       with ProgramMeaning[`=>A`, `=>A`]()
+      
 }
