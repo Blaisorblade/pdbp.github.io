@@ -1,4 +1,4 @@
-package pdbp.examples.kleisliPrograms
+package pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,28 +11,25 @@ package pdbp.examples.kleisliPrograms
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.product.productType._
-
 import pdbp.computation.Computation
 
 import pdbp.computation.bindingOperator._
 
-class FactorialAsComputation[C[+ _]: Computation]
-    extends AtomicKleisliPrograms[C]()
-    with HelperKleisliPrograms[C]() {
+import pdbp.examples.utils.EffectfulUtils
 
-  import implicitly._
+import pdbp.examples.kleisliPrograms.SumOfSquares
 
-  val factorial: BigInt `=>C` BigInt = { z =>
-    isZero(z) bind { b =>
-      if (b) {
-        one(z)
-      } else {
-        subtractOne(z) bind { y =>
-          factorial(y) bind { x =>
-            multiply((z, x))
-          }
-        }
+class MainSumOfSquares[C[+ _]: Computation]
+    extends EffectfulUtils[C]() {
+
+  private object sumOfSquaresObject extends SumOfSquares[C]
+
+  import sumOfSquaresObject.sumOfSquares
+
+  val sumOfSquaresMain: Unit `=>C` Unit = { u =>
+    twoDoublesProducer(u) bind { (z, y) =>
+      sumOfSquares(z, y) bind { x =>
+        sumOfSquaresOfTwoDoublesConsumer(x)
       }
     }
   }

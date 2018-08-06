@@ -17,6 +17,7 @@ import pdbp.natural.transformation.binary.`~B~>`
 
 private[pdbp] trait `~U~>`[F[+ _], T[+ _]]
     extends `~B~>`[Kleisli[F], Kleisli[T]] {
+  `f~u~t` =>
 
   private[pdbp] def apply[Z](fz: F[Z]): T[Z]
 
@@ -27,5 +28,11 @@ private[pdbp] trait `~U~>`[F[+ _], T[+ _]]
   override def apply[Z, Y]: Z `=>F` Y => Z `=>T` Y = { `z=>fy` =>
     `z=>fy` andThen apply
   }
+
+  private[pdbp] def andThen[T2[+ _]](`t~u~t2`: T `~U~>` T2): F `~U~>` T2 =
+    new {
+      override private[pdbp] def apply[Z](fz: F[Z]): T2[Z] =
+        `t~u~t2`(`f~u~t`(fz))
+    }
 
 }

@@ -180,6 +180,16 @@ All it's capabilities are `public`, the default in `Dotty`.
 Below is a `factorial` program written using `trait Program`'s API .
 
 ```scala
+import pdbp.program.Program
+
+import pdbp.program.compositionOperator._
+
+class Factorial[>-->[- _, + _]: Program]
+    extends AtomicPrograms[>-->]()
+    with HelperPrograms[>-->]() {
+
+  import implicitly._
+
   val factorial: BigInt >--> BigInt =
     `if`(isZero) {
       one
@@ -189,9 +199,13 @@ Below is a `factorial` program written using `trait Program`'s API .
           factorial
       } `in` {
         multiply
-      }  
+      }
     }
+
+}
 ```
+
+`val factorial` is defined in `class Factorial[>-->[- _, + _]: Program]` that is declared to *implicitly* have the programming capabilities declared in `trait Program[>-->[- _, + _]]`. Those programming capabilities are made available using `import implicitly._` and  `import pdbp.program.compositionOperator._`). The *atomic programs*, `isZero`, `one`, `subtractOne` and `multiply`, that `factorial` uses are defined in a similar way (only using `import implicitly._`).
 
 In a way programs generalize *functions*. 
 
@@ -252,6 +266,14 @@ All it's capabilities are `private[pdbp]`.
 Below is a `factorial` program written using `trait Computation`'s API .
 
 ```scala
+import pdbp.computation.Computation
+
+import pdbp.computation.bindingOperator._
+
+class Factorial[C[+ _]: Computation]
+    extends AtomicKleisliPrograms[C]()
+    with HelperKleisliPrograms[C]() {
+
   val factorial: BigInt `=>C` BigInt = { z =>
     isZero(z) bind { b =>
       if (b) {
@@ -265,9 +287,12 @@ Below is a `factorial` program written using `trait Computation`'s API .
       }
     }
   }
+
+}
 ```
 
-There is an error in the  `factorial` program above (did you spot it?). Here is a correct `factorial` program 
+There is an error in the  `factorial` definition above (did you spot it?). 
+Here is a correct `factorial` definition 
 
 ```scala
   val factorial: BigInt `=>C` BigInt = { z =>
@@ -286,6 +311,8 @@ There is an error in the  `factorial` program above (did you spot it?). Here is 
 ```
 
 The point we want to make is that pointful programming, because it is more complex than pointfree programming, comes with it's difficulties.
+
+`val factorial` is defined in `class Factorial[C[+ _]: Computation]` that is declared to implicitly have the computational capabilities declared in `trait Computation[C[+ _]]`. Those programming capabilities are made available using `import pdbp.computation.bindingOperator._`). The *atomic programs*, `isZero`, `one`, `subtractOne` and `multiply`, that `factorial` uses are defined in a similar way (using `import implicitly._`).
 
 In a way computations generalize *expressions*. 
 
@@ -476,9 +503,9 @@ you will, hopefully, start appreciating the power of expression and elegance of 
 There is an important difference between `FP` programs and `PDBP` programs. 
 
  - `FP` programs are `FP` *language* based.
-   - `FP` programs are `FP` *language level syntactic constructs*.
+   - Think of `FP` programs as `FP` *programming language* level *syntactic constructs*.
  - `PDBP` programs are `Dotty` *library* based.
-   - Think of `PDBP` programs as `PDBP` *domain specific language level syntactic constructs*.
+   - Think of `PDBP` programs as `PDBP` *domain specific, library language* level *syntactic constructs*.
 
 Exploiting the *flexibility* that comes with this difference is the most important theme of the `PDBP` library.
 
@@ -489,7 +516,10 @@ Exploiting the *flexibility* that comes with this difference is the most importa
  - `PDBP` is *homogeneous*,
    - in `Dotty`, everything is an object (value), in particular programs are objects (values).
 
-Programming with `PDBP` enables passing around values having programming capabilities, or simply, passing around programming capabilities.
+Programs are defined in `class`es that are declared to *implicitly* have the programming capabilities declared in `trait Program[>-->[- _, + _]]`.
+Those capabilities are made available using `import implicitly._` (many programming capabilities come with an operator equivalent that can be made avaialble by `import` as well).
+
+Programming with `PDBP` is a lot about implicitly passing around programming capabilities and programming operator that may come with them.
 
 #### **Semantics of programs**
 
@@ -498,10 +528,22 @@ Programming with `PDBP` enables passing around values having programming capabil
    - the implementation of `FP` defines the semantics of programs.
  - in `PDBP,`
    - programs have *flexible semantics* using
-     - `import`ed *program implementations* implicitly depending on `import`ed `implicit object`'s that `extend trait Program`), and
-     - `import`ed *program meanings* that use *natural transformations* to define the semantics of programs by transforming program implementations.
+     - `implicit object`'s that `extend trait Program`
+       - both simple `implicit object`'s and complex ones obtained by *naturally transforming* simpler ones, 
+     - *program implementations* that, indirectly, depend on those `implicit object`'s
+       - recall that programs are defined in `class`es that are declared to implicitly have programming capabilities,
+       - `object`'s extending those `class`es directly depend on those `implicit object`'s and program implementations are available as members of those `object`'s,
+     - `implicit object`'s that `extend trait ProgramMeaning`, that, by naturally transforming those program implementations, define the semantics of programs
+       - both simple `implicit object`'s and complex ones obtained by naturally transforming simpler ones.
 
-Agreed, this is a whole mouth full of technical details, but, hopefully, gradually things will become clear later in this document.  
+Agreed, the statements above may seem daunting at first sight, but they will become more familiar later in this document.
+
+Let's rephrase the statements
+
+  - we define a type class `trait Program`,
+  - we define programs in `class`es that are declared to implicitly have the programming capabilities of `trait Program`,
+  - we define `object`'s that `extend` those `class`es using *dependency injection by* `import` of `implicit object`'s that `extend trait Program`, making program implementations available as members of those `object`'s
+  - we define the semantics of programs by naturally transforming those program implementations using *dependency injection by* `import` of `implicit object`'s that `extend trait ProgramMeaning`
 
 Consider, again, the `factorial` program below.
 
@@ -519,10 +561,9 @@ Consider, again, the `factorial` program below.
     }
 ```
 
-Note that `factorial` is a *recursive* program description (`factorial` uses `factorial`).
+Note that `factorial` is a *recursive* `PDBP` program (`factorial` uses `factorial`).
 
-It can be given both *stack unsafe* (*non tail recursive*) semantics and *stack safe* (*tail recursive*) semantics.
-The stack safe meaning uses the *heap* instead of the *stack*.
+It can be given both *stack* based semantics and, *tail recursive*, *heap* based semantics.
 
 #### **Extra programming capabilities**
 
@@ -554,14 +595,8 @@ Also programming capabilities can be added related to
    - input and output are *effectfree*, they *describe I/O effects* in an *pure* way. 
 
 A program description involving I/O can be given 
- - effectfree meanings for different *testing* purposes,
- - effectful meanings for different *deployment* purposes. 
- 
-Of course, eventually, for being useful at all, application code using `PDBP` may need to execute I/O effects.
- - in `FP`
-   - I/O effects are executed *in the middle of library code*.
- - in `PDBP`
-   - The meaning of I/O effects is defined *at the boundaries of application code*.
+ - different effectfree semantics for different *testing* purposes,
+ - different effectful semantics for different *production* purposes. 
 
 Reading and writing capabilities are, more or less, declared as
 
@@ -581,7 +616,7 @@ and
   trait Writing[W: Writable, >-->[- _, + _]] {
     // ...
 
-    def write[Y]: implicit (Y => W) => Y >--> Unit
+    def write[Y]: Y >--> Unit
   
     // ...
   }
@@ -591,11 +626,15 @@ More details about `Reading` and `Writing` later in this document.
 
 If `program` is a program of type `Z >--> Y`, then `read >--> program >--> write` is a program, referred to as a *main program*, of type `Unit >--> Unit`.
 
-Note that `read` and `write` *describe* reading and writing effects in a *pure* way.
-They come into play when *defining* main program descriptions.
+Note that, *syntactically*, `read` and `write` *describe* reading and writing effects in a *pure* way.
+Syntactically, `read` and `write` come into play when *defining* main program descriptions.
 
-The *meanings* of `read` and `write` *execute* reading and writing effects in an *impure* way.
-They only come into play when *eventually using* main program descriptions in `def main(args: Array[String]): Unit`.
+Note that, *semantically*, `read` and `write` *execute* reading and writing effects in an *impure* way.
+Semantically, `read` and `write` come into play when, eventually, *using* main program descriptions in `def main(args: Array[String]): Unit`.
+Technically this is done by 
+ - `import`ing appropriate program implementation `val`'s
+   - they are members of `object`s TODO: complete 
+ - `import`ing appropriate program meaning `implicit object`'s
 
 ### **Main goal of the `PDBP` library**
 

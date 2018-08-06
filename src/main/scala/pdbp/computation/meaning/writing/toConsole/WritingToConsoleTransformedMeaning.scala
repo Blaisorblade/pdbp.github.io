@@ -32,17 +32,18 @@ T[+ _]](implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
 
   private type WTFC = WritingTransformed[ToConsole, FC]
 
-  override private[pdbp] val unaryTransformation: WTFC `~U~>` T =
+  val effectfulUnaryTransformation: WTFC `~U~>` FC =
     new {
-      override private[pdbp] def apply[Z](wtfcz: WTFC[Z]): T[Z] = {
-        def executing(wtfcz: WTFC[Z]): FC[Z] =
-          bind(wtfcz, {
-            case (ToConsole(effect), z) =>
-              effect(())
-              result(z)
-          })
-        toBeTransformedMeaning.unaryTransformation(executing(wtfcz))
-      }
+      override private[pdbp] def apply[Z](wtfcz: WTFC[Z]): FC[Z] =
+        bind(wtfcz, {
+          case (ToConsole(effect), z) =>
+            effect(())
+            result(z)
+        })
     }
+
+  override private[pdbp] val unaryTransformation: WTFC `~U~>` T = 
+    effectfulUnaryTransformation andThen toBeTransformedMeaning.unaryTransformation
+
 
 }

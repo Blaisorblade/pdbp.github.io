@@ -28,29 +28,30 @@ private[pdbp] trait FreeTransformedMeaning[FC[+ _]: Computation, T[+ _]](
 
   import implicitComputation._
 
-  private type FTFC = FreeTransformed[FC]
+  private type FTFC = FreeTransformed[FC]   
+
+  private val foldingUnaryTransformation: FTFC `~U~>` FC =
+    new {
+      @annotation.tailrec
+      override private[pdbp] def apply[Z](ftfcz: FTFC[Z]): FC[Z] = ftfcz match {
+        case Transform(fcz) =>
+          fcz
+        case Result(z) =>
+          result(z)
+        case Bind(Result(y), y2ftfcz) =>
+          apply(y2ftfcz(y))
+        case Bind(Bind(fcx, x2ftfcy), y2ftfcz) =>
+          apply(Bind(fcx, { x =>
+            Bind(x2ftfcy(x), y2ftfcz)
+          }))
+        case any =>
+          sys.error(
+            "Impossible, since, 'apply' eliminates this case")
+        }
+      }  
 
   override private[pdbp] val unaryTransformation: FTFC `~U~>` T =
-    new {
-      override private[pdbp] def apply[Z](ftfcz: FTFC[Z]): T[Z] = {
-        @annotation.tailrec
-        def tailrecFold(ftfcz: FTFC[Z]): FC[Z] = ftfcz match {
-          case Transform(fcz) =>
-            fcz
-          case Result(z) =>
-            result(z)
-          case Bind(Result(y), y2ftfcz) =>
-            tailrecFold(y2ftfcz(y))
-          case Bind(Bind(fcx, x2ftfcy), y2ftfcz) =>
-            tailrecFold(Bind(fcx, { x =>
-              Bind(x2ftfcy(x), y2ftfcz)
-            }))
-          case any =>
-            sys.error(
-              "Impossible, since, for 'FreeTransformedMeaning', 'tailrecFold' eliminates this case")
-        }
-        toBeTransformedMeaning.unaryTransformation(tailrecFold(ftfcz))
-      }
-    }
+    foldingUnaryTransformation andThen toBeTransformedMeaning.unaryTransformation
+
 
 }

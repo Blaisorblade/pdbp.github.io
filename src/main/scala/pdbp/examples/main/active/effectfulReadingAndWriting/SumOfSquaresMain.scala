@@ -14,14 +14,14 @@ package pdbp.examples.main.active.effectfulReadingAndWriting
 import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
 import activeMeaningOfActive.meaning
 
-import pdbp.examples.objects.active.effectfulReadingAndWriting.mainFactorialAsComputation
-import mainFactorialAsComputation.factorialMain
+import pdbp.examples.objects.active.effectfulReadingAndWriting.mainSumOfSquares
+import mainSumOfSquares.sumOfSquaresMain
 
-object FactorialAsComputationMain {
+object SumOfSquaresAsComputationMain {
 
   def main(args: Array[String]): Unit = {
 
-    meaning(factorialMain)(())
+    meaning(sumOfSquaresMain)(())
 
   }
 

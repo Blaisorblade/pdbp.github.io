@@ -49,8 +49,9 @@ private[pdbp] trait FreeTransformation[FC[+ _]: Computation]
       Transform(fcz)
   }
 
-  override private[pdbp] def result[Z]: Z => FTFC[Z] =
-    Result(_)
+  override private[pdbp] def result[Z]: Z => FTFC[Z] = { z =>
+    Result(z)
+  }  
 
   override private[pdbp] def bind[Z, Y](
       ftfcz: FTFC[Z],

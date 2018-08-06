@@ -1,4 +1,4 @@
-package pdbp.examples.objects.active.effectfulReadingAndWriting
+package pdbp.examples.main.active.effectfulReadingAndWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,12 +11,18 @@ package pdbp.examples.objects.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.activeTypes._
+import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
+import activeMeaningOfActive.meaning
 
-import pdbp.program.implicits.active.implicits
-import implicits.activeProgram
+import pdbp.examples.objects.active.effectfulReadingAndWriting.mainFactorial
+import mainFactorial.factorialMain
 
-import pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting.MainSumOfSquaresAsComputation
+object FactorialMain {
 
-object mainSumOfSquaresAsComputation
-    extends MainSumOfSquaresAsComputation[Active]()
+  def main(args: Array[String]): Unit = {
+
+    meaning(factorialMain)(())
+
+  }
+
+}

@@ -1,4 +1,4 @@
-package pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting
+package pdbp.examples.kleisliPrograms
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,25 +11,24 @@ package pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.types.product.productType._
+
 import pdbp.computation.Computation
 
 import pdbp.computation.bindingOperator._
 
-import pdbp.examples.utils.EffectfulUtils
+class SumOfSquares[C[+ _]: Computation]
+    extends AtomicKleisliPrograms[C]()
+    with HelperKleisliPrograms[C]() {
 
-import pdbp.examples.kleisliPrograms.FactorialAsComputation
+  import implicitly._
 
-class MainFactorialAsComputation[C[+ _]: Computation]
-    extends EffectfulUtils[C]() {
-
-  private object factorialAsComputation extends FactorialAsComputation[C]
-
-  import factorialAsComputation.factorial
-
-  val factorialMain: Unit `=>C` Unit = { u =>
-    effectfulReadIntFromConsole(u) bind { z =>
-      factorial(z) bind { y =>
-        effectfulWriteFactorialOfIntToConsole(y)
+  val sumOfSquares: (Double && Double) `=>C` Double = { (z, y) =>
+    square(z) bind { zSquare =>
+      square(y) bind { ySquare =>
+        sum(zSquare, ySquare) bind { zSquare_plus_ySquare =>
+          result(zSquare_plus_ySquare)
+        }
       }
     }
   }
