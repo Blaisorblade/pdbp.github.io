@@ -1,4 +1,4 @@
-package examples.mainPrograms
+package examples.mainPrograms.reading.int
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -12,24 +12,27 @@ package examples.mainPrograms
 //  author        Luc Duponcheel        2017-2018
 
 import pdbp.program.Program
+import pdbp.program.reading.Reading
 
 import pdbp.program.compositionOperator._
 
-import examples.programs.Factorial
+import examples.programs.reading.int.FactorialMultipliedByIntRead
 
-trait MainFactorial[>-->[- _, + _]: Program] {
+trait MainFactorialMultipliedByIntRead[
+    >-->[- _, + _]: Program
+                  : [>-->[- _, + _]] => Reading[BigInt, >-->]] {
 
-  private object factorialObject extends Factorial[>-->]
+  private object factorialMultipliedByIntReadObject extends FactorialMultipliedByIntRead[>-->]
 
-  import factorialObject.factorial
+  import factorialMultipliedByIntReadObject.factorialMultipliedByIntRead
 
   val producer: Unit >--> BigInt
   
   val consumer: BigInt >--> Unit
 
-  lazy val factorialMain: Unit >--> Unit =
+  lazy val factorialMultipliedByIntReadMain: Unit >--> Unit =
     producer >-->
-      factorial >-->
+      factorialMultipliedByIntRead >-->
       consumer
 
 }

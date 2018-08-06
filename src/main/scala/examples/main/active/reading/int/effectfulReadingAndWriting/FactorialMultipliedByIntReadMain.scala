@@ -1,4 +1,4 @@
-package examples.main.active.effectfulReadingAndWriting
+package examples.main.active.reading.int.effectfulReadingAndWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,23 +11,25 @@ package examples.main.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.activeTypes._
+import pdbp.types.active.reading.activeReadingTypes._
 
-import pdbp.program.implicits.active.implicits.activeProgram
+import pdbp.program.implicits.active.reading.int.implicits.activeIntReadingProgram
 
 import examples.mainPrograms.MainFactorial
 
 import examples.utils.EffectfulUtils
 
-object FactorialMain extends MainFactorial[`=>A`]() with EffectfulUtils[`=>A`]() {
+object FactorialMultipliedByIntReadMain extends MainFactorial[`=>AR`[BigInt]]() with EffectfulUtils[`=>AR`[BigInt]]() {
+
+  import examples.utils.effects.implicits.readIntFromConsoleEffect
 
   override val producer = effectfulReadIntFromConsole
 
-  override val consumer = effectfulWriteFactorialOfIntToConsole
+  override val consumer = effectfulWriteFactorialOfIntMultipliedByIntReadToConsole
 
   def main(args: Array[String]): Unit = {
 
-    import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive.meaning
+    import pdbp.program.meaning.ofActiveIntReading.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReading.meaning
 
     meaning(factorialMain)(())
 

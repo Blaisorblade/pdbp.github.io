@@ -1,4 +1,4 @@
-package examples.main.active.writing.toConsole.effectfulReading
+package examples.main.active.writing.toConsole.effectfulWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -13,20 +13,27 @@ package examples.main.active.writing.toConsole.effectfulReading
 
 import pdbp.types.effect.toConsole.ToConsole
 
-import pdbp.program.meaning.ofActiveWritingToConsole.active.implicits.activeMeaningOfActiveWritingToConsole
-import activeMeaningOfActiveWritingToConsole.meaning
+import pdbp.types.active.writing.activeWritingTypes._
 
-import examples.objects.active.writing.toConsole.effectfulReading.mainFactorialWrittenToConsole
-import mainFactorialWrittenToConsole.factorialMain
+import pdbp.program.implicits.active.writing.toConsole.implicits.activeWritingToConsoleProgram
 
-object FactorialWrittenToConsoleMain {
+import examples.mainPrograms.MainFactorial
+
+import examples.utils.EffectfulUtils
+
+object FactorialWrittenToConsoleMain extends MainFactorial[`=>AW`[ToConsole]]() with EffectfulUtils[`=>AW`[ToConsole]]() {
 
   import examples.utils.effects.implicits.writeFactorialOfIntToConsoleEffect
 
+  override val producer = effectfulReadIntFromConsole
+
+  override val consumer = activeWritingToConsoleProgram.write
+
   def main(args: Array[String]): Unit = {
+
+    import pdbp.program.meaning.ofActiveWritingToConsole.active.implicits.activeMeaningOfActiveWritingToConsole.meaning
 
     meaning(factorialMain)(())
 
   }
-
 }

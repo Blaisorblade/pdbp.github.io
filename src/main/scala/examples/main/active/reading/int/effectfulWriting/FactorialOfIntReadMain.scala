@@ -11,17 +11,25 @@ package examples.main.active.reading.int.effectfulWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.program.meaning.ofActiveIntReading.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReading
-import activeIntReadingMeaningOfActiveIntReading.meaning
+import pdbp.types.active.reading.activeReadingTypes._
 
-import examples.objects.active.reading.int.effectfulWriting.mainFactorialOfIntRead
-import mainFactorialOfIntRead.factorialMain
+import pdbp.program.implicits.active.reading.int.implicits.activeIntReadingProgram
 
-object FactorialOfIntReadMain {
+import examples.mainPrograms.MainFactorial
+
+import examples.utils.EffectfulUtils
+
+object FactorialOfIntReadMain extends MainFactorial[`=>AR`[BigInt]]() with EffectfulUtils[`=>AR`[BigInt]]() {
 
   import examples.utils.effects.implicits.readIntFromConsoleEffect
 
+  override val producer = activeIntReadingProgram.read
+
+  override val consumer = effectfulWriteFactorialOfIntReadToConsole
+
   def main(args: Array[String]): Unit = {
+
+    import pdbp.program.meaning.ofActiveIntReading.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReading.meaning
 
     meaning(factorialMain)(())
 

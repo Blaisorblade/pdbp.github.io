@@ -1,42 +1,42 @@
-package examples.mainPrograms.reading.int.effectfulWriting
+// package examples.mainPrograms.reading.int.effectfulWriting
 
-//       _______         __    __        _______
-//      / ___  /\       / /\  / /\      / ___  /\
-//     / /__/ / / _____/ / / / /_/__   / /__/ / /
-//    / _____/ / / ___  / / / ___  /\ /____  / /
-//   / /\____\/ / /__/ / / / /__/ / / \___/ / /
-//  /_/ /      /______/ / /______/ /     /_/ /
-//  \_\/       \______\/  \______\/      \_\/
-//                                           v1.0
-//  Program Description Based Programming Library
-//  author        Luc Duponcheel        2017-2018
+// //       _______         __    __        _______
+// //      / ___  /\       / /\  / /\      / ___  /\
+// //     / /__/ / / _____/ / / / /_/__   / /__/ / /
+// //    / _____/ / / ___  / / / ___  /\ /____  / /
+// //   / /\____\/ / /__/ / / / /__/ / / \___/ / /
+// //  /_/ /      /______/ / /______/ /     /_/ /
+// //  \_\/       \______\/  \______\/      \_\/
+// //                                           v1.0
+// //  Program Description Based Programming Library
+// //  author        Luc Duponcheel        2017-2018
 
-import pdbp.program.Program
+// import pdbp.program.Program
 
-import pdbp.program.reading.Reading
+// import pdbp.program.reading.Reading
 
-import pdbp.program.compositionOperator._
+// import pdbp.program.compositionOperator._
 
-import examples.utils.EffectfulUtils
+// import examples.utils.EffectfulUtils
 
-import examples.programs.Factorial
+// import examples.programs.Factorial
 
-class MainFactorialOfIntRead[
-    >-->[- _, + _]: Program
-                  : [>-->[- _, + _]] => Reading[BigInt, >-->]]
-    extends EffectfulUtils[>-->]() {
+// class MainFactorialOfIntRead[
+//     >-->[- _, + _]: Program
+//                   : [>-->[- _, + _]] => Reading[BigInt, >-->]]
+//     extends EffectfulUtils[>-->]() {
 
-  private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
+//   private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
 
-  import implicitIntReading._
+//   import implicitIntReading._
 
-  private object factorialObject extends Factorial[>-->]
+//   private object factorialObject extends Factorial[>-->]
 
-  import factorialObject.factorial
+//   import factorialObject.factorial
 
-  val factorialMain: Unit >--> Unit =
-    read >-->
-      factorial >-->
-      effectfulWriteFactorialOfIntReadToConsole
+//   val factorialMain: Unit >--> Unit =
+//     read >-->
+//       factorial >-->
+//       effectfulWriteFactorialOfIntReadToConsole
 
-}
+// }

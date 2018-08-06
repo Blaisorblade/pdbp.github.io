@@ -13,24 +13,31 @@ package examples.main.active.reading.int.writing.toConsole
 
 import pdbp.types.effect.toConsole.ToConsole
 
-import pdbp.program.meaning.ofActiveIntReadingWithWritingToConsole.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole
-import activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole.meaning
+import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
 
-import examples.objects.active.reading.int.writing.toConsole.mainFactorialOfIntReadWritingToConsoleWrittenToConsole
-import mainFactorialOfIntReadWritingToConsoleWrittenToConsole.factorialMain
+import pdbp.writable.implicits.toConsole.implicits.toConsoleWritable
 
-object FactorialOfIntReadWritingToConsoleWrittenToConsoleMain {
+import pdbp.program.implicits.active.reading.int.writing.toConsole.implicits.activeIntReadingWithWritingToConsoleProgram
+
+import examples.mainPrograms.writing.MainWritingFactorial
+
+object FactorialOfIntReadWritingToConsoleWrittenToConsoleMain extends MainWritingFactorial[ToConsole, `=>ARW`[BigInt, ToConsole]]() {
 
   import examples.utils.effects.implicits.readIntFromConsoleEffect
 
-  import examples.utils.effects.implicits.writeFactorialOfIntReadFromConsoleToConsoleEffect
+  import examples.utils.effects.implicits.writeFactorialOfIntToConsoleEffect
 
   import examples.utils.effects.implicits.writeToConsoleEffect
 
+  override val producer = activeIntReadingWithWritingToConsoleProgram.read
+
+  override val consumer = activeIntReadingWithWritingToConsoleProgram.write
+
   def main(args: Array[String]): Unit = {
 
-    meaning(factorialMain)(())
+    import pdbp.program.meaning.ofActiveIntReadingWithWritingToConsole.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole.meaning
+
+    meaning(writingFactorialMain)(())
 
   }
-
 }

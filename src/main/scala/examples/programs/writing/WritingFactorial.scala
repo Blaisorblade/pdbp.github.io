@@ -42,14 +42,14 @@ class WritingFactorial[
 
   import implicitWriting._
 
-  val factorial: (String => W) `I=>` BigInt >--> BigInt =
+  val writingFactorial: (String => W) `I=>` BigInt >--> BigInt =
     info("factorial") {
       `if`(isZero) {
         one
       } `else` {
         `let` {
           subtractOne >-->
-            factorial
+            writingFactorial
         } `in` {
           multiply
         }

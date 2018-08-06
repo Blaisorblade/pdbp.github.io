@@ -1,4 +1,4 @@
-// package examples.objects.active.reading.int.effectfulWriting
+// package examples.objects.active.free.effectfulReadingAndWriting
 
 // //       _______         __    __        _______
 // //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,12 +11,10 @@
 // //  Program Description Based Programming Library
 // //  author        Luc Duponcheel        2017-2018
 
-// import pdbp.types.active.reading.activeReadingTypes._
+// import pdbp.types.active.free.activeFreeTypes._
 
-// import pdbp.program.implicits.active.reading.int.implicits
-// import implicits.activeIntReadingProgram
+// import pdbp.program.implicits.active.free.implicits.activeFreeProgram
 
-// import examples.mainPrograms.reading.int.effectfulWriting.MainFactorialMultipliedByIntRead
+// import examples.utils.EffectfulUtils
 
-// object mainFactorialMultipliedByIntRead
-//     extends MainFactorialMultipliedByIntRead[`=>AR`[BigInt]]()
+// object effectfulUtils extends EffectfulUtils[`=>AF`]()

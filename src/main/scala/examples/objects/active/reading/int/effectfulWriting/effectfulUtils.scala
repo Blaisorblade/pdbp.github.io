@@ -1,4 +1,4 @@
-// package examples.objects.active.reading.int.effectfulWriting
+// package examples.objects.active.reading.int.effectfulReadingAndWriting
 
 // //       _______         __    __        _______
 // //      / ___  /\       / /\  / /\      / ___  /\
@@ -13,10 +13,8 @@
 
 // import pdbp.types.active.reading.activeReadingTypes._
 
-// import pdbp.program.implicits.active.reading.int.implicits
-// import implicits.activeIntReadingProgram
+// import pdbp.program.implicits.active.reading.int.implicits.activeIntReadingProgram
 
-// import examples.mainPrograms.reading.int.effectfulWriting.MainFactorialMultipliedByIntRead
+// import examples.utils.EffectfulUtils
 
-// object mainFactorialMultipliedByIntRead
-//     extends MainFactorialMultipliedByIntRead[`=>AR`[BigInt]]()
+// object effectfulUtils extends EffectfulUtils[`=>AR`[BigInt]]()

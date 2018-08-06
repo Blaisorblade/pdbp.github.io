@@ -1,4 +1,4 @@
-package examples.mainPrograms.reading.int.writing.toConsole.effectfulWriting
+package examples.mainPrograms.writing.toConsole
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -16,38 +16,32 @@ import pdbp.types.implicitFunctionType._
 import pdbp.types.effect.toConsole.ToConsole
 
 import pdbp.program.Program
-
-import pdbp.program.reading.Reading
-
 import pdbp.program.writing.Writing
 
 import pdbp.program.compositionOperator._
 
-import pdbp.writable.implicits.toConsole.implicits.toConsoleWritable
-
-import examples.utils.EffectfulUtils
-
-import examples.utils.EffectfulUtils
-
 import examples.programs.writing.WritingFactorial
 
-class MainFactorialOfIntReadWritingToConsole[
-  >-->[- _, + _]: Program
-                : [>-->[- _, + _]] => Reading[BigInt, >-->]
-                : [>-->[- _, + _]] => Writing[ToConsole, >-->]] 
-  extends EffectfulUtils[>-->]() {
-  
-  private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
+import pdbp.writable.implicits.toConsole.implicits.toConsoleWritable
 
-  import implicitIntReading._
+import pdbp.program.implicits.active.writing.toConsole.implicits.activeWritingToConsoleProgram
+
+trait MainFactorialWritingToConsole[
+    >-->[- _, + _]: Program
+                  : [>-->[- _, + _]] => Writing[ToConsole, >-->]] {
 
   private object writingFactorialObject extends WritingFactorial[ToConsole, >-->]
 
   import writingFactorialObject.writingFactorial
 
-  val factorialMain: (String => ToConsole) `I=>` Unit >--> Unit =
-    read >-->
-      writingFactorial >-->
-      effectfulWriteFactorialOfIntToConsole
+  val producer: Unit >--> BigInt
+  
+  val consumer: BigInt >--> Unit
 
+  lazy val writingFactorialMain: (String => ToConsole) `I=>` Unit >--> Unit = {
+    producer >-->
+      writingFactorial >-->
+      consumer
+  } 
+  
 }
