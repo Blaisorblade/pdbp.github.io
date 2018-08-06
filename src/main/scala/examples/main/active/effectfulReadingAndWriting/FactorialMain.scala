@@ -28,8 +28,10 @@ object FactorialMain extends Factorial[`=>A`] with EffectfulUtils[`=>A`]() {
     import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive.meaning
 
     meaning(
-      effectfulReadIntFromConsole >--> factorial >--> effectfulWriteFactorialOfIntToConsole)(
-      ())
+      effectfulReadIntFromConsole >-->
+        factorial >-->
+        effectfulWriteFactorialOfIntToConsole
+    )(())
 
   }
 
