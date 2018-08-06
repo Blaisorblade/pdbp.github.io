@@ -25,37 +25,35 @@ trait Covering[C[+ _]] extends Description[C] {
 
   def cover[Z](z: Z): C[Z]
 
-  def covered[Z](cz: C[Z]): Z
-
 }
 
-case object Head
+case class Bike()
 
-case object Ball
+case class Ball()
 
 object definingDescriptions {
 
-  trait SomeValuesContainedIn[C[+ _]: Containing] {
+  class SomeValuesContainedIn[C[+ _]: Containing] {
 
     import implicitly._
 
-    val containedHead: C[Head.type] =
-      contain(Head)
+    val containedBike: C[Bike] =
+      contain(Bike())
 
-    val containedBall: C[Ball.type] =
-      contain(Ball)
+    val containedBall: C[Ball] =
+      contain(Ball())
 
   }
 
-  trait SomeValuesCoveredBy[C[+ _]: Covering] {
+  class SomeValuesCoveredBy[C[+ _]: Covering] {
 
     import implicitly._
 
-    val coveredHead: C[Head.type] =
-      cover(Head)
+    val coveredBike: C[Bike] =
+      cover(Bike())
 
-    val coveredBall: C[Ball.type] =
-      cover(Ball)
+    val coveredBall: C[Ball] =
+      cover(Ball())
 
   }
 

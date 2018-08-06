@@ -17,49 +17,40 @@ case class Box[+Z](z: Z)
 
 case class Bag[+Z](z: Z)
 
-case class Cap[+Z](z: Z)
+class Cap[+Z](z: Z) {
+  override def toString = s"Cap($z)"
+}
 
-case class Fez[+Z](z: Z)
+class Fez[+Z](z: Z) {
+  override def toString = s"Fez($z)"
+}
 
 object implicitObjects {
 
-  implicit object implicitBox extends Containing[Box] {
+  implicit object box extends Containing[Box] {
 
     override def contain[Z](z: Z): Box[Z] = Box(z)
 
-    override def contained[Z](bz: Box[Z]) = bz match {
-      case Box(z) => z
-    }
-
+    override def contained[Z](bz: Box[Z]) = bz.z
   }
 
-  implicit object implicitBag extends Containing[Bag] {
+  implicit object bag extends Containing[Bag] {
 
     override def contain[Z](z: Z): Bag[Z] = Bag(z)
 
-    override def contained[Z](bz: Bag[Z]) = bz match {
-      case Bag(z) => z
-    }
+    override def contained[Z](bz: Bag[Z]) = bz.z
+
+  } 
+
+  implicit object cap extends Covering[Cap] {
+
+    override def cover[Z](z: Z): Cap[Z] = new Cap(z)
 
   }
 
-  implicit object implicitCap extends Covering[Cap] {
+  implicit object fez extends Covering[Fez] {
 
-    override def cover[Z](z: Z): Cap[Z] = Cap(z)
-
-    override def covered[Z](cz: Cap[Z]) = cz match {
-      case Cap(z) => z
-    }
-
-  }
-
-  implicit object implicitFez extends Covering[Fez] {
-
-    override def cover[Z](z: Z): Fez[Z] = Fez(z)
-
-    override def covered[Z](fz: Fez[Z]) = fz match {
-      case Fez(z) => z
-    }
+    override def cover[Z](z: Z): Fez[Z] = new Fez(z)
 
   }
 
@@ -77,24 +68,6 @@ object implementingDescriptions {
 
   object someValuesCoveredByFez extends SomeValuesCoveredBy[Fez]()
 
-  val headContainedInBox: Box[Head.type] =
-    someValuesContainedInBox.containedHead
-
-  val ballContainedInBox: Box[Ball.type] =
-    someValuesContainedInBox.containedBall
-
-  val headContainedInBag: Bag[Head.type] =
-    someValuesContainedInBag.containedHead
-
-  val ballContainedInBag: Bag[Ball.type] =
-    someValuesContainedInBag.containedBall
-
-  val headCoveredByCap: Cap[Head.type] = someValuesCoveredByCap.coveredHead
-  val ballCoveredByCap: Cap[Ball.type] = someValuesCoveredByCap.coveredBall
-
-  val headCoveredByFez: Fez[Head.type] = someValuesCoveredByFez.coveredHead
-  val ballCoveredByFez: Fez[Ball.type] = someValuesCoveredByFez.coveredBall
-
 }
 
 import implementingDescriptions._
@@ -103,15 +76,40 @@ object usingImplementedDescriptions {
 
   def main(args: Array[String]): Unit = {
 
-    println(headContainedInBox)
-    println(ballContainedInBox)
-    println(headContainedInBag)
-    println(ballContainedInBag)
-    println(headCoveredByCap)
-    println(ballCoveredByCap)
-    println(headCoveredByFez)
-    println(ballCoveredByFez)
+  {
+    import someValuesContainedInBox.containedBike
+    println(containedBike)
+  }
+  {
+    import someValuesContainedInBox.containedBall
+    println(containedBall)
+  } 
+  {
+    import someValuesContainedInBag.containedBike
+    println(containedBike)
+  }
+  {
+    import someValuesContainedInBag.containedBall
+    println(containedBall)
+  }    
+  {
+    import someValuesCoveredByCap.coveredBike
+    println(coveredBike)
+  }
+  {
+    import someValuesCoveredByCap.coveredBall
+    println(coveredBall)
+  }
+  {
+    import someValuesCoveredByFez.coveredBike
+    println(coveredBike)
+  }
+  {
+    import someValuesCoveredByFez.coveredBall
+    println(coveredBall)
+  }
 
   }
 
 }
+

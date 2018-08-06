@@ -21,12 +21,12 @@ trait NaturalTransformation[F[+ _], T[+ _]] {
   def apply[Z](fz: F[Z]): T[Z]
 }
 
-trait As[F[+ _], T[+ _]] {
+trait Meaning[F[+ _], T[+ _]] {
   def meaning: NaturalTransformation[F, T]
 }
 
-trait ContainingAsContaining[F[+ _]: Containing, T[+ _]: Containing]
-    extends As[F, T] {
+trait ContainingMeaningOfContaining[F[+ _]: Containing, T[+ _]: Containing]
+    extends Meaning[F, T] {
   val implicitlyFrom = implicitly[Containing[F]]
   val implicitlyTo = implicitly[Containing[T]]
   override def meaning: NaturalTransformation[F, T] =
@@ -37,14 +37,8 @@ trait ContainingAsContaining[F[+ _]: Containing, T[+ _]: Containing]
     }
 }
 
-trait BoxAsContaining[C[+ _]: Containing]
-    extends ContainingAsContaining[Box, C]
-
-trait BagAsContaining[C[+ _]: Containing]
-    extends ContainingAsContaining[Bag, C]
-
-trait CoveringAsContaining[F[+ _]: Containing, T[+ _]: Covering]
-    extends As[F, T] {
+trait CoveringMeaningOfContaining[F[+ _]: Containing, T[+ _]: Covering]
+    extends Meaning[F, T] {
   val implicitlyFrom = implicitly[Containing[F]]
   val implicitlyTo = implicitly[Covering[T]]
   override def meaning: NaturalTransformation[F, T] =
@@ -55,116 +49,80 @@ trait CoveringAsContaining[F[+ _]: Containing, T[+ _]: Covering]
     }
 }
 
-trait BoxAsCovering[C[+ _]: Covering]
-    extends CoveringAsContaining[Box, C]
-
-trait BagAsCovering[C[+ _]: Covering]
-    extends CoveringAsContaining[Bag, C]
-
 object meaningObjects {
 
   object boxAsBox
-      extends BoxAsContaining[Box]()
-      with ContainingAsContaining[Box, Box]()
-
-  object boxAsBag
-      extends BoxAsContaining[Bag]()
-      with ContainingAsContaining[Box, Bag]()
-
-  object boxAsCap
-      extends BoxAsCovering[Cap]()
-      with CoveringAsContaining[Box, Cap]()
-
-  object boxAsFez
-      extends BoxAsCovering[Fez]()
-      with CoveringAsContaining[Box, Fez]()
+      extends ContainingMeaningOfContaining[Box, Box]()
 
   object bagAsBox
-      extends BagAsContaining[Box]()
-      with ContainingAsContaining[Bag, Box]()
+      extends ContainingMeaningOfContaining[Box, Bag]()
+
+  object capAsBox
+      extends CoveringMeaningOfContaining[Box, Cap]()
+
+  object fezAsBox
+      extends CoveringMeaningOfContaining[Box, Fez]()
+
+  object boxAsBag
+      extends ContainingMeaningOfContaining[Bag, Box]()
 
   object bagAsBag
-      extends BagAsContaining[Bag]()
-      with ContainingAsContaining[Bag, Bag]()
+      extends ContainingMeaningOfContaining[Bag, Bag]()
 
-  object bagAsCap
-      extends BagAsCovering[Cap]()
-      with CoveringAsContaining[Bag, Cap]()
+  object capAsBag
+      extends CoveringMeaningOfContaining[Bag, Cap]()
 
-  object bagAsFez
-      extends BagAsCovering[Fez]()
-      with CoveringAsContaining[Bag, Fez]()
+  object fezAsBag
+      extends CoveringMeaningOfContaining[Bag, Fez]()
 
 }
 
 import meaningObjects._
 
-object meaningsOfImplementedDescriptions {
-
-  val headContainedInBoxAsBox: Box[Head.type] =
-    boxAsBox.meaning(headContainedInBox)
-  val ballContainedInBoxAsBox: Box[Ball.type] =
-    boxAsBox.meaning(ballContainedInBox)
-
-  val headContainedInBoxAsBag: Bag[Head.type] =
-    boxAsBag.meaning(headContainedInBox)
-  val ballContainedInBoxAsBag: Bag[Ball.type] =
-    boxAsBag.meaning(ballContainedInBox)
-
-  val headCoveredByBoxAsCap: Cap[Head.type] =
-    boxAsCap.meaning(headContainedInBox)
-  val ballCoveredByBoxAsCap: Cap[Ball.type] =
-    boxAsCap.meaning(ballContainedInBox)
-
-  val headCoveredByBoxAsFez: Fez[Head.type] =
-    boxAsFez.meaning(headContainedInBox)
-  val ballCoveredByBoxAsFez: Fez[Ball.type] =
-    boxAsFez.meaning(ballContainedInBox)
-
-  val headContainedInBagAsBox: Box[Head.type] =
-    bagAsBox.meaning(headContainedInBag)
-  val ballContainedInBagAsBox: Box[Ball.type] =
-    bagAsBox.meaning(ballContainedInBag)
-
-  val headContainedInBagAsBag: Bag[Head.type] =
-    bagAsBag.meaning(headContainedInBag)
-  val ballContainedInBagAsBag: Bag[Ball.type] =
-    bagAsBag.meaning(ballContainedInBag)
-
-  val headCoveredByBagAsCap: Cap[Head.type] =
-    bagAsCap.meaning(headContainedInBag)
-  val ballCoveredByBagAsCap: Cap[Ball.type] =
-    bagAsCap.meaning(ballContainedInBag)
-
-  val headCoveredByBagAsFez: Fez[Head.type] =
-    bagAsFez.meaning(headContainedInBag)
-  val ballCoveredByBagAsFez: Fez[Ball.type] =
-    bagAsFez.meaning(ballContainedInBag)
-
-}
-
-import meaningsOfImplementedDescriptions._
-
 object usingMeaningsOfImplementedDescriptions {
 
   def main(args: Array[String]): Unit = {
 
-    println(headContainedInBoxAsBox)
-    println(ballContainedInBoxAsBox)
-    println(headContainedInBoxAsBag)
-    println(ballContainedInBoxAsBag)
-    println(headCoveredByBoxAsCap)
-    println(ballCoveredByBoxAsCap)
-    println(headCoveredByBoxAsFez)
-    println(ballCoveredByBoxAsFez)
-    println(headContainedInBagAsBox)
-    println(ballContainedInBagAsBox)
-    println(headContainedInBagAsBag)
-    println(ballContainedInBagAsBag)
-    println(headCoveredByBagAsCap)
-    println(ballCoveredByBagAsCap)
-    println(headCoveredByBagAsFez)
-    println(ballCoveredByBagAsFez)
+  {
+    import someValuesContainedInBox.containedBike
+    import boxAsBox.meaning
+    println(meaning(containedBike))      
+  }
+  {
+    import someValuesContainedInBox.containedBall
+    import bagAsBox.meaning
+    println(meaning(containedBall))      
+  }
+  {
+    import someValuesContainedInBox.containedBike
+    import capAsBox.meaning
+    println(meaning(containedBike))      
+  }
+  {
+    import someValuesContainedInBox.containedBall
+    import fezAsBox.meaning
+    println(meaning(containedBall))      
+  }
+  {
+    import someValuesContainedInBag.containedBike
+    import boxAsBag.meaning
+    println(meaning(containedBike))      
+  }
+  {
+    import someValuesContainedInBag.containedBall
+    import bagAsBag.meaning
+    println(meaning(containedBall))      
+  }
+  {
+    import someValuesContainedInBag.containedBike
+    import capAsBag.meaning
+    println(meaning(containedBike))      
+  }
+  {
+    import someValuesContainedInBag.containedBall
+    import fezAsBag.meaning
+    println(meaning(containedBall))      
+  } 
 
   }
 
