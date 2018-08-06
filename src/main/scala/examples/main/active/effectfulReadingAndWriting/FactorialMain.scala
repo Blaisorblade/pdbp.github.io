@@ -13,23 +13,24 @@ package examples.main.active.effectfulReadingAndWriting
 
 import pdbp.types.active.activeTypes._
 
+import pdbp.program.compositionOperator._
+
 import pdbp.program.implicits.active.implicits.activeProgram
 
-import examples.mainPrograms.MainFactorial
+import examples.programs.Factorial
 
 import examples.utils.EffectfulUtils
 
-object FactorialMain extends MainFactorial[`=>A`]() with EffectfulUtils[`=>A`]() {
-
-  override val producer = effectfulReadIntFromConsole
-
-  override val consumer = effectfulWriteFactorialOfIntToConsole
+object FactorialMain extends Factorial[`=>A`] with EffectfulUtils[`=>A`]() {
 
   def main(args: Array[String]): Unit = {
 
     import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive.meaning
 
-    meaning(factorialMain)(())
+    meaning(
+      effectfulReadIntFromConsole >--> factorial >--> effectfulWriteFactorialOfIntToConsole)(
+      ())
 
   }
+
 }
