@@ -11,11 +11,11 @@ package examples.utils
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.program.Function
+import pdbp.program.Program
 
 import pdbp.utils.effectfulUtils._
 
-trait EffectfulUtils[>-->[- _, + _]: Function] {
+trait EffectfulUtils[>-->[- _, + _]: Program] {
 
   import implicitly._
 

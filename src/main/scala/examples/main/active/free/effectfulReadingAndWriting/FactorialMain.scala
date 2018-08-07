@@ -32,4 +32,5 @@ object FactorialMain extends MainFactorial[`=>AF`]() with EffectfulUtils[`=>AF`]
     meaning(factorialMain)(())
 
   }
+
 }
