@@ -13,13 +13,13 @@ package examples.programs
 
 import pdbp.program.Program
 
-import pdbp.program.compositionOperator._
-
 class Factorial[>-->[- _, + _]: Program]
     extends AtomicPrograms[>-->]()
     with HelperPrograms[>-->]() {
 
   import implicitly._
+
+  import pdbp.program.compositionOperator._
 
   val factorial: BigInt >--> BigInt =
     `if`(isZero) {

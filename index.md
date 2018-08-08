@@ -153,7 +153,7 @@ trait Program[>-->[- _, + _]]
     with Aggregation[>-->]
 ```
 
-There is a one-to-one correspondence between `FP` forms and `trait`'s that are *mixed-in* by `trait Program` (agreed, we treat Aggregation as an `FP` form although, strictly speaking, it is not an `FP` form).
+There is a one-to-one correspondence between `FP` forms and `trait`'s that are *mixed-in* by `trait Program` (agreed, strictly speaking, *Aggregation* is not an `FP` form).
 
 `trait Program` closely resembles *arrows*.
 
@@ -180,15 +180,17 @@ All it's capabilities are `public`, the default in `Dotty`.
 Below is a `factorial` program written using `trait Program`'s API .
 
 ```scala
-import pdbp.program.Program
+package examples.programs
 
-import pdbp.program.compositionOperator._
+import pdbp.program.Program
 
 class Factorial[>-->[- _, + _]: Program]
     extends AtomicPrograms[>-->]()
     with HelperPrograms[>-->]() {
 
   import implicitly._
+
+  import pdbp.program.compositionOperator._
 
   val factorial: BigInt >--> BigInt =
     `if`(isZero) {
@@ -215,9 +217,9 @@ In a way programs generalize *functions*.
 When there is no danger of confusion 
   - we simply write arguments, argument and result, not mentioning function or program.
 
-So
-  - we simply write that a function transforms arguments to a result, and
-  - we simply write that a program transforms an argument to a result.
+So, we simply write
+  - a function transforms arguments to a result, and
+  - a program transforms an argument to a result.
 
 Note that we use both (*zero or more*) arguments (for functions) and (*one*) argument (for programs).
 
@@ -266,13 +268,15 @@ All it's capabilities are `private[pdbp]`.
 Below is a `factorial` program written using `trait Computation`'s API .
 
 ```scala
-import pdbp.computation.Computation
+package pdbp.examples.kleisliPrograms
 
-import pdbp.computation.bindingOperator._
+import pdbp.computation.Computation
 
 class Factorial[C[+ _]: Computation]
     extends AtomicKleisliPrograms[C]()
     with HelperKleisliPrograms[C]() {
+
+  import pdbp.computation.bindingOperator._
 
   val factorial: BigInt `=>C` BigInt = { z =>
     isZero(z) bind { b =>
@@ -310,7 +314,7 @@ Here is a correct `factorial` definition
   }
 ```
 
-The point we want to make is that pointful programming, because it is more complex than pointfree programming, comes with it's difficulties.
+The point we want to make is that pointful programming, because it is more complex than pointfree programming, is inherently more difficult (human brains can only deal with a limited amount of complexity).
 
 `val factorial` is defined in `class Factorial[C[+ _]: Computation]` that is declared to implicitly have the computational capabilities declared in `trait Computation[C[+ _]]`. Those programming capabilities are made available using `import pdbp.computation.bindingOperator._`). The *atomic programs*, `isZero`, `one`, `subtractOne` and `multiply`, that `factorial` uses are defined in a similar way (using `import implicitly._`).
 
@@ -323,9 +327,9 @@ When there is no danger of confusion
   - we do not mention evaluation or execution, and
   - we simply write result, not mentioning expression or computation.
 
-So
-  - we simply write that an expression yields (or has) a result, and
-  - we simply write that a computation yields (or has) a result.
+So, we simply write
+  - an expression yields (or has) a result, and
+  - a computation yields (or has) a result.
 
 To finish, let's state that
 
@@ -373,13 +377,13 @@ Personally, we consider program oriented composition based programming to be mor
 ### **Our choice**
 
 `PDBP` goes for
- - A (slightly less) powerful, program oriented, and elegant, composition based, programming API for application developers.
- - A powerful, computation oriented, and (slightly less) elegant, result binding based, programming API for library developers. 
+ - A (slightly less) powerful, program oriented, elegant, and composition based, programming API for application developers.
+ - A powerful, computation oriented, (slightly less) elegant, and result binding based, programming API for library developers. 
 
 ### **Introducing `type Kleisli` for binary type constructors**
 
 You may argue that `Program[[-Z, + Y] => Z => C[Y]]` is a bit verbose.
-Using the *type alias* `type Kleisli`, named after [Heinrich Kleisli](https://en.wikipedia.org/wiki/Heinrich_Kleisli)
+Using the *type alias* named after [Heinrich Kleisli](https://en.wikipedia.org/wiki/Heinrich_Kleisli)
 
 ```scala
 package pdbp.types.kleisli
@@ -505,7 +509,7 @@ There is an important difference between `FP` programs and `PDBP` programs.
  - `FP` programs are `FP` *language* based.
    - Think of `FP` programs as `FP` *programming language* level *syntactic constructs*.
  - `PDBP` programs are `Dotty` *library* based.
-   - Think of `PDBP` programs as `PDBP` *domain specific, library language* level *syntactic constructs*.
+   - Think of `PDBP` programs as *proramming domain specific, library language* level *syntactic constructs*.
 
 Exploiting the *flexibility* that comes with this difference is the most important theme of the `PDBP` library.
 
@@ -519,7 +523,7 @@ Exploiting the *flexibility* that comes with this difference is the most importa
 Programs are defined in `class`es that are declared to *implicitly* have the programming capabilities declared in `trait Program[>-->[- _, + _]]`.
 Those capabilities are made available using `import implicitly._` (many programming capabilities come with an operator equivalent that can be made avaialble by `import` as well).
 
-Programming with `PDBP` is a lot about implicitly passing around programming capabilities and programming operator that may come with them.
+Programming with `PDBP` is a lot about implicitly passing around programming capabilities and programming operators that may come with them.
 
 #### **Semantics of programs**
 
@@ -531,7 +535,7 @@ Programming with `PDBP` is a lot about implicitly passing around programming cap
      - `implicit object`'s that `extend trait Program`
        - both simple `implicit object`'s and complex ones obtained by *naturally transforming* simpler ones, 
      - *program implementations* that, indirectly, depend on those `implicit object`'s
-       - recall that programs are defined in `class`es that are declared to implicitly have programming capabilities,
+       - recall that programs are defined as members of `class`es that are declared to implicitly have programming capabilities,
        - `object`'s extending those `class`es directly depend on those `implicit object`'s and program implementations are available as members of those `object`'s,
      - `implicit object`'s that `extend trait ProgramMeaning`, that, by naturally transforming those program implementations, define the semantics of programs
        - both simple `implicit object`'s and complex ones obtained by naturally transforming simpler ones.
@@ -542,8 +546,10 @@ Let's rephrase the statements
 
   - we define a type class `trait Program`,
   - we define programs in `class`es that are declared to implicitly have the programming capabilities of `trait Program`,
-  - we define `object`'s that `extend` those `class`es using *dependency injection by* `import` of `implicit object`'s that `extend trait Program`, making program implementations available as members of those `object`'s
+  - we define `object`'s that `extend` those `class`es using *dependency injection by* `import` of `implicit object`'s that `extend trait Program`, making program implementations available as members of those `object`'s,
   - we define the semantics of programs by naturally transforming those program implementations using *dependency injection by* `import` of `implicit object`'s that `extend trait ProgramMeaning`
+
+Strictly speaking, since `trait ProgramMeaning` is not a type class, the `object`'s that `extend trait ProgramMeaning` do not need to be `implicit object`'s, however, it is convenient that they are.
 
 Consider, again, the `factorial` program below.
 
@@ -576,8 +582,8 @@ Extra programming capabilities can be added such as
 
  - *state manipulation*
  - *failure handling*
- - *latency handling* (using parallelism)
- - *advanced control handling* (using delimited continuations)
+ - *latency handling* (using *parallelism*)
+ - *advanced control handling* (using *delimited continuations*)
  - ...
 
 Note that `Program` already has basic control handling (using the capabilities of `Condition`).
@@ -601,10 +607,10 @@ A program description involving I/O can be given
 Reading and writing capabilities are, more or less, declared as
 
 ```scala
-  trait Reading[R, >-->[- _, + _]] {
+  trait Reading[Z, >-->[- _, + _]] {
     // ...
 
-    def read: Unit >--> R
+    def read: Unit >--> Z
 
     // ...
   }
@@ -622,28 +628,26 @@ and
   }
 ```
 
-More details about `Reading` and `Writing` later in this document.
+A correct definition of `Reading` and `Writing` is described later in this document.
 
 If `program` is a program of type `Z >--> Y`, then `read >--> program >--> write` is a program, referred to as a *main program*, of type `Unit >--> Unit`.
 
 Note that, *syntactically*, `read` and `write` *describe* reading and writing effects in a *pure* way.
 Syntactically, `read` and `write` come into play when *defining* main program descriptions.
 
-Note that, *semantically*, `read` and `write` *execute* reading and writing effects in an *impure* way.
+Note that, *semantically*, `read` and `write` *may execute* reading and writing effects in an *impure* way.
 Semantically, `read` and `write` come into play when, eventually, *using* main program descriptions in `def main(args: Array[String]): Unit`.
-Technically this is done by 
- - `import`ing appropriate program implementation `val`'s
-   - they are members of `object`s TODO: complete 
- - `import`ing appropriate program meaning `implicit object`'s
 
 ### **Main goal of the `PDBP` library**
 
 The *main goal* of the `PDBP` library is to illustrate that program description based programming using a pointfree style in `Dotty` is 
 
  - *powerful*
-   -  as a library developer you can use the full expressive power of monads,
+   -  as a library developer you can use the expressive power of computations (monads),
+   -  as an application developer you can use the expressive power of programs (arrows),
  - *elegant*
-   - as an application developer you can use the elegance of `Dotty` DSL syntax,
+   - as an application developer you can use the elegance of the `Dotty` program DSL syntax,
+   - as an library developer you can use the elegance the computations syntax,
  - *flexible*
    - as a library developer you can define many meanings,
    - as an application developer you can use many meanings,

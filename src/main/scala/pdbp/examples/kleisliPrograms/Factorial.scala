@@ -13,11 +13,11 @@ package pdbp.examples.kleisliPrograms
 
 import pdbp.computation.Computation
 
-import pdbp.computation.bindingOperator._
-
 class Factorial[C[+ _]: Computation]
     extends AtomicKleisliPrograms[C]()
     with HelperKleisliPrograms[C]() {
+
+  import pdbp.computation.bindingOperator._
 
   val factorial: BigInt `=>C` BigInt = { z =>
     isZero(z) bind { b =>
