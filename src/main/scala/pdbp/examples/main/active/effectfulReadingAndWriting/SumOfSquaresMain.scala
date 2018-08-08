@@ -11,15 +11,25 @@ package pdbp.examples.main.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
-import activeMeaningOfActive.meaning
+import pdbp.types.active.activeTypes._
 
-import pdbp.examples.objects.active.effectfulReadingAndWriting.mainSumOfSquares
-import mainSumOfSquares.sumOfSquaresMain
+import pdbp.program.implicits.active.implicits.activeProgram
 
-object SumOfSquaresAsComputationMain {
+import pdbp.examples.mainKleisliPrograms.MainSumOfSquares
+
+import pdbp.examples.utils.EffectfulUtils
+
+object SumOfSquaresMain
+    extends MainSumOfSquares[Active]()
+    with EffectfulUtils[Active]() {
+
+  override val producer = effectfulReadTwoDoublesFromConsole
+
+  override val consumer = effectfulWriteSumOfSquaresOfTwoDoublesToConsole
 
   def main(args: Array[String]): Unit = {
+
+    import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive.meaning
 
     meaning(sumOfSquaresMain)(())
 

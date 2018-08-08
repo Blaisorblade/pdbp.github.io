@@ -30,29 +30,3 @@ class FactorialAsFunction[>-->[- _, + _]: Function] {
   val factorial: BigInt >--> BigInt = function(factorialFunction)
 
 }
-
-// object functionImplicits {
-
-//   implicit object functionFunction extends Function[[-Z, +Y] => (Z => Y)] {
-
-//     override def function[Z, Y]: (Z => Y) => (Z => Y) = identity
-
-//   }
-
-// }
-
-// object FactorialAsFunctionMain {
-
-//   import functionImplicits.functionFunction
-
-//   object factorialAsFunction extends FactorialAsFunction[[-Z, +Y] => (Z => Y)]
-
-//   def main(args: Array[String]): Unit = {
-
-//     import factorialAsFunction.factorial
-
-//     println(factorial(10))
-
-//   }
-
-// }

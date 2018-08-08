@@ -42,8 +42,7 @@ T[+ _]](implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
         })
     }
 
-  override private[pdbp] val unaryTransformation: WTFC `~U~>` T = 
+  override private[pdbp] val unaryTransformation: WTFC `~U~>` T =
     effectfulUnaryTransformation andThen toBeTransformedMeaning.unaryTransformation
-
 
 }

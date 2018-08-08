@@ -19,7 +19,8 @@ import pdbp.program.implicits.active.reading.int.writing.toConsole.implicits.act
 
 import examples.mainPrograms.MainFactorial
 
-object FactorialOfIntReadWrittenToConsoleMain extends MainFactorial[`=>ARW`[BigInt, ToConsole]]() {
+object FactorialOfIntReadWrittenToConsoleMain
+    extends MainFactorial[`=>ARW`[BigInt, ToConsole]]() {
 
   import examples.utils.effects.implicits.readIntFromConsoleEffect
 
@@ -37,4 +38,3 @@ object FactorialOfIntReadWrittenToConsoleMain extends MainFactorial[`=>ARW`[BigI
 
   }
 }
-

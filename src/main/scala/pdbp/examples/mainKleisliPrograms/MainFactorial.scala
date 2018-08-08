@@ -1,4 +1,4 @@
-package pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting
+package pdbp.examples.mainKleisliPrograms
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -15,21 +15,24 @@ import pdbp.computation.Computation
 
 import pdbp.computation.bindingOperator._
 
-import pdbp.examples.utils.EffectfulUtils
-
 import pdbp.examples.kleisliPrograms.Factorial
 
-class MainFactorial[C[+ _]: Computation]
-    extends EffectfulUtils[C]() {
+trait MainFactorial[C[+ _]: Computation] {
 
   private object factorialObject extends Factorial[C]
 
   import factorialObject.factorial
 
+  type `=>C` = [-Z, +Y] => Z => C[Y]
+
+  val producer: Unit `=>C` BigInt
+
+  val consumer: BigInt `=>C` Unit
+
   val factorialMain: Unit `=>C` Unit = { u =>
-    effectfulReadIntFromConsole(u) bind { z =>
+    producer(u) bind { z =>
       factorial(z) bind { y =>
-        effectfulWriteFactorialOfIntToConsole(y)
+        consumer(y)
       }
     }
   }

@@ -41,14 +41,14 @@ trait EffectfulUtils[C[+ _]: Resulting] {
   val effectfulReadIntFromConsole: Unit `=>C` BigInt =
     effectfulReadIntFromConsoleWithMessage("please type an integer")
 
-  val twoDoublesProducer: Unit `=>C` (Double && Double) =
+  val effectfulReadTwoDoublesFromConsole: Unit `=>C` (Double && Double) =
     effectfulReadTwoDoublesFromConsoleWithMessage("please type a double")
 
   val effectfulWriteFactorialOfIntToConsole: BigInt `=>C` Unit =
     effectfulWriteLineToConsoleWithMessage(
       "the factorial value of the integer is")
 
-  val sumOfSquaresOfTwoDoublesConsumer: Double `=>C` Unit =
+  val effectfulWriteSumOfSquaresOfTwoDoublesToConsole: Double `=>C` Unit =
     effectfulWriteLineToConsoleWithMessage(
       "the sum of the squares of the doubles is")
 

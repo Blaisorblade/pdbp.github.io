@@ -19,13 +19,16 @@ import examples.mainPrograms.MainFactorial
 
 import examples.utils.EffectfulUtils
 
-object FactorialMultipliedByIntReadMain extends MainFactorial[`=>AR`[BigInt]]() with EffectfulUtils[`=>AR`[BigInt]]() {
+object FactorialMultipliedByIntReadMain
+    extends MainFactorial[`=>AR`[BigInt]]()
+    with EffectfulUtils[`=>AR`[BigInt]]() {
 
   import examples.utils.effects.implicits.readIntFromConsoleEffect
 
   override val producer = effectfulReadIntFromConsole
 
-  override val consumer = effectfulWriteFactorialOfIntMultipliedByIntReadToConsole
+  override val consumer =
+    effectfulWriteFactorialOfIntMultipliedByIntReadToConsole
 
   def main(args: Array[String]): Unit = {
 

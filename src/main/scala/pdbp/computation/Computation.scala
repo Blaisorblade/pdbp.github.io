@@ -21,15 +21,12 @@ import pdbp.utils.sumUtils._
 import pdbp.program.Program
 import pdbp.program.Applying
 
-import pdbp.program.types.kleisli.kleisliProgramType._
-
 private[pdbp] trait Computation[C[+ _]]
     extends Resulting[C]
     with Binding[C]
     with Lifting[C]
     with Sequencing[C]
-    // with Program[Kleisli[C]]
-    with KleisliProgram[C]
+    with Program[Kleisli[C]]
     with Applying[Kleisli[C]] {
 
   override private[pdbp] def lift0[Z]: Z => C[Z] =

@@ -22,12 +22,13 @@ trait MainFactorialMultipliedByIntRead[
     >-->[- _, + _]: Program
                   : [>-->[- _, + _]] => Reading[BigInt, >-->]] {
 
-  private object factorialMultipliedByIntReadObject extends FactorialMultipliedByIntRead[>-->]
+  private object factorialMultipliedByIntReadObject
+      extends FactorialMultipliedByIntRead[>-->]
 
   import factorialMultipliedByIntReadObject.factorialMultipliedByIntRead
 
   val producer: Unit >--> BigInt
-  
+
   val consumer: BigInt >--> Unit
 
   lazy val factorialMultipliedByIntReadMain: Unit >--> Unit =

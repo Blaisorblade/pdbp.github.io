@@ -11,15 +11,25 @@ package pdbp.examples.main.active.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
-import activeMeaningOfActive.meaning
+import pdbp.types.active.activeTypes._
 
-import pdbp.examples.objects.active.effectfulReadingAndWriting.mainFactorial
-import mainFactorial.factorialMain
+import pdbp.program.implicits.active.implicits.activeProgram
 
-object FactorialMain {
+import pdbp.examples.mainKleisliPrograms.MainFactorial
+
+import pdbp.examples.utils.EffectfulUtils
+
+object FactorialMain
+    extends MainFactorial[Active]()
+    with EffectfulUtils[Active]() {
+
+  override val producer = effectfulReadIntFromConsole
+
+  override val consumer = effectfulWriteFactorialOfIntToConsole
 
   def main(args: Array[String]): Unit = {
+
+    import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive.meaning
 
     meaning(factorialMain)(())
 

@@ -23,7 +23,7 @@ import pdbp.program.compositionOperator._
 import examples.programs.writing.WritingFactorial
 
 trait MainWritingFactorial[
-    W: Writable, 
+    W: Writable,
     >-->[- _, + _]: Program
                   : [>-->[- _, + _]] => Writing[W, >-->]] {
 
@@ -32,13 +32,13 @@ trait MainWritingFactorial[
   import writingFactorialObject.writingFactorial
 
   val producer: Unit >--> BigInt
-  
+
   val consumer: BigInt >--> Unit
 
   lazy val writingFactorialMain: (String => W) `I=>` Unit >--> Unit = {
     producer >-->
       writingFactorial >-->
       consumer
-  } 
-  
+  }
+
 }

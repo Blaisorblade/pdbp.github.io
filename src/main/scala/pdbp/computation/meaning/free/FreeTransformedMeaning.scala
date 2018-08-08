@@ -28,7 +28,7 @@ private[pdbp] trait FreeTransformedMeaning[FC[+ _]: Computation, T[+ _]](
 
   import implicitComputation._
 
-  private type FTFC = FreeTransformed[FC]   
+  private type FTFC = FreeTransformed[FC]
 
   private val foldingUnaryTransformation: FTFC `~U~>` FC =
     new {
@@ -45,13 +45,11 @@ private[pdbp] trait FreeTransformedMeaning[FC[+ _]: Computation, T[+ _]](
             Bind(x2ftfcy(x), y2ftfcz)
           }))
         case any =>
-          sys.error(
-            "Impossible, since, 'apply' eliminates this case")
-        }
-      }  
+          sys.error("Impossible, since, 'apply' eliminates this case")
+      }
+    }
 
   override private[pdbp] val unaryTransformation: FTFC `~U~>` T =
     foldingUnaryTransformation andThen toBeTransformedMeaning.unaryTransformation
-
 
 }

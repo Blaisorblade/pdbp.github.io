@@ -1,4 +1,4 @@
-package examples.main.active.writing.toConsole.effectfulWriting
+package examples.main.active.writing.toConsole.effectfulReading
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -21,7 +21,9 @@ import examples.mainPrograms.MainFactorial
 
 import examples.utils.EffectfulUtils
 
-object FactorialWrittenToConsoleMain extends MainFactorial[`=>AW`[ToConsole]]() with EffectfulUtils[`=>AW`[ToConsole]]() {
+object FactorialWrittenToConsoleMain
+    extends MainFactorial[`=>AW`[ToConsole]]()
+    with EffectfulUtils[`=>AW`[ToConsole]]() {
 
   import examples.utils.effects.implicits.writeFactorialOfIntToConsoleEffect
 

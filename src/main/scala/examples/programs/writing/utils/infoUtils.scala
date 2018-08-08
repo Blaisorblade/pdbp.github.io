@@ -38,7 +38,11 @@ object infoUtils {
       s"INFO -- $currentCalendarInMilliseconds -- $string($z) => $y"
   }
 
-  def info[W: Writable, Z, Y,  >-->[- _, + _]: [>-->[- _, + _]] => Writing[W, >-->]]
+  def info[
+      W: Writable, 
+      Z, 
+      Y, 
+       >-->[- _, + _]: [>-->[- _, + _]] => Writing[W, >-->]]
       (string: String): (Z >--> Y) => ((String => W) `I=>` Z >--> Y) = {
     val implicitWriting = implicitly[Writing[W, >-->]]
     implicitWriting.writeUsing(infoFunction(string))

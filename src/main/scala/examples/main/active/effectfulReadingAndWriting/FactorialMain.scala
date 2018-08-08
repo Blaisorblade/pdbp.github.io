@@ -19,7 +19,9 @@ import examples.mainPrograms.MainFactorial
 
 import examples.utils.EffectfulUtils
 
-object FactorialMain extends MainFactorial[`=>A`]() with EffectfulUtils[`=>A`]() {
+object FactorialMain
+    extends MainFactorial[`=>A`]()
+    with EffectfulUtils[`=>A`]() {
 
   override val producer = effectfulReadIntFromConsole
 

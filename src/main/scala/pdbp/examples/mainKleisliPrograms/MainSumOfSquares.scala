@@ -1,4 +1,4 @@
-package pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting
+package pdbp.examples.mainKleisliPrograms
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,25 +11,30 @@ package pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
+import pdbp.types.product.productType._
+
 import pdbp.computation.Computation
 
 import pdbp.computation.bindingOperator._
 
-import pdbp.examples.utils.EffectfulUtils
+import pdbp.examples.kleisliPrograms.SumOfSquares
 
-import pdbp.examples.kleisliPrograms.SumOfSquaresAsExpression
+trait MainSumOfSquares[C[+ _]: Computation] {
 
-class MainSumOfSquaresAsExpression[C[+ _]: Computation]
-    extends EffectfulUtils[C]() {
+  private object sumOfSquaresObject extends SumOfSquares[C]
 
-  private object sumOfSquaresAsExpression extends SumOfSquaresAsExpression[C]
+  import sumOfSquaresObject.sumOfSquares
 
-  import sumOfSquaresAsExpression.sumOfSquares
+  type `=>C` = [-Z, +Y] => Z => C[Y]
+
+  val producer: Unit `=>C` (Double && Double)
+
+  val consumer: Double `=>C` Unit
 
   val sumOfSquaresMain: Unit `=>C` Unit = { u =>
-    twoDoublesProducer(u) bind { (z, y) =>
+    producer(u) bind { (z, y) =>
       sumOfSquares(z, y) bind { x =>
-        sumOfSquaresOfTwoDoublesConsumer(x)
+        consumer(x)
       }
     }
   }

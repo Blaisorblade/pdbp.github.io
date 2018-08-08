@@ -19,7 +19,9 @@ import examples.mainPrograms.MainFactorial
 
 import examples.utils.EffectfulUtils
 
-object FactorialOfIntReadMain extends MainFactorial[`=>AR`[BigInt]]() with EffectfulUtils[`=>AR`[BigInt]]() {
+object FactorialOfIntReadMain
+    extends MainFactorial[`=>AR`[BigInt]]()
+    with EffectfulUtils[`=>AR`[BigInt]]() {
 
   import examples.utils.effects.implicits.readIntFromConsoleEffect
 
