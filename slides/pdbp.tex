@@ -2304,7 +2304,7 @@ object FactorialOfIntReadWritingToConsoleWrittenToConsoleMain
   import ... readIntFromConsoleEffect
   import ... writeFactorialOfIntToConsoleEffect
   import ... writeToConsoleEffect
-  
+
   override val producer = 
     activeIntReadingWithWritingToConsoleProgram.read
 
@@ -2320,15 +2320,18 @@ object FactorialOfIntReadWritingToConsoleWrittenToConsoleMain
 \begin{frame}[fragile]
 \frametitle{\begin{center}\ttdg{FactorialOfIntRead \\ WritingToConsoleWrittenToConsoleMain}\end{center}}
 {\color{DarkGreen}	
-\scriptsize{
+\footnotesize{
 \begin{verbatim}
 object FactorialOfIntReadWritingToConsoleWrittenToConsoleMain
-    extends MainWritingFactorial[ToConsole, `=>ARW`[BigInt, ToConsole]]() {
+    extends MainWritingFactorial[
+      ToConsole, 
+      `=>ARW`[BigInt, ToConsole]]() {
 
   def main(args: Array[String]): Unit = {
 
     import ... implicits.
-      activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole.meaning
+      activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole.
+      meaning
 
     meaning(mainWritingFactorial)(())
 
