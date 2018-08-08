@@ -19,11 +19,14 @@ import pdbp.program.implicits.active.writing.toConsole.implicits.activeWritingTo
 
 import examples.mainPrograms.MainFactorial
 
-import examples.utils.EffectfulUtils
-
 object FactorialWrittenToConsoleMain
-    extends MainFactorial[`=>AW`[ToConsole]]()
-    with EffectfulUtils[`=>AW`[ToConsole]]() {
+    extends MainFactorial[`=>AW`[ToConsole]]() {
+
+  import examples.utils.EffectfulUtils
+
+  private val effectfulUtils = new EffectfulUtils[`=>AW`[ToConsole]]
+
+  import effectfulUtils._
 
   import examples.utils.effects.implicits.writeFactorialOfIntToConsoleEffect
 
@@ -35,7 +38,7 @@ object FactorialWrittenToConsoleMain
 
     import pdbp.program.meaning.ofActiveWritingToConsole.active.implicits.activeMeaningOfActiveWritingToConsole.meaning
 
-    meaning(factorialMain)(())
+    meaning(mainFactorial)(())
 
   }
 }

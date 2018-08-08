@@ -38,8 +38,6 @@ import pdbp.computation.transformation.ComputationTransformation
 
 private[pdbp] trait WritingTransformation[W: Writable, FC[+ _]: Computation]
     extends ComputationTransformation[FC, WritingTransformed[W, FC]]
-    with Computation[WritingTransformed[W, FC]]
-    with Program[Kleisli[WritingTransformed[W, FC]]]
     with Writing[W, Kleisli[WritingTransformed[W, FC]]] {
 
   private type WTFC = WritingTransformed[W, FC]

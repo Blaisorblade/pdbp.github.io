@@ -15,7 +15,7 @@ import pdbp.program.Program
 
 import pdbp.program.compositionOperator._
 
-trait Factorial[>-->[- _, + _]: Program]
+class Factorial[>-->[- _, + _]: Program]
     extends AtomicPrograms[>-->]()
     with HelperPrograms[>-->]() {
 

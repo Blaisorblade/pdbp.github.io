@@ -17,11 +17,13 @@ import pdbp.program.implicits.active.reading.int.implicits.activeIntReadingProgr
 
 import examples.mainPrograms.MainFactorial
 
-import examples.utils.EffectfulUtils
+object FactorialOfIntReadMain extends MainFactorial[`=>AR`[BigInt]]() {
 
-object FactorialOfIntReadMain
-    extends MainFactorial[`=>AR`[BigInt]]()
-    with EffectfulUtils[`=>AR`[BigInt]]() {
+  import examples.utils.EffectfulUtils
+
+  private val effectfulUtils = new EffectfulUtils[`=>AR`[BigInt]]
+
+  import effectfulUtils._
 
   import examples.utils.effects.implicits.readIntFromConsoleEffect
 
@@ -33,7 +35,7 @@ object FactorialOfIntReadMain
 
     import pdbp.program.meaning.ofActiveIntReading.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReading.meaning
 
-    meaning(factorialMain)(())
+    meaning(mainFactorial)(())
 
   }
 }

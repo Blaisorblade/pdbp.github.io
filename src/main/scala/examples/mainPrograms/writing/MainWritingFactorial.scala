@@ -35,7 +35,7 @@ trait MainWritingFactorial[
 
   val consumer: BigInt >--> Unit
 
-  lazy val writingFactorialMain: (String => W) `I=>` Unit >--> Unit = {
+  lazy val mainWritingFactorial: (String => W) `I=>` Unit >--> Unit = {
     producer >-->
       writingFactorial >-->
       consumer

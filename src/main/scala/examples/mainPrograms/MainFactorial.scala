@@ -27,7 +27,7 @@ trait MainFactorial[>-->[- _, + _]: Program] {
 
   val consumer: BigInt >--> Unit
 
-  lazy val factorialMain: Unit >--> Unit =
+  lazy val mainFactorial: Unit >--> Unit =
     producer >-->
       factorial >-->
       consumer

@@ -61,6 +61,8 @@ do
         $f -ef src/main/scala/demo/bindingOperator.scala ||
         $f -ef src/main/scala/demo/definingDescriptions.scala ||
         $f -ef src/main/scala/demo/implementingDescriptions.scala ||
+        $f -ef src/main/scala/examples/programs/Factorial.scala ||
+        $f -ef src/main/scala/examples/programs/FactorialAsFunction.scala ||
         $f -ef src/main/scala/examples/programs/FactorialTopDown.scala ||
         $f -ef src/main/scala/examples/main/active/reading/int/effectfulWriting/FactorialOfIntReadMain.scala ||
         $f -ef src/main/scala/examples/main/active/reading/int/effectfulReadingAndWriting/FactorialMultipliedByIntReadMain.scala ||
@@ -88,9 +90,7 @@ do
           $f -ef src/main/scala/demo/meaningsOfImplementedDescriptions.scala ||
           $f -ef src/main/scala/pdbp/examples/kleisliPrograms/SumOfSquaresAsExpression.scala ||
           $f -ef src/main/scala/examples/programs/AtomicPrograms.scala ||
-          $f -ef src/main/scala/examples/programs/Factorial.scala ||
           $f -ef src/main/scala/examples/programs/HelperPrograms.scala ||
-          $f -ef src/main/scala/examples/programs/FactorialAsFunction.scala ||
           $f -ef src/main/scala/examples/utils/EffectfulUtils.scala ||
           $f -ef src/main/scala/examples/mainPrograms/MainFactorial.scala ]]
   then

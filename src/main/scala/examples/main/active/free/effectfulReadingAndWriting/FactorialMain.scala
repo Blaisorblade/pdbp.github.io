@@ -17,11 +17,13 @@ import pdbp.program.implicits.active.free.implicits.activeFreeProgram
 
 import examples.mainPrograms.MainFactorial
 
-import examples.utils.EffectfulUtils
+object FactorialMain extends MainFactorial[`=>AF`](){
 
-object FactorialMain
-    extends MainFactorial[`=>AF`]()
-    with EffectfulUtils[`=>AF`]() {
+ import examples.utils.EffectfulUtils
+
+  private val effectfulUtils = new EffectfulUtils[`=>AF`]
+
+  import effectfulUtils._
 
   override val producer = effectfulReadIntFromConsole
 
@@ -31,7 +33,7 @@ object FactorialMain
 
     import pdbp.program.meaning.ofActiveFree.active.implicits.activeMeaningOfActiveFree.meaning
 
-    meaning(factorialMain)(())
+    meaning(mainFactorial)(())
 
   }
 

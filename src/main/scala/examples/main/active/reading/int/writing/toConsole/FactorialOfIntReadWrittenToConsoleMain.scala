@@ -34,7 +34,7 @@ object FactorialOfIntReadWrittenToConsoleMain
 
     import pdbp.program.meaning.ofActiveIntReadingWithWritingToConsole.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole.meaning
 
-    meaning(factorialMain)(())
+    meaning(mainFactorial)(())
 
   }
 }

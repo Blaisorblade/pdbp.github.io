@@ -23,7 +23,6 @@ import ReadingTransformation._
 
 import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
-import pdbp.program.Program
 import pdbp.program.reading.Reading
 
 import pdbp.computation.Computation
@@ -34,8 +33,6 @@ import pdbp.computation.transformation.ComputationTransformation
 
 private[pdbp] trait ReadingTransformation[R, FC[+ _]: Computation]
     extends ComputationTransformation[FC, ReadingTransformed[R, FC]]
-    with Computation[ReadingTransformed[R, FC]]
-    with Program[Kleisli[ReadingTransformed[R, FC]]]
     with Reading[R, Kleisli[ReadingTransformed[R, FC]]] {
 
   private type RTFC = ReadingTransformed[R, FC]

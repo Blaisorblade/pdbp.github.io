@@ -15,7 +15,7 @@ import examples.utils.functionUtils._
 
 import pdbp.program.Function
 
-trait FactorialAsFunction[>-->[- _, + _]: Function] {
+class FactorialAsFunction[>-->[- _, + _]: Function] {
 
   import implicitly._
 

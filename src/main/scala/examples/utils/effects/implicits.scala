@@ -34,21 +34,21 @@ object implicits {
     })
   }
 
-  implicit lazy val readIntFromConsoleEffect: BigInt =
+  implicit val readIntFromConsoleEffect: BigInt =
     readIntFromConsoleEffectWithMessage("please type an integer to read")
 
-  implicit lazy val writeFactorialOfIntToConsoleEffect: BigInt => ToConsole =
+  implicit val writeFactorialOfIntToConsoleEffect: BigInt => ToConsole =
     writeLineToConsoleEffectWithMessage(
       "the factorial value of the integer is"
     )
 
-  implicit lazy val writeFactorialOfIntReadFromConsoleToConsoleEffect
+  implicit val writeFactorialOfIntReadFromConsoleToConsoleEffect
     : BigInt => ToConsole =
     writeLineToConsoleEffectWithMessage(
       "the factorial value of the integer read is"
     )
 
-  implicit lazy val writeToConsoleEffect: String => ToConsole =
+  implicit val writeToConsoleEffect: String => ToConsole =
     writeToConsoleEffectWithMessage("")
 
 }

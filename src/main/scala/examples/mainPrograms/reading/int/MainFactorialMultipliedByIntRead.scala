@@ -31,7 +31,7 @@ trait MainFactorialMultipliedByIntRead[
 
   val consumer: BigInt >--> Unit
 
-  lazy val factorialMultipliedByIntReadMain: Unit >--> Unit =
+  lazy val mainFactorialMultipliedByIntRead: Unit >--> Unit =
     producer >-->
       factorialMultipliedByIntRead >-->
       consumer

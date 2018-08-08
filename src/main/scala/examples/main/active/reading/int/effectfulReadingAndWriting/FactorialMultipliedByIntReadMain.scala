@@ -15,15 +15,16 @@ import pdbp.types.active.reading.activeReadingTypes._
 
 import pdbp.program.implicits.active.reading.int.implicits.activeIntReadingProgram
 
-import examples.mainPrograms.MainFactorial
-
-import examples.utils.EffectfulUtils
+import examples.mainPrograms.reading.int.MainFactorialMultipliedByIntRead
 
 object FactorialMultipliedByIntReadMain
-    extends MainFactorial[`=>AR`[BigInt]]()
-    with EffectfulUtils[`=>AR`[BigInt]]() {
+    extends MainFactorialMultipliedByIntRead[`=>AR`[BigInt]]() {
 
-  import examples.utils.effects.implicits.readIntFromConsoleEffect
+  import examples.utils.EffectfulUtils
+
+  private val effectfulUtils = new EffectfulUtils[`=>AR`[BigInt]]
+
+  import effectfulUtils._
 
   override val producer = effectfulReadIntFromConsole
 
@@ -32,9 +33,11 @@ object FactorialMultipliedByIntReadMain
 
   def main(args: Array[String]): Unit = {
 
+    import examples.utils.effects.implicits.readIntFromConsoleEffect
+
     import pdbp.program.meaning.ofActiveIntReading.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReading.meaning
 
-    meaning(factorialMain)(())
+    meaning(mainFactorialMultipliedByIntRead)(())
 
   }
 }

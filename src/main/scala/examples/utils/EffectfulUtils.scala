@@ -15,7 +15,7 @@ import pdbp.program.Program
 
 import pdbp.utils.effectfulUtils._
 
-trait EffectfulUtils[>-->[- _, + _]: Program] {
+class EffectfulUtils[>-->[- _, + _]: Program] {
 
   import implicitly._
 
