@@ -61,6 +61,7 @@ do
         $f -ef src/main/scala/demo/bindingOperator.scala ||
         $f -ef src/main/scala/demo/definingDescriptions.scala ||
         $f -ef src/main/scala/demo/implementingDescriptions.scala ||
+        $f -ef src/main/scala/examples/utils/EffectfulUtils.scala ||
         $f -ef src/main/scala/examples/programs/Factorial.scala ||
         $f -ef src/main/scala/examples/programs/FactorialAsFunction.scala ||
         $f -ef src/main/scala/examples/programs/FactorialTopDown.scala ||
@@ -91,7 +92,6 @@ do
           $f -ef src/main/scala/pdbp/examples/kleisliPrograms/SumOfSquaresAsExpression.scala ||
           $f -ef src/main/scala/examples/programs/AtomicPrograms.scala ||
           $f -ef src/main/scala/examples/programs/HelperPrograms.scala ||
-          $f -ef src/main/scala/examples/utils/EffectfulUtils.scala ||
           $f -ef src/main/scala/examples/mainPrograms/MainFactorial.scala ]]
   then
     echo "scalafmt $f has problems with 'trait '"

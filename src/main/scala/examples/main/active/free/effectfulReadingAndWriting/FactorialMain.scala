@@ -17,9 +17,9 @@ import pdbp.program.implicits.active.free.implicits.activeFreeProgram
 
 import examples.mainPrograms.MainFactorial
 
-object FactorialMain extends MainFactorial[`=>AF`](){
+object FactorialMain extends MainFactorial[`=>AF`]() {
 
- import examples.utils.EffectfulUtils
+  import examples.utils.EffectfulUtils
 
   private val effectfulUtils = new EffectfulUtils[`=>AF`]
 
