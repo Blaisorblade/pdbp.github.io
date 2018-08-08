@@ -40,7 +40,7 @@ object implicitObjects {
 
     override def contained[Z](bz: Bag[Z]) = bz.z
 
-  } 
+  }
 
   implicit object cap extends Covering[Cap] {
 
@@ -76,40 +76,39 @@ object usingImplementedDescriptions {
 
   def main(args: Array[String]): Unit = {
 
-  {
-    import someValuesContainedInBox.containedBike
-    println(containedBike)
-  }
-  {
-    import someValuesContainedInBox.containedBall
-    println(containedBall)
-  } 
-  {
-    import someValuesContainedInBag.containedBike
-    println(containedBike)
-  }
-  {
-    import someValuesContainedInBag.containedBall
-    println(containedBall)
-  }    
-  {
-    import someValuesCoveredByCap.coveredBike
-    println(coveredBike)
-  }
-  {
-    import someValuesCoveredByCap.coveredBall
-    println(coveredBall)
-  }
-  {
-    import someValuesCoveredByFez.coveredBike
-    println(coveredBike)
-  }
-  {
-    import someValuesCoveredByFez.coveredBall
-    println(coveredBall)
-  }
+    {
+      import someValuesContainedInBox.containedBike
+      println(containedBike)
+    }
+    {
+      import someValuesContainedInBox.containedBall
+      println(containedBall)
+    }
+    {
+      import someValuesContainedInBag.containedBike
+      println(containedBike)
+    }
+    {
+      import someValuesContainedInBag.containedBall
+      println(containedBall)
+    }
+    {
+      import someValuesCoveredByCap.coveredBike
+      println(coveredBike)
+    }
+    {
+      import someValuesCoveredByCap.coveredBall
+      println(coveredBall)
+    }
+    {
+      import someValuesCoveredByFez.coveredBike
+      println(coveredBike)
+    }
+    {
+      import someValuesCoveredByFez.coveredBall
+      println(coveredBall)
+    }
 
   }
 
 }
-

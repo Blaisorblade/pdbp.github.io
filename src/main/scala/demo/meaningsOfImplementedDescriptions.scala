@@ -51,29 +51,21 @@ trait CoveringMeaningOfContaining[F[+ _]: Containing, T[+ _]: Covering]
 
 object meaningObjects {
 
-  object boxAsBox
-      extends ContainingMeaningOfContaining[Box, Box]()
+  object boxAsBox extends ContainingMeaningOfContaining[Box, Box]()
 
-  object bagAsBox
-      extends ContainingMeaningOfContaining[Box, Bag]()
+  object bagAsBox extends ContainingMeaningOfContaining[Box, Bag]()
 
-  object capAsBox
-      extends CoveringMeaningOfContaining[Box, Cap]()
+  object capAsBox extends CoveringMeaningOfContaining[Box, Cap]()
 
-  object fezAsBox
-      extends CoveringMeaningOfContaining[Box, Fez]()
+  object fezAsBox extends CoveringMeaningOfContaining[Box, Fez]()
 
-  object boxAsBag
-      extends ContainingMeaningOfContaining[Bag, Box]()
+  object boxAsBag extends ContainingMeaningOfContaining[Bag, Box]()
 
-  object bagAsBag
-      extends ContainingMeaningOfContaining[Bag, Bag]()
+  object bagAsBag extends ContainingMeaningOfContaining[Bag, Bag]()
 
-  object capAsBag
-      extends CoveringMeaningOfContaining[Bag, Cap]()
+  object capAsBag extends CoveringMeaningOfContaining[Bag, Cap]()
 
-  object fezAsBag
-      extends CoveringMeaningOfContaining[Bag, Fez]()
+  object fezAsBag extends CoveringMeaningOfContaining[Bag, Fez]()
 
 }
 
@@ -83,46 +75,46 @@ object usingMeaningsOfImplementedDescriptions {
 
   def main(args: Array[String]): Unit = {
 
-  {
-    import someValuesContainedInBox.containedBike
-    import boxAsBox.meaning
-    println(meaning(containedBike))      
-  }
-  {
-    import someValuesContainedInBox.containedBall
-    import bagAsBox.meaning
-    println(meaning(containedBall))      
-  }
-  {
-    import someValuesContainedInBox.containedBike
-    import capAsBox.meaning
-    println(meaning(containedBike))      
-  }
-  {
-    import someValuesContainedInBox.containedBall
-    import fezAsBox.meaning
-    println(meaning(containedBall))      
-  }
-  {
-    import someValuesContainedInBag.containedBike
-    import boxAsBag.meaning
-    println(meaning(containedBike))      
-  }
-  {
-    import someValuesContainedInBag.containedBall
-    import bagAsBag.meaning
-    println(meaning(containedBall))      
-  }
-  {
-    import someValuesContainedInBag.containedBike
-    import capAsBag.meaning
-    println(meaning(containedBike))      
-  }
-  {
-    import someValuesContainedInBag.containedBall
-    import fezAsBag.meaning
-    println(meaning(containedBall))      
-  } 
+    {
+      import someValuesContainedInBox.containedBike
+      import boxAsBox.meaning
+      println(meaning(containedBike))
+    }
+    {
+      import someValuesContainedInBox.containedBall
+      import bagAsBox.meaning
+      println(meaning(containedBall))
+    }
+    {
+      import someValuesContainedInBox.containedBike
+      import capAsBox.meaning
+      println(meaning(containedBike))
+    }
+    {
+      import someValuesContainedInBox.containedBall
+      import fezAsBox.meaning
+      println(meaning(containedBall))
+    }
+    {
+      import someValuesContainedInBag.containedBike
+      import boxAsBag.meaning
+      println(meaning(containedBike))
+    }
+    {
+      import someValuesContainedInBag.containedBall
+      import bagAsBag.meaning
+      println(meaning(containedBall))
+    }
+    {
+      import someValuesContainedInBag.containedBike
+      import capAsBag.meaning
+      println(meaning(containedBike))
+    }
+    {
+      import someValuesContainedInBag.containedBall
+      import fezAsBag.meaning
+      println(meaning(containedBall))
+    }
 
   }
 

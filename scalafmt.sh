@@ -52,7 +52,6 @@ do
         $f -ef src/main/scala/pdbp/examples/main/active/effectfulReadingAndWriting/FactorialMain.scala ||
         $f -ef src/main/scala/pdbp/examples/utils/functionUtils.scala ||
         $f -ef src/main/scala/pdbp/examples/kleisliPrograms/SumOfSquares.scala ||
-        $f -ef src/main/scala/pdbp/examples/kleisliPrograms/SumOfSquaresAsExpression.scala ||
         $f -ef src/main/scala/pdbp/examples/kleisliPrograms/Factorial.scala ||
         $f -ef src/main/scala/pdbp/natural/transformation/binary/NaturalBinaryTypeConstructorTransformation.scala ||
         $f -ef src/main/scala/pdbp/natural/transformation/unary/NaturalUnaryTypeConstructorTransformation.scala ||
@@ -87,6 +86,7 @@ do
           $f -ef src/main/scala/demo/ProductInTermsOfLetAndIn.scala ||
           $f -ef src/main/scala/demo/SumInTermsOfIfAndElse.scala ||
           $f -ef src/main/scala/demo/meaningsOfImplementedDescriptions.scala ||
+          $f -ef src/main/scala/pdbp/examples/kleisliPrograms/SumOfSquaresAsExpression.scala ||
           $f -ef src/main/scala/examples/programs/AtomicPrograms.scala ||
           $f -ef src/main/scala/examples/programs/Factorial.scala ||
           $f -ef src/main/scala/examples/programs/HelperPrograms.scala ||
