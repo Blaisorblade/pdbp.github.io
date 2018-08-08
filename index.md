@@ -749,7 +749,7 @@ We use
 
  - argument and result if we want to be explicit about being at the *usage* site.
 
-At the usage site an argument is given for the parameter and a result is returned.
+At the usage site the parameter is given an argument and a result is returned.
 
 We also write that a program *transforms* an argument to yield a result.
 
@@ -790,7 +790,8 @@ It is supposed to do nothing else than transforming an argument `z` of type `Z` 
 
 For *generic functions*, we use *mixed alphabetic and symbolic names within backticks*, like `` `z=>y` `` to, hopefully, improve readability. 
 
-*We agree that this is a somewhat unusual naming convention. We know programers who love it, we know programmers who hate it.* 
+*We agree that this is a somewhat unusual naming convention.*
+*We know programers who love it, we know programmers who hate it.* 
  
 Let's explain the reason of this naming convention with some examples that are special cases of [Theorems for free!](http://homepages.inf.ed.ac.uk/wadler/papers/free/free.dvi), as explained by Philip Wadler.
 
@@ -809,6 +810,7 @@ We use synonyms like `` `y=>y` ``, `` `x=>x` ``, etc. by need, when types `Y`, `
 
 We could have used names `identity`, `leftProjection`, `rightProjection` `swap` and `functionApplication`. 
 Sometimes we would simply run out of meaningful generic names.
+
 For example, how would you name the unique generic function of type `(Z && Y && X & WW) => W && X` *for all* `Z`, `Y`, `X`, and `W`?
 
 By the way, argument binding, equivalent with function application, can be defined using an `implicit class` as follows
@@ -831,7 +833,7 @@ The main benefit of generic backtick names comes when trying to understand the t
  - `` `z=>y` apply z `` is an equivalent expression where function application is explicit, using `apply`. 
  - `` z bind `z=>y` `` is an equivalent expression where argument binding is explicit, using `bind`. 
 
-Note that the argument binding expression is, in a way, the most natural one since it can, conveniently, be read from left to right. 
+Note that, in a way, the argument binding expression is the most elegant one since it can, conveniently, be read from left to right. 
 
 When dealing with more complex expressions, having nested sub-expressions, the usefulness of generic backtick names becomes even more apparent. 
 
@@ -879,7 +881,7 @@ object functionUtils {
 For programs, we use generic backtick names like `` `z>-->y` `` to, hopefully, improve readability. 
 
 You may have doubts about the usefulness of a trivial program like`` `z>-->z` ``.  
-It turns out that, when defining more complex composite programs, obtained by plugging program components, into program templates, replacing one or more of the components, by `` `z>-->z` `` results in interesting programs of their own. Naturally, those programs have simpler types.
+It turns out that, when defining composite programs, obtained by plugging program components, into program templates, using `` `z>-->z` `` for one or more of the components results in interesting composite programs of their own. Naturally, those composite programs have simpler types than the fully generic ones.
 
 In what follows we also refer to programs `` function(`z=>y`) ``, that, essentially, are *pure functions*, as *atomic programs*. It is up to you to define the *granularity* of atomic programs.
 
@@ -952,6 +954,20 @@ object functionUtils {
     1
   } 
 
+  // ...
+
+}
+```
+
+where
+
+```scala
+package pdbp.types.product
+
+object productType {
+
+  type &&[+Z, +Y] = Tuple2[Z, Y]
+
 }
 ```
 
@@ -1008,7 +1024,9 @@ object compositionOperator {
 
   - `compose` comes with an *operator* equivalent `>-->`. 
 
-The binary type constructor `>-->` is declared to *implicitly* have the programming capability `compose` that is declared in the type class `trait Composition`. The operator `>-->` is defined in terms of this declared programming capability. The definition uses `implicitly`, an abbreviation of `implicitly[Composition[>-->]]`, that is available as an *evidence* having the `compose` capability of `Composition`.
+The binary type constructor `>-->` is declared to *implicitly* have the programming capability `compose` that is declared in the type class `trait Composition`. The operator `>-->` is defined in terms of this declared programming capability. 
+
+The definition uses `implicitly`, an abbreviation of `implicitly[Composition[>-->]]`, that is available as an *evidence* having the `compose` capability of `Composition`.
 
 `` /* ... */ >--> /* ... */ `` is a first example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
 
