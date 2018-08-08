@@ -34,7 +34,7 @@ trait Writing[W: Writable, >-->[- _, + _]] {
   def write[Z]: (Z => W) `I=>` Z >--> Unit =
     `z>-w->u`
 
-  def writeUsing[Z, Y, X](
+  def writingUsing[Z, Y, X](
       `(z&&y)=>x`: ((Z && Y) => X)): (Z >--> Y) => ((X => W) `I=>` Z >--> Y) = {
     `z>-->y` =>
       val `(z&&y)>-->x` = function(`(z&&y)=>x`)

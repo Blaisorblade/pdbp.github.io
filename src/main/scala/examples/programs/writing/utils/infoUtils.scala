@@ -45,7 +45,7 @@ object infoUtils {
        >-->[- _, + _]: [>-->[- _, + _]] => Writing[W, >-->]]
       (string: String): (Z >--> Y) => ((String => W) `I=>` Z >--> Y) = {
     val implicitWriting = implicitly[Writing[W, >-->]]
-    implicitWriting.writeUsing(infoFunction(string))
+    implicitWriting.writingUsing(infoFunction(string))
   }
 
 }
