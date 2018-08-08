@@ -87,8 +87,8 @@ Luc Duponcheel}}}
 \begin{center}\includegraphics[height=120pt]{png/PipeQuestion.png}\end{center}
 \begin{itemize}
 \item<2-> A \emdb{pipe}?
-\item<3-> A \emdb{painting} \emdb{describing} a pipe?
-\item<4-> A \emdb{slide} \emdb{describing} a painting describing a pipe?
+\item<3-> A painting \emdb{describing} a pipe?
+\item<4-> A slide \emdb{describing} a painting describing a pipe?
 \item<5-> \ldots
 \end{itemize}
 \end{frame}
@@ -97,7 +97,7 @@ Luc Duponcheel}}}
 \frametitle{\begin{center}Ceci n'est pas une pipe\end{center}}
 \begin{center}\includegraphics[height=140pt]{png/Pipe.png}\end{center}
 \begin{itemize}
-\item<2-> It is a \emdb{painting} by Ren\'{e} Magritte \emdb{describing} a pipe
+\item<2-> It is a painting by Ren\'{e} Magritte \emdb{describing} a pipe
 \end{itemize}
 \end{frame}
 
@@ -106,13 +106,13 @@ Luc Duponcheel}}}
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
-  val ?????????: BigInt >--> BigInt =
+  val program: BigInt >--> BigInt =
     `if`(isZero) {
       one
     } `else` {
       `let` {
         subtractOne >-->
-          ?????????
+          program
       } `in` {
         multiply
       }
@@ -122,14 +122,34 @@ Luc Duponcheel}}}
 }
 \begin{center}
 \begin{itemize}
-\item<2-> It is \emdb{code} \emdb{describing} a program
-\item<3-> Can you think of a more meaningful name?
+\item<2-> It is code \emdb{describing} a program
+\item<3-> It is a \emdb{program description}
+\item<4-> Can you think of a more meaningful name?
 \end{itemize}
 \end{center}
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{factorial} description\end{center}}
+\frametitle{\begin{center}Program (Description)\end{center}}
+\begin{itemize}
+\item<2-> by abuse of notation we are simply going to write \emdb{program} instead of \emdb{program description}
+\item<3-> we hope that this will not lead to any confusion
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}\ttdg{Program}\end{center}}
+{\color{DarkGreen}	
+\footnotesize{
+\begin{verbatim}
+  trait Program[>-->[- _, + _]]
+\end{verbatim}
+}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\begin{center}\ttdg{factorial} program\end{center}}
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
@@ -149,7 +169,7 @@ Luc Duponcheel}}}
 }
 \begin{center}
 \begin{itemize}
-\item<2-> \ttdg{factorial} \emdb{definition} uses the capabilities \emdb{declared} in \\ \emdb{type class} \ttdg{trait Program[>-->[- \_, + \_]]}
+\item<2-> \ttdg{factorial} uses the capabilities \emdb{declared} in type class \ttdg{Program}
 \end{itemize}
 \end{center}
 \end{frame}
@@ -175,7 +195,7 @@ Luc Duponcheel}}}
 }
 \begin{center}
 \begin{itemize}
-\item<2-> \ttdg{factorial} \emdb{implementations} depend on \ttdg{implicit object}'s \emdb{defining} the capabilities of type class \\ \ttdg{trait Program[>-->[- \_, + \_]]}
+\item<2-> \ttdg{factorial} \emdb{implementations} depend on \ttdg{implicit object}'s \emdb{defining} the capabilities of type class \ttdg{Program}
 \end{itemize}
 \end{center}
 \end{frame}
@@ -271,17 +291,17 @@ Luc Duponcheel}}}
 \begin{verbatim}
             ----------------
            | Unit >--> Unit |
-     ------                  ------ 
+     ------        ||        ------ 
     | Unit >--> Z >--> Y >--> Unit |
-     -------------------------v---
-                              |
-                              |      ----------------
-          ---- distributed ---   => | Unit >--> Unit |                
+     -------------------------\ /--
+                               |
+                               |      ----------------
+          ---- distributed ----  => | Unit >--> Unit |                
          |                           ----------------
          |                 
-     ----v-------------------------  
+     ---\ /------------------------  
     | Unit >--> Z >--> Y >--> Unit |
-     ------                  ------  
+     ------        ||        ------  
            | Unit >--> Unit |
             ----------------             
 \end{verbatim}
@@ -576,10 +596,15 @@ provides \emdb{elegance of use} for \emdb{application} developers
 \begin{itemize}
 \item<7-> \ttdg{implicit object}'s \emdb{define programming capabilities} 
 \item<8-> \emdb{program implementations} depend on them
-\item<9-> \ttdg{implicit object}'s \emdb{define natural transformations}
-\item<10-> \emdb{program meanings} use them 
 \begin{itemize}
-\item<11-> to \emdb{transform program implementations}
+\item<9-> \emdb{implicitly}
+\end{itemize}
+\end{itemize}
+\begin{itemize}
+\item<10-> \ttdg{implicit object}'s \emdb{define natural transformations}
+\item<11-> \emdb{program meanings} use them 
+\begin{itemize}
+\item<12-> to \emdb{transform program implementations}
 \end{itemize}
 \end{itemize}
 \end{itemize}
@@ -927,7 +952,7 @@ provides \emdb{elegance of use} for \emdb{application} developers
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{\begin{center}\ttdg{factorialMain}\end{center}}
+\frametitle{\begin{center}\ttdg{mainFactorial}\end{center}}
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
