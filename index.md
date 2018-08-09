@@ -2180,7 +2180,7 @@ We also simply refer to
 
 Note that the code for a main kleisli program is more complex (and, as a consequence, imho, less elegant) than the code for a main program.
 
-#### **Describing `mainSumOfSquares`**
+#### **Describing `mainSumOfSquares` as computation**
 
 Consider
 
@@ -2346,7 +2346,7 @@ object functionUtils {
 
 Since the atomic kleisli programs , `isZero` and `subtractOne`, `multiply` and `one` used by `factorial` are very fine-grained this gives us a lot of flexibility to give a meaning to `sumOfSquares`.
 
-#### **Describing `mainFactorial`**
+#### **Describing `mainFactorial` as computation**
 
 Consider
 
@@ -2371,7 +2371,7 @@ trait MainFactorial[C[+ _]: Computation] {
 
   val consumer: BigInt `=>C` Unit
 
-  lazy val factorialMain: Unit `=>C` Unit = { u =>
+  lazy val mainFactorial: Unit `=>C` Unit = { u =>
     producer(u) bind { z =>
       factorial(z) bind { y =>
         consumer(y)
@@ -3227,57 +3227,79 @@ private[pdbp] trait MeaningOfActive[TR[+ _]: Resulting]
 }
 ```
 
-# UNTIL HERE
-
 ## **Running main programs**
 
-### **Running `factorialMain` using  `activeProgram` and an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole`**
+### **Running `mainFactorial` using `activeProgram`, `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole`**
 
 Consider
-
-```scala
-package examples.objects.active.effectfulReadingAndWriting
-
-import pdbp.types.active.activeTypes._
-
-import pdbp.program.implicits.active.implicits
-import implicits.activeProgram
-
-import examples.mainPrograms.effectfulReadingAndWriting.MainFactorial
-
-object mainFactorial extends MainFactorial[`=>A`]()
-```
-
-The definition of `mainFactorial` uses dependency injection by `import` of `implicit object activeProgram`, extending the type class `` Program[`=>A`] `` (by extending `Computation[Active]`).
-
-The definition of `object mainFactorial` extends `` class MainFactorial[`=>A`] ``. 
-The definition of `MainFactorial` uses `factorial` that extends `` `Factorial[`=>A`]` ``.
-
-The definition of `factorial` in `Factorial[>-->]` used the programming capabilites declared in `Program[>-->]`.
-
-*Dependency injection by importing an implicit object extending a type class is, typically, used together with an object extending a class that defines values using the capabilites declared in the type class*.
-
-Rephrased for `trait Program`
-
-*Dependency injection by importing an implicit object extending `trait Program` is, typically, used together with an object extending a class that defines programs using the programming capabilites declared in `trait Program`*. 
-
-We can now, finally, define `main` in `object FactorialMain`
 
 ```scala
 package examples.main.active.effectfulReadingAndWriting
 
 import pdbp.types.active.activeTypes._
 
-import examples.objects.active.effectfulReadingAndWriting.mainFactorial
-import mainFactorial.factorialMain
+import pdbp.program.implicits.active.implicits.activeProgram
 
-import examples.main.Main
+import examples.mainPrograms.MainFactorial
 
-object FactorialMain extends Main[`=>A`] {
+object FactorialMain extends MainFactorial[`=>A`]() {
 
-  override val mainKleisliProgram: Unit `=>A` Unit = factorialMain
- 
-  override val run = mainKleisliProgram(())
+  import examples.utils.EffectfulUtils
+
+  private val effectfulUtils = new EffectfulUtils[`=>A`]
+
+  import effectfulUtils._
+
+  override val producer = effectfulReadIntFromConsole
+
+  override val consumer = effectfulWriteFactorialOfIntToConsole
+
+  def main(args: Array[String]): Unit = {
+
+    import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive.meaning
+
+    meaning(mainFactorial)(())
+
+  }
+
+}
+```
+
+The definition of `object FactorialMain` uses dependency injection by `import` of `implicit object activeProgram` that extends `` Program[`=>A`]  ``.
+Here are some details
+
+  - `object FactorialMain` extends `` trait `MainFactorial[`=>A`] ``,
+  - `` trait `MainFactorial[`=>A`]` `` has an `object` member `factorialObject` that extends `` `Factorial[`=>A`] ``,
+  - `factorialObject` has a `val` member `factorial` that is a program implementation of type `` BigInt `=>A` BigInt ``,
+  - `` trait `MainFactorial[`=>A`]` `` has a `lazy val` member `mainFactorial` that is a main program implementation of type `` Unit `=>A` Unit `` that  uses members `effectfulReadIntFromConsole` resp. `effectfulWriteFactorialOfIntToConsole` from `class EffectUtils` to define `producer` resp. `consumer` of `trait `MainFactorial[>-->]`.
+
+```scala
+package examples.utils
+
+import pdbp.program.Program
+
+import pdbp.utils.effectfulUtils._
+
+class EffectfulUtils[>-->[- _, + _]: Program] {
+
+  import implicitly._
+
+  private def effectfulReadIntFromConsoleWithMessage(
+      message: String): Unit >--> BigInt =
+    function(effectfulReadIntFromConsoleFunction(message))
+
+  private def effectfulWriteLineToConsoleWithMessage[Y](
+      message: String): Y >--> Unit =
+    function[Y, Unit](effectfulWriteLineToConsoleFunction(message))
+
+  val effectfulReadIntFromConsole: Unit >--> BigInt =
+    effectfulReadIntFromConsoleWithMessage("please type an integer")
+
+  val effectfulWriteFactorialOfIntToConsole: BigInt >--> Unit =
+    effectfulWriteLineToConsoleWithMessage(
+      "the factorial value of the integer is")
+
+  // ...
 
 }
 ```
@@ -3285,34 +3307,46 @@ object FactorialMain extends Main[`=>A`] {
 where
 
 ```scala
-package examples.main
+package pdbp.utils
 
-trait Main[>-->[- _, + _]] {
+import scala.io.StdIn.{readInt, readDouble}
 
-  val mainKleisliProgram: Unit >--> Unit
- 
-  val run: Unit
+import pdbp.types.product.productType._
 
-  def main(args: Array[String]): Unit = {
+object effectfulUtils {
 
-    run
+  def effectfulReadIntFromConsoleFunction(message: String): Unit => BigInt = {
+    _ =>
+      println(s"$message")
+      val i = BigInt(readInt())
+      i
+  }
 
-  }    
+  // ...
+
+  def effectfulWriteLineToConsoleFunction[Y](message: String): Y => Unit = {
+    y =>
+      println(s"$message")
+      val u = println(s"$y")
+      u
+  }
+
+  // ...
 
 }
 ```
 
-Note that `mainKleisliProgram` has
+The definition of `object FactorialMain` uses `activeMeaningOfActive.meaning` to transform the main program implementation `mainFactorial`.
+
+Note that, since `meaning(mainFactorial)` has
 
   - type `` Unit `=>A` Unit ``, which is
   - type `Unit => Active[Unit]`, which is
   - type `Unit => Unit`
 
-It suffices to evaluate `mainKleisliProgram(())` to run `mainKleisliProgram`.
+it suffices to evaluate `meaning(mainFactorial)(())`.
 
-Ok, so let's use `main` in `object FactorialMain`.
-
-Let's try `10`.
+Let's try running `main` with `10`.
 
 ```scala
 [info] Running examples.main.active.effectfulReadingAndWriting.FactorialMain
@@ -3322,7 +3356,7 @@ the factorial value of the integer is
 3628800
 ```
 
-Let's try `100`.
+Let's try running `main` with `100`.
 
 ```scala
 [info] Running examples.main.active.effectfulReadingAndWriting.FactorialMain
@@ -3332,7 +3366,7 @@ the factorial value of the integer is
 93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
 ```
 
-Let's try `1000`.
+Let's try running `main` with `1000`.
 
 ```scala
 [info] Running examples.main.active.effectfulReadingAndWriting.FactorialMain
@@ -3342,109 +3376,242 @@ please type an integer
 java.lang.StackOverflowError
 ```
 
-We have a problem here. 
+We have a problem. 
 
-The language level meaning `mainFactorial.factorialObject.factorial` above of the `factorial` description is *not tail recursive*. 
-  - it is not stack safe: it uses the *stack* which overflows for the argument `1000`.
+The semantics of the syntactic `factorial` program description uses the *stack* and is *not stack safe*. 
+  - the stack overflows for the argument `1000`.
  
-The good news is that it is just one (language level) meaning of that description.
+The good news is that it is just one semantics of that syntactic program description.
 
-The language level meaning `mainFactorial.factorialObject.factorial` above should (and will!) be replaced by a *tail recursive* one. 
-  - it is stack safe: it uses the *heap* which does not run out of memory for the argument `1000`.
+The semantics of the syntactic `factorial` program description can be replaced by a *stack safe* one that uses the *heap*. 
+  - the heap does not run out of memory for the argument `1000`.
 
-## **Running main kleisli programs (language level meaning)**
+We have another problem.
 
-### **Running `sumOfSquaresMain` using  `activeProgram` and an effectful `twoDoublesProducer` and `sumOfSquaresOfTwoDoublesConsumer`**
+We promised to use `function` only for *pure* (a.k.a. as *effectfree*) functions.
+Both `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole` are programs that *execute effects* in an *impure* (a.k.a. as *effectful*) way.
+
+Both `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole` can be replaced by programs that *describe effects* in an pure (a.k.a *effectfree*) way.
+
+### **Running `mainFactorial` computation using `activeProgram`, `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole`**
 
 Consider
-
-```scala
-package pdbp.examples.objects.active.effectfulReadingAndWriting
-
-import pdbp.types.active.activeTypes._
-
-import pdbp.program.implicits.active.implicits
-import implicits.activeProgram
-
-import pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting.MainSumOfSquaresAsComputation
-
-object mainSumOfSquaresAsComputation extends MainSumOfSquaresAsComputation[Active]()
-```
-
-We can now, finally, define `main` in `object FactorialMain`
 
 ```scala
 package pdbp.examples.main.active.effectfulReadingAndWriting
 
 import pdbp.types.active.activeTypes._
 
-import pdbp.examples.objects.active.effectfulReadingAndWriting.mainSumOfSquaresAsComputation
-import mainSumOfSquaresAsComputation.sumOfSquaresMain
+import pdbp.program.implicits.active.implicits.activeProgram
 
-import examples.main.Main
+import pdbp.examples.mainKleisliPrograms.MainFactorial
 
-object SumOfSquaresAsComputationMain extends Main[`=>A`] {
+import pdbp.examples.utils.EffectfulUtils
 
-  override val mainKleisliProgram: Unit `=>A` Unit = sumOfSquaresMain
- 
-  override val run = mainKleisliProgram(())
+object FactorialMain
+    extends MainFactorial[Active]()
+    with EffectfulUtils[Active]() {
+
+  override val producer = effectfulReadIntFromConsole
+
+  override val consumer = effectfulWriteFactorialOfIntToConsole
+
+  def main(args: Array[String]): Unit = {
+
+    import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive.meaning
+
+    meaning(mainFactorial)(())
+
+  }
 
 }
 ```
 
-Ok, so let's use `main` in `object SumOfSquaresAsComputationMain`.
-
-Let's try `3.0` and `4.0`.
+where
 
 ```scala
-[info] Running pdbp.examples.main.active.effectfulReadingAndWriting.SumOfSquaresAsComputationMain
+package pdbp.examples.utils
+
+import pdbp.types.product.productType._
+
+import pdbp.utils.effectfulUtils._
+
+import pdbp.computation.Resulting
+
+trait EffectfulUtils[C[+ _]: Resulting] {
+
+  import implicitly._
+
+  type `=>C` = [-Z, +Y] => Z => C[Y]
+
+  private def effectfulReadIntFromConsoleWithMessage(
+      message: String): Unit `=>C` BigInt = { _ =>
+    result(effectfulReadIntFromConsoleFunction(message)(()))
+  }
+
+  // ...
+
+  private def effectfulWriteLineToConsoleWithMessage[Y](
+      message: String): Y `=>C` Unit = { y =>
+    result(effectfulWriteLineToConsoleFunction(message)(y))
+  }
+
+  val effectfulReadIntFromConsole: Unit `=>C` BigInt =
+    effectfulReadIntFromConsoleWithMessage("please type an integer")
+
+  // ...
+
+  val effectfulWriteFactorialOfIntToConsole: BigInt `=>C` Unit =
+    effectfulWriteLineToConsoleWithMessage(
+      "the factorial value of the integer is")
+
+  // ...
+
+}
+```
+
+Let's try running `main` with `10`.
+
+```scala
+[info] Running pdbp.examples.main.active.effectfulReadingAndWriting.FactorialMain
+please type an integer
+10
+the factorial value of the integer is
+3628800
+```
+
+Let's try running `main` with `100`.
+
+```scala
+[info] Running pdbp.examples.main.active.effectfulReadingAndWriting.FactorialMain
+please type an integer
+100
+the factorial value of the integer is
+93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
+```
+
+
+### **Running `mainSumOfSquares` computation using `activeProgram`, `effectfulReadIntFromConsole` and `effectfulWriteSumOfSquaresOfTwoDoublesToConsole`**
+
+Consider
+
+```scala
+package pdbp.examples.main.active.effectfulReadingAndWriting
+
+import pdbp.types.active.activeTypes._
+
+import pdbp.program.implicits.active.implicits.activeProgram
+
+import pdbp.examples.mainKleisliPrograms.MainSumOfSquares
+
+import pdbp.examples.utils.EffectfulUtils
+
+object SumOfSquaresMain
+    extends MainSumOfSquares[Active]()
+    with EffectfulUtils[Active]() {
+
+  override val producer = effectfulReadTwoDoublesFromConsole
+
+  override val consumer = effectfulWriteSumOfSquaresOfTwoDoublesToConsole
+
+  def main(args: Array[String]): Unit = {
+
+    import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive.meaning
+
+    meaning(mainSumOfSquares)(())
+
+  }
+
+}
+```
+
+where
+
+```scala
+package pdbp.examples.utils
+
+import pdbp.types.product.productType._
+
+import pdbp.utils.effectfulUtils._
+
+import pdbp.computation.Resulting
+
+trait EffectfulUtils[C[+ _]: Resulting] {
+
+  import implicitly._
+
+  type `=>C` = [-Z, +Y] => Z => C[Y]
+
+  // ...
+
+  private def effectfulReadTwoDoublesFromConsoleWithMessage(
+      message: String): Unit `=>C` (Double && Double) = { _ =>
+    result(effectfulReadTwoDoublesFromConsoleFunction(message)(()))
+  }
+
+  private def effectfulWriteLineToConsoleWithMessage[Y](
+      message: String): Y `=>C` Unit = { y =>
+    result(effectfulWriteLineToConsoleFunction(message)(y))
+  }
+
+  // ...
+
+  val effectfulReadTwoDoublesFromConsole: Unit `=>C` (Double && Double) =
+    effectfulReadTwoDoublesFromConsoleWithMessage("please type a double")
+
+  // ...
+
+  val effectfulWriteSumOfSquaresOfTwoDoublesToConsole: Double `=>C` Unit =
+    effectfulWriteLineToConsoleWithMessage(
+      "the sum of the squares of the doubles is")
+
+}
+```
+
+where
+
+```scala
+package pdbp.utils
+
+import scala.io.StdIn.{readInt, readDouble}
+
+import pdbp.types.product.productType._
+
+object effectfulUtils {
+
+  // ...
+
+  def effectfulReadTwoDoublesFromConsoleFunction(
+      message: String): Unit => (Double && Double) = { _ =>
+    println(s"$message")
+    val d1 = readDouble()
+    println(s"$message")
+    val d2 = readDouble()
+    (d1, d2)
+  }
+
+  def effectfulWriteLineToConsoleFunction[Y](message: String): Y => Unit = {
+    y =>
+      println(s"$message")
+      val u = println(s"$y")
+      u
+  }
+
+  // ...
+
+}
+```
+
+Let's try running `main` with `3.0` and `4.0`.
+
+```scala
+[info] Running pdbp.examples.main.active.effectfulReadingAndWriting.SumOfSquaresMain
 please type a double
 3.0
 please type a double
 4.0
 the sum of the squares of the doubles is
 25.0
-```
-
-
-## **Running main programs (library level meaning)**
-
-### **Running `factorialMain` using an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole` and `activeMeaningOfActive`**
-
-We can now finally define `main` in `object FactorialMain`
-
-```scala
-package examples.main.meaning.ofActive.active.effectfulReadingAndWriting
-
-import pdbp.types.active.activeTypes._
-
-import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
-import activeMeaningOfActive.meaning
-
-import examples.objects.active.effectfulReadingAndWriting.mainFactorial
-import mainFactorial.factorialMain
-
-import examples.main.Main
-
-object FactorialMain extends Main[`=>A`] {
-
-  override val mainKleisliProgram: Unit `=>A` Unit = meaning(factorialMain)
- 
-  override val run = mainKleisliProgram(())
-
-}
-```
-
-Ok, so let's use `main` in `object FactorialMain`.
-
-Let's try `10`.
-
-```scala
-[info] Running examples.main.meaning.ofActive.active.effectfulReadingAndWriting.FactorialMain
-please type an integer
-10
-the factorial value of the integer is
-3628800
 ```
 
 ## **Describing `ComputationTransformation`**
@@ -5438,268 +5605,4 @@ INFO
  --evaluating factorial(10) yields 3628800
 the factorial value of the integer read is
 3628800
-```
-
-
-# TO BE REUSED SOMEHOW
-
-where
-
-```scala
-package examples.utils
-
-import pdbp.program.Function
-
-import pdbp.utils.effectfulUtils._
-
-trait EffectfulUtils[>-->[- _, + _]: Function] {
-
-  import implicitly._
-
-  private def effectfulReadIntFromConsoleWithMessage(
-      message: String): Unit >--> BigInt =
-    function(effectfulReadIntFromConsoleFunction(message))
-
-  private def effectfulWriteLineToConsoleWithMessage[Y](
-      message: String): Y >--> Unit =
-    function(effectfulWriteLineToConsoleFunction(message))
-
-  val effectfulReadIntFromConsole: Unit >--> BigInt =
-    effectfulReadIntFromConsoleWithMessage("please type an integer")
-
-  val effectfulWriteFactorialOfIntToConsole: BigInt >--> Unit =
-    effectfulWriteLineToConsoleWithMessage(
-      "the factorial value of the integer is")
-
-}
-```
-
-where
-
-```scala
-package pdbp.utils
-
-import scala.io.StdIn.readInt
-
-object effectfulUtils {
-
-  // ...
-
-  def effectfulReadIntFromConsoleFunction(message: String): Unit => BigInt = {
-    _ =>
-      println(s"$message")
-      val i = BigInt(readInt())
-      i
-  }
-
-  // ...
-
-  def effectfulWriteLineToConsoleFunction[Y](message: String): Y => Unit = {
-    y =>
-      println(s"$message")
-      val u = println(s"$y")
-      u
-  }
-
-  // ...
-
-}
-```
-
-*You may, rightly*, argue that we are cheating here!*
-
-We promised to use `function` only for *pure* (a.k.a. as *effectfree*) functions.
-Both `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole` are programs that *execute effects* in an *impure* (a.k.a. as *effectful*) way.
-
-More precisely,
-  - the function `effectfulReadIntFromConsoleFunction` that is used by `effectfulReadIntFromConsole` executes* the effects `println("message")` and `readInt()`,
-  - the function `effectfulWriteToConsoleFunction` that is used by `effectfulWriteToConsole` executes the effects `println("message")` and `println(s"$y")`.
-
-Both `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole` above should (and will!) be replaced by programs that *describe effects* in an pure way.
-
-More precisely,
-  - we will extend the `PDBP` program description DSL with a *reading* programming capability, `read`
-    - in this case to read an integer from the console
-  - the `PDBP` program description DSL with a *writing* programming capability, `write`
-    - in this case to write to the console
-
-#### **Describing `MainFactorialAsFunction` using an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole`**
-
-`MainFactorialAsFunction` is similar to `MainFactorial`
-
-```scala
-package examples.mainPrograms.effectfulReadingAndWriting
-
-import pdbp.program.Program
-
-import pdbp.program.compositionOperator._
-
-import examples.utils.EffectfulUtils
-
-import examples.programs.FactorialAsFunction
-
-trait MainFactorialAsFunction[>-->[- _, + _]: Program] extends EffectfulUtils[>-->] {
-
-  private object factorialAsFunction extends FactorialAsFunction[>-->]
-
-  import factorialAsFunction.factorial
-
-  val factorialMain: Unit >--> Unit =
-    effectfulReadIntFromConsole >-->
-      factorial >-->
-      effectfulWriteFactorialOfIntToConsole
-
-}
-```
-
-#### **Describing `MainFactorialTopDown` using an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole`**
-
-`MainFactorialTopDown` is similar to `MainFactorial`
-
-```scala
-package examples.mainPrograms.effectfulReadingAndWriting
-
-import pdbp.program.Program
-
-import pdbp.program.compositionOperator._
-
-import examples.utils.EffectfulUtils
-
-import examples.programs.FactorialTopDown
-
-trait MainFactorialTopDown[>-->[- _, + _]: Program] extends EffectfulUtils[>-->] {
-
-  private object factorialTopDown extends FactorialTopDown[>-->]
-
-  import factorialTopDown.factorial
-
-  val factorialMain: Unit >--> Unit =
-    effectfulReadIntFromConsole >-->
-      factorial >-->
-      effectfulWriteFactorialOfIntToConsole
-
-}
-```
-
-### **Describing `MainSumOfSquaresAsComputation` using an effectful `twoDoublesProducer` and `sumOfSquaresOfTwoDoublesConsumer`**
-
-Consider
-
-```scala
-package pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting
-
-import pdbp.computation.Computation
-
-import pdbp.computation.bindingOperator._
-
-import pdbp.examples.utils.EffectfulUtils
-
-import pdbp.examples.kleisliPrograms.SumOfSquaresAsComputation
-
-class MainSumOfSquaresAsComputation[C[+ _]: Computation]
-    extends EffectfulUtils[C]() {
-
-  private object sumOfSquaresAsComputation extends SumOfSquaresAsComputation[C]
-
-  import sumOfSquaresAsComputation.sumOfSquares
-
-  val sumOfSquaresMain: Unit `=>C` Unit = { u =>
-    twoDoublesProducer(u) bind { (z, y) =>
-      sumOfSquares(z, y) bind { x =>
-        sumOfSquaresOfTwoDoublesConsumer(x)
-      }
-    }
-  }
-
-}
-```
-
-where
-
-```scala
-package pdbp.examples.utils
-
-import pdbp.types.product.productType._
-
-import pdbp.utils.effectfulUtils._
-
-import pdbp.computation.Resulting
-
-trait EffectfulUtils[C[+ _]: Resulting] {
-
-  import implicitly._
-
-  type `=>C` = [-Z, +Y] => Z => C[Y]
-
-  private def effectfulReadTwoDoublesFromConsoleWithMessage(
-      message: String): Unit `=>C` (Double && Double) = { _ =>
-    result(effectfulReadTwoDoublesFromConsoleFunction(message)(()))
-  }
-
-  private def effectfulWriteLineToConsole[Y](message: String): Y `=>C` Unit = {
-    y =>
-      result(effectfulWriteLineToConsoleFunction(message)(y))
-  }
-
-  val twoDoublesProducer: Unit `=>C` (Double && Double) =
-    effectfulReadTwoDoublesFromConsoleWithMessage("please type a double")
-
-  val sumOfSquaresOfTwoDoublesConsumer: Double `=>C` Unit =
-    effectfulWriteLineToConsole("the sum of the squares of the doubles is")
-
-}
-```
-
-where
-
-```scala
-object effectfulUtils {
-
-  // ...
-
-  def effectfulReadTwoDoublesFromConsoleFunction(
-      message: String): Unit => (Double && Double) = { _ =>
-    println(s"$message")
-    val d1 = readDouble()
-    println(s"$message")
-    val d2 = readDouble()
-    (d1, d2)
-  }
-
-  // ...
-
-}
-```
-
-### Describing `MainSumOfSquaresAsExpression` using an effectful `twoDoublesProducer` and `sumOfSquaresOfTwoDoublesConsumer`**
-
-`MainSumOfSquaresAsExpression` is similar to `MainSumOfSquaresAsComputation`
-
-```scala
-package pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting
-
-import pdbp.computation.Computation
-
-import pdbp.computation.bindingOperator._
-
-import pdbp.examples.utils.EffectfulUtils
-
-import pdbp.examples.kleisliPrograms.SumOfSquaresAsExpression
-
-class MainSumOfSquaresAsExpression[C[+ _]: Computation]
-    extends EffectfulUtils[C]() {
-
-  private object sumOfSquaresAsExpression extends SumOfSquaresAsExpression[C]
-
-  import sumOfSquaresAsExpression.sumOfSquares
-
-  val sumOfSquaresMain: Unit `=>C` Unit = { u =>
-    twoDoublesProducer(u) bind { (z, y) =>
-      sumOfSquares(z, y) bind { x =>
-        sumOfSquaresOfTwoDoublesConsumer(x)
-      }
-    }
-  }
-
-}
 ```

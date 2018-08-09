@@ -31,7 +31,7 @@ object FactorialMain
 
     import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive.meaning
 
-    meaning(factorialMain)(())
+    meaning(mainFactorial)(())
 
   }
 
