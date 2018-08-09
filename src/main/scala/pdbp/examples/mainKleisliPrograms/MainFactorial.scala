@@ -29,7 +29,7 @@ trait MainFactorial[C[+ _]: Computation] {
 
   val consumer: BigInt `=>C` Unit
 
-  val factorialMain: Unit `=>C` Unit = { u =>
+  lazy val factorialMain: Unit `=>C` Unit = { u =>
     producer(u) bind { z =>
       factorial(z) bind { y =>
         consumer(y)

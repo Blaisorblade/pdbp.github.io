@@ -31,7 +31,7 @@ trait MainSumOfSquares[C[+ _]: Computation] {
 
   val consumer: Double `=>C` Unit
 
-  val mainSumOfSquares: Unit `=>C` Unit = { u =>
+  lazy val mainSumOfSquares: Unit `=>C` Unit = { u =>
     producer(u) bind { (z, y) =>
       sumOfSquares(z, y) bind { x =>
         consumer(x)

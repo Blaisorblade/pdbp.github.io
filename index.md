@@ -2371,7 +2371,7 @@ trait MainFactorial[C[+ _]: Computation] {
 
   val consumer: BigInt `=>C` Unit
 
-  val factorialMain: Unit `=>C` Unit = { u =>
+  lazy val factorialMain: Unit `=>C` Unit = { u =>
     producer(u) bind { z =>
       factorial(z) bind { y =>
         consumer(y)
@@ -2517,9 +2517,9 @@ private[pdbp] trait Lifting[C[+ _]]
   private[pdbp] def liftedApply[Z, Y]: (C[Z => Y] && C[Z]) => C[Y] =
     liftOperator(`((z=>y)&&z)=>y`)
 
-  private[pdbp] override def liftFunction[Z, Y](
-      `z=>y`: Z => Y): C[Z] => C[Y] = { cz =>
-    liftedApply(liftObject(`z=>y`), cz)
+  private[pdbp] override def lift1[Z, Y]: (Z => Y) => C[Z] => C[Y] = {
+    `z=>y` => cz =>
+      lift2(`((z=>y)&&z)=>y`)(lift0(`z=>y`), cz)
 
   }
 
@@ -2640,14 +2640,11 @@ Arrows occupy the sweet spot between monads and applcatives as far as power of e
 Arrows naturally promote pointfree, composition based programming.
 Agreed, applicatives can also be programmed in a pointfree, composition based way.
 
-Arrows can naturally be given an elegant `Dotty` programming DSL flavor.
-Agreed, applicatives can also be given an elegant `Dotty` programming DSL flavor.
+Arrows can use an elegant `Dotty` programming DSL.
 
 Anyway, applicatives provide less power of expression for application developers.
 
-### **Defining lifting and programming capabilities in terms of computational capabilities**
-
-#### **Defining lifting capabilities in terms of computational capabilities**
+### **Defining lifting capabilities in terms of computational capabilities**
 
 The lifting capabilities `lift0`, `lift1`, `lift2`, `lift3`, ... , can be defined in terms of the computational capabilities `bind` and `result`.
 
@@ -2664,7 +2661,7 @@ private[pdbp] trait Computation[C[+ _]]
     with Lifting[C]
     with Sequencing[C]
     with Program[Kleisli[C]] 
-    // ... {
+    with Applying[Kleisli[C]] {
 
   override private[pdbp] def lift0[Z]: Z => C[Z] =
     result
@@ -2696,10 +2693,11 @@ private[pdbp] trait Computation[C[+ _]]
 }  
 ```
 
-Note that `bind` and `result` really provide a lot of, agreed, pointful, power of expression for library developers.
-Also note that the definitions of `lift0`, `lift1`, `lift2`, `lift3`, ... naturally read from left to right.
+Note that `result` and `bind` really provide a lot of, agreed, pointful, power of expression for library developers.
+Note that the definitions of `lift0`, `lift1`, `lift2`, `lift3`, ... naturally read from left to right.
+Finally, note that it suffices to define  `lift0` and `lift1` in terms of `result` and `bind`.
 
-#### **Defining programming capabilities in terms of computational capabilities**
+### **Defining programming capabilities in terms of computational capabilities**.
 
 The programming capabilities `function`, `compose`, `product` and `sum` can be defined in terms of the computational capabilities `bind` and `result`.
 
@@ -2719,7 +2717,10 @@ private[pdbp] trait Computation[C[+ _]]
     with Binding[C]
     with Lifting[C]
     with Sequencing[C]
-    with Program[Kleisli[C]] {
+    with Program[Kleisli[C]] 
+    with Applying[Kleisli[C]] {
+
+  // ...    
 
   private type `=>C` = Kleisli[C]
 
@@ -2746,7 +2747,7 @@ private[pdbp] trait Computation[C[+ _]]
 ```
 
 Again, note that `bind` and `result` really provide a lot of, agreed, pointful, power of expression for library developers.
-Also, again, note that the definitions of `function`, `compose` and `product` naturally read from left to right.
+Also, note that the definitions of `function`, `compose` and `product` naturally read from left to right.
 
 ### **Defining computational capabilities in terms of programming and applying capabilities**
 
@@ -2812,8 +2813,6 @@ object kleisliUnaryTypeConstructorType {
 
 A computation of type `Kleisli[>-->]` is referred to as a *kleisli computation*. 
 Think of it as a program without arguments.
-
-#### **Defining computational capabilities in terms of programming and applying capabilities**
 
 The computational capabilities `result` and `bind` can be defined in terms the of the programming capabilities `function`, `compose`, and `product` together with the applying capability `apply`.
 
