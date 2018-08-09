@@ -218,7 +218,9 @@ When there is no danger of confusion
   - we simply write arguments, argument and result, not mentioning function or program.
 
 So, we simply write
+  - a function transforms arguments to yield a result, or
   - a function transforms arguments to a result, and
+  - a program transforms an argument to yield a result, or
   - a program transforms an argument to a result.
 
 Note that we use both (*zero or more*) arguments (for functions) and (*one*) argument (for programs).
@@ -328,8 +330,10 @@ When there is no danger of confusion
   - we simply write result, not mentioning expression or computation.
 
 So, we simply write
-  - an expression yields (or has) a result, and
-  - a computation yields (or has) a result.
+  - an expression yields a result, or
+  - an expression has a result, and
+  - a computation yields a result, or
+  - a computation has a result.
 
 To finish, let's state that
 
@@ -881,7 +885,7 @@ object functionUtils {
 For programs, we use generic backtick names like `` `z>-->y` `` to, hopefully, improve readability. 
 
 You may have doubts about the usefulness of a trivial program like`` `z>-->z` ``.  
-It turns out that, when defining composite programs, obtained by plugging program components, into program templates, using `` `z>-->z` `` for one or more of the components results in interesting composite programs of their own. Naturally, those composite programs have simpler types than the fully generic ones.
+It turns out that, when defining composite programs, obtained by substituting program components, into program templates, using `` `z>-->z` `` for one or more of the components results in interesting composite programs of their own. Naturally, those composite programs have simpler types than the fully generic ones.
 
 In what follows we also refer to programs `` function(`z=>y`) ``, that, essentially, are *pure functions*, as *atomic programs*. It is up to you to define the *granularity* of atomic programs.
 
@@ -1077,21 +1081,10 @@ trait Construction[>-->[- _, + _]] {
 
 where
 
-```scala
-package pdbp.types.product
-
-object productType {
-
-  type &&[+Z, +Y] = Tuple2[Z, Y]
-  
-}
-```
-
-and where
-
  - `` `(y&&x)>-->(y&&x)` ``,
  - `` `(z&&y)>-->z` ``, 
- - `` `(z&&y)>-->y` ``
+ - `` `(z&&y)>-->y` ``,
+ - `` `y>-->y` ``
 
 are the programs you expect.
 
@@ -1116,6 +1109,9 @@ trait Function[>-->[- _, + _]] {
 
   def `(z&&y)>-->y`[Z, Y]: (Z && Y) >--> Y =
     function(`(z&&y)=>y`)
+
+  def `y>-->y`[Y]: Y >--> Y =
+    function(`y=>y`)
 
   // ...
 
@@ -1145,6 +1141,10 @@ object productUtils {
     y
   }
 
+  def `y=>y`[Y]: Y => Y = { y =>
+    y
+  }  
+
   // ...
 
 }
@@ -1153,7 +1153,7 @@ object productUtils {
 Think of `product` as a program template and of `` `z>-->y` `` and `` `z>-->x` `` as program parameters.
 Once the program parameters have been given program arguments we obtain a composite program.
 
-`` product(`z>-->y`, `z>-->x`) `` *constructs* a result from the results of `` `z>-->y` `` and `` `z>-->x` ``.
+`` product(`z>-->y`, `z>-->x`) `` yields a result *constructed* from the results yielded by `` `z>-->y` `` and `` `z>-->x` ``.
 
 If the program `` `z>-->y` `` transforms an argument of type `Z` to yield a result of type `Y`, 
 and the program `` `z>-->y` `` transforms that argument to yield a result of type `Y`,
@@ -1187,7 +1187,7 @@ Note that `&&` associates to the left, so, for example, `Z && Y && X` is the sam
  - `and[Z, Y, X, W]` is yet another more complex version of `product[Z, Y, X]`,
  - `` `let`[Z, Y, X] `` has a parameter that is a program fragment that *constructs a new result*, and `` `in` `` has a parameter that is a program fragment that has that result available as an *extra argument*.
 
-The main difference between `` `let` { /* ... */ } `in` { /* ... */ } `` and `` /* ... */ >--> /* ... */ `` is that it does not loose the original argument of type `Z`. 
+The main difference between `` `let` { /* ... */ } `in` { /* ... */ } `` and `` /* ... */ >--> /* ... */ `` is that the former does not loose the original argument of type `Z` while the letter does. 
 
 Note that
 
@@ -1203,53 +1203,6 @@ Note that the definitions are *left biased*. Their first parameter is a by-value
 `trait Construction` has one other member
 
   - `left[Z, X, Y]` is a simpler version of `and[Z, Y, X, W]`
-
-Note that
-
-  - `left[Z, X, Y]` can be defined in terms of `and[Z, Y, X, W]` and `` `y>-->y` `` 
-
-where
-
-  - `` `y>-->y` ``
-
-is the program you expect.
-
-```scala
-package pdbp.program
-
-// ...
-
-trait Function[>-->[- _, + _]] {
-
-  // ...
-
-  def `y>-->y`[Y]: Y >--> Y =
-    function(`y=>y`)
- 
-  // ...
-
-}
-```
-
-where
-
-```scala
-package pdbp.utils
-
-// ...
-
-object functionUtils {
-
-  // ...
-
-  def `y=>y`[Y]: Y => Y = { y =>
-    y
-  }
- 
-  // ...
-
-}
-```
 
 Consider
 
@@ -1275,7 +1228,9 @@ object constructionOperators {
   - `product[Z, Y, X]` comes with an operator equivalent `&`,
   - `and[Z, Y, X, W]` comes with an operator equivalent `&&`.
 
-The type constructor `>-->` is declared to implicitly have the programming capabilities `product` and `and` that are declared in the type class `trait Construction`. The operators `&` and `&&` are defined in terms of those declared programming capabilities. The definitions use `implicitly`, an abbreviation of `implicitly[Construction[>-->]]`, that is available as an evidence having the `product` and `and` capabilities of `Construction`.
+The type constructor `>-->` is declared to implicitly have the programming capabilities `product` and `and` that are declared in the type class `trait Construction`. The operators `&` and `&&` are defined in terms of those declared programming capabilities. 
+
+The definitions use `implicitly`, an abbreviation of `implicitly[Construction[>-->]]`, that is available as an evidence having the `product` and `and` capabilities of `Construction`.
 
 `` /* ... */ & /* ... */ `` and `` /* ... */ && /* ... */ `` are a third and fourth example where `Dotty` comes to the rescue to spice pointfree programming with some domain specific language flavor. 
 
@@ -1367,9 +1322,12 @@ object productUtils {
 }
 ```
 
-The definition of `product` is an example of a recurring theme of the `PDBP` library: defining a program, or programming capability, often boils down to a *getting the types right puzzle*. 
+The definition of `product` is an example of a recurring theme of the `PDBP` library.
+
+*Defining a program, or programming capability, often boils down to a "getting the types right" puzzle*. 
+
 Often there is only one meaningful way to get them right. 
-Let's have a look at some of the details of the typing puzzle for this definition`.
+Let's have a look at some of the details of the typing puzzle for this definition.
 
 The outer `` `let` `` creates, using `` `z>-->y` ``, a new argument of type `Y` for the outer `` `in` `` which, as a consequence, has an argument of type `Z && Y` available, representing two arguments, one of type `Z` and one of type `Y`. 
 
@@ -1383,6 +1341,16 @@ For example
 
   - in the composition `` `(z&&y)>-->z` >--> `z>-->x` ``, the matching `z`'s reflect the type `Z` involved,
   - in the name `` `(z&&y&&x)>-->(y&&x)` ``, both `(z&&y&&x)` and `(y&&x)` reflect the types `(Z && Y && X)` and `(Y && X)` involved.
+
+One challenge that comes with pointfree programming is getting the *necessary* arguments out of *all* available arguments. 
+The program `` `(z&&y&&x)>-->(y&&x)` `` above gets a `y` and an `x` out of a `z`, a `y` and an `x`. 
+
+One way to deal with this challenge is to keep programs, and therefore, the arguments and results that come with them, relatively small. After all, small program components can be combined to obtain larger, composite programs by substituting them into program templates.
+
+[*Erik Meijer*](https://en.wikipedia.org/wiki/Erik_Meijer_(computer_scientist)) refers to this programming paradigm in a somewhat funny way as *good programmers write baby-code*. 
+
+Erik Meijer is so famous that he does not need an introduction. 
+I was very lucky to be able to do research with him, on monads and related stuff, at the Univeristy of Utrecht back in the ninetees.
 
 ### **Describing `trait Condition`**
 
@@ -1672,18 +1640,6 @@ For example
 
   - in the composition `` `(y||x)>-->y` >--> `y>-->z` ``, the matching `y`'s reflect the type `Y` involved, 
   - In the composition `` `(y||x)>-->x` >--> `x>-->z` ``, the matching `x`'s reflect the type `X` involved.
-
-### **Pointfree programming challenge**
-
-One challenge that comes with pointfree programming is getting the *necessary* arguments out of *all* available arguments. 
-One way to deal with this challenge is to keep programs, and therefore, the arguments that come with them, relatively small. 
-
-After all, small program components can be combined to obtain larger, composite programs by plugging them into program templates.
-
-[*Erik Meijer*](https://en.wikipedia.org/wiki/Erik_Meijer_(computer_scientist)) refers to this programming paradigm in a somewhat funny way as *good programmers write baby-code*. 
-
-Erik Meijer is so famous that he does not need an introduction. 
-I was very lucky to be able to do research with him, on monads and related stuff, at the Univeristy of Utrecht back in the ninetees.
 
 ### **`factorial` revisited**
 
