@@ -39,8 +39,6 @@ import pdbp.computation.transformation.ComputationTransformation
 
 private[pdbp] trait FreeTransformation[FC[+ _]: Computation]
     extends ComputationTransformation[FC, FreeTransformed[FC]] {
-  //with Computation[FreeTransformed[FC]]
-  //with Program[Kleisli[FreeTransformed[FC]]] {
 
   private type FTFC = FreeTransformed[FC]
 

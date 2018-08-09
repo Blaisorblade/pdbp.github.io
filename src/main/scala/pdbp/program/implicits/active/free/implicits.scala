@@ -24,6 +24,7 @@ import pdbp.computation.transformation.free.FreeTransformation
 import pdbp.program.implicits.active.implicits.activeProgram
 
 object implicits {
+  
   implicit object activeFreeProgram
       extends Computation[ActiveFree]
       with Program[`=>AF`]

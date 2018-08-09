@@ -3619,13 +3619,17 @@ the sum of the squares of the doubles is
 *Computation transformations* are defined using natural unary type constructor transformations as follows
 
 ```scala
-package pdbp.computation.transformation
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
 import pdbp.natural.transformation.unary.`~U~>`
 
+import pdbp.program.Program
+
 import pdbp.computation.Computation
 
-private[pdbp] trait ComputationTransformation[FC[+ _]: Computation, T[+ _]] {
+private[pdbp] trait ComputationTransformation[FC[+ _]: Computation, T[+ _]]
+    extends Computation[T]
+    with Program[Kleisli[T]] {
 
   private[pdbp] val transform: FC `~U~>` T
 
@@ -3643,6 +3647,8 @@ I have contributed to monad transformers myself by combining them with *catamorp
 The first computation transformer that we describe is `trait FreeTransformation`.
 
 ```scala
+package pdbp.computation.transformation.free
+
 import FreeTransformation._
 
 import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
@@ -3656,9 +3662,7 @@ import pdbp.natural.transformation.unary.`~U~>`
 import pdbp.computation.transformation.ComputationTransformation
 
 private[pdbp] trait FreeTransformation[FC[+ _]: Computation]
-    extends ComputationTransformation[FC, FreeTransformed[FC]]
-    with Computation[FreeTransformed[FC]]
-    with Program[Kleisli[FreeTransformed[FC]]] {
+    extends ComputationTransformation[FC, FreeTransformed[FC]] {
 
   private type FTFC = FreeTransformed[FC]
 
@@ -3667,8 +3671,9 @@ private[pdbp] trait FreeTransformation[FC[+ _]: Computation]
       Transform(fcz)
   }
 
-  override private[pdbp] def result[Z]: Z => FTFC[Z] =
-    Result(_)
+  override private[pdbp] def result[Z]: Z => FTFC[Z] = { z =>
+    Result(z)
+  }
 
   override private[pdbp] def bind[Z, Y](
       ftfcz: FTFC[Z],
@@ -3691,20 +3696,20 @@ private[pdbp] object FreeTransformation {
                                                  `z=>fcy`: Z => Free[C, Y])
       extends Free[C, Y]
 
-  type FreeTransformed[C[+ _]] = [+Z] => Free[C, Z]
+  private[pdbp] type FreeTransformed[C[+ _]] = [+Z] => Free[C, Z]
 
 }
 ```
 
-`trait Free` is an *abstract data type* that has a
+`trait Free` is an *abstract data type* that is a
 
   - `case class Transform`
 
 corresponding to the member `transform` of `trait ComputationTransformation`,
 
-and has a
+or is a
 
-  - `case class Result`
+  - `case class Result`, or a
   - `case class Bind` 
 
 corresponding to the members `result` and `bind` of `trait Computation`.
@@ -3713,8 +3718,8 @@ Think of `FreeTransformed[C]` `objects`'s as *free transformed computations*.
 
 `trait FreeTransformation` transforms 
 
-  - computation `C` to computation `FreeTransformed[C]`,
-  - program `Kleisli[C]` to program `Kleisli[FreeTransformed[C]]`. 
+  - a computation `C` to a computation `FreeTransformed[C]`,
+  - the corresponding kleisli program `Kleisli[C]` to a kleisli program `Kleisli[FreeTransformed[C]]`. 
 
 The definitions of `transform`, `result` and `bind` are trivial.
 They construct a data structure on the heap.
@@ -3725,9 +3730,9 @@ They construct a data structure on the heap.
 
 Think of `Free[C, Z]` as a *free data type* wrapped around `C` as described in [Data types a la carte](http://www.cs.ru.nl/~W.Swierstra/Publications/DataTypesALaCarte.pdf).
 
-The data structure `Transform(cz)` exposes the programming capabilities of the computation `cz` of type `C[Z]` by transforming them to the type `Free[C, Z]`.
+The data structure built using `Transform` wraps the computational capabilities of a computation `cz` of type `C[Z]` by transforming them to *suspended* capabilities of type `Free[C, Z]`.
 
-The word *free* refers to the fact that a data structure built using `Result` and `Bind` can be seen as a *free meaning* for the computational capabilities `result` and `bind` of `trait Computation`. In a way it is the most abstract meaning one can think of because there are no constraints involved. Anyway, it *is* a meaning, it is *not* a description.
+The data structures built using `Result` and `Bind` can be seen as a *free program implementation* for the computational capabilities `result` and `bind` of `trait Computation`. In a way it is the most free implementation one can think of because there are no constraints involved. Anyway, it *is* an implementation, it is *not* a description.
 
 ### **Describing `FreeTransformedMeaning`**
 
@@ -3735,6 +3740,8 @@ The transformed computation meaning corresponding to the free computation transf
 
 ```scala
 package pdbp.computation.meaning.free
+
+import pdbp.computation.Computation
 
 import pdbp.natural.transformation.unary.`~U~>`
 
@@ -3753,28 +3760,27 @@ private[pdbp] trait FreeTransformedMeaning[FC[+ _]: Computation, T[+ _]](
 
   private type FTFC = FreeTransformed[FC]
 
-  override private[pdbp] val unaryTransformation: FTFC `~U~>` T =
+  private val foldingUnaryTransformation: FTFC `~U~>` FC =
     new {
-      override private[pdbp] def apply[Z](ftfcz: FTFC[Z]): T[Z] = {
-        @annotation.tailrec
-        def tailrecFold(ftfcz: FTFC[Z]): FC[Z] = ftfcz match {
-          case Transform(fcz) =>
-            fcz
-          case Result(z) =>
-            result(z)
-          case Bind(Result(y), y2ftfcz) =>
-            tailrecFold(y2ftfcz(y))
-          case Bind(Bind(fcx, x2ftfcy), y2ftfcz) =>
-            tailrecFold(Bind(fcx, { x =>
-              Bind(x2ftfcy(x), y2ftfcz)
-            }))
-          case any =>
-            sys.error(
-              "Impossible, since, for 'FreeTransformedMeaning', 'tailrecFold' eliminates this case")
-        }
-        toBeTransformedMeaning.unaryTransformation(tailrecFold(ftfcz))
+      @annotation.tailrec
+      override private[pdbp] def apply[Z](ftfcz: FTFC[Z]): FC[Z] = ftfcz match {
+        case Transform(fcz) =>
+          fcz
+        case Result(z) =>
+          result(z)
+        case Bind(Result(y), y2ftfcz) =>
+          apply(y2ftfcz(y))
+        case Bind(Bind(fcx, x2ftfcy), y2ftfcz) =>
+          apply(Bind(fcx, { x =>
+            Bind(x2ftfcy(x), y2ftfcz)
+          }))
+        case any =>
+          sys.error("Impossible, since, 'apply' eliminates this case")
       }
     }
+
+  override private[pdbp] val unaryTransformation: FTFC `~U~>` T =
+    foldingUnaryTransformation andThen toBeTransformedMeaning.unaryTransformation
 
 }
 ```
@@ -3783,16 +3789,14 @@ Note that in `FTFC`, resp. `ftfc`
   - the first `F`, resp `f` stands for *free* (and `T` resp `t` stands for *transformed*)
   - the second `F`, resp `f` stands for *from* (and `C` resp `c` stands for *computation*)
 
-Note that, for pattern matching,  we use names like `x2ftfcy` instead of `` `x=>ftfcy` ``.
+Note that, for pattern matching, we use names like `y2ftfcz` instead of `` `y=>ftfcz` ``.
 
-`tailrecFold`, as it's name suggests, is a *tail recursive folding* of a computation of type `FTFC[Z]`, which is a free data structure wrapping a computation of type `FC[Z]`, back to a computation of type `FC[Z]`. 
+The method `apply` that is used in the definition of `foldingUnaryTransformation` is a *tail recursive folding* of a computation of type `FTFC[Z]`, which is a free data structure wrapping a computation of type `FC[Z]`, back to a computation of type `FC[Z]`. 
 
-The computation  `tailrecFold(ftfcz)` of type `FC[Z]` can be given a meaning using `toBeTransformedMeaning.unaryTransformation`.
-Therefore the computation of type `FTFC[Z]` can be given a meaning as well.
+Note that the last `case` for `Bind` uses an *associativity* law of `bind`.
+The *left* associated `Bind`'s are folded to *right* associated `Bind`'s. 
 
-Note that
-
- - the last `case` uses an *associativity* law of `bind`: the *left* associated `Bind`'s are folded to *right* associated `Bind`'s, 
+The natural unary type transformation `unaryTransformation` defining `meaning` can be defined as a composition of `foldingUnaryTransformation` and `toBeTransformedMeaning.unaryTransformation`
 
 ### **Describing `activeFreeProgram`**
 
@@ -3814,11 +3818,13 @@ import pdbp.computation.transformation.free.FreeTransformation
 import pdbp.program.implicits.active.implicits.activeProgram
 
 object implicits {
+  
   implicit object activeFreeProgram
       extends Computation[ActiveFree]
       with Program[`=>AF`]
       with FreeTransformation[Active]()
       with ComputationTransformation[Active, ActiveFree]()
+
 }
 ```
 
@@ -3858,66 +3864,65 @@ import pdbp.computation.meaning.ComputationMeaning
 
 import pdbp.computation.meaning.free.FreeTransformedMeaning
 
-import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
-
 import pdbp.program.implicits.active.implicits.activeProgram
 import pdbp.program.implicits.active.free.implicits.activeFreeProgram
 
 object implicits {
+
+  import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
+
   implicit object activeMeaningOfActiveFree
       extends FreeTransformedMeaning[Active, Active]()
       with ComputationMeaning[ActiveFree, Active]()
       with ProgramMeaning[`=>AF`, `=>A`]()
+      
 }
 ```
 
-### **Running `factorialMain` using an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole`, `activeFreeProgram` and `activeMeaningOfActiveFree`**
+### **Running `mainFactorial` using `activeFreeProgram` and `activeMeaningOfActiveFree`, and `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole`**
 
 Consider
 
 ```scala
-package examples.objects.active.free.effectfulReadingAndWriting
+package examples.main.active.free.effectfulReadingAndWriting
 
 import pdbp.types.active.free.activeFreeTypes._
 
-import pdbp.program.implicits.active.free.implicits
-import implicits.activeFreeProgram
+import pdbp.program.implicits.active.free.implicits.activeFreeProgram
 
-import examples.mainPrograms.effectfulReadingAndWriting.MainFactorial
+import examples.mainPrograms.MainFactorial
 
-object mainFactorial extends MainFactorial[`=>AF`]()
-```
+object FactorialMain extends MainFactorial[`=>AF`]() {
 
-We can now finally define `main` in `object FactorialMain`
+  import examples.utils.EffectfulUtils
 
-```scala
-package examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting
+  private val effectfulUtils = new EffectfulUtils[`=>AF`]
 
-import pdbp.types.active.activeTypes._
+  import effectfulUtils._
 
-import pdbp.program.meaning.ofActiveFree.active.implicits.activeMeaningOfActiveFree
-import activeMeaningOfActiveFree.binaryTransformation
+  override val producer = effectfulReadIntFromConsole
 
-import examples.objects.active.free.effectfulReadingAndWriting.mainFactorial
-import mainFactorial.factorialMain
+  override val consumer = effectfulWriteFactorialOfIntToConsole
 
-import examples.main.Main
+  def main(args: Array[String]): Unit = {
 
-object FactorialMain extends Main[`=>A`] {
+    import pdbp.program.meaning.ofActiveFree.active.implicits.activeMeaningOfActiveFree.meaning
 
-  override val mainKleisliProgram: Unit `=>A` Unit = meaning(factorialMain)
- 
-  override val run = mainKleisliProgram(())
+    meaning(mainFactorial)(())
+
+  }
 
 }
 ```
+
+Note that we only changed a the type `` `=>A`  `` to `` `=>AF` `` and the `import`s `implicits.activeProgram` resp. `activeMeaningOfActive.meaning` to `implicits.activeFreeProgram` resp, `activeMeaningOfActiveFree.meaning` 
 
 Ok, so let's use `main` in `object FactorialMain`.
 
 Let's try `1000`.
 
 ```scala
-[info] Running examples.main.meaning.ofActiveFree.active.effectfulReadingAndWriting.FactorialMain
+[info] Running examples.main.active.free.effectfulReadingAndWriting.FactorialMain
 please type an integer
 1000
 the factorial value of the integer is
@@ -3926,6 +3931,8 @@ the factorial value of the integer is
 
 We do not have a stack overflow problem here any more since we are using the heap instead.
 Agreed, the heap can run out of memory, but that's another problem.
+
+# UNTIL HERE
 
 ## **Describing `Reading`**
 
