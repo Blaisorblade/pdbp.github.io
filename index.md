@@ -1812,7 +1812,7 @@ We also simply refer to
   - a producer program as a *producer*,
   - a consumer program as a *consumer*.
 
-### **Describing `mainFactorial`**
+#### **Describing `mainFactorial`**
 
 Consider
 
@@ -1858,13 +1858,15 @@ import pdbp.types.kleisli.kleisliBinaryTypeConstructorType.Kleisli
 
 import pdbp.program.Program
 
+import pdbp.program.Applying
+
 private[pdbp] trait Computation[C[+ _]]
     extends Resulting[C]
     with Binding[C]
     with Lifting[C]
     with Sequencing[C]
     with Program[Kleisli[C]]
-    // ...
+    with Applying[Kleisli[C]]
 ```
 
 where
@@ -1881,6 +1883,18 @@ private[pdbp] trait Sequencing[C]
 
 belong to the same `package pdbp.computation`.
 
+and where
+
+```scala
+package pdbp.types.kleisli
+
+private[pdbp] object kleisliBinaryTypeConstructorType {
+
+  private[pdbp] type Kleisli[C[+ _]] = [-Z, + Y] => Z => C[Y]
+
+}
+```
+
 `trait Computation` is a type class that is explained later in this document. 
 `trait Computation` declares the *computational capabilities* of *computation descriptions*. 
 
@@ -1889,9 +1903,10 @@ We often write *computation* instead of *computation description*.
 Note that we were a bit sloppy by not showing `[C[+ _]]`.
 
 `trait Resulting`, `trait Binding` and `trait Lifting` are explained later in this section. 
-`trait Sequencing` is explained later in this document. 
+`trait Sequencing`, related to `trait Aggregation`, is explained later in this document. 
+`trait Applying` is explained later in this document. 
 
-Note that, again, we were a bit sloppy by not showing `[C]`.
+Note that, again, we were a bit sloppy by not showing `[C]` and `Kleisli[C]`.
 
 The computational capabilities of `Resulting` and `Binding` correspond to *monads*. 
 
@@ -1917,7 +1932,7 @@ Note that all computational capabilities are defined as `private [pdbp]`.
 We do not want to expose the pointful computational capabilies to the *users* of the `PDBP` library. 
 We only expose pointfree programming capabilities to the users of the `PDBP` library. 
 It is convenient to have pointful computational capabilies available for the *developers* of the `PDBP` library. 
-It is also *simpler* (not necessarily *easier*, though) to define `Computation` `object`'s since `Computation` has less undefined declared capabilities than `Program`.
+It is also *simpler* (not necessarily *easier*, though) to define `object`'s that `extend Computation`, since `Computation` has less declared capabilities to define than `Program`.
 
 #### **Variance**
 
@@ -1947,7 +1962,7 @@ private[pdbp] trait Resulting[C[+ _]] {
 ```
 
 Think of `result(ez)` as a computation that is a *pure expression* `ez`. 
-It is supposed to do nothing else than *evaluating* the expression `ez` to a yield a result of type `Z`.
+Executing it is supposed to do nothing else than *evaluating* the expression `ez` to a yield a result of type `Z`.
 
 In what follows we also refer to computations `result(ez)`, that, essentially, are pure expression, as *atomic computations*. 
 It is up to you to define the granularity of atomic computations.
@@ -1966,18 +1981,19 @@ private[pdbp] trait Binding[C[+ _]] {
 }
 ```
 
-Think of `` `z=>cy` `` as a *computation execution continuation template* or, simply, *computation template*, and of `cz` as a *computation fragment* (a.k.a. *computation component* and *sub-computation*).
+Think of `` `z=>cy` `` as a *computation execution continuation template* or, simply, *computation continuation template*, or *computation template*, and of `cz` as a *computation fragment* or *computation component* (a.k.a. *sub-computation*).
+
+For computations, the *execution order* is imposed by the usage of `bind`.
 
 Translated to expressions:
 
-Think of `` `z=>cy` `` as an *expression evaluation continuation template*, or, simply, *expression template*, and of `cz` as an *expression fragment* (a.k.a. *expression component* and *sub-expression*).
+Think of `` `z=>cy` `` as an *expression evaluation continuation template*, or, simply, *expression template*, and of `cz` as an *expression fragment* or *expression component* (a.k.a. *sub-expression*).
 
-`` bind(cz, `z=>cy`) `` is function that *binds* `cz` to `z=>cy`.
+For expressions the *evaluation order* is langauge defined (e.g. *bottom-up* and *left to right*),
+
+`` bind(cz, `z=>cy`) `` is function that *binds* `cz` to `z=>cy` to *continue* the ongoing computation.
 
 If the computation `cz` yields a result of type Z, then that result serves as an argument for the subsequent function `z=>cy`, a *computation continuation*, which transforms it to a computation that yields a result of type Y.
-
-Different from expressions, for which the *evaluation order* is langauge defined (e.g. *bottom-up* and *left to right*),
-for computations, the *execution order* is imposed by the usage of `bind`.
 
 Consider
 
@@ -2016,7 +2032,7 @@ import pdbp.computation.Computation
 
 import pdbp.computation.bindingOperator._
 
-class SumOfSquaresAsComputation[C[+ _]: Computation]
+class SumOfSquares[C[+ _]: Computation]
     extends AtomicKleisliPrograms[C]()
     with HelperKleisliPrograms[C]() {
 
@@ -2056,6 +2072,8 @@ trait AtomicKleisliPrograms[C[+ _]: Resulting]
 
   val sum: (Double && Double) `=>C` Double = sumHelper
 
+  // ...
+
 }
 ```
 
@@ -2079,6 +2097,8 @@ trait HelperKleisliPrograms[C[+ _]: Resulting] {
   val squareHelper: Double `=>C` Double = squareFunction andThen result
 
   val sumHelper: (Double && Double) `=>C` Double = sumFunction andThen result
+
+  // ...
 
 }
 ```
@@ -2140,11 +2160,9 @@ Since the atomic kleisli program `sumOfSquares` is very coarse-grained this give
 
 ### **main kleisli programs**
 
-Recall that kleisli programs have type `Z => C[Y]` (or `` Z `=>C` Y ``, using an appropriate type synonym) for types Z and Y.
+Recall that kleisli programs have type `Z => C[Y]` (or `` Z `=>C` Y ``, using an appropriate type synonym) for types `Z` and `Y`.
 
 For example: `sumOfSquares` has type `` (Double && Double) `=>C` Double ``.
-
-A *main kleisli program* has type `` Unit `=>C` Unit ``.
 
 If
 
@@ -2153,7 +2171,7 @@ If
 `consumer` is a consumer kleisli program of type `` Y `=>C` Unit ``,
 then
 
-`` { u => producer(u) bind { z => `z=>cy`(z) bind { y => consumer(y) } } }`` is a main kleisli program.
+`` { u => producer(u) bind { z => `z=>cy`(z) bind { y => consumer(y) } } }`` is a *main kleisli program* of type `` Unit `=>C` Unit ``.
 
 We also simply refer to
 
@@ -2162,32 +2180,71 @@ We also simply refer to
 
 Note that the code for a main kleisli program is more complex (and, as a consequence, imho, less elegant) than the code for a main program.
 
-### **Describing `MainSumOfSquaresAsComputation` using an effectful `twoDoublesProducer` and `sumOfSquaresOfTwoDoublesConsumer`**
+#### **Describing `mainSumOfSquares`**
 
 Consider
 
 ```scala
-package pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting
+package pdbp.examples.mainKleisliPrograms
+
+import pdbp.types.product.productType._
 
 import pdbp.computation.Computation
 
-import pdbp.computation.bindingOperator._
+import pdbp.examples.kleisliPrograms.SumOfSquares
 
-import pdbp.examples.utils.EffectfulUtils
+trait MainSumOfSquares[C[+ _]: Computation] {
 
-import pdbp.examples.kleisliPrograms.SumOfSquaresAsComputation
+  import pdbp.computation.bindingOperator._
 
-class MainSumOfSquaresAsComputation[C[+ _]: Computation]
-    extends EffectfulUtils[C]() {
+  private object sumOfSquaresObject extends SumOfSquares[C]
 
-  private object sumOfSquaresAsComputation extends SumOfSquaresAsComputation[C]
+  import sumOfSquaresObject.sumOfSquares
 
-  import sumOfSquaresAsComputation.sumOfSquares
+  type `=>C` = [-Z, +Y] => Z => C[Y]
 
-  val sumOfSquaresMain: Unit `=>C` Unit = { u =>
-    twoDoublesProducer(u) bind { (z, y) =>
+  val producer: Unit `=>C` (Double && Double)
+
+  val consumer: Double `=>C` Unit
+
+  lazy val mainSumOfSquares: Unit `=>C` Unit = { u =>
+    producer(u) bind { (z, y) =>
       sumOfSquares(z, y) bind { x =>
-        sumOfSquaresOfTwoDoublesConsumer(x)
+        consumer(x)
+      }
+    }
+  }
+
+}
+```
+
+`trait MainSumOfSquares` defines `lazy val mainSumOfSquares` using abstract members `producer` and `consumer`.
+
+#### **`factorial` as computation**
+
+Below is the code for `factorial`.
+
+```scala
+package pdbp.examples.kleisliPrograms
+
+import pdbp.computation.Computation
+
+class Factorial[C[+ _]: Computation]
+    extends AtomicKleisliPrograms[C]()
+    with HelperKleisliPrograms[C]() {
+
+  import pdbp.computation.bindingOperator._
+
+  val factorial: BigInt `=>C` BigInt = { z =>
+    isZero(z) bind { b =>
+      if (b) {
+        one(z)
+      } else {
+        subtractOne(z) bind { y =>
+          factorial(y) bind { x =>
+            multiply((z, x))
+          }
+        }
       }
     }
   }
@@ -2198,35 +2255,61 @@ class MainSumOfSquaresAsComputation[C[+ _]: Computation]
 where
 
 ```scala
-package pdbp.examples.utils
+package pdbp.examples.kleisliPrograms
+package pdbp.examples.kleisliPrograms
 
 import pdbp.types.product.productType._
 
-import pdbp.utils.effectfulUtils._
+import pdbp.computation.Resulting
+
+import pdbp.examples.utils.functionUtils._
+
+trait AtomicKleisliPrograms[C[+ _]: Resulting]
+    extends HelperKleisliPrograms[C] {
+
+  type `=>C` = [-Z, +Y] => Z => C[Y]
+
+  val isZero: BigInt `=>C` Boolean = isZeroHelper
+
+  val subtractOne: BigInt `=>C` BigInt = subtractOneHelper
+
+  val multiply: (BigInt && BigInt) `=>C` BigInt = multiplyHelper
+
+  def one[Z]: Z `=>C` BigInt = oneHelper
+
+  // ...
+
+}
+```
+
+where
+
+```scala
+package pdbp.examples.kleisliPrograms
+
+import pdbp.types.product.productType._
 
 import pdbp.computation.Resulting
 
-trait EffectfulUtils[C[+ _]: Resulting] {
+import pdbp.examples.utils.functionUtils._
+
+trait HelperKleisliPrograms[C[+ _]: Resulting] {
 
   import implicitly._
 
   type `=>C` = [-Z, +Y] => Z => C[Y]
 
-  private def effectfulReadTwoDoublesFromConsoleWithMessage(
-      message: String): Unit `=>C` (Double && Double) = { _ =>
-    result(effectfulReadTwoDoublesFromConsoleFunction(message)(()))
-  }
+  val isZeroHelper: BigInt `=>C` Boolean = isZeroFunction andThen result
 
-  private def effectfulWriteLineToConsole[Y](message: String): Y `=>C` Unit = {
-    y =>
-      result(effectfulWriteLineToConsoleFunction(message)(y))
-  }
+  val subtractOneHelper
+    : BigInt `=>C` BigInt = subtractOneFunction andThen result
 
-  val twoDoublesProducer: Unit `=>C` (Double && Double) =
-    effectfulReadTwoDoublesFromConsoleWithMessage("please type a double")
+  val multiplyHelper
+    : (BigInt && BigInt) `=>C` BigInt = multiplyFunction andThen result
 
-  val sumOfSquaresOfTwoDoublesConsumer: Double `=>C` Unit =
-    effectfulWriteLineToConsole("the sum of the squares of the doubles is")
+  def oneHelper[Z]: Z `=>C` BigInt = oneFunction andThen result
+
+  // ...
 
 }
 ```
@@ -2234,56 +2317,72 @@ trait EffectfulUtils[C[+ _]: Resulting] {
 where
 
 ```scala
-object effectfulUtils {
+package pdbp.examples.utils.functionUtils._
+
+object functionUtils {
 
   // ...
 
-  def effectfulReadTwoDoublesFromConsoleFunction(
-      message: String): Unit => (Double && Double) = { _ =>
-    println(s"$message")
-    val d1 = readDouble()
-    println(s"$message")
-    val d2 = readDouble()
-    (d1, d2)
+  val isZeroFunction: BigInt => Boolean = { i =>
+    i == 0
   }
 
-  // ...
+  val subtractOneFunction: BigInt => BigInt = { i =>
+    i - 1
+  }
+
+  val multiplyFunction: (BigInt && BigInt) => BigInt = { (i, j) =>
+    i * j
+  }
+
+  def oneFunction[Z]: Z => BigInt = { z =>
+    1
+  }
+
+  // ... 
 
 }
 ```
 
-### Describing `MainSumOfSquaresAsExpression` using an effectful `twoDoublesProducer` and `sumOfSquaresOfTwoDoublesConsumer`**
+Since the atomic kleisli programs , `isZero` and `subtractOne`, `multiply` and `one` used by `factorial` are very fine-grained this gives us a lot of flexibility to give a meaning to `sumOfSquares`.
 
-`MainSumOfSquaresAsExpression` is similar to `MainSumOfSquaresAsComputation`
+#### **Describing `mainFactorial`**
+
+Consider
 
 ```scala
-package pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting
+package pdbp.examples.mainKleisliPrograms
 
 import pdbp.computation.Computation
 
-import pdbp.computation.bindingOperator._
+import pdbp.examples.kleisliPrograms.Factorial
 
-import pdbp.examples.utils.EffectfulUtils
+trait MainFactorial[C[+ _]: Computation] {
 
-import pdbp.examples.kleisliPrograms.SumOfSquaresAsExpression
+  import pdbp.computation.bindingOperator._
 
-class MainSumOfSquaresAsExpression[C[+ _]: Computation]
-    extends EffectfulUtils[C]() {
+  private object factorialObject extends Factorial[C]
 
-  private object sumOfSquaresAsExpression extends SumOfSquaresAsExpression[C]
+  import factorialObject.factorial
 
-  import sumOfSquaresAsExpression.sumOfSquares
+  type `=>C` = [-Z, +Y] => Z => C[Y]
 
-  val sumOfSquaresMain: Unit `=>C` Unit = { u =>
-    twoDoublesProducer(u) bind { (z, y) =>
-      sumOfSquares(z, y) bind { x =>
-        sumOfSquaresOfTwoDoublesConsumer(x)
+  val producer: Unit `=>C` BigInt
+
+  val consumer: BigInt `=>C` Unit
+
+  val factorialMain: Unit `=>C` Unit = { u =>
+    producer(u) bind { z =>
+      factorial(z) bind { y =>
+        consumer(y)
       }
     }
   }
 
 }
 ```
+
+`trait MainFactorial` defines `lazy val mainFactorial` using abstract members `producer` and `consumer`.
 
 ### **Describing `trait Lifting`**
 
@@ -5429,6 +5528,129 @@ trait MainFactorialTopDown[>-->[- _, + _]: Program] extends EffectfulUtils[>-->]
     effectfulReadIntFromConsole >-->
       factorial >-->
       effectfulWriteFactorialOfIntToConsole
+
+}
+```
+
+### **Describing `MainSumOfSquaresAsComputation` using an effectful `twoDoublesProducer` and `sumOfSquaresOfTwoDoublesConsumer`**
+
+Consider
+
+```scala
+package pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting
+
+import pdbp.computation.Computation
+
+import pdbp.computation.bindingOperator._
+
+import pdbp.examples.utils.EffectfulUtils
+
+import pdbp.examples.kleisliPrograms.SumOfSquaresAsComputation
+
+class MainSumOfSquaresAsComputation[C[+ _]: Computation]
+    extends EffectfulUtils[C]() {
+
+  private object sumOfSquaresAsComputation extends SumOfSquaresAsComputation[C]
+
+  import sumOfSquaresAsComputation.sumOfSquares
+
+  val sumOfSquaresMain: Unit `=>C` Unit = { u =>
+    twoDoublesProducer(u) bind { (z, y) =>
+      sumOfSquares(z, y) bind { x =>
+        sumOfSquaresOfTwoDoublesConsumer(x)
+      }
+    }
+  }
+
+}
+```
+
+where
+
+```scala
+package pdbp.examples.utils
+
+import pdbp.types.product.productType._
+
+import pdbp.utils.effectfulUtils._
+
+import pdbp.computation.Resulting
+
+trait EffectfulUtils[C[+ _]: Resulting] {
+
+  import implicitly._
+
+  type `=>C` = [-Z, +Y] => Z => C[Y]
+
+  private def effectfulReadTwoDoublesFromConsoleWithMessage(
+      message: String): Unit `=>C` (Double && Double) = { _ =>
+    result(effectfulReadTwoDoublesFromConsoleFunction(message)(()))
+  }
+
+  private def effectfulWriteLineToConsole[Y](message: String): Y `=>C` Unit = {
+    y =>
+      result(effectfulWriteLineToConsoleFunction(message)(y))
+  }
+
+  val twoDoublesProducer: Unit `=>C` (Double && Double) =
+    effectfulReadTwoDoublesFromConsoleWithMessage("please type a double")
+
+  val sumOfSquaresOfTwoDoublesConsumer: Double `=>C` Unit =
+    effectfulWriteLineToConsole("the sum of the squares of the doubles is")
+
+}
+```
+
+where
+
+```scala
+object effectfulUtils {
+
+  // ...
+
+  def effectfulReadTwoDoublesFromConsoleFunction(
+      message: String): Unit => (Double && Double) = { _ =>
+    println(s"$message")
+    val d1 = readDouble()
+    println(s"$message")
+    val d2 = readDouble()
+    (d1, d2)
+  }
+
+  // ...
+
+}
+```
+
+### Describing `MainSumOfSquaresAsExpression` using an effectful `twoDoublesProducer` and `sumOfSquaresOfTwoDoublesConsumer`**
+
+`MainSumOfSquaresAsExpression` is similar to `MainSumOfSquaresAsComputation`
+
+```scala
+package pdbp.examples.mainKleisliPrograms.effectfulReadingAndWriting
+
+import pdbp.computation.Computation
+
+import pdbp.computation.bindingOperator._
+
+import pdbp.examples.utils.EffectfulUtils
+
+import pdbp.examples.kleisliPrograms.SumOfSquaresAsExpression
+
+class MainSumOfSquaresAsExpression[C[+ _]: Computation]
+    extends EffectfulUtils[C]() {
+
+  private object sumOfSquaresAsExpression extends SumOfSquaresAsExpression[C]
+
+  import sumOfSquaresAsExpression.sumOfSquares
+
+  val sumOfSquaresMain: Unit `=>C` Unit = { u =>
+    twoDoublesProducer(u) bind { (z, y) =>
+      sumOfSquares(z, y) bind { x =>
+        sumOfSquaresOfTwoDoublesConsumer(x)
+      }
+    }
+  }
 
 }
 ```

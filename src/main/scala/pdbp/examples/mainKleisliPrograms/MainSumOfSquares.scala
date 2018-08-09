@@ -15,11 +15,11 @@ import pdbp.types.product.productType._
 
 import pdbp.computation.Computation
 
-import pdbp.computation.bindingOperator._
-
 import pdbp.examples.kleisliPrograms.SumOfSquares
 
 trait MainSumOfSquares[C[+ _]: Computation] {
+
+  import pdbp.computation.bindingOperator._
 
   private object sumOfSquaresObject extends SumOfSquares[C]
 
@@ -31,7 +31,7 @@ trait MainSumOfSquares[C[+ _]: Computation] {
 
   val consumer: Double `=>C` Unit
 
-  val sumOfSquaresMain: Unit `=>C` Unit = { u =>
+  val mainSumOfSquares: Unit `=>C` Unit = { u =>
     producer(u) bind { (z, y) =>
       sumOfSquares(z, y) bind { x =>
         consumer(x)

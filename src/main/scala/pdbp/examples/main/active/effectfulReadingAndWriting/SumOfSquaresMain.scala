@@ -31,7 +31,7 @@ object SumOfSquaresMain
 
     import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive.meaning
 
-    meaning(sumOfSquaresMain)(())
+    meaning(mainSumOfSquares)(())
 
   }
 

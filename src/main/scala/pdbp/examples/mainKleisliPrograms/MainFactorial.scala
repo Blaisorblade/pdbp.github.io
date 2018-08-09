@@ -13,11 +13,11 @@ package pdbp.examples.mainKleisliPrograms
 
 import pdbp.computation.Computation
 
-import pdbp.computation.bindingOperator._
-
 import pdbp.examples.kleisliPrograms.Factorial
 
 trait MainFactorial[C[+ _]: Computation] {
+
+  import pdbp.computation.bindingOperator._
 
   private object factorialObject extends Factorial[C]
 
