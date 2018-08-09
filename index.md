@@ -1347,7 +1347,9 @@ The program `` `(z&&y&&x)>-->(y&&x)` `` above gets a `y` and an `x` out of a `z`
 
 One way to deal with this challenge is to keep programs, and therefore, the arguments and results that come with them, relatively small. After all, small program components can be combined to obtain larger, composite programs by substituting them into program templates.
 
-[*Erik Meijer*](https://en.wikipedia.org/wiki/Erik_Meijer_(computer_scientist)) refers to this programming paradigm in a somewhat funny way as *good programmers write baby-code*. 
+[*Erik Meijer*](https://en.wikipedia.org/wiki/Erik_Meijer_(computer_scientist)) refers to this programming paradigm in a somewhat funny way as 
+
+*Good programmers write baby-code*. 
 
 Erik Meijer is so famous that he does not need an introduction. 
 I was very lucky to be able to do research with him, on monads and related stuff, at the Univeristy of Utrecht back in the ninetees.
@@ -1513,9 +1515,8 @@ object productAndSumUtils {
 }
 ```
 
-Think of `sum` as a program template and of `` `y>-->z` `` and `` `x>-->z` `` as program v.
+Think of `sum` as a program template and of `` `y>-->z` `` and `` `x>-->z` `` as program parameters.
 Once the program parameters have been given program arguments we obtain a composite program.
-
 
 `` sum(`y>-->z`, `x>-->z`) `` uses a *"left or right" condition* to let either `` `y>-->z` `` or `` `x>-->z` `` take over control.
 
@@ -1643,20 +1644,20 @@ For example
 
 ### **`factorial` revisited**
 
-Below is the full code for `factorial`.
+Below is, again, the full code for `factorial`.
 
 ```scala
 package examples.programs
 
 import pdbp.program.Program
 
-import pdbp.program.compositionOperator._
-
 class Factorial[>-->[- _, + _]: Program]
     extends AtomicPrograms[>-->]()
     with HelperPrograms[>-->]() {
 
   import implicitly._
+
+  import pdbp.program.compositionOperator._
 
   val factorial: BigInt >--> BigInt =
     `if`(isZero) {
@@ -1741,11 +1742,14 @@ Below is *top-down* code for `factorial`
 package examples.programs
 
 import pdbp.program.Program
-import pdbp.program.compositionOperator._
 
-class FactorialTopDown[>-->[- _, + _]: Program] extends FunctionUtils[>-->]() {
+class FactorialTopDown[>-->[- _, + _]: Program]
+    extends AtomicPrograms[>-->]()
+    with HelperPrograms[>-->]() {
 
   import implicitly._
+
+  import pdbp.program.compositionOperator._
 
   val factorial: BigInt >--> BigInt =
     `if`(isZero) {
@@ -1770,20 +1774,20 @@ class FactorialTopDown[>-->[- _, + _]: Program] extends FunctionUtils[>-->]() {
 
 `factorial` above uses 
 
-  - the `` `if`(...) { ... } `else` { ... } `` program template capability of `trait Condition`.
+  - the `` `if`(...) { ... } `else` { ... } `` program template of `trait Condition`.
   - the atomic program component `isZero`
   - the atomic program component `one`
   - the composite program component `factorialOfNonZero`
 
 `factorialOfNonZero` above uses 
 
-  - the `` `let` { ... } `in` { ... } `` program template capability of `trait Construction`.
+  - the `` `let` { ... } `in` { ... } `` program template of `trait Construction`.
   - the atomic program component `multiply`
   - the composite program component `subtractOneAndThenFactorial`
 
 `subtractOneAndThenFactorial` above uses 
 
-  - the `>-->` program template capability of `trait Composition` (more precisely, of `implicit class CompositionOperator`).
+  - the `>-->` program template of `trait Composition` (more precisely, of `implicit class CompositionOperator`).
   - the atomic program component `subtractOne`
   - *recursively*, `factorial` itself as a composite program component
 
@@ -1793,189 +1797,53 @@ Recall that programs have type `Z >--> Y` for types `Z` and `Y`.
 
 For example: `factorial` has type `BigInt >--> BigInt`.
 
-Recall that main programs have type `Unit >--> Unit`.
-
 If
 
- - `producer` is a *producer* program of type `Unit >--> Z`,
+ - `` `u>-->z` `` is a *producer* program of type `Unit >--> Z`, where `u` corresponds to `Unit`,
  - `` `z>-->y` `` is a program of type `Z >--> Y`,
- - `consumer` is a *consumer* program of type `Y >--> Unit`,
+ - `` `y>-->u` `` is a *consumer* program of type `Y >--> Unit`, where `u` corresponds to `Unit`,
 
 then
 
- - `` producer >--> `z>-->y` >--> consumer `` is a main program.
+ - `` `u>-->z` >--> `z>-->y` >--> `y>-->u` `` is a *main program* of type `Unit >--> Unit`.
 
 We also simply refer to 
 
   - a producer program as a *producer*,
   - a consumer program as a *consumer*.
 
-### **Describing `MainFactorial` using an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole`**
+### **Describing `mainFactorial`**
 
 Consider
 
 ```scala
-package examples.mainPrograms.effectfulReadingAndWriting
+package examples.mainPrograms
 
 import pdbp.program.Program
 
 import pdbp.program.compositionOperator._
 
-import examples.utils.EffectfulUtils
-
 import examples.programs.Factorial
 
-class MainFactorial[>-->[- _, + _]: Program] extends EffectfulUtils[>-->]() {
+trait MainFactorial[>-->[- _, + _]: Program] {
 
   private object factorialObject extends Factorial[>-->]
 
   import factorialObject.factorial
 
-  val factorialMain: Unit >--> Unit =
-    effectfulReadIntFromConsole >-->
+  val producer: Unit >--> BigInt
+
+  val consumer: BigInt >--> Unit
+
+  lazy val mainFactorial: Unit >--> Unit =
+    producer >-->
       factorial >-->
-      effectfulWriteFactorialOfIntToConsole
+      consumer
 
 }
 ```
 
-where
-
-```scala
-package examples.utils
-
-import pdbp.program.Function
-
-import pdbp.utils.effectfulUtils._
-
-trait EffectfulUtils[>-->[- _, + _]: Function] {
-
-  import implicitly._
-
-  private def effectfulReadIntFromConsoleWithMessage(
-      message: String): Unit >--> BigInt =
-    function(effectfulReadIntFromConsoleFunction(message))
-
-  private def effectfulWriteLineToConsoleWithMessage[Y](
-      message: String): Y >--> Unit =
-    function(effectfulWriteLineToConsoleFunction(message))
-
-  val effectfulReadIntFromConsole: Unit >--> BigInt =
-    effectfulReadIntFromConsoleWithMessage("please type an integer")
-
-  val effectfulWriteFactorialOfIntToConsole: BigInt >--> Unit =
-    effectfulWriteLineToConsoleWithMessage(
-      "the factorial value of the integer is")
-
-}
-```
-
-where
-
-```scala
-package pdbp.utils
-
-import scala.io.StdIn.readInt
-
-object effectfulUtils {
-
-  // ...
-
-  def effectfulReadIntFromConsoleFunction(message: String): Unit => BigInt = {
-    _ =>
-      println(s"$message")
-      val i = BigInt(readInt())
-      i
-  }
-
-  // ...
-
-  def effectfulWriteLineToConsoleFunction[Y](message: String): Y => Unit = {
-    y =>
-      println(s"$message")
-      val u = println(s"$y")
-      u
-  }
-
-  // ...
-
-}
-```
-
-*You may, rightly*, argue that we are cheating here!*
-
-We promised to use `function` only for *pure* (a.k.a. as *effectfree*) functions.
-Both `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole` are programs that *execute effects* in an *impure* (a.k.a. as *effectful*) way.
-
-More precisely,
-  - the function `effectfulReadIntFromConsoleFunction` that is used by `effectfulReadIntFromConsole` executes* the effects `println("message")` and `readInt()`,
-  - the function `effectfulWriteToConsoleFunction` that is used by `effectfulWriteToConsole` executes the effects `println("message")` and `println(s"$y")`.
-
-Both `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole` above should (and will!) be replaced by programs that *describe effects* in an pure way.
-
-More precisely,
-  - we will extend the `PDBP` program description DSL with a *reading* programming capability, `read`
-    - in this case to read an integer from the console
-  - the `PDBP` program description DSL with a *writing* programming capability, `write`
-    - in this case to write to the console
- 
-#### **Describing `MainFactorialAsFunction` using an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole`**
-
-`MainFactorialAsFunction` is similar to `MainFactorial`
-
-```scala
-package examples.mainPrograms.effectfulReadingAndWriting
-
-import pdbp.program.Program
-
-import pdbp.program.compositionOperator._
-
-import examples.utils.EffectfulUtils
-
-import examples.programs.FactorialAsFunction
-
-trait MainFactorialAsFunction[>-->[- _, + _]: Program] extends EffectfulUtils[>-->] {
-
-  private object factorialAsFunction extends FactorialAsFunction[>-->]
-
-  import factorialAsFunction.factorial
-
-  val factorialMain: Unit >--> Unit =
-    effectfulReadIntFromConsole >-->
-      factorial >-->
-      effectfulWriteFactorialOfIntToConsole
-
-}
-```
-
-#### **Describing `MainFactorialTopDown` using an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole`**
-
-`MainFactorialTopDown` is similar to `MainFactorial`
-
-```scala
-package examples.mainPrograms.effectfulReadingAndWriting
-
-import pdbp.program.Program
-
-import pdbp.program.compositionOperator._
-
-import examples.utils.EffectfulUtils
-
-import examples.programs.FactorialTopDown
-
-trait MainFactorialTopDown[>-->[- _, + _]: Program] extends EffectfulUtils[>-->] {
-
-  private object factorialTopDown extends FactorialTopDown[>-->]
-
-  import factorialTopDown.factorial
-
-  val factorialMain: Unit >--> Unit =
-    effectfulReadIntFromConsole >-->
-      factorial >-->
-      effectfulWriteFactorialOfIntToConsole
-
-}
-```
+`trait MainFactorial` defines `lazy val mainFactorial` using abstract members `producer` and `consumer`.
 
 ## **Describing `trait Computation`**
 
@@ -5424,3 +5292,143 @@ the factorial value of the integer read is
 3628800
 ```
 
+
+# TO BE REUSED SOMEHOW
+
+where
+
+```scala
+package examples.utils
+
+import pdbp.program.Function
+
+import pdbp.utils.effectfulUtils._
+
+trait EffectfulUtils[>-->[- _, + _]: Function] {
+
+  import implicitly._
+
+  private def effectfulReadIntFromConsoleWithMessage(
+      message: String): Unit >--> BigInt =
+    function(effectfulReadIntFromConsoleFunction(message))
+
+  private def effectfulWriteLineToConsoleWithMessage[Y](
+      message: String): Y >--> Unit =
+    function(effectfulWriteLineToConsoleFunction(message))
+
+  val effectfulReadIntFromConsole: Unit >--> BigInt =
+    effectfulReadIntFromConsoleWithMessage("please type an integer")
+
+  val effectfulWriteFactorialOfIntToConsole: BigInt >--> Unit =
+    effectfulWriteLineToConsoleWithMessage(
+      "the factorial value of the integer is")
+
+}
+```
+
+where
+
+```scala
+package pdbp.utils
+
+import scala.io.StdIn.readInt
+
+object effectfulUtils {
+
+  // ...
+
+  def effectfulReadIntFromConsoleFunction(message: String): Unit => BigInt = {
+    _ =>
+      println(s"$message")
+      val i = BigInt(readInt())
+      i
+  }
+
+  // ...
+
+  def effectfulWriteLineToConsoleFunction[Y](message: String): Y => Unit = {
+    y =>
+      println(s"$message")
+      val u = println(s"$y")
+      u
+  }
+
+  // ...
+
+}
+```
+
+*You may, rightly*, argue that we are cheating here!*
+
+We promised to use `function` only for *pure* (a.k.a. as *effectfree*) functions.
+Both `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole` are programs that *execute effects* in an *impure* (a.k.a. as *effectful*) way.
+
+More precisely,
+  - the function `effectfulReadIntFromConsoleFunction` that is used by `effectfulReadIntFromConsole` executes* the effects `println("message")` and `readInt()`,
+  - the function `effectfulWriteToConsoleFunction` that is used by `effectfulWriteToConsole` executes the effects `println("message")` and `println(s"$y")`.
+
+Both `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole` above should (and will!) be replaced by programs that *describe effects* in an pure way.
+
+More precisely,
+  - we will extend the `PDBP` program description DSL with a *reading* programming capability, `read`
+    - in this case to read an integer from the console
+  - the `PDBP` program description DSL with a *writing* programming capability, `write`
+    - in this case to write to the console
+
+#### **Describing `MainFactorialAsFunction` using an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole`**
+
+`MainFactorialAsFunction` is similar to `MainFactorial`
+
+```scala
+package examples.mainPrograms.effectfulReadingAndWriting
+
+import pdbp.program.Program
+
+import pdbp.program.compositionOperator._
+
+import examples.utils.EffectfulUtils
+
+import examples.programs.FactorialAsFunction
+
+trait MainFactorialAsFunction[>-->[- _, + _]: Program] extends EffectfulUtils[>-->] {
+
+  private object factorialAsFunction extends FactorialAsFunction[>-->]
+
+  import factorialAsFunction.factorial
+
+  val factorialMain: Unit >--> Unit =
+    effectfulReadIntFromConsole >-->
+      factorial >-->
+      effectfulWriteFactorialOfIntToConsole
+
+}
+```
+
+#### **Describing `MainFactorialTopDown` using an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole`**
+
+`MainFactorialTopDown` is similar to `MainFactorial`
+
+```scala
+package examples.mainPrograms.effectfulReadingAndWriting
+
+import pdbp.program.Program
+
+import pdbp.program.compositionOperator._
+
+import examples.utils.EffectfulUtils
+
+import examples.programs.FactorialTopDown
+
+trait MainFactorialTopDown[>-->[- _, + _]: Program] extends EffectfulUtils[>-->] {
+
+  private object factorialTopDown extends FactorialTopDown[>-->]
+
+  import factorialTopDown.factorial
+
+  val factorialMain: Unit >--> Unit =
+    effectfulReadIntFromConsole >-->
+      factorial >-->
+      effectfulWriteFactorialOfIntToConsole
+
+}
+```
