@@ -511,9 +511,9 @@ you will, hopefully, start appreciating the power of expression and elegance of 
 There is an important difference between `FP` programs and `PDBP` programs. 
 
  - `FP` programs are `FP` *language* based.
-   - Think of `FP` programs as `FP` *programming language* level *syntactic constructs*.
+   - Think of `FP` programs as `FP` *programming language level syntactic constructs*.
  - `PDBP` programs are `Dotty` *library* based.
-   - Think of `PDBP` programs as *proramming domain specific, library language* level *syntactic constructs*.
+   - Think of `PDBP` programs as *programming domain specific, library language level, syntactic constructs*.
 
 Exploiting the *flexibility* that comes with this difference is the most important theme of the `PDBP` library.
 
@@ -687,7 +687,7 @@ To finish, we claim that
 
 Hopefully, the statements above sound exiting to both programmers with and programmers without a background in computer science.
 
-## **Describing `trait Program`**
+## **Syntax of Program Descriptions**
 
 ### **Warning**
 
@@ -2895,37 +2895,37 @@ object functionUtils {
 }
 ```
 
-## **Language level meaning**
+## **Semantics of Program Descriptions**
 
-### **Language level meaning of programs**
+Programs are *defined* as members of `class`es that are *declared* to *implicitly* have the *declared* programming capabilities of `trait Program[>-->[- _, + _]]`.
 
-So far we have defined program descriptions using the declared programming capabilities of `trait Program[>-->[- _, + _]]`.
+Think of programs as *programming domain specific, library language level, syntactic constructs*.
 
-Program descriptions can be given a *language level meaning* by defining the programming capabilities of `trait Program` in an `object` that extends `trait Program`. 
+We also refer to programs as *syntactic program descriptions*.
 
-We also refer to an `object` that extends `trait Program[>-->]` as a program object.
+There is no *semantics* associated with them.
 
-### **Language level meaning of computations**
+### **Program Implementations**
 
-So far we have defined computation descriptions using the declared computational capabilities of `trait Computation[C[+ _]]`.
+Below are the first steps towards associating semantics with syntactic program descriptions.
 
-Computation descriptions can be given a *language level meaning* by defining the computational capabilities of `trait Computation` in an `object` that extends `trait Computation`. 
+ - *Define* the programming capabilities of type class `trait Program[>-->[+ _, - _]]` in `implicit object`'s that `extend trait Program[>-->[+ _, - _]]`. 
+ - *Implement* programs by defining `object`'s, *depending* on those `implicit object`'s, that extend the `class`es the programs are defined in as members. 
 
-We also refer to an `object` that extends `trait Computation[C]` as a computation object.
+We also refer to an `implicit object` that is defined as above as an *implicit program object*.
+We also refer to a program that is implemented as above as a *program implementation*.
 
-Note that defining the computational capabilities of `trait Computation[C[+ _]]` also defines the programming capabilities of `trait Program[Kleisli[C]]`.
+Program implementations depend on implicit program objects using *dependency injection* by `import`.
+This is an example of a very common *design pattern* for type clases.
 
-We also refer to an `object` that extends `trait Program[[Kleisli[C]]` as a kleisli program object.
+Note that defining the computational capabilities of type class `trait Computation[C[+ _]]` in `implicit object`'s that `extends trait trait Computation[C[+ _]]` also defines the programming capabilities of `trait Program[Kleisli[C]]`.
 
-The `PDBP` library promotes using the design pattern *dependency injection by importing an implicit object extending a type class*.
-More about this when dealing with examples.
-
-The type classes involved are `trait Program[>-->[- _, + _]]` and `trait Computation[C[+ _]]` (with corresponsing `trait Program[Kleisli[C]]`.)
-Therefore, instead of defining program objects and computation objects (with corresponding kleisli program objects), we define implicit program objects and implicit computation objects (with corresponding implicit kleisli program objects) that can be used for dependency injection by `import`.
+We also refer to an `implicit object` that is defined as above as an *implicit computation object* or *implicit kleisli program object*.
+We also refer to a kleisli program that is implemented as above as a *kleisli program implementation*.
 
 ### **Describing `activeProgram`**
 
-The simplest implicit computation `object` (and corresponding implicit kleisli program `object`) one can probably think of is the *active* one (we use active as opposed to *reactive*) defined below
+The simplest implicit computation object (and corresponding implicit kleisli program object) one can probably think of is the *active* one defined below
 
 ```scala
 package pdbp.program.implicits.active
@@ -2999,7 +2999,237 @@ object functionUtils {
 }
 ```
 
-## **Running main programs (language level meaning)**
+Note that we use *active* as opposed to *reactive* that we deal with later in this document.
+
+For the `activeProgram` implicit program object we could already go ahead and *run* programs.
+
+For other implicit program object we need more machinery.
+
+## **Natural transformations**
+
+Note that `>-->[- _, + _]` resp. `C[+ _]` are *binary* resp. *unary* *type constructors*.
+
+Such type constructors can be *transformed* using *natural transformations*. 
+
+### **Natural binary type constructor transformations**
+
+Consider
+
+```scala
+package pdbp.natural.transformation.binary
+
+trait `~B~>`[`>-F->`[- _, + _], `>-T->`[- _, + _]] {
+
+  def apply[Z, Y]: Z `>-F->` Y => Z `>-T->` Y
+
+}
+```
+
+`` trait `~B~>` `` defines *natural binary type constructor transformations*.
+`F` stands for from, `T` stands for to, and `B` stands for binary.
+
+
+### **Natural unary type constructor transformations**
+
+Consider
+
+```scala
+package pdbp.natural.transformation.unary
+
+private[pdbp] trait `~U~>`[F[+ _], T[+ _]]
+    extends `~B~>`[Kleisli[F], Kleisli[T]] {
+  `f~u~t1` =>
+
+  private[pdbp] def apply[Z](fz: F[Z]): T[Z]
+
+  type T1 = T
+
+  private[pdbp] def andThen[T2[+ _]](`t1~u~t2`: T1 `~U~>` T2): F `~U~>` T2 =
+    new {
+      override private[pdbp] def apply[Z](fz: F[Z]): T2[Z] =
+        `t1~u~t2`(`f~u~t1`(fz))
+    } 
+
+  // ...
+
+}
+```
+
+`` trait `~U~>` `` defines *natural unary type constructor transformations*.
+`F` stands for from, `T` stands for to, and `U` stands for unary.
+
+Natural unary type constructor transformations are similar to functions 
+ - they have an`apply` member, so that they can be *applied*,
+ - they have an `andThen` member, so that they can be *composed*.
+
+The difference with functions is that they work at the unary type constructor level instead of at the type level.
+
+### **Defining natural binary type constructor transformations in terms of natural unary type constructor transformations**
+
+For kleisli binary type constructor types, natural binary type constructor transformations can be defined in terms of natural unary type constructor transformations.
+
+```scala
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
+
+import pdbp.natural.transformation.binary.`~B~>`
+
+private[pdbp] trait `~U~>`[F[+ _], T[+ _]]
+    extends `~B~>`[Kleisli[F], Kleisli[T]] {
+  `f~u~t` =>
+
+  // ...
+
+  private type `=>F` = Kleisli[F]
+
+  private type `=>T` = Kleisli[T]
+
+  override def apply[Z, Y]: Z `=>F` Y => Z `=>T` Y = { `z=>fy` =>
+    `z=>fy` andThen apply
+  }
+
+}
+```
+
+### **Describing `ProgramMeaning`**
+
+```scala
+package pdbp.program.meaning
+
+import pdbp.program.Program
+
+import pdbp.natural.transformation.binary.`~B~>`
+
+private[pdbp] trait ProgramMeaning[
+    `>-FP->`[- _, + _]: Program, `>-T->`[- _, + _]] {
+
+  private[pdbp] lazy val binaryTransformation: `>-FP->` `~B~>` `>-T->`
+
+  lazy val meaning: `>-FP->` `~B~>` `>-T->` = binaryTransformation
+
+}
+```
+
+`trait ProgramMeaning` has one `public` member, `meaning` that is a natural binary type constructor transformation that is an alias for a `private[pdbp]` member, `binaryTransformation`.
+
+We refer to the `meaning` member of `trait ProgramMeaning`  as a *program meaning*.
+
+### **Describing `ComputationMeaning`**
+
+```scala
+package pdbp.computation.meaning
+
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
+
+import pdbp.natural.transformation.binary.`~B~>`
+
+import pdbp.natural.transformation.unary.`~U~>`
+
+import pdbp.computation.Computation
+
+import pdbp.program.meaning.ProgramMeaning
+
+private[pdbp] trait ComputationMeaning[FC[+ _]: Computation, T[+ _]]
+    extends ProgramMeaning[Kleisli[FC], Kleisli[T]] {
+
+  private[pdbp] val unaryTransformation: FC `~U~>` T
+
+  // ...
+
+}
+```
+`trait ComputationMeaning` has one `private[pdbp]` member, `unaryTransformation`. that is a natural binary type constructor transformation that is a natural unary type constructor transformation.
+
+We refer to the `unaryTransformation` member of `trait ComputationMeaning`  as a *computation meaning*.
+
+
+### **Defining program meanings in terms of computation meanings**
+
+For kleisli programs, program meanings can be defined in terms of computation meanings.
+
+We refer to program meanings of kleisli programs as kleisli program meanings.
+
+```scala
+private[pdbp] trait ComputationMeaning[FC[+ _]: Computation, T[+ _]]
+    extends ProgramMeaning[Kleisli[FC], Kleisli[T]] {
+
+  // ...    
+
+  private type `=>FC` = Kleisli[FC]
+
+  private type `=>T` = Kleisli[T]
+
+  private[pdbp] override lazy val binaryTransformation: `=>FC` `~B~>` `=>T` =
+    unaryTransformation
+
+}
+```
+
+### **Program Meanings**
+
+Below are the last steps towards associating semantics with syntactic program descriptions.
+
+ - *Define* the `meaning` member of `trait ProgramMeaning` in `object`'s that `extend trait ProgramMeaning`. 
+ - *Use* program meanings to naturally transform program implementations.
+   
+Although. since `trait ProgramMeaning` is not a type class, it is not necessary to define `implicit object`'s it is convenient to do so. 
+
+### **Describing `activeMeaningOfActive`**
+
+The simplest computation meaning (and corresponding kleisli program meaning) one can probably think of is the *active meaning of active* one defined below
+
+```scala
+package pdbp.program.meaning.ofActive.active
+
+import pdbp.types.active.activeTypes._
+
+import pdbp.program.implicits.active.implicits.activeProgram
+
+import pdbp.program.meaning.ProgramMeaning
+
+import pdbp.computation.meaning.ComputationMeaning
+
+import pdbp.computation.meaning.ofActive.MeaningOfActive
+
+object implicits {
+
+  implicit object activeMeaningOfActive
+      extends MeaningOfActive[Active]()
+      with ComputationMeaning[Active, Active]()
+      with ProgramMeaning[`=>A`, `=>A`]()
+
+}
+```
+
+where `MeaningOfActive` defines a computation meaning of `Active` for any type constructor `TR` that is declared to implicitly have the `Resulting` computational capability.
+
+```scala
+package pdbp.computation.meaning.ofActive
+
+import pdbp.types.active.activeTypes._
+
+import pdbp.computation.Resulting
+
+import pdbp.natural.transformation.unary.`~U~>`
+
+import pdbp.computation.meaning.ComputationMeaning
+
+private[pdbp] trait MeaningOfActive[TR[+ _]: Resulting]
+    extends ComputationMeaning[Active, TR] {
+
+  override private[pdbp] val unaryTransformation: Active `~U~>` TR =
+    new {
+      override private[pdbp] def apply[Z](az: Active[Z]): TR[Z] = {
+        import implicitly._
+        result(az)
+      }
+    }
+
+}
+```
+
+# UNTIL HERE
+
+## **Running main programs**
 
 ### **Running `factorialMain` using  `activeProgram` and an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole`**
 
@@ -3176,186 +3406,6 @@ the sum of the squares of the doubles is
 25.0
 ```
 
-## **Natural transformations**
-
-Note that programs `C[+ _]` resp. computations `>-->[- _, + _]` are *unary* resp. *binary type constructors*.
-
-Such type constructors can be *transformed* using *natural transformations*. 
-
-### **Natural unary type constructor transformations**
-
-Consider
-
-```scala
-package pdbp.natural.transformation.unary
-
-private[pdbp] trait `~U~>`[F[+ _], T[+ _]] {
-
-  private[pdbp] def apply[Z](fz: F[Z]): T[Z]
-
-  // ...
-
-}
-```
-
-`` trait `~U~>` `` defines *natural unary type constructor transformations* (`F` stands for from, `T` stands for to, and `U` stands for unary).
-
-Natural unary type constructor transformations are like functions, they have an `apply` member but it works at the unary type constructor level instead of at the type level.
-
-### **Natural binary type constructor transformations**
-
-Consider
-
-```scala
-package pdbp.natural.transformation.binary
-
-trait `~B~>`[`>-F->`[- _, + _], `>-T->`[- _, + _]] {
-
-  def apply[Z, Y]: Z `>-F->` Y => Z `>-T->` Y
-
-}
-```
-
-`` trait `~B~>` `` defines *natural binary type constructor transformations* (`F` stands for from, `T` stands for to, and `B` stands for binary).
-
-Note that the `apply` member has a different signature (zero parameters instead of one parameter.)
-
-
-### **Defining natural binary type constructor transformations in terms of natural unary type constructor transformations**
-
-For kleisli binary type constructor types, natural binary type constructor transformations can be defined in terms of natural unary type constructor transformations.
-
-```scala
-import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
-
-import pdbp.natural.transformation.binary.`~B~>`
-
-private[pdbp] trait `~U~>`[F[+ _], T[+ _]]
-    extends `~B~>`[Kleisli[F], Kleisli[T]] {
-
-  private[pdbp] def apply[Z](fz: F[Z]): T[Z]
-
-  private def unaryTransform[Z]: F[Z] => T[Z] =
-    apply
-
-  private type `=>F` = Kleisli[F]
-
-  private type `=>T` = Kleisli[T]
-
-  override def apply[Z, Y]: Z `=>F` Y => Z `=>T` Y = { `z=>fy` =>
-    `z=>fy` andThen apply
-  }
-
-}
-```
-
-## **Library level meanings**
-
-### **Library level meaning of programs**
-
-Consider 
-
-```scala
-package pdbp.program.meaning
-
-import pdbp.program.Program
-
-import pdbp.natural.transformation.binary.`~B~>`
-
-trait ProgramMeaning[`>-FP->`[- _, + _]: Program, `>-T->`[- _, + _]] {
-
-  private[pdbp] lazy val binaryTransformation: `>-FP->` `~B~>` `>-T->`
-
-  lazy val meaning: `>-FP->` `~B~>` `>-T->` = binaryTransformation
-
-}
-```
-Programs in general and meanings of programs in particular can be given a *library level meaning* using a natural binary type constructor transformation `meaning`.
-
-
-### **Library level meaning of computations**
-
-```scala
-package pdbp.computation.meaning
-
-import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
-
-import pdbp.natural.transformation.binary.`~B~>`
-
-import pdbp.natural.transformation.unary.`~U~>`
-
-import pdbp.computation.Computation
-
-import pdbp.program.meaning.ProgramMeaning
-
-private[pdbp] trait ComputationMeaning[FC[+ _]: Computation, T[+ _]]
-    extends ProgramMeaning[Kleisli[FC], Kleisli[T]] {
-
-  private[pdbp] val unaryTransformation: FC `~U~>` T
-
-  private type `=>FC` = Kleisli[FC]
-
-  private type `=>T` = Kleisli[T]
-
-  private[pdbp] override lazy val binaryTransformation: `=>FC` `~B~>` `=>T` =
-    unaryTransformation
-
-}
-```
-
-Computations (and corresponding kleisli programs) in general and meanings of computations (and corresponding meanings of kleisli programs) in particular can be given a library level meaning using a natural unary type constructor transformation `unaryTransformation`, which also gives a library level meaning, `meaning` to the corresponding kleisli programs.
-
-### **Describing `activeMeaningOfActive`**
-
-The simplest computation meaning `implicit object` (and corresponding kleisli program meaning `object`) one can probably think of is the *active meaning of active* one defined below
-
-```scala
-package pdbp.program.meaning.ofActive.active
-
-import pdbp.types.active.activeTypes._
-
-import pdbp.program.implicits.active.implicits.activeProgram
-
-import pdbp.program.meaning.ProgramMeaning
-
-import pdbp.computation.meaning.ComputationMeaning
-
-import pdbp.computation.meaning.ofActive.MeaningOfActive
-
-object implicits {
-  implicit object activeMeaningOfActive
-      extends MeaningOfActive[Active]()
-      with ComputationMeaning[Active, Active]()
-      with ProgramMeaning[`=>A`, `=>A`]()
-} 
-```
-
-where `MeaningOfActive` defines a computation meaning of `Active` for any type constructor `TR` with the `Resulting` computational capability.
-
-```scala
-package pdbp.computation.meaning.ofActive
-
-import pdbp.types.active.activeTypes._
-
-import pdbp.computation.Resulting
-
-import pdbp.natural.transformation.unary.`~U~>`
-
-import pdbp.computation.meaning.ComputationMeaning
-
-private[pdbp] trait MeaningOfActive[TR[+ _]: Resulting]
-    extends ComputationMeaning[Active, TR] {
-
-  override private[pdbp] val unaryTransformation: Active `~U~>` TR =
-    new {
-      override private[pdbp] def apply[Z](az: Active[Z]): TR[Z] = {
-        import implicitly._
-        result(az)
-      }
-    }
-
-}
-```
 
 ## **Running main programs (library level meaning)**
 
