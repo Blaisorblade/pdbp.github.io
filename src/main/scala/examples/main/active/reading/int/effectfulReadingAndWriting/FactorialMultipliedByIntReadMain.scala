@@ -40,4 +40,5 @@ object FactorialMultipliedByIntReadMain
     meaning(mainFactorialMultipliedByIntRead)(())
 
   }
+  
 }

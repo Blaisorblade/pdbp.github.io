@@ -3346,7 +3346,7 @@ Note that, since `meaning(mainFactorial)` has
 
 it suffices to evaluate `meaning(mainFactorial)(())`.
 
-Let's try running `main` with `10`.
+Let's try running `factorial` with `10`.
 
 ```scala
 [info] Running examples.main.active.effectfulReadingAndWriting.FactorialMain
@@ -3356,7 +3356,7 @@ the factorial value of the integer is
 3628800
 ```
 
-Let's try running `main` with `100`.
+Let's try running `factorial` with `100`.
 
 ```scala
 [info] Running examples.main.active.effectfulReadingAndWriting.FactorialMain
@@ -3366,7 +3366,7 @@ the factorial value of the integer is
 93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
 ```
 
-Let's try running `main` with `1000`.
+Let's try running `factorial` with `1000`.
 
 ```scala
 [info] Running examples.main.active.effectfulReadingAndWriting.FactorialMain
@@ -3470,7 +3470,7 @@ trait EffectfulUtils[C[+ _]: Resulting] {
 }
 ```
 
-Let's try running `main` with `10`.
+Let's try running `factorial` with `10`.
 
 ```scala
 [info] Running pdbp.examples.main.active.effectfulReadingAndWriting.FactorialMain
@@ -3480,7 +3480,7 @@ the factorial value of the integer is
 3628800
 ```
 
-Let's try running `main` with `100`.
+Let's try running `factorial` with `100`.
 
 ```scala
 [info] Running pdbp.examples.main.active.effectfulReadingAndWriting.FactorialMain
@@ -3602,7 +3602,7 @@ object effectfulUtils {
 }
 ```
 
-Let's try running `main` with `3.0` and `4.0`.
+Let's try running `sumOfSquares` with `3.0` and `4.0`.
 
 ```scala
 [info] Running pdbp.examples.main.active.effectfulReadingAndWriting.SumOfSquaresMain
@@ -3734,6 +3734,56 @@ The data structure built using `Transform` wraps the computational capabilities 
 
 The data structures built using `Result` and `Bind` can be seen as a *free program implementation* for the computational capabilities `result` and `bind` of `trait Computation`. In a way it is the most free implementation one can think of because there are no constraints involved. Anyway, it *is* an implementation, it is *not* a description.
 
+### **Describing `activeFreeProgram`**
+
+The next implicit computation object (and corresponding implicit kleisli program object) is the *active free* one defined below
+
+```scala
+package pdbp.program.implicits.active.free
+
+import pdbp.types.active.activeTypes._
+import pdbp.types.active.free.activeFreeTypes._
+
+import pdbp.program.Program
+
+import pdbp.computation.Computation
+
+import pdbp.computation.transformation.ComputationTransformation
+import pdbp.computation.transformation.free.FreeTransformation
+
+import pdbp.program.implicits.active.implicits.activeProgram
+
+object implicits {
+  
+  implicit object activeFreeProgram
+      extends Computation[ActiveFree]
+      with Program[`=>AF`]
+      with FreeTransformation[Active]()
+      with ComputationTransformation[Active, ActiveFree]()
+
+}
+```
+
+where the types `ActiveFree` and `` `=>AF` `` are defined as follows
+
+```scala
+package pdbp.types.active.free
+
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
+
+import pdbp.types.active.activeTypes._
+
+import pdbp.computation.transformation.free.FreeTransformation._
+
+object activeFreeTypes {
+
+  type ActiveFree = FreeTransformed[Active]
+
+  type `=>AF` = Kleisli[ActiveFree]
+
+}
+```
+
 ### **Describing `FreeTransformedMeaning`**
 
 The transformed computation meaning corresponding to the free computation transformation `trait FreeTransformation` is `trait FreeTransformedMeaning`.
@@ -3797,56 +3847,6 @@ Note that the last `case` for `Bind` uses an *associativity* law of `bind`.
 The *left* associated `Bind`'s are folded to *right* associated `Bind`'s. 
 
 The natural unary type transformation `unaryTransformation` defining `meaning` can be defined as a composition of `foldingUnaryTransformation` and `toBeTransformedMeaning.unaryTransformation`
-
-### **Describing `activeFreeProgram`**
-
-The next implicit computation object (and corresponding implicit kleisli program object) is the *active free* one defined below
-
-```scala
-package pdbp.program.implicits.active.free
-
-import pdbp.types.active.activeTypes._
-import pdbp.types.active.free.activeFreeTypes._
-
-import pdbp.program.Program
-
-import pdbp.computation.Computation
-
-import pdbp.computation.transformation.ComputationTransformation
-import pdbp.computation.transformation.free.FreeTransformation
-
-import pdbp.program.implicits.active.implicits.activeProgram
-
-object implicits {
-  
-  implicit object activeFreeProgram
-      extends Computation[ActiveFree]
-      with Program[`=>AF`]
-      with FreeTransformation[Active]()
-      with ComputationTransformation[Active, ActiveFree]()
-
-}
-```
-
-where the types `ActiveFree` and `` `=>AF` `` are defined as follows
-
-```scala
-package pdbp.types.active.free
-
-import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
-
-import pdbp.types.active.activeTypes._
-
-import pdbp.computation.transformation.free.FreeTransformation._
-
-object activeFreeTypes {
-
-  type ActiveFree = FreeTransformed[Active]
-
-  type `=>AF` = Kleisli[ActiveFree]
-
-}
-```
 
 ### **Describing `activeMeaningOfActiveFree`**
 
@@ -3917,9 +3917,7 @@ object FactorialMain extends MainFactorial[`=>AF`]() {
 
 Note that we only changed a the type `` `=>A`  `` to `` `=>AF` `` and the `import`s `implicits.activeProgram` resp. `activeMeaningOfActive.meaning` to `implicits.activeFreeProgram` resp, `activeMeaningOfActiveFree.meaning` 
 
-Ok, so let's use `main` in `object FactorialMain`.
-
-Let's try `1000`.
+Let's try running `factorial` with `1000`.
 
 ```scala
 [info] Running examples.main.active.free.effectfulReadingAndWriting.FactorialMain
@@ -3932,17 +3930,19 @@ the factorial value of the integer is
 We do not have a stack overflow problem here any more since we are using the heap instead.
 Agreed, the heap can run out of memory, but that's another problem.
 
-# UNTIL HERE
-
 ## **Describing `Reading`**
 
 ### **Introduction**
 
 In sections `Program` and `Computation` we presented the *basic* programming and computation capabilities. 
-In this section we introduce the first *extra* programming capability: *reading*. 
-We already used a effectful input reading using *producers* of type `Unit >--> Z` that is used together with a effectful output writing using *consumers* of type `Y >--> Unit` to turn programs of type `Z >--> Y` into main programs of type `Unit >--> Unit`. 
 
-Think, for example, of the reading capability of this section as being able to 
+In this section we introduce the first *extra* programming capability: *reading*. 
+
+We already used effectful input reading using *producers* of type `Unit >--> Z` together with effectful output writing using *consumers* of type `Y >--> Unit` to turn programs of type `Z >--> Y` into main programs of type `Unit >--> Unit`. 
+
+In this section we describe *effectfree input reading* of type `Unit >--> R` and, more generally, *effectfree reading* of type `Z >--> R`. 
+
+Think, for example, of the effectfree reading capability of this section as being able to 
   - read *configuration*
 
 ### **Describing `Reading`**
@@ -3958,7 +3958,7 @@ import pdbp.program.Composition
 trait Reading[R, >-->[- _, + _]] {
   this: Function[>-->] & Composition[>-->] =>
 
-  private[pdbp] def `u>-->r`: Unit >--> R = `z>-->r`[Unit]
+  private[pdbp] def `u>-->r`: Unit >--> R = read[Unit]
 
   private[pdbp] def `z>-->r`[Z]: Z >--> R =
     compose(`z>-->u`, `u>-->r`)
@@ -3974,6 +3974,8 @@ We also say that `` `u>-->r` `` is a program that, out of the blue, produces a r
 Think of `` `z>-->r` `` as a program that transforms any argument of type `Z` to a yield result of type `R`.
 We also say that `` `z>-->r` `` is a program that, out of anything, produces a result of type `R`. 
 
+We also simply say that `` `u>-->r` `` and `` `z>-->r` `` *read a value of type* `R`. 
+
 Note that `` `z>-->u` `` and `` `z>-->r` `` are `private[pdbp]`.
 
 Since we are defining a public programming API, it is also convenient to define an `public` alias `read` for `` `z>-->r` ``.
@@ -3983,20 +3985,17 @@ Since we are defining a public programming API, it is also convenient to define 
 The next computation transformer that we describe is `trait ReadingTransformer` that is used to add the *reading* capability to program descriptions.
 Groundbraking work by Martin Odersky, [Simplicity](https://infoscience.epfl.ch/record/229878/files/simplicitly_1.pdf), introduces *implicit functions*. 
 In his POPL article, Martin Odersky argues that implicit functions can be used to replace the reader monad (cfr. our reading capability of program descriptions). 
-Since our goal is to provide an *explicit* program description DSL we add reading as an *explicit* programming capability taking advantage of implicit functions to greatly simplify the definition of `trait ReadingTransformation` and their performance.
+Since our goal is to provide an *explicit* program description DSL we add reading as an *explicit* programming capability taking advantage of implicit functions to greatly simplify the definitions of `trait ReadingTransformation` and their performance.
 
 Implicit functions replace boilerplate repetition of `implicit` parameters by an *implicitly* available global value `implicitly`. 
 You may argue that this is *going back to the past* since, for years, using globals has been considered to be harmful. 
-In fact, instead it is *going back to the future* since
-
- - the global value `implicitly` is an *immutable* `val` rather than a *mutable* `var` (much less prone to harmful code),
- - more important, the global value `implicitly` is only available in bodies of members having a *type* that *reflects* its *availability*.
+In fact, instead it is *going back to the future* since the global value `implicitly` is only available in bodies of members having a *type* that *reflects* its *availability*.
 
 Our explicit, globally available, reading capability `read` closely corresponds to the implicit, globally available value `implicitly`.
 
 You may argue: why using an explicit `read` member if using an implicitly available `implicitly` value works as well.
 
-We do not have a fully satisfying answer. The best one we can think of is that we prefer to be explicit at the description level and implicit at the meaning level.
+We do not have a fully satisfying answer. The best one we can think of is that we prefer to be explicit at the syntactic level and implicit at the semantics level.
 
 ### **Introducing `type` `` `I=>` ``**
 
@@ -4023,11 +4022,18 @@ Consider
 ```scala
 package pdbp.computation.transformation.reading
 
+import pdbp.types.implicitFunctionType.`I=>`
+
+private[pdbp] object ReadingTransformation {
+
+  private[pdbp] type ReadingTransformed[R, FC[+ _]] = [+Z] => R `I=>` FC[Z]
+
+}
+
 import ReadingTransformation._
 
 import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
-import pdbp.program.Program
 import pdbp.program.reading.Reading
 
 import pdbp.computation.Computation
@@ -4038,8 +4044,6 @@ import pdbp.computation.transformation.ComputationTransformation
 
 private[pdbp] trait ReadingTransformation[R, FC[+ _]: Computation]
     extends ComputationTransformation[FC, ReadingTransformed[R, FC]]
-    with Computation[ReadingTransformed[R, FC]]
-    with Program[Kleisli[ReadingTransformed[R, FC]]]
     with Reading[R, Kleisli[ReadingTransformed[R, FC]]] {
 
   private type RTFC = ReadingTransformed[R, FC]
@@ -4053,8 +4057,9 @@ private[pdbp] trait ReadingTransformation[R, FC[+ _]: Computation]
       fcz
   }
 
-  override private[pdbp] def result[Z]: Z => RTFC[Z] =
-    resultFC(_)
+  override private[pdbp] def result[Z]: Z => RTFC[Z] = { z =>
+    resultFC(z)
+  }  
 
   override private[pdbp] def bind[Z, Y](
       rtfcz: RTFC[Z],
@@ -4080,11 +4085,11 @@ private[pdbp] object ReadingTransformation {
 }
 ```
 
-The type synonym `` `I=>` `` (and corresponding `RTFC` and `` `=>RTFC` `` ) above, indicate that the an implicitly available global value `implicitly[R]` is available. 
-In fact, in `` `u>-->r` `` we use it as `implicitly` (not to be confused with the other `implicitly`'s in the code standing for `implicitly[Computation[C]]`). 
+The types `RTFC` and `` `=>RTFC` ``, defined using `` `I=>` ``, indicate that the an implicitly available global value `implicitly[R]` is available. 
+In fact, in `` `u>-->r` `` we use it as `implicitly` (not to be confused with the other `implicitly` standing for `implicitly[Computation[FC]]`). 
 
-You may wonder how it is possible that the definitions above are so simple. 
-The magic of implicit function types is that the compiler can turn value types into implicit function types whenever it expects them to be.
+You may wonder how on earth it is possible that the definitions above are so simple. 
+The magic of implicit function types is that the compiler can turn value types into implicit function types whenever it *expects* them to be.
 
 ###  **Describing `activeIntReadingProgram`**
 
@@ -4096,19 +4101,28 @@ package pdbp.program.implicits.active.reading.int
 import pdbp.types.active.activeTypes._
 import pdbp.types.active.reading.activeReadingTypes._
 
-import pdbp.computation.transformation.ComputationTransformation
-import pdbp.computation.transformation.reading.ReadingTransformation
+import pdbp.program.Program
+
+import pdbp.program.reading.Reading
 
 import pdbp.program.implicits.active.reading.ActiveReadingProgram
 
 import pdbp.program.implicits.active.implicits.activeProgram
 
+import pdbp.computation.Computation
+
+import pdbp.computation.transformation.ComputationTransformation
+import pdbp.computation.transformation.reading.ReadingTransformation
+
 object implicits {
 
   implicit object activeIntReadingProgram
-    extends ActiveReadingProgram[BigInt]()
-    with ComputationTransformation[Active, ActiveReading[BigInt]]()
-    with ReadingTransformation[BigInt, Active]()
+      extends ActiveReadingProgram[BigInt]()
+      with Computation[ActiveReading[BigInt]]()
+      with Program[`=>AR`[BigInt]]()
+      with Reading[BigInt, `=>AR`[BigInt]]()
+      with ReadingTransformation[BigInt, Active]()
+      with ComputationTransformation[Active, ActiveReading[BigInt]]()
 
 }
 ```
@@ -4159,87 +4173,105 @@ object activeReadingTypes {
 
 Note that, since there is a type parameter `R` involved, we first define a `trait` and second a corresponding `implicit object` (for `BigInt`).
 
-### **Describing `MainFactorialOfIntRead` using `read` and an effectful `effectfulWriteFactorialOfIntToConsole`**
+### **Describing `ReadingTransformedMeaning`**
 
-Consider
+The transformed computation meaning corresponding to the reading computation transformation `trait ReadingTransformation` is `trait ReadingTransformedMeaning`.
 
 ```scala
-package examples.mainPrograms.reading.int.effectfulWriting
+package pdbp.computation.meaning.reading
 
-import pdbp.program.Program
+import pdbp.computation.Computation
 
-import pdbp.program.reading.Reading
+import pdbp.natural.transformation.unary.`~U~>`
 
-import pdbp.program.compositionOperator._
+import pdbp.computation.transformation.reading.ReadingTransformation
+import pdbp.computation.transformation.reading.ReadingTransformation._
 
-import examples.utils.EffectfulUtils
+import pdbp.computation.meaning.ComputationMeaning
 
-import examples.programs.Factorial
+private[pdbp] trait ReadingTransformedMeaning[R, FC[+ _]: Computation, T[+ _]](
+    implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
+    extends ComputationMeaning[ReadingTransformed[R, FC],
+                               ReadingTransformed[R, T]] {
 
-class MainFactorialOfIntRead[
-    >-->[- _, + _]: Program
-                  : [>-->[- _, + _]] => Reading[BigInt, >-->]]
-    extends EffectfulUtils[>-->]() {
+  private type RTFC = ReadingTransformed[R, FC]
+  private type RTT = ReadingTransformed[R, T]
 
-  private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
+  override private[pdbp] val unaryTransformation: RTFC `~U~>` RTT =
+    new {
+      override private[pdbp] def apply[Z](rtfcz: RTFC[Z]): RTT[Z] =
+        toBeTransformedMeaning.unaryTransformation(rtfcz(implicitly))
 
-  import implicitIntReading._
-
-  private object factorialObject extends Factorial[>-->]
-
-  import factorialObject.factorial
-
-  val factorialMain: Unit >--> Unit =
-    read >-->
-      factorial >-->
-      effectfulWriteFactorialOfIntToConsole
+    }
 
 }
 ```
 
-We replaced `effectfulReadIntFromConsole` that *executes* an effect by `read` that *describes* an effect.
+### **Describing `activeIntReadingMeaningOfActiveIntReading`**
 
-### **Running `factorialMain` using `activeIntReadingProgram`, `read` and an effectful `effectfulWriteFactorialOfIntToConsole`**
-
-Consider
+The next computation meaning `implicit object` (and corresponding kleisli program meaning `implicit object`) is the *active int reading meaning of active int reading* one defined below
 
 ```scala
-package examples.objects.active.reading.int.effectfulWriting
+package pdbp.program.meaning.ofActiveIntReading.activeIntReading
 
+import pdbp.types.active.activeTypes._
 import pdbp.types.active.reading.activeReadingTypes._
 
-import pdbp.program.implicits.active.reading.int.implicits
-import implicits.activeIntReadingProgram
+import pdbp.program.implicits.active.implicits.activeProgram
 
-import examples.mainPrograms.reading.int.effectfulWriting.MainFactorialOfIntRead
+import pdbp.computation.meaning.ComputationMeaning
 
-object mainFactorialOfIntRead
-    extends MainFactorialOfIntRead[`=>AR`[BigInt]]()
+import pdbp.program.meaning.ProgramMeaning
+
+import pdbp.computation.meaning.reading.ReadingTransformedMeaning
+
+import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
+
+object implicits {
+
+  import pdbp.program.implicits.active.reading.int.implicits.activeIntReadingProgram
+
+  implicit object activeIntReadingMeaningOfActiveIntReading
+      extends ReadingTransformedMeaning[BigInt, Active, Active]()
+      with ComputationMeaning[ActiveReading[BigInt], ActiveReading[BigInt]]()
+      with ProgramMeaning[`=>AR`[BigInt], `=>AR`[BigInt]]()
+}
 ```
 
-We can now, finally, define `main` in object `FactorialOfIntReadMain`.
+### **Running `mainFactorial` using `activeIntReadingProgram` and `activeIntReadingMeaningOfActiveIntReading`, and `read` and `effectfulWriteFactorialOfIntToConsole`**
 
+Consider
 
 ```scala
 package examples.main.active.reading.int.effectfulWriting
 
 import pdbp.types.active.reading.activeReadingTypes._
 
-import examples.objects.active.reading.int.effectfulWriting.mainFactorialOfIntRead
-import mainFactorialOfIntRead.factorialMain
+import pdbp.program.implicits.active.reading.int.implicits.activeIntReadingProgram
 
-import examples.main.Main
+import examples.mainPrograms.MainFactorial
 
-object FactorialOfIntReadMain extends Main[`=>AR`[BigInt]] {
+object FactorialOfIntReadMain extends MainFactorial[`=>AR`[BigInt]]() {
 
-  import pdbp.utils.effects.implicits.readIntFromConsoleEffect
+  import examples.utils.EffectfulUtils
 
-  private type `=>AR[BigInt]` = `=>AR`[BigInt]
+  private val effectfulUtils = new EffectfulUtils[`=>AR`[BigInt]]
 
-  override val mainKleisliProgram: Unit `=>AR[BigInt]` Unit = factorialMain
-    
-  override val run = mainKleisliProgram(())
+  import effectfulUtils._
 
+  override val producer = activeIntReadingProgram.read
+
+  override val consumer = effectfulWriteFactorialOfIntReadToConsole
+
+  def main(args: Array[String]): Unit = {
+
+    import examples.utils.effects.implicits.readIntFromConsoleEffect
+
+    import pdbp.program.meaning.ofActiveIntReading.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReading.meaning
+
+    meaning(mainFactorial)(())
+
+  }
 }
 ```
 
@@ -4267,25 +4299,24 @@ object implicits {
 }
 ```
 
-Note that, in constrast with `factorialMain` using `activeProgram` and an effectful `effectfulReadIntFromConsole`, `factorialMain` using `activeIntReadingProgram` and `read` pushes the usage of the language level meaning of the description of the reading from console effect to it's very limits: the definition of `main`.
+For being able to run `mainFactorial`, we have to define the `implicit BigInt` of `` read: Unit => (BigInt `I=>`BigInt) ``.
+We can postpone defining this to the body of `main` and we can simply do this by `import`ing  `implicit val readIntFromConsoleEffect`.
 
-Ok, so let’s use `main` in `objectFactorialOfIntReadMain`.
-
-Let’s try `10`.
+Let's try running `factorial` with `10`.
 
 ```scala
 [info] Running examples.main.active.reading.int.effectfulWriting.FactorialOfIntReadMain
 please type an integer to read
 10
-the factorial value of the integer is
+the factorial value of the integer read is
 3628800
 ```
 
-We used `read` as an effectfree alternative for the effectful `effectfulReadIntFromConsole` at the beginning of a program.
-
-We can also use `read` anywhere in a program.
+Note that we use `read` as a producer *at the beginning* of a program.
 
 ### **Describing `FactorialMultipliedByIntRead`**
+
+We can use `read` *anywhere* in a program.
 
 Consider
 
@@ -4319,38 +4350,101 @@ class FactorialMultipliedByIntRead[
 }
 ```
 
-### **Describing `MainFactorialMultipliedByIntRead` using an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntMultipliedByIntReadToConsole`**
+Note that
+ - `factorial` has type `BigInt >--> BigInt`, 
+ - `read[Int]` has type `BigInt >--> BigInt`, and therefore
+ - `factorial & read` has type `BigInt >--> (BigInt && BigInt)`, and
+ - `multiply` has type `(BigInt && BigInt) >--> BigInt`.
+
+Also note that
+ - the type inferencer can live with `read` instead of `read[Int]`,
+ - `read` does not use it's argument at all (it ignores it using `z>-->u`).
+
+#### **Describing `mainFactorialMultipliedByIntRead`**
 
 Consider
 
 ```scala
-package examples.mainPrograms.reading.int.effectfulWriting
+package examples.mainPrograms.reading.int
+
+//       _______         __    __        _______
+//      / ___  /\       / /\  / /\      / ___  /\
+//     / /__/ / / _____/ / / / /_/__   / /__/ / /
+//    / _____/ / / ___  / / / ___  /\ /____  / /
+//   / /\____\/ / /__/ / / / /__/ / / \___/ / /
+//  /_/ /      /______/ / /______/ /     /_/ /
+//  \_\/       \______\/  \______\/      \_\/
+//                                           v1.0
+//  Program Description Based Programming Library
+//  author        Luc Duponcheel        2017-2018
 
 import pdbp.program.Program
-
 import pdbp.program.reading.Reading
 
 import pdbp.program.compositionOperator._
 
-import examples.utils.EffectfulUtils
-
 import examples.programs.reading.int.FactorialMultipliedByIntRead
 
-class MainFactorialMultipliedByIntRead[
+trait MainFactorialMultipliedByIntRead[
     >-->[- _, + _]: Program
-                  : [>-->[- _, + _]] => Reading[BigInt, >-->]] 
-    extends EffectfulUtils[>-->]() {
+                  : [>-->[- _, + _]] => Reading[BigInt, >-->]] {
 
   private object factorialMultipliedByIntReadObject
       extends FactorialMultipliedByIntRead[>-->]
 
   import factorialMultipliedByIntReadObject.factorialMultipliedByIntRead
 
-  val factorialMultipliedByIntReadMain: Unit >--> Unit =
-    effectfulReadIntFromConsole >-->
-      factorialMultipliedByIntRead >-->
-      effectfulWriteFactorialOfIntMultipliedByIntReadToConsole
+  val producer: Unit >--> BigInt
 
+  val consumer: BigInt >--> Unit
+
+  lazy val mainFactorialMultipliedByIntRead: Unit >--> Unit =
+    producer >-->
+      factorialMultipliedByIntRead >-->
+      consumer
+
+}
+```
+
+`trait MainFactorialMultipliedByIntRead` defines `lazy val mainFactorialMultipliedByIntRead` using abstract members `producer` and `consumer`.
+
+### **Running `mainFactorialMultipliedByIntRead` using `activeIntReadingProgram` and `activeIntReadingMeaningOfActiveIntReading`, and `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntToConsole`**
+
+Consider
+
+```scala
+package examples.main.active.reading.int.effectfulReadingAndWriting
+
+import pdbp.types.active.reading.activeReadingTypes._
+
+import pdbp.program.implicits.active.reading.int.implicits.activeIntReadingProgram
+
+import examples.mainPrograms.reading.int.MainFactorialMultipliedByIntRead
+
+object FactorialMultipliedByIntReadMain
+    extends MainFactorialMultipliedByIntRead[`=>AR`[BigInt]]() {
+
+  import examples.utils.EffectfulUtils
+
+  private val effectfulUtils = new EffectfulUtils[`=>AR`[BigInt]]
+
+  import effectfulUtils._
+
+  override val producer = effectfulReadIntFromConsole
+
+  override val consumer =
+    effectfulWriteFactorialOfIntMultipliedByIntReadToConsole
+
+  def main(args: Array[String]): Unit = {
+
+    import examples.utils.effects.implicits.readIntFromConsoleEffect
+
+    import pdbp.program.meaning.ofActiveIntReading.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReading.meaning
+
+    meaning(mainFactorialMultipliedByIntRead)(())
+
+  }
+  
 }
 ```
 
@@ -4361,134 +4455,26 @@ trait EffectfulUtils[>-->[- _, + _]: Function] {
 
   // ...
 
-  val effectfulFactorialOfIntMultipliedByIntReadConsumer: BigInt >--> Unit =
+  val effectfulWriteFactorialOfIntMultipliedByIntReadToConsole
+    : BigInt >--> Unit =
     effectfulWriteLineToConsoleWithMessage(
       "the factorial value of the integer multiplied by the integer read is")
 
 }
 ```
 
-### **Running `factorialMultipliedByIntReadMain` using `activeIntReadingProgram`, and an effectful `effectfulReadIntFromConsole` and `effectfulWriteFactorialOfIntMultipliedByIntReadToConsole`**
-
-Consider
+Let's try running `factorialMultipliedByIntRead` with `10` and let's `read` 2 as multiplication factor.
 
 ```scala
-package examples.objects.active.reading.int.effectfulWriting
-
-import pdbp.types.active.reading.activeReadingTypes._
-
-import pdbp.program.implicits.active.reading.int.implicits
-import implicits.activeIntReadingProgram
-
-import examples.mainPrograms.reading.int.effectfulWriting.MainFactorialMultipliedByIntRead
-
-object mainFactorialMultipliedByIntRead 
-    extends MainFactorialMultipliedByIntRead[`=>AR`[BigInt]]()
-```
-
-We can now, finally, define `main` in object `FactorialOfIntReadMain`.
-
-
-```scala
-package examples.main.active.reading.int.effectfulWriting
-
-import pdbp.types.active.reading.activeReadingTypes._
-
-import examples.objects.active.reading.int.effectfulWriting.mainFactorialMultipliedByIntRead
-import mainFactorialMultipliedByIntRead.factorialMultipliedByIntReadMain
-
-import examples.main.Main
-
-object FactorialMultipliedByIntReadMain extends Main[`=>AR`[BigInt]] {
-
-  import pdbp.utils.effects.implicits.readIntFromConsoleEffect
-
-  private type `=>AR[BigInt]` = `=>AR`[BigInt]
-
-  override val mainKleisliProgram: Unit `=>AR[BigInt]` Unit = factorialMultipliedByIntReadMain
-    
-  override val run = mainKleisliProgram(())
-
-}
-```
-
-Ok, so let’s use `main` in `FactorialMultipliedByIntReadMain`.
-
-Let’s try `10` and multiply by `2`.
-
-```scala
-[info] Running examples.main.active.reading.int.effectfulWriting.FactorialMultipliedByIntReadMain
+[info] Running examples.main.active.reading.int.effectfulReadingAndWriting.FactorialMultipliedByIntReadMain
 please type an integer
 10
 please type an integer to read
 2
-the factorial value of the integer multiplied by the int read is
+the factorial value of the integer multiplied by the integer read is
 7257600
 ```
-
-### **Describing `ReadingTransformedMeaning`**
-
-The transformed computation meaning corresponding to the reading computation transformion `trait ReadingTransformation` is `trait ReadingTransformedMeaning`.
-
-```scala
-package pdbp.computation.meaning.reading
-
-import pdbp.computation.Computation
-
-import pdbp.natural.transformation.unary.`~U~>`
-
-import pdbp.computation.transformation.reading.ReadingTransformation
-import pdbp.computation.transformation.reading.ReadingTransformation._
-
-import pdbp.computation.meaning.ComputationMeaning
-
-trait ReadingTransformedMeaning[R, FC[+ _]: Computation, T[+ _]](
-    implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
-    extends ComputationMeaning[ReadingTransformed[R, FC],
-                               ReadingTransformed[R, T]] {
-
-  private type RTFC = ReadingTransformed[R, FC]
-  private type RTT = ReadingTransformed[R, T]
-
-  override private[pdbp] val unaryTransformation: RTFC `~U~>` RTT =
-    new {
-      override private[pdbp] def apply[Z](rtfcz: RTFC[Z]): RTT[Z] =
-        toBeTransformedMeaning.unaryTransformation(rtfcz(implicitly))
-
-    }
-
-}
-```
-
-### **Describing `activeIntReadingMeaningOfActiveIntReading`**
-
-The next computation meaning `implicit object` (and corresponding kleisli program meaning `implicit object`) is the *active int reading meaning of active int reading* one defined below
-
-```scala
-package pdbp.program.meaning.ofActiveIntReading.activeIntReading
-
-import pdbp.types.active.activeTypes._
-import pdbp.types.active.reading.activeReadingTypes._
-
-import pdbp.program.implicits.active.implicits.activeProgram
-
-import pdbp.program.implicits.active.reading.int.implicits.activeIntReadingProgram
-
-import pdbp.computation.meaning.ComputationMeaning
-
-import pdbp.program.meaning.ProgramMeaning
-
-import pdbp.computation.meaning.reading.ReadingTransformedMeaning
-
-import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
-
-object implicits {
-  implicit object activeIntReadingMeaningOfActiveIntReading
-      extends ReadingTransformedMeaning[BigInt, Active, Active]()
-      with ComputationMeaning[ActiveReading[BigInt], ActiveReading[BigInt]]()
-      with ProgramMeaning[`=>AR`[BigInt], `=>AR`[BigInt]]()
-}
-```
+# UNTIL HERE
 
 ## **Describing `Writing`**
 
@@ -5122,9 +5108,7 @@ object implicits {
 }
 ```
 
-Ok, so let's use `main` in `object FactorialOfIntReadWrittenToConsoleMain`.
-
-Let's try `10`.
+Let's try running `factorial` with `10`.
 
 ```scala
 [info] Running examples.main.active.reading.int.writing.toConsole.FactorialOfIntReadWrittenToConsoleMain

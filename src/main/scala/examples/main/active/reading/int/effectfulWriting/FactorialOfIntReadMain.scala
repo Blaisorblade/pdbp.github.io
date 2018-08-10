@@ -25,13 +25,13 @@ object FactorialOfIntReadMain extends MainFactorial[`=>AR`[BigInt]]() {
 
   import effectfulUtils._
 
-  import examples.utils.effects.implicits.readIntFromConsoleEffect
-
   override val producer = activeIntReadingProgram.read
 
   override val consumer = effectfulWriteFactorialOfIntReadToConsole
 
   def main(args: Array[String]): Unit = {
+
+    import examples.utils.effects.implicits.readIntFromConsoleEffect
 
     import pdbp.program.meaning.ofActiveIntReading.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReading.meaning
 
