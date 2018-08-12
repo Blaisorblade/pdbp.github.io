@@ -24,17 +24,17 @@ import examples.mainPrograms.writing.MainWritingFactorial
 object FactorialOfIntReadWritingToConsoleWrittenToConsoleMain
     extends MainWritingFactorial[ToConsole, `=>ARW`[BigInt, ToConsole]]() {
 
-  import examples.utils.effects.implicits.readIntFromConsoleEffect
-
   import examples.utils.effects.implicits.writeFactorialOfIntToConsoleEffect
-
-  import examples.utils.effects.implicits.writeToConsoleEffect
 
   override val producer = activeIntReadingWithWritingToConsoleProgram.read
 
   override val consumer = activeIntReadingWithWritingToConsoleProgram.write
 
   def main(args: Array[String]): Unit = {
+
+    import examples.utils.effects.implicits.readIntFromConsoleEffect
+
+    import examples.utils.effects.implicits.writeToConsoleEffect
 
     import pdbp.program.meaning.ofActiveIntReadingWithWritingToConsole.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole.meaning
 

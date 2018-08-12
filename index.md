@@ -3846,7 +3846,7 @@ The method `apply` that is used in the definition of `foldingUnaryTransformation
 Note that the last `case` for `Bind` uses an *associativity* law of `bind`.
 The *left* associated `Bind`'s are folded to *right* associated `Bind`'s. 
 
-The natural unary type transformation `unaryTransformation` defining `meaning` can be defined as a composition of `foldingUnaryTransformation` and `toBeTransformedMeaning.unaryTransformation`
+The natural unary type transformation `unaryTransformation` defining `meaning` can be defined as a composition of `foldingUnaryTransformation` and `toBeTransformedMeaning.unaryTransformation`.
 
 ### **Describing `activeMeaningOfActiveFree`**
 
@@ -4367,17 +4367,6 @@ Consider
 ```scala
 package examples.mainPrograms.reading.int
 
-//       _______         __    __        _______
-//      / ___  /\       / /\  / /\      / ___  /\
-//     / /__/ / / _____/ / / / /_/__   / /__/ / /
-//    / _____/ / / ___  / / / ___  /\ /____  / /
-//   / /\____\/ / /__/ / / / /__/ / / \___/ / /
-//  /_/ /      /______/ / /______/ /     /_/ /
-//  \_\/       \______\/  \______\/      \_\/
-//                                           v1.0
-//  Program Description Based Programming Library
-//  author        Luc Duponcheel        2017-2018
-
 import pdbp.program.Program
 import pdbp.program.reading.Reading
 
@@ -4474,18 +4463,22 @@ please type an integer to read
 the factorial value of the integer multiplied by the integer read is
 7257600
 ```
-# UNTIL HERE
 
 ## **Describing `Writing`**
 
 ### **Introduction**
 
 In sections `Program` and `Computation` we presented the basic programming and computation capabilities. 
+
 In this section we introduce the next extra programming capability: *writing*. 
+
 We already used a effectful input reading using producers of type `Unit >--> Z` that are used together with a effectful output writing using consumers of type `Y >--> Unit` to turn programs of type `Z >--> Y` into main programs of type `Unit >--> Unit`. 
 
-Think, for example, of the capability of the next section (writing related) as being able to 
-  - do *logging*
+In this section we describe effectfree output writing of type W >--> Unit and, more generally, effectfree writing of type Z >--> Unit.
+
+Think, for example, of the effectfree writing capability of this section as being able to 
+
+  - write *logging*
 
 ### **Describing `Writing`**
 
@@ -4511,10 +4504,13 @@ trait Writing[W: Writable, >-->[- _, + _]] {
 
   private[pdbp] val `w>-->u`: W >--> Unit = write(identity)
 
-  def write[Z]: (Z => W) `I=>` Z >--> Unit =
+  private[pdbp] def `z>-w->u`[Z]: (Z => W) `I=>` Z >--> Unit =
     compose(function(implicitly), `w>-->u`)
 
-  def writeUsing[Z, Y, X](
+  def write[Z]: (Z => W) `I=>` Z >--> Unit =
+    `z>-w->u`
+
+  def writingUsing[Z, Y, X](
       `(z&&y)=>x`: ((Z && Y) => X)): (Z >--> Y) => ((X => W) `I=>` Z >--> Y) = {
     `z>-->y` =>
       val `(z&&y)>-->x` = function(`(z&&y)=>x`)
@@ -4528,24 +4524,28 @@ trait Writing[W: Writable, >-->[- _, + _]] {
             `(z&&y&&x)>-->(x&&y)`
           }
         }
-      compose(compose(`z>-->(x&&y)`, left(write)), `(u&&y)>-->y`)
+      compose(compose(`z>-->(x&&y)`, left(`z>-w->u`)), `(u&&y)>-->y`)
   }
 
 }
 ```
+
 `Writable` is described later in this section.
 
 Think of `` `w>-->u` `` as a program that *writes* a *writable* value of type `W`.
 
-Note that `` `w>-->u` `` is private[pdbp]. Since we are defining a public programming API, it is also convenient to define a `public` member `write` and a public member `writeUsing`. 
+Think of `` `z>-w->u` `` as a program that *writes* a value of type `Z` that can `implicitly` be converted (using a function of type `Z => W`) to a `Writable` of type `W`.
 
+Note that `` `w>-->u` `` and `` `z>-w->u` `` are `private[pdbp]`. 
+Since we are defining a public programming API, it is also convenient to define a `public` alias `write` for `` `z>-w->u` ``.
 
-Think of `write` as a program that *writes* a value of type `Z` that can `implicitly` be converted (using a function of type ``Z => W) to a `Writable` of type `W`.
+Moreover we define a `public` capability `writeUsing`. 
 
-Think of ` `writeUsing(`(z&&y)=>x`)(`z>-->y`) `` as the program `z>-->y` that also writes a value of type `X` that is yielded by transforming an argument of type `Z` and a corresponding result of type `Y` to a result of type `X` 
-
+Think of ` `writeUsing(`(z&&y)=>x`)(`z>-->y`) `` as the program `z>-->y` that also writes a value of type `X` that is yielded by transforming `z>-->y`'s argument of type `Z` and `z>-->y`'s result of type `Y` to a result of type `X`.
 
 ### **Describing `Writable`**
+
+Consider
 
 ```scala
 package pdbp.writable
@@ -4556,7 +4556,7 @@ import pdbp.utils.functionUtils._
 
 import pdbp.computation.Lifting
 
-private[pdbp] trait Writable[W]
+trait Writable[W]
     extends Startable[W]
     with Appendable[W]
     with Lifting[Const[W]] {
@@ -4619,12 +4619,24 @@ object constType {
 }
 ```
 
+`trait Writable` corresponds to *monoids*.
+
 ## **Describing `WritingTransformation`**
 
 The next computation transformer that we describe is `trait WritingTransformer` that is used to add the writing capability to program descriptions.
 
 ```scala
 package pdbp.computation.transformation.writing
+
+import pdbp.types.implicitFunctionType._
+
+import pdbp.types.product.productType._
+
+private[pdbp] object WritingTransformation {
+
+  private[pdbp] type WritingTransformed[W, FC[+ _]] = [+Z] => FC[W && Z]
+
+}
 
 import WritingTransformation._
 
@@ -4643,8 +4655,6 @@ import pdbp.computation.transformation.ComputationTransformation
 
 private[pdbp] trait WritingTransformation[W: Writable, FC[+ _]: Computation]
     extends ComputationTransformation[FC, WritingTransformed[W, FC]]
-    with Computation[WritingTransformed[W, FC]]
-    with Program[Kleisli[WritingTransformed[W, FC]]]
     with Writing[W, Kleisli[WritingTransformed[W, FC]]] {
 
   private type WTFC = WritingTransformed[W, FC]
@@ -4712,10 +4722,14 @@ import pdbp.types.active.writing.activeWritingTypes._
 
 import pdbp.writable.implicits.toConsole.implicits.toConsoleWritable
 
+import pdbp.program.Program
+
 import pdbp.program.writing.Writing
 
 import pdbp.program.implicits.active.writing.ActiveWritingProgram
 import pdbp.program.implicits.active.implicits.activeProgram
+
+import pdbp.computation.Computation
 
 import pdbp.computation.transformation.ComputationTransformation
 import pdbp.computation.transformation.writing.WritingTransformation
@@ -4723,10 +4737,12 @@ import pdbp.computation.transformation.writing.WritingTransformation
 object implicits {
 
   implicit object activeWritingToConsoleProgram
-    extends ActiveWritingProgram[ToConsole]()
-    with ComputationTransformation[Active, ActiveWriting[ToConsole]]()
-    with WritingTransformation[ToConsole, Active]()
-    with Writing[ToConsole, `=>AW`[ToConsole]]()
+      extends ActiveWritingProgram[ToConsole]()
+      with Computation[ActiveWriting[ToConsole]]()
+      with Program[`=>AW`[ToConsole]]()
+      with Writing[ToConsole, `=>AW`[ToConsole]]()
+      with ComputationTransformation[Active, ActiveWriting[ToConsole]]()
+      with WritingTransformation[ToConsole, Active]()
 
 }
 ```
@@ -4749,7 +4765,7 @@ import pdbp.computation.Computation
 import pdbp.computation.transformation.ComputationTransformation
 import pdbp.computation.transformation.writing.WritingTransformation
 
-private[pdbp] trait ActiveWritingProgram[W : Writable]
+private[pdbp] trait ActiveWritingProgram[W: Writable]
     extends Computation[ActiveWriting[W]]
     with Program[`=>AW`[W]]
     with Writing[W, `=>AW`[W]]
@@ -4777,7 +4793,7 @@ object activeWritingTypes {
 }
 ```
 
-Note that, since there is a type parameter `W` involved, we first define a `trait` and second a corresponding `implicit object` (for `ToConsole` defined below).
+Note that, since there is a type parameter `W` involved, we first define a `trait` and second a corresponding `implicit object` for `ToConsole`, defined below.
 
 ```scala
 package pdbp.types.effect.toConsole
@@ -4828,9 +4844,10 @@ object implicits {
         }
     }
 
-  }  
+  }
 
 }
+
 ```
 
 ## **Describing `activeIntReadingWithWritingToConsoleProgram`**
@@ -4847,6 +4864,8 @@ import pdbp.types.effect.toConsole.ToConsole
 
 import pdbp.writable.implicits.toConsole.implicits.toConsoleWritable
 
+import pdbp.program.Program
+
 import pdbp.program.reading.Reading
 
 import pdbp.program.writing.Writing
@@ -4854,6 +4873,8 @@ import pdbp.program.writing.Writing
 import pdbp.program.implicits.active.reading.writing.ActiveReadingWithWritingProgram
 
 import pdbp.program.implicits.active.writing.toConsole.implicits.activeWritingToConsoleProgram
+
+import pdbp.computation.Computation
 
 import pdbp.computation.transformation.ComputationTransformation
 import pdbp.computation.transformation.reading.ReadingTransformation
@@ -4864,15 +4885,17 @@ object implicits {
 
   implicit object activeIntReadingWithWritingToConsoleProgram
       extends ActiveReadingWithWritingProgram[BigInt, ToConsole]()
-      with ComputationTransformation[
-        ActiveWriting[ToConsole],
-        ActiveReadingWithWriting[BigInt, ToConsole]]()
-      with ReadingTransformation[BigInt, ActiveWriting[ToConsole]]()
+      with Computation[ActiveReadingWithWriting[BigInt, ToConsole]]()
+      with Program[`=>ARW`[BigInt, ToConsole]]()
+      with Reading[BigInt, `=>ARW`[BigInt, ToConsole]]()
+      with Writing[ToConsole, `=>ARW`[BigInt, ToConsole]]()
       with ReadingWithWritingTransformation[BigInt,
                                             ToConsole,
                                             ActiveWriting[ToConsole]]()
-      with Reading[BigInt, `=>ARW`[BigInt, ToConsole]]()
-      with Writing[ToConsole, `=>ARW`[BigInt, ToConsole]]()
+      with ReadingTransformation[BigInt, ActiveWriting[ToConsole]]()
+      with ComputationTransformation[
+        ActiveWriting[ToConsole],
+        ActiveReadingWithWriting[BigInt, ToConsole]]()
 
 }
 ```
@@ -4908,26 +4931,6 @@ private[pdbp] trait ActiveReadingWithWritingProgram[R, W: Writable]
     with ComputationTransformation[ActiveWriting[W],
                                    ActiveReadingWithWriting[R, W]]
     with ReadingWithWritingTransformation[R, W, ActiveWriting[W]]
-```
-
-where the types `ActiveReadingWithWriting` and `` `=>ARW` `` are defined as follows
-
-```scala
-package pdbp.types.active.writing
-
-import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
-
-import pdbp.types.active.activeTypes._
-
-import pdbp.computation.transformation.writing.WritingTransformation._
-
-object activeWritingTypes {
-
-  type ActiveWriting[W] = WritingTransformed[W, Active]
-
-  type `=>AW`[W] = Kleisli[ActiveWriting[W]]
-
-}
 ```
 
 where
@@ -4968,159 +4971,151 @@ private[pdbp] trait ReadingWithWritingTransformation[
     implicitWriting.`w>-->u`(w)
   }
 
-} 
+}
 ```
 
-### **Describing `MainFactorialOfIntReadWrittenToConsole` using `read` and `write`**
+where the types `ActiveReadingWithWriting` and `` `=>ARW` `` are defined as follows
 
-Consider
+```scala
+package pdbp.types.active.reading.writing
+
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
+
+import pdbp.types.active.writing.activeWritingTypes._
+
+import pdbp.computation.transformation.reading.ReadingTransformation._
+
+object activeReadingWithWritingTypes {
+
+  type ActiveReadingWithWriting[R, W] = ReadingTransformed[R, ActiveWriting[W]]
+
+  type `=>ARW`[R, W] = Kleisli[ActiveReadingWithWriting[R, W]]
+
+}
+```
+
+### **Describing `WritingToConsoleTransformedMeaning`**
+
+The transformed computation meaning corresponding to the writing computation transformation `trait WritingTransformation` is, when writing to the console, `trait WritingToConsoleTransformedMeaning`.
 
 ```scala
 package examples.mainPrograms.reading.int.writing.toConsole
 
-import pdbp.types.implicitFunctionType._
+package pdbp.computation.meaning.writing.toConsole
 
 import pdbp.types.effect.toConsole.ToConsole
 
-import pdbp.program.Program
+import pdbp.computation.Computation
 
-import pdbp.program.reading.Reading
+import pdbp.natural.transformation.unary.`~U~>`
 
-import pdbp.program.writing.Writing
+import pdbp.computation.transformation.writing.WritingTransformation
+import pdbp.computation.transformation.writing.WritingTransformation._
 
-import pdbp.program.compositionOperator._
+import pdbp.computation.meaning.ComputationMeaning
 
-import examples.utils.EffectfulUtils
+private[pdbp] trait WritingToConsoleTransformedMeaning[FC[+ _]: Computation,
+T[+ _]](implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
+    extends ComputationMeaning[WritingTransformed[ToConsole, FC], T] {
 
-import examples.programs.Factorial
+  private val implicitComputation = implicitly[Computation[FC]]
 
-class MainFactorialOfIntReadWrittenToConsole[
-  >-->[- _, + _]: Program
-                : [>-->[- _, + _]] => Reading[BigInt, >-->]
-                : [>-->[- _, + _]] => Writing[ToConsole, >-->]] {
-  
-  private val implicitProgram = implicitly[Program[>-->]]
+  import implicitComputation._
 
-  private val implicitIntReading = implicitly[Reading[BigInt, >-->]]
+  private type WTFC = WritingTransformed[ToConsole, FC]
 
-  private val implicitToConsoleWriting = implicitly[Writing[ToConsole, >-->]]
+  val effectfulUnaryTransformation: WTFC `~U~>` FC =
+    new {
+      override private[pdbp] def apply[Z](wtfcz: WTFC[Z]): FC[Z] =
+        bind(wtfcz, {
+          case (ToConsole(effect), z) =>
+            effect(())
+            result(z)
+        })
+    }
 
-  import implicitProgram._
-
-  import implicitIntReading._
-
-  import implicitToConsoleWriting._
-
-  private object factorialObject extends Factorial[>-->]
-
-  import factorialObject.factorial
-
-  val factorialMain: (BigInt => ToConsole) `I=>` Unit >--> Unit =
-    read >-->
-      factorial >-->
-      write
+  override private[pdbp] val unaryTransformation: WTFC `~U~>` T =
+    effectfulUnaryTransformation andThen toBeTransformedMeaning.unaryTransformation
 
 }
 ```
 
-We replaced `effectfulWriteFactorialOfIntToConsole` that executes an effect by `write` that describes an effect.
+Note that this writing meaning transfoemation is *specific* for `ToConsole`.
 
-### **Running `factorialMain` using `mainFactorialOfIntReadWrittenToConsole`, `read` and `write`**
+The natural unary type transformation `unaryTransformation` defining `meaning` can be defined as a composition of `effectfulUnaryTransformation` and `toBeTransformedMeaning.unaryTransformation`.
 
-Consider
+Note that `effectfulUnaryTransformation` executes the writing to the console effect. 
+
+### **Describing `activeMeaningOfActiveWritingToConsole`**
+
+The next computation meaning `implicit object` (and corresponding kleisli program meaning `implicit object`) is the active meaning of active writing to console one defined below
 
 ```scala
-package examples.objects.active.reading.int.writing.toConsole
+package pdbp.program.meaning.ofActiveWritingToConsole.active
 
 import pdbp.types.effect.toConsole.ToConsole
 
-import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
+import pdbp.types.active.activeTypes._
+import pdbp.types.active.writing.activeWritingTypes._
 
-import pdbp.program.implicits.active.reading.int.writing.toConsole.implicits
-import implicits.activeIntReadingWithWritingToConsoleProgram
+import pdbp.program.meaning.ProgramMeaning
 
-import examples.mainPrograms.reading.int.writing.toConsole.MainFactorialOfIntReadWrittenToConsole
+import pdbp.computation.meaning.ComputationMeaning
 
-object mainFactorialOfIntReadWrittenToConsole
-    extends MainFactorialOfIntReadWrittenToConsole[`=>ARW`[BigInt, ToConsole]]()
-```
+import pdbp.computation.meaning.writing.toConsole.WritingToConsoleTransformedMeaning
 
-We can now, finally, define main in object `FactorialOfIntReadWrittenToConsoleMain`.
-
-```scala
-package examples.main.active.reading.int.writing.toConsole
-
-import pdbp.types.effect.toConsole.ToConsole
-
-import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
-
-import examples.objects.active.reading.int.writing.toConsole.mainFactorialOfIntReadWrittenToConsole
-import mainFactorialOfIntReadWrittenToConsole.factorialMain
-
-import examples.main.Main
-
-object FactorialOfIntReadWrittenToConsoleMain
-    extends Main[`=>ARW`[BigInt, ToConsole]] {
-
-  import examples.utils.effects.implicits.readIntFromConsoleEffect
-
-  import examples.utils.effects.implicits.writeFactorialOfIntReadFromConsoleToConsoleEffect
-
-  private type `=>ARW[BigInt, ToConsole]` = `=>ARW`[BigInt, ToConsole]
-
-  override val mainKleisliProgram: Unit `=>ARW[BigInt, ToConsole]` Unit =
-    factorialMain
-
-  override val run = mainKleisliProgram(()) match {
-    case (ToConsole(effect), _) => effect(())
-  }
-
-}
-```
-
-where `writeFactorialOfIntReadFromConsoleToConsoleEffect`  executes the effect that is described by `write`.
-
-```scala
-package pdbp.utils.effects
-
-import pdbp.types.effect.toConsole.ToConsole
-
-import pdbp.utils.effectfulUtils._
+import pdbp.program.implicits.active.implicits.activeProgram
+import pdbp.program.implicits.active.writing.toConsole.implicits.activeWritingToConsoleProgram
 
 object implicits {
 
-  // ...
+  import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
 
-  private def writeLineToConsoleEffectWithMessage[Z](
-      message: String): Z => ToConsole = { z =>
-    ToConsole({ _ =>
-      effectfulWriteLineToConsoleFunction(message)(z)
-    })
-  }
-
-  implicit val writeFactorialOfIntReadFromConsoleToConsoleEffect
-    : BigInt => ToConsole =
-    writeLineToConsoleEffectWithMessage(
-      "the factorial value of the integer read is")
-
-  // ...    
-
+  implicit object activeMeaningOfActiveWritingToConsole
+      extends WritingToConsoleTransformedMeaning[Active, Active]()
+      with ComputationMeaning[ActiveWriting[ToConsole], Active]()
+      with ProgramMeaning[`=>AW`[ToConsole], `=>A`]()
 }
 ```
 
-Let's try running `factorial` with `10`.
+### **Describing `activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole`**
+
+The next computation meaning `implicit object` (and corresponding kleisli program meaning `implicit object`) is the active reaading meaning of active reading with writing to console one defined below
 
 ```scala
-[info] Running examples.main.active.reading.int.writing.toConsole.FactorialOfIntReadWrittenToConsoleMain
-please type an integer to read
-10
-the factorial value of the integer read is
-3628800
+package pdbp.program.meaning.ofActiveIntReadingWithWritingToConsole.activeIntReading
+
+import pdbp.types.effect.toConsole.ToConsole
+
+import pdbp.types.active.activeTypes._
+import pdbp.types.active.reading.activeReadingTypes._
+import pdbp.types.active.writing.activeWritingTypes._
+import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
+
+import pdbp.program.meaning.ProgramMeaning
+
+import pdbp.computation.meaning.ComputationMeaning
+
+import pdbp.computation.meaning.reading.ReadingTransformedMeaning
+
+import pdbp.program.implicits.active.implicits.activeProgram
+import pdbp.program.implicits.active.writing.toConsole.implicits.activeWritingToConsoleProgram
+import pdbp.program.implicits.active.reading.int.writing.toConsole.implicits.activeIntReadingWithWritingToConsoleProgram
+
+object implicits {
+
+  import pdbp.program.meaning.ofActiveWritingToConsole.active.implicits.activeMeaningOfActiveWritingToConsole
+
+  implicit object activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole
+      extends ReadingTransformedMeaning[BigInt,
+                                        ActiveWriting[ToConsole],
+                                        Active]()
+      with ComputationMeaning[ActiveReadingWithWriting[BigInt, ToConsole],
+                              ActiveReading[BigInt]]()
+      with ProgramMeaning[`=>ARW`[BigInt, ToConsole], `=>AR`[BigInt]]()
+
+}
 ```
-
-We used `write` as an effectfree alternative for the effectful `effectfulWriteFactorialOfIntToConsole` at the end of a program.
-
-We can also use `writeUsing` anywhere in a program.
 
 ### **Describing `WritingFactorial`**
 
@@ -5160,14 +5155,14 @@ class WritingFactorial[
 
   import implicitWriting._
 
-  val factorial: (String => W) `I=>` BigInt >--> BigInt =
+  val writingFactorial: (String => W) `I=>` BigInt >--> BigInt =
     info("factorial") {
       `if`(isZero) {
         one
       } `else` {
         `let` {
           subtractOne >-->
-            factorial
+            writingFactorial
         } `in` {
           multiply
         }
@@ -5269,21 +5264,212 @@ object infoUtils {
 
   def infoFunction[Z, Y](string: String): Z && Y => String = {
     case (z, y) =>
-      s"INFO\n\t--" + 
-      s"time $currentCalendarInMilliseconds\n\t--" +
-      s"thread $currentThreadId\n\t--" +
-      s"evaluating $string($z) yields $y"
+      s"INFO -- $currentCalendarInMilliseconds -- $string($z) => $y"
   }
 
-  def info[W: Writable, Z, Y,  >-->[- _, + _]: [>-->[- _, + _]] => Writing[W, >-->]]
+  def info[
+      W: Writable, 
+      Z, 
+      Y, 
+       >-->[- _, + _]: [>-->[- _, + _]] => Writing[W, >-->]]
       (string: String): (Z >--> Y) => ((String => W) `I=>` Z >--> Y) = {
     val implicitWriting = implicitly[Writing[W, >-->]]
-    import implicitWriting._
-    writeUsing(infoFunction(string))
+    implicitWriting.writingUsing(infoFunction(string))
   }
 
 }
 ```
+
+### **Describing `mainWritingFactorial`**
+
+Consider
+
+```scala
+package examples.mainPrograms.writing
+
+import pdbp.types.implicitFunctionType._
+
+import pdbp.writable.Writable
+
+import pdbp.program.Program
+import pdbp.program.writing.Writing
+
+import pdbp.program.compositionOperator._
+
+import examples.programs.writing.WritingFactorial
+
+trait MainWritingFactorial[
+    W: Writable,
+    >-->[- _, + _]: Program
+                  : [>-->[- _, + _]] => Writing[W, >-->]] {
+
+  private object writingFactorialObject extends WritingFactorial[W, >-->]
+
+  import writingFactorialObject.writingFactorial
+
+  val producer: Unit >--> BigInt
+
+  val consumer: BigInt >--> Unit
+
+  lazy val mainWritingFactorial: (String => W) `I=>` Unit >--> Unit = {
+    producer >-->
+      writingFactorial >-->
+      consumer
+  }
+
+}
+```
+
+`trait MainWritingFactorial` defines `lazy val mainWritingFactorial` using abstract members `producer` and `consumer`.
+
+### **Running `mainWritingFactorial` using `activeIntReadingWithWritingToConsoleProgram` and `activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole`, and `read` and `write`
+
+Consider
+
+```scala
+package examples.main.active.reading.int.writing.toConsole
+
+import pdbp.types.effect.toConsole.ToConsole
+
+import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
+
+import pdbp.writable.implicits.toConsole.implicits.toConsoleWritable
+
+import pdbp.program.implicits.active.reading.int.writing.toConsole.implicits.activeIntReadingWithWritingToConsoleProgram
+
+import examples.mainPrograms.writing.MainWritingFactorial
+
+object FactorialOfIntReadWritingToConsoleWrittenToConsoleMain
+    extends MainWritingFactorial[ToConsole, `=>ARW`[BigInt, ToConsole]]() {
+
+  import examples.utils.effects.implicits.readIntFromConsoleEffect
+
+  import examples.utils.effects.implicits.writeFactorialOfIntToConsoleEffect
+
+  import examples.utils.effects.implicits.writeToConsoleEffect
+
+  override val producer = activeIntReadingWithWritingToConsoleProgram.read
+
+  override val consumer = activeIntReadingWithWritingToConsoleProgram.write
+
+  def main(args: Array[String]): Unit = {
+
+    import pdbp.program.meaning.ofActiveIntReadingWithWritingToConsole.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReadingWithWritingToConsole.meaning
+
+    meaning(mainWritingFactorial)(())
+
+  }
+
+}
+```
+
+
+### **Describing `MainFactorialOfIntReadWrittenToConsole` using `read` and `write`**
+
+Consider
+
+
+
+We replaced `effectfulWriteFactorialOfIntToConsole` that executes an effect by `write` that describes an effect.
+
+### **Running `factorialMain` using `mainFactorialOfIntReadWrittenToConsole`, `read` and `write`**
+
+Consider
+
+```scala
+package examples.objects.active.reading.int.writing.toConsole
+
+import pdbp.types.effect.toConsole.ToConsole
+
+import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
+
+import pdbp.program.implicits.active.reading.int.writing.toConsole.implicits
+import implicits.activeIntReadingWithWritingToConsoleProgram
+
+import examples.mainPrograms.reading.int.writing.toConsole.MainFactorialOfIntReadWrittenToConsole
+
+object mainFactorialOfIntReadWrittenToConsole
+    extends MainFactorialOfIntReadWrittenToConsole[`=>ARW`[BigInt, ToConsole]]()
+```
+
+We can now, finally, define main in object `FactorialOfIntReadWrittenToConsoleMain`.
+
+```scala
+package examples.main.active.reading.int.writing.toConsole
+
+import pdbp.types.effect.toConsole.ToConsole
+
+import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
+
+import examples.objects.active.reading.int.writing.toConsole.mainFactorialOfIntReadWrittenToConsole
+import mainFactorialOfIntReadWrittenToConsole.factorialMain
+
+import examples.main.Main
+
+object FactorialOfIntReadWrittenToConsoleMain
+    extends Main[`=>ARW`[BigInt, ToConsole]] {
+
+  import examples.utils.effects.implicits.readIntFromConsoleEffect
+
+  import examples.utils.effects.implicits.writeFactorialOfIntReadFromConsoleToConsoleEffect
+
+  private type `=>ARW[BigInt, ToConsole]` = `=>ARW`[BigInt, ToConsole]
+
+  override val mainKleisliProgram: Unit `=>ARW[BigInt, ToConsole]` Unit =
+    factorialMain
+
+  override val run = mainKleisliProgram(()) match {
+    case (ToConsole(effect), _) => effect(())
+  }
+
+}
+```
+
+where `writeFactorialOfIntReadFromConsoleToConsoleEffect`  executes the effect that is described by `write`.
+
+```scala
+package pdbp.utils.effects
+
+import pdbp.types.effect.toConsole.ToConsole
+
+import pdbp.utils.effectfulUtils._
+
+object implicits {
+
+  // ...
+
+  private def writeLineToConsoleEffectWithMessage[Z](
+      message: String): Z => ToConsole = { z =>
+    ToConsole({ _ =>
+      effectfulWriteLineToConsoleFunction(message)(z)
+    })
+  }
+
+  implicit val writeFactorialOfIntReadFromConsoleToConsoleEffect
+    : BigInt => ToConsole =
+    writeLineToConsoleEffectWithMessage(
+      "the factorial value of the integer read is")
+
+  // ...    
+
+}
+```
+
+Let's try running `factorial` with `10`.
+
+```scala
+[info] Running examples.main.active.reading.int.writing.toConsole.FactorialOfIntReadWrittenToConsoleMain
+please type an integer to read
+10
+the factorial value of the integer read is
+3628800
+```
+
+We used `write` as an effectfree alternative for the effectful `effectfulWriteFactorialOfIntToConsole` at the end of a program.
+
+We can also use `writeUsing` anywhere in a program.
+
+
 
 ### **Describing `MainFactorialOfIntReadWritingToConsoleWrittenToConsole` using `read` and `write`**
 
