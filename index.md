@@ -2928,7 +2928,7 @@ We also refer to a kleisli program that is implemented as above as a *kleisli pr
 The simplest implicit computation object (and corresponding implicit kleisli program object) one can probably think of is the *active* one defined below
 
 ```scala
-package pdbp.program.implicits.active
+package pdbp.program.active
 
 import pdbp.types.active.activeTypes._
 
@@ -3182,7 +3182,7 @@ package pdbp.program.meaning.ofActive.active
 
 import pdbp.types.active.activeTypes._
 
-import pdbp.program.implicits.active.implicits.activeProgram
+import pdbp.program.active.implicits.activeProgram
 
 import pdbp.program.meaning.ProgramMeaning
 
@@ -3238,7 +3238,7 @@ package examples.main.active.effectfulReadingAndWriting
 
 import pdbp.types.active.activeTypes._
 
-import pdbp.program.implicits.active.implicits.activeProgram
+import pdbp.program.active.implicits.activeProgram
 
 import examples.mainPrograms.MainFactorial
 
@@ -3402,7 +3402,7 @@ package pdbp.examples.main.active.effectfulReadingAndWriting
 
 import pdbp.types.active.activeTypes._
 
-import pdbp.program.implicits.active.implicits.activeProgram
+import pdbp.program.active.implicits.activeProgram
 
 import pdbp.examples.mainKleisliPrograms.MainFactorial
 
@@ -3500,7 +3500,7 @@ package pdbp.examples.main.active.effectfulReadingAndWriting
 
 import pdbp.types.active.activeTypes._
 
-import pdbp.program.implicits.active.implicits.activeProgram
+import pdbp.program.active.implicits.activeProgram
 
 import pdbp.examples.mainKleisliPrograms.MainSumOfSquares
 
@@ -3739,7 +3739,7 @@ The data structures built using `Result` and `Bind` can be seen as a *free progr
 The next implicit computation object (and corresponding implicit kleisli program object) is the *active free* one defined below
 
 ```scala
-package pdbp.program.implicits.active.free
+package pdbp.program.active.free
 
 import pdbp.types.active.activeTypes._
 import pdbp.types.active.free.activeFreeTypes._
@@ -3751,7 +3751,7 @@ import pdbp.computation.Computation
 import pdbp.computation.transformation.ComputationTransformation
 import pdbp.computation.transformation.free.FreeTransformation
 
-import pdbp.program.implicits.active.implicits.activeProgram
+import pdbp.program.active.implicits.activeProgram
 
 object implicits {
   
@@ -3864,8 +3864,8 @@ import pdbp.computation.meaning.ComputationMeaning
 
 import pdbp.computation.meaning.free.FreeTransformedMeaning
 
-import pdbp.program.implicits.active.implicits.activeProgram
-import pdbp.program.implicits.active.free.implicits.activeFreeProgram
+import pdbp.program.active.implicits.activeProgram
+import pdbp.program.active.free.implicits.activeFreeProgram
 
 object implicits {
 
@@ -3888,7 +3888,7 @@ package examples.main.active.free.effectfulReadingAndWriting
 
 import pdbp.types.active.free.activeFreeTypes._
 
-import pdbp.program.implicits.active.free.implicits.activeFreeProgram
+import pdbp.program.active.free.implicits.activeFreeProgram
 
 import examples.mainPrograms.MainFactorial
 
@@ -4096,7 +4096,7 @@ The magic of implicit function types is that the compiler can turn value types i
 The next implicit computation object (and corresponding implicit kleisli program object) is the *active int reading* one defined below
 
 ```scala
-package pdbp.program.implicits.active.reading.int
+package pdbp.program.active.reading.int
 
 import pdbp.types.active.activeTypes._
 import pdbp.types.active.reading.activeReadingTypes._
@@ -4105,9 +4105,9 @@ import pdbp.program.Program
 
 import pdbp.program.reading.Reading
 
-import pdbp.program.implicits.active.reading.ActiveReadingProgram
+import pdbp.program.active.reading.ActiveReadingProgram
 
-import pdbp.program.implicits.active.implicits.activeProgram
+import pdbp.program.active.implicits.activeProgram
 
 import pdbp.computation.Computation
 
@@ -4130,7 +4130,7 @@ object implicits {
 where
 
 ```scala
-package pdbp.program.implicits.active.reading
+package pdbp.program.active.reading
 
 import pdbp.types.active.activeTypes._
 import pdbp.types.active.reading.activeReadingTypes._
@@ -4217,7 +4217,7 @@ package pdbp.program.meaning.ofActiveIntReading.activeIntReading
 import pdbp.types.active.activeTypes._
 import pdbp.types.active.reading.activeReadingTypes._
 
-import pdbp.program.implicits.active.implicits.activeProgram
+import pdbp.program.active.implicits.activeProgram
 
 import pdbp.computation.meaning.ComputationMeaning
 
@@ -4229,7 +4229,7 @@ import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
 
 object implicits {
 
-  import pdbp.program.implicits.active.reading.int.implicits.activeIntReadingProgram
+  import pdbp.program.active.reading.int.implicits.activeIntReadingProgram
 
   implicit object activeIntReadingMeaningOfActiveIntReading
       extends ReadingTransformedMeaning[BigInt, Active, Active]()
@@ -4247,7 +4247,7 @@ package examples.main.active.reading.int.effectfulWriting
 
 import pdbp.types.active.reading.activeReadingTypes._
 
-import pdbp.program.implicits.active.reading.int.implicits.activeIntReadingProgram
+import pdbp.program.active.reading.int.implicits.activeIntReadingProgram
 
 import examples.mainPrograms.MainFactorial
 
@@ -4406,7 +4406,7 @@ package examples.main.active.reading.int.effectfulReadingAndWriting
 
 import pdbp.types.active.reading.activeReadingTypes._
 
-import pdbp.program.implicits.active.reading.int.implicits.activeIntReadingProgram
+import pdbp.program.active.reading.int.implicits.activeIntReadingProgram
 
 import examples.mainPrograms.reading.int.MainFactorialMultipliedByIntRead
 
@@ -4713,7 +4713,7 @@ private[pdbp] object WritingTransformation {
 The next implicit computation object (and corresponding implicit kleisli program object) is the *active writing to console* one defined below
 
 ```scala
-package pdbp.program.implicits.active.writing.toConsole
+package pdbp.program.active.writing.toConsole
 
 import pdbp.types.effect.toConsole.ToConsole
 
@@ -4726,8 +4726,8 @@ import pdbp.program.Program
 
 import pdbp.program.writing.Writing
 
-import pdbp.program.implicits.active.writing.ActiveWritingProgram
-import pdbp.program.implicits.active.implicits.activeProgram
+import pdbp.program.active.writing.ActiveWritingProgram
+import pdbp.program.active.implicits.activeProgram
 
 import pdbp.computation.Computation
 
@@ -4750,7 +4750,7 @@ object implicits {
 where
 
 ```scala
-package pdbp.program.implicits.active.writing
+package pdbp.program.active.writing
 
 import pdbp.types.active.activeTypes._
 import pdbp.types.active.writing.activeWritingTypes._
@@ -4855,7 +4855,7 @@ object implicits {
 The next implicit computation object (and corresponding implicit kleisli program object) is the *active reading int with writing to console* one defined below
 
 ```scala
-package pdbp.program.implicits.active.reading.int.writing.toConsole
+package pdbp.program.active.reading.int.writing.toConsole
 
 import pdbp.types.active.activeTypes._
 import pdbp.types.active.writing.activeWritingTypes._
@@ -4870,9 +4870,9 @@ import pdbp.program.reading.Reading
 
 import pdbp.program.writing.Writing
 
-import pdbp.program.implicits.active.reading.writing.ActiveReadingWithWritingProgram
+import pdbp.program.active.reading.writing.ActiveReadingWithWritingProgram
 
-import pdbp.program.implicits.active.writing.toConsole.implicits.activeWritingToConsoleProgram
+import pdbp.program.active.writing.toConsole.implicits.activeWritingToConsoleProgram
 
 import pdbp.computation.Computation
 
@@ -4903,7 +4903,7 @@ object implicits {
 where
 
 ```scala
-package pdbp.program.implicits.active.reading.writing
+package pdbp.program.active.reading.writing
 
 import pdbp.types.active.writing.activeWritingTypes._
 
@@ -5064,8 +5064,8 @@ import pdbp.computation.meaning.ComputationMeaning
 
 import pdbp.computation.meaning.writing.toConsole.WritingToConsoleTransformedMeaning
 
-import pdbp.program.implicits.active.implicits.activeProgram
-import pdbp.program.implicits.active.writing.toConsole.implicits.activeWritingToConsoleProgram
+import pdbp.program.active.implicits.activeProgram
+import pdbp.program.active.writing.toConsole.implicits.activeWritingToConsoleProgram
 
 object implicits {
 
@@ -5098,9 +5098,9 @@ import pdbp.computation.meaning.ComputationMeaning
 
 import pdbp.computation.meaning.reading.ReadingTransformedMeaning
 
-import pdbp.program.implicits.active.implicits.activeProgram
-import pdbp.program.implicits.active.writing.toConsole.implicits.activeWritingToConsoleProgram
-import pdbp.program.implicits.active.reading.int.writing.toConsole.implicits.activeIntReadingWithWritingToConsoleProgram
+import pdbp.program.active.implicits.activeProgram
+import pdbp.program.active.writing.toConsole.implicits.activeWritingToConsoleProgram
+import pdbp.program.active.reading.int.writing.toConsole.implicits.activeIntReadingWithWritingToConsoleProgram
 
 object implicits {
 
@@ -5128,7 +5128,7 @@ import pdbp.types.effect.toConsole.ToConsole
 
 import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
 
-import pdbp.program.implicits.active.reading.int.writing.toConsole.implicits.activeIntReadingWithWritingToConsoleProgram
+import pdbp.program.active.reading.int.writing.toConsole.implicits.activeIntReadingWithWritingToConsoleProgram
 
 import examples.mainPrograms.MainFactorial
 
@@ -5412,7 +5412,7 @@ import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
 
 import pdbp.writable.implicits.toConsole.implicits.toConsoleWritable
 
-import pdbp.program.implicits.active.reading.int.writing.toConsole.implicits.activeIntReadingWithWritingToConsoleProgram
+import pdbp.program.active.reading.int.writing.toConsole.implicits.activeIntReadingWithWritingToConsoleProgram
 
 import examples.mainPrograms.writing.MainWritingFactorial
 

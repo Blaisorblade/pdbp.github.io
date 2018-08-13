@@ -15,7 +15,7 @@ import pdbp.types.effect.toConsole.ToConsole
 
 import pdbp.types.active.writing.activeWritingTypes._
 
-import pdbp.program.implicits.active.writing.toConsole.implicits.activeWritingToConsoleProgram
+import pdbp.program.active.writing.toConsole.implicits.activeWritingToConsoleProgram
 
 import examples.mainPrograms.MainFactorial
 

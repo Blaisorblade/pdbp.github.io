@@ -1,4 +1,4 @@
-package pdbp.program.implicits.active.reading.int.writing.toConsole
+package pdbp.program.active.reading.int.writing.toConsole
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -24,9 +24,9 @@ import pdbp.program.reading.Reading
 
 import pdbp.program.writing.Writing
 
-import pdbp.program.implicits.active.reading.writing.ActiveReadingWithWritingProgram
+import pdbp.program.active.reading.writing.ActiveReadingWithWritingProgram
 
-import pdbp.program.implicits.active.writing.toConsole.implicits.activeWritingToConsoleProgram
+import pdbp.program.active.writing.toConsole.implicits.activeWritingToConsoleProgram
 
 import pdbp.computation.Computation
 

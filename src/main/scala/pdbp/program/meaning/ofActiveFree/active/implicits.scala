@@ -20,8 +20,8 @@ import pdbp.computation.meaning.ComputationMeaning
 
 import pdbp.computation.meaning.free.FreeTransformedMeaning
 
-import pdbp.program.implicits.active.implicits.activeProgram
-import pdbp.program.implicits.active.free.implicits.activeFreeProgram
+import pdbp.program.active.implicits.activeProgram
+import pdbp.program.active.free.implicits.activeFreeProgram
 
 object implicits {
 

@@ -14,7 +14,7 @@ package pdbp.program.meaning.ofActiveIntReading.activeIntReading
 import pdbp.types.active.activeTypes._
 import pdbp.types.active.reading.activeReadingTypes._
 
-import pdbp.program.implicits.active.implicits.activeProgram
+import pdbp.program.active.implicits.activeProgram
 
 import pdbp.computation.meaning.ComputationMeaning
 
@@ -26,7 +26,7 @@ import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive
 
 object implicits {
 
-  import pdbp.program.implicits.active.reading.int.implicits.activeIntReadingProgram
+  import pdbp.program.active.reading.int.implicits.activeIntReadingProgram
 
   implicit object activeIntReadingMeaningOfActiveIntReading
       extends ReadingTransformedMeaning[BigInt, Active, Active]()

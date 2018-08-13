@@ -1,4 +1,4 @@
-package pdbp.program.implicits.active.writing
+package pdbp.program.active.free
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -12,21 +12,23 @@ package pdbp.program.implicits.active.writing
 //  author        Luc Duponcheel        2017-2018
 
 import pdbp.types.active.activeTypes._
-import pdbp.types.active.writing.activeWritingTypes._
-
-import pdbp.writable.Writable
+import pdbp.types.active.free.activeFreeTypes._
 
 import pdbp.program.Program
-import pdbp.program.writing.Writing
 
 import pdbp.computation.Computation
 
 import pdbp.computation.transformation.ComputationTransformation
-import pdbp.computation.transformation.writing.WritingTransformation
+import pdbp.computation.transformation.free.FreeTransformation
 
-private[pdbp] trait ActiveWritingProgram[W: Writable]
-    extends Computation[ActiveWriting[W]]
-    with Program[`=>AW`[W]]
-    with Writing[W, `=>AW`[W]]
-    with ComputationTransformation[Active, ActiveWriting[W]]
-    with WritingTransformation[W, Active]
+import pdbp.program.active.implicits.activeProgram
+
+object implicits {
+  
+  implicit object activeFreeProgram
+      extends Computation[ActiveFree]
+      with Program[`=>AF`]
+      with FreeTransformation[Active]()
+      with ComputationTransformation[Active, ActiveFree]()
+
+}

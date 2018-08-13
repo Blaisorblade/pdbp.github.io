@@ -15,7 +15,7 @@ import pdbp.types.effect.toConsole.ToConsole
 
 import pdbp.types.active.reading.writing.activeReadingWithWritingTypes._
 
-import pdbp.program.implicits.active.reading.int.writing.toConsole.implicits.activeIntReadingWithWritingToConsoleProgram
+import pdbp.program.active.reading.int.writing.toConsole.implicits.activeIntReadingWithWritingToConsoleProgram
 
 import examples.mainPrograms.MainFactorial
 

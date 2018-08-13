@@ -22,8 +22,8 @@ import pdbp.computation.meaning.ComputationMeaning
 
 import pdbp.computation.meaning.writing.toConsole.WritingToConsoleTransformedMeaning
 
-import pdbp.program.implicits.active.implicits.activeProgram
-import pdbp.program.implicits.active.writing.toConsole.implicits.activeWritingToConsoleProgram
+import pdbp.program.active.implicits.activeProgram
+import pdbp.program.active.writing.toConsole.implicits.activeWritingToConsoleProgram
 
 object implicits {
 

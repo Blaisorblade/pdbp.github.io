@@ -24,9 +24,9 @@ import pdbp.computation.meaning.ComputationMeaning
 
 import pdbp.computation.meaning.reading.ReadingTransformedMeaning
 
-import pdbp.program.implicits.active.implicits.activeProgram
-import pdbp.program.implicits.active.writing.toConsole.implicits.activeWritingToConsoleProgram
-import pdbp.program.implicits.active.reading.int.writing.toConsole.implicits.activeIntReadingWithWritingToConsoleProgram
+import pdbp.program.active.implicits.activeProgram
+import pdbp.program.active.writing.toConsole.implicits.activeWritingToConsoleProgram
+import pdbp.program.active.reading.int.writing.toConsole.implicits.activeIntReadingWithWritingToConsoleProgram
 
 object implicits {
 

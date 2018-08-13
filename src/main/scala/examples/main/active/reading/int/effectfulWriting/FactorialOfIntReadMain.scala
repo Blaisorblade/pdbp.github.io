@@ -13,7 +13,7 @@ package examples.main.active.reading.int.effectfulWriting
 
 import pdbp.types.active.reading.activeReadingTypes._
 
-import pdbp.program.implicits.active.reading.int.implicits.activeIntReadingProgram
+import pdbp.program.active.reading.int.implicits.activeIntReadingProgram
 
 import examples.mainPrograms.MainFactorial
 
