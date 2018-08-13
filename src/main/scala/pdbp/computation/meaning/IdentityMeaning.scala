@@ -1,4 +1,4 @@
-package pdbp.computation.transformation
+package pdbp.computation.meaning
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -15,18 +15,15 @@ import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
 
 import pdbp.natural.transformation.unary.`~U~>`
 
-import pdbp.program.Program
-
 import pdbp.computation.Computation
 
-private[pdbp] trait ComputationTransformation[FC[+ _]: Computation, T[+ _]]
-    extends Computation[T]
-    with Program[Kleisli[T]] {
+private[pdbp] trait IdentityMeaning[C[+ _]: Computation]
+    extends ComputationMeaning[C, C] {
 
-  private[pdbp] val transform: FC `~U~>` T
-
-  override private[pdbp] def result[Z]: Z => T[Z] = { z =>
-    transform(implicitly.result(z))
+  override private[pdbp] val unaryTransformation: C `~U~>` C = new {
+      override private[pdbp] def apply[Z](cz: C[Z]): C[Z] = {
+        cz
+      }
   }
 
 }

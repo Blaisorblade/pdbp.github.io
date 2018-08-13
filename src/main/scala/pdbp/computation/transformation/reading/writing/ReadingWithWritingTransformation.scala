@@ -28,19 +28,19 @@ import pdbp.computation.transformation.reading.ReadingTransformation._
 
 private[pdbp] trait ReadingWithWritingTransformation[
     R, W: Writable, 
-    FC[+ _]: Computation
-           : [FC[+ _]] => Writing[W, Kleisli[FC]]]
-    extends ReadingTransformation[R, FC]
-    with Writing[W, Kleisli[ReadingTransformed[R, FC]]] {
+    C[+ _]: Computation
+           : [C[+ _]] => Writing[W, Kleisli[C]]]
+    extends ReadingTransformation[R, C]
+    with Writing[W, Kleisli[ReadingTransformed[R, C]]] {
 
-  private val implicitWriting: Writing[W, Kleisli[FC]] =
-    implicitly[Writing[W, Kleisli[FC]]]
+  private val implicitWriting: Writing[W, Kleisli[C]] =
+    implicitly[Writing[W, Kleisli[C]]]
 
-  private type RTFC = ReadingTransformed[R, FC]
+  private type RTC = ReadingTransformed[R, C]
 
-  private type `=>RTFC` = Kleisli[RTFC]
+  private type `=>RTC` = Kleisli[RTC]
 
-  override private[pdbp] val `w>-->u`: W `=>RTFC` Unit = { w =>
+  override private[pdbp] val `w>-->u`: W `=>RTC` Unit = { w =>
     implicitWriting.`w>-->u`(w)
   }
 

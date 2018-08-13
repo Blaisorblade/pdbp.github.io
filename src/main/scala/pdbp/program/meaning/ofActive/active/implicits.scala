@@ -19,12 +19,12 @@ import pdbp.program.meaning.ProgramMeaning
 
 import pdbp.computation.meaning.ComputationMeaning
 
-import pdbp.computation.meaning.ofActive.MeaningOfActive
+import pdbp.computation.meaning.IdentityMeaning
 
 object implicits {
 
   implicit object activeMeaningOfActive
-      extends MeaningOfActive[Active]()
+      extends IdentityMeaning[Active]()
       with ComputationMeaning[Active, Active]()
       with ProgramMeaning[`=>A`, `=>A`]()
 

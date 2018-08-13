@@ -15,7 +15,7 @@ import pdbp.types.implicitFunctionType.`I=>`
 
 private[pdbp] object ReadingTransformation {
 
-  private[pdbp] type ReadingTransformed[R, FC[+ _]] = [+Z] => R `I=>` FC[Z]
+  private[pdbp] type ReadingTransformed[R, C[+ _]] = [+Z] => R `I=>` C[Z]
 
 }
 
@@ -31,32 +31,28 @@ import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.transformation.ComputationTransformation
 
-private[pdbp] trait ReadingTransformation[R, FC[+ _]: Computation]
-    extends ComputationTransformation[FC, ReadingTransformed[R, FC]]
-    with Reading[R, Kleisli[ReadingTransformed[R, FC]]] {
+private[pdbp] trait ReadingTransformation[R, C[+ _]: Computation]
+    extends ComputationTransformation[C, ReadingTransformed[R, C]]
+    with Reading[R, Kleisli[ReadingTransformed[R, C]]] {
 
-  private type RTFC = ReadingTransformed[R, FC]
-  private type `=>RTFC` = Kleisli[RTFC]
+  private type RTC = ReadingTransformed[R, C]
+  private type `=>RTC` = Kleisli[RTC]
 
-  import implicitly.{result => resultFC}
-  import implicitly.{bind => bindFC}
+  import implicitly.{result => resultC}
+  import implicitly.{bind => bindC}
 
-  override private[pdbp] val transform: FC `~U~>` RTFC = new {
-    override private[pdbp] def apply[Z](fcz: FC[Z]): RTFC[Z] =
-      fcz
+  override private[pdbp] val transform: C `~U~>` RTC = new {
+    override private[pdbp] def apply[Z](cz: C[Z]): RTC[Z] =
+      cz
   }
 
-  override private[pdbp] def result[Z]: Z => RTFC[Z] = { z =>
-    resultFC(z)
-  }  
-
   override private[pdbp] def bind[Z, Y](
-      rtfcz: RTFC[Z],
-      `z>=rtfcy`: => (Z => RTFC[Y])): RTFC[Y] =
-    bindFC(rtfcz, `z>=rtfcy`(_))
+      rtcz: RTC[Z],
+      `z>=rtcy`: => (Z => RTC[Y])): RTC[Y] =
+    bindC(rtcz, `z>=rtcy`(_))
 
-  private[pdbp] override val `u>-->r`: Unit `=>RTFC` R = { _ =>
-    resultFC(implicitly)
+  private[pdbp] override val `u>-->r`: Unit `=>RTC` R = { _ =>
+    resultC(implicitly)
   }
 
 }

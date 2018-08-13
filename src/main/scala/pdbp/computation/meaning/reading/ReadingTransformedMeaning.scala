@@ -20,18 +20,18 @@ import pdbp.computation.transformation.reading.ReadingTransformation._
 
 import pdbp.computation.meaning.ComputationMeaning
 
-private[pdbp] trait ReadingTransformedMeaning[R, FC[+ _]: Computation, T[+ _]](
-    implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
-    extends ComputationMeaning[ReadingTransformed[R, FC],
+private[pdbp] trait ReadingTransformedMeaning[R, C[+ _]: Computation, T[+ _]](
+    implicit toBeTransformedMeaning: ComputationMeaning[C, T])
+    extends ComputationMeaning[ReadingTransformed[R, C],
                                ReadingTransformed[R, T]] {
 
-  private type RTFC = ReadingTransformed[R, FC]
+  private type RTC = ReadingTransformed[R, C]
   private type RTT = ReadingTransformed[R, T]
 
-  override private[pdbp] val unaryTransformation: RTFC `~U~>` RTT =
+  override private[pdbp] val unaryTransformation: RTC `~U~>` RTT =
     new {
-      override private[pdbp] def apply[Z](rtfcz: RTFC[Z]): RTT[Z] =
-        toBeTransformedMeaning.unaryTransformation(rtfcz(implicitly))
+      override private[pdbp] def apply[Z](rtcz: RTC[Z]): RTT[Z] =
+        toBeTransformedMeaning.unaryTransformation(rtcz(implicitly))
 
     }
 

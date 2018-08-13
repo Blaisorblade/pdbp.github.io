@@ -1057,7 +1057,7 @@ provides \emdb{elegance of use} for \emdb{application} developers
 \footnotesize{
 \begin{verbatim}
   implicit object activeMeaningOfActive
-      extends MeaningOfActive[Active]()
+      extends IdentityMeaning[Active]()
       with ComputationMeaning[Active, Active]()
       with ProgramMeaning[`=>A`, `=>A`]()    
 \end{verbatim}
@@ -1171,6 +1171,10 @@ private[pdbp] trait ComputationTransformation[
 
   private[pdbp] val transform: FC `-U->` T
 
+  override private[pdbp] def result[Z]: Z => T[Z] = { z =>
+    transform(implicitly.result(z))
+  }
+  
 }
 \end{verbatim}
 }
@@ -1224,6 +1228,30 @@ private[pdbp] trait ComputationTransformation[
 \end{frame}
 
 \begin{frame}[fragile]
+\frametitle{\begin{center}\ttdg{IdentityMeaning}\end{center}}
+{\color{DarkGreen}	
+\footnotesize{
+\begin{verbatim}
+  private[pdbp] trait IdentityMeaning[C[+ _]: Computation]
+      extends ComputationMeaning[C, C] {
+
+    override private[pdbp] val unaryTransformation: 
+        C `~U~>` C = new {
+        override private[pdbp] def apply[Z](cz: C[Z]): C[Z] = {
+          cz
+        }
+    }
+
+  }
+\end{verbatim}
+}
+}
+\begin{itemize}
+\item<2-> \emdb{computation meanings} are \\  \emdb{program meanings} for corresponding kleisli programs
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
 \frametitle{\begin{center}\ttdg{FreeTransformed}\end{center}}
 {\color{DarkGreen}	
 \footnotesize{
@@ -1250,10 +1278,10 @@ private[pdbp] trait ComputationTransformation[
 \footnotesize{
 \begin{verbatim}
   private[pdbp] 
-    trait FreeTransformation[FC[+ _]: Computation]
+    trait FreeTransformation[C[+ _]: Computation]
         extends ComputationTransformation[
-          FC, 
-          FreeTransformed[FC]] {
+          C, 
+          FreeTransformed[C]] {
 
     // unfold
 
@@ -1310,20 +1338,20 @@ private[pdbp] trait ComputationTransformation[
 \footnotesize{
 \begin{verbatim}
   private[pdbp] trait FreeTransformedMeaning[
-    FC[+ _]: Computation, T[+ _]](
+    C[+ _]: Computation, T[+ _]](
     implicit toBeTransformedMeaning:
-      ComputationMeaning[FC, T])
-      extends ComputationMeaning[FreeTransformed[FC], T] {
+      ComputationMeaning[C, T])
+      extends ComputationMeaning[FreeTransformed[C], T] {
 
     // fold (tail recursive)
 
 
-    // Transform(fcz) => fcz
+    // Transform(cz) => cz
 
     // Result(z) => result(z)
-    // Bind(Result(y), y2ftfcz) => fold(y2ftfcz(y))
-    // Bind(Bind(fcx, x2ftfcy), y2ftfcz) => 
-    //   fold(Bind(fcx, Bind(x2ftfcy, y2ftfcz)))
+    // Bind(Result(y), y2ftcz) => fold(y2ftcz(y))
+    // Bind(Bind(cx, x2ftcy), y2ftcz) => 
+    //   fold(Bind(cx, Bind(x2ftcy, y2ftcz)))
 
   }       
 \end{verbatim}
@@ -1501,14 +1529,14 @@ object FactorialMain extends MainFactorial[`=>AF`]() {
 \footnotesize{
 \begin{verbatim}
   private[pdbp] trait ReadingTransformation[
-    R, FC[+ _]: Computation]
+    R, C[+ _]: Computation]
       extends ComputationTransformation[
-        FC, 
-        ReadingTransformed[R, FC]]
+        C, 
+        ReadingTransformed[R, C]]
 
       with Reading[
         R, 
-        Kleisli[ReadingTransformed[R, FC]]] {
+        Kleisli[ReadingTransformed[R, C]]] {
 
     // ...
 
@@ -1579,12 +1607,12 @@ private[pdbp] trait ActiveReadingProgram[R]
 \begin{verbatim}
 private[pdbp] trait ReadingTransformedMeaning[
       R, 
-      FC[+ _]: Computation, 
+      C[+ _]: Computation, 
       T[+ _]](
     implicit toBeTransformedMeaning:
-      ComputationMeaning[FC, T])
+      ComputationMeaning[C, T])
     extends ComputationMeaning[
-        ReadingTransformed[R, FC],
+        ReadingTransformed[R, C],
         ReadingTransformed[R, T]]
 \end{verbatim}
 }
@@ -2026,8 +2054,8 @@ object FactorialMultipliedByIntReadMain
 {\color{DarkGreen}	
 \footnotesize{
 \begin{verbatim}
-  type WritingTransformed[W, FC[+ _]] = 
-    [+Z] => FC[W && Z]
+  type WritingTransformed[W, C[+ _]] = 
+    [+Z] => C[W && Z]
 \end{verbatim}
 }
 }
@@ -2039,13 +2067,13 @@ object FactorialMultipliedByIntReadMain
 \footnotesize{
 \begin{verbatim}
   private[pdbp] trait WritingTransformation[
-    W: Writable, FC[+ _]: Computation]
+    W: Writable, C[+ _]: Computation]
       extends ComputationTransformation[
-        FC, WritingTransformed[W, FC]]
+        C, WritingTransformed[W, C]]
 
       with Writing[
         W, 
-        Kleisli[WritingTransformed[W, FC]]] {
+        Kleisli[WritingTransformed[W, C]]] {
 
     // ...
 
@@ -2100,12 +2128,12 @@ object FactorialMultipliedByIntReadMain
 \footnotesize{
 \begin{verbatim}
   private[pdbp] trait WritingToConsoleTransformedMeaning[
-      FC[+ _]: Computation,
+      C[+ _]: Computation,
       T[+ _]]
       (implicit toBeTransformedMeaning: 
-        ComputationMeaning[FC, T])
+        ComputationMeaning[C, T])
       extends ComputationMeaning[
-        WritingTransformed[ToConsole, FC], 
+        WritingTransformed[ToConsole, C], 
           T] {
 
     // executes console effect

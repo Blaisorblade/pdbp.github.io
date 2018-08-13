@@ -22,18 +22,20 @@ do
         $f -ef src/main/scala/pdbp/writable/Writable.scala || 
         $f -ef src/main/scala/pdbp/program/reading/Reading.scala || 
         $f -ef src/main/scala/pdbp/program/Composition.scala ||
-        $f -ef src/main/scala/pdbp/program/implicits/active/reading/int/implicits.scala ||
-        $f -ef src/main/scala/pdbp/program/implicits/active/reading/int/writing/toConsole/implicits.scala || 
-        $f -ef src/main/scala/pdbp/program/implicits/active/reading/ActiveReadingProgram.scala ||
-        $f -ef src/main/scala/pdbp/program/implicits/active/implicits.scala ||
-        $f -ef src/main/scala/pdbp/program/implicits/active/free/implicits.scala ||
-        $f -ef src/main/scala/pdbp/program/implicits/active/writing/toConsole/implicits.scala ||
+        $f -ef src/main/scala/pdbp/program/active/reading/int/implicits.scala ||
+        $f -ef src/main/scala/pdbp/program/active/reading/int/writing/toConsole/implicits.scala || 
+        $f -ef src/main/scala/pdbp/program/active/reading/ActiveReadingProgram.scala ||
+        $f -ef src/main/scala/pdbp/program/active/implicits.scala ||
+        $f -ef src/main/scala/pdbp/program/active/free/implicits.scala ||
+        $f -ef src/main/scala/pdbp/program/active/writing/toConsole/implicits.scala ||
+        $f -ef src/main/scala/pdbp/program/reactive/implicits.scala ||
         $f -ef src/main/scala/pdbp/program/Program.scala ||
         $f -ef src/main/scala/pdbp/program/meaning/ofActive/active/implicits.scala ||
         $f -ef src/main/scala/pdbp/program/meaning/ofActiveFree/active/implicits.scala ||
         $f -ef src/main/scala/pdbp/program/meaning/ofActiveWritingToConsole/active/implicits.scala ||
         $f -ef src/main/scala/pdbp/program/meaning/ofActiveIntReadingWithWritingToConsole/activeIntReading/implicits.scala ||
         $f -ef src/main/scala/pdbp/program/meaning/ofActiveIntReading/activeIntReading/implicits.scala ||
+        $f -ef src/main/scala/pdbp/program/meaning/ofReactive/reactive/implicits.scala ||
         $f -ef src/main/scala/pdbp/program/Applying.scala ||
         $f -ef src/main/scala/pdbp/program/Construction.scala ||
         $f -ef src/main/scala/pdbp/program/Function.scala ||
@@ -50,6 +52,7 @@ do
         $f -ef src/main/scala/pdbp/computation/Lifting.scala ||
         $f -ef src/main/scala/pdbp/examples/main/active/effectfulReadingAndWriting/SumOfSquaresMain.scala ||
         $f -ef src/main/scala/pdbp/examples/main/active/effectfulReadingAndWriting/FactorialMain.scala ||
+        $f -ef src/main/scala/pdbp/examples/main/reactive/effectfulReadingAndWriting/FactorialMain.scala ||
         $f -ef src/main/scala/pdbp/examples/utils/functionUtils.scala ||
         $f -ef src/main/scala/pdbp/examples/kleisliPrograms/SumOfSquares.scala ||
         $f -ef src/main/scala/pdbp/examples/kleisliPrograms/Factorial.scala ||
@@ -72,8 +75,10 @@ do
         $f -ef src/main/scala/examples/main/active/effectfulReadingAndWriting/FactorialMain.scala ||
         $f -ef src/main/scala/examples/main/active/free/effectfulReadingAndWriting/FactorialMain.scala ||
         $f -ef src/main/scala/examples/main/active/writing/toConsole/effectfulReading/FactorialWrittenToConsoleMain.scala ||
+        $f -ef src/main/scala/examples/main/reactive/effectfulReadingAndWriting/FactorialMain.scala ||
         $f -ef src/main/scala/examples/utils/effects/implicits.scala ||
-        $f -ef src/main/scala/examples/utils/functionUtils.scala ]]
+        $f -ef src/main/scala/examples/utils/functionUtils.scala ||
+        $f -ef src/main/scala/pdbp/types/reactive/reactiveTypes.scala ]]
   then
     echo "scalafmt $f"
     scalafmt $f
@@ -117,13 +122,14 @@ do
     sed -i "s/private\[pdbp\] type /\/\/private\[pdbp\] type /g" $f
     scalafmt $f
     sed -i "s/\/\/private\[pdbp\] type /private\[pdbp\] type /g" $f
-  elif [[ $f -ef src/main/scala/pdbp/program/implicits/active/reading/writing/ActiveReadingWithWritingProgram.scala ||
-          $f -ef src/main/scala/pdbp/program/implicits/active/writing/ActiveWritingProgram.scala ||
+  elif [[ $f -ef src/main/scala/pdbp/program/active/reading/writing/ActiveReadingWithWritingProgram.scala ||
+          $f -ef src/main/scala/pdbp/program/active/writing/ActiveWritingProgram.scala ||
           $f -ef src/main/scala/pdbp/computation/meaning/reading/ReadingTransformedMeaning.scala ||
           $f -ef src/main/scala/pdbp/computation/meaning/ofActive/MeaningOfActive.scala ||
           $f -ef src/main/scala/pdbp/computation/meaning/free/FreeTransformedMeaning.scala ||
           $f -ef src/main/scala/pdbp/computation/meaning/writing/toConsole/WritingToConsoleTransformedMeaning.scala ||
           $f -ef src/main/scala/pdbp/computation/meaning/ComputationMeaning.scala ||
+          $f -ef src/main/scala/pdbp/computation/meaning/IdentityMeaning.scala ||
           $f -ef src/main/scala/pdbp/computation/transformation/ComputationTransformation.scala ]]
   then
     echo "scalafmt $f has problems with 'private[pdbp] trait '"
@@ -156,7 +162,8 @@ do
           $f -ef src/main/scala/examples/programs/writing/WritingAtomicPrograms.scala ||
           $f -ef src/main/scala/examples/programs/writing/WritingFactorial.scala ||
           $f -ef src/main/scala/examples/mainPrograms/reading/int/MainFactorialMultipliedByIntRead.scala ||
-          $f -ef src/main/scala/examples/mainPrograms/writing/MainWritingFactorial.scala ]]
+          $f -ef src/main/scala/examples/mainPrograms/writing/MainWritingFactorial.scala ||
+          $f -ef src/main/scala/pdbp/computation/transformation/reactive/ReactiveTransformation.scala ]]
   then
     echo "scalafmt $f skipped"      
   else

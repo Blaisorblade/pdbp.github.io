@@ -22,27 +22,27 @@ import pdbp.computation.transformation.writing.WritingTransformation._
 
 import pdbp.computation.meaning.ComputationMeaning
 
-private[pdbp] trait WritingToConsoleTransformedMeaning[FC[+ _]: Computation,
-T[+ _]](implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
-    extends ComputationMeaning[WritingTransformed[ToConsole, FC], T] {
+private[pdbp] trait WritingToConsoleTransformedMeaning[C[+ _]: Computation,
+T[+ _]](implicit toBeTransformedMeaning: ComputationMeaning[C, T])
+    extends ComputationMeaning[WritingTransformed[ToConsole, C], T] {
 
-  private val implicitComputation = implicitly[Computation[FC]]
+  private val implicitComputation = implicitly[Computation[C]]
 
   import implicitComputation._
 
-  private type WTFC = WritingTransformed[ToConsole, FC]
+  private type WTC = WritingTransformed[ToConsole, C]
 
-  val effectfulUnaryTransformation: WTFC `~U~>` FC =
+  val effectfulUnaryTransformation: WTC `~U~>` C =
     new {
-      override private[pdbp] def apply[Z](wtfcz: WTFC[Z]): FC[Z] =
-        bind(wtfcz, {
+      override private[pdbp] def apply[Z](wtcz: WTC[Z]): C[Z] =
+        bind(wtcz, {
           case (ToConsole(effect), z) =>
             effect(())
             result(z)
         })
     }
 
-  override private[pdbp] val unaryTransformation: WTFC `~U~>` T =
+  override private[pdbp] val unaryTransformation: WTC `~U~>` T =
     effectfulUnaryTransformation andThen toBeTransformedMeaning.unaryTransformation
 
 }

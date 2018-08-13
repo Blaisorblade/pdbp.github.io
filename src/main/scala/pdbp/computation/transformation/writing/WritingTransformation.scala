@@ -17,7 +17,7 @@ import pdbp.types.product.productType._
 
 private[pdbp] object WritingTransformation {
 
-  private[pdbp] type WritingTransformed[W, FC[+ _]] = [+Z] => FC[W && Z]
+  private[pdbp] type WritingTransformed[W, C[+ _]] = [+Z] => C[W && Z]
 
 }
 
@@ -36,44 +36,40 @@ import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.transformation.ComputationTransformation
 
-private[pdbp] trait WritingTransformation[W: Writable, FC[+ _]: Computation]
-    extends ComputationTransformation[FC, WritingTransformed[W, FC]]
-    with Writing[W, Kleisli[WritingTransformed[W, FC]]] {
+private[pdbp] trait WritingTransformation[W: Writable, C[+ _]: Computation]
+    extends ComputationTransformation[C, WritingTransformed[W, C]]
+    with Writing[W, Kleisli[WritingTransformed[W, C]]] {
 
-  private type WTFC = WritingTransformed[W, FC]
-  private type `=>WTFC` = Kleisli[WTFC]
+  private type WTC = WritingTransformed[W, C]
+  private type `=>WTC` = Kleisli[WTC]
 
-  private val implicitComputation = implicitly[Computation[FC]]
+  private val implicitComputation = implicitly[Computation[C]]
 
-  import implicitComputation.{bind => bindFC}
-  import implicitComputation.{result => resultFC}
+  import implicitComputation.{bind => bindC}
+  import implicitComputation.{result => resultC}
 
   private val implicitWritable = implicitly[Writable[W]]
 
   import implicitWritable._
 
-  override private[pdbp] val transform: FC `~U~>` WTFC = new {
-    override private[pdbp] def apply[Z](fcz: FC[Z]): WTFC[Z] =
-      bindFC(fcz, { z =>
-        resultFC((start, z))
+  override private[pdbp] val transform: C `~U~>` WTC = new {
+    override private[pdbp] def apply[Z](cz: C[Z]): WTC[Z] =
+      bindC(cz, { z =>
+        resultC((start, z))
       })
-  }
-
-  override private[pdbp] def result[Z]: Z => WTFC[Z] = { z =>
-    resultFC((start, z))
   }
 
   override private[pdbp] def bind[Z, Y](
-      wtfcz: WTFC[Z],
-      `z=>wtfcy`: => (Z => WTFC[Y])): WTFC[Y] =
-    bindFC(wtfcz, { (leftW, z) =>
-      bindFC(`z=>wtfcy`(z), { (rightW, y) =>
-        resultFC(append(leftW, rightW), y)
+      wtcz: WTC[Z],
+      `z=>wtcy`: => (Z => WTC[Y])): WTC[Y] =
+    bindC(wtcz, { (leftW, z) =>
+      bindC(`z=>wtcy`(z), { (rightW, y) =>
+        resultC(append(leftW, rightW), y)
       })
     })
 
-  private[pdbp] override val `w>-->u`: W `=>WTFC` Unit = { w =>
-    resultFC((w, ()))
+  private[pdbp] override val `w>-->u`: W `=>WTC` Unit = { w =>
+    resultC((w, ()))
   }
 
 }

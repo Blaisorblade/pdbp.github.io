@@ -3141,6 +3141,31 @@ private[pdbp] trait ComputationMeaning[FC[+ _]: Computation, T[+ _]]
 
 We refer to the `unaryTransformation` member of `trait ComputationMeaning`  as a *computation meaning*.
 
+### **Describing `IdentityMeaning`**
+
+The simplest computation meaning one can think of is `IdentityMeaning` below
+
+```scala
+package pdbp.computation.meaning
+
+import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
+
+import pdbp.natural.transformation.unary.`~U~>`
+
+import pdbp.computation.Computation
+
+private[pdbp] trait IdentityMeaning[C[+ _]: Computation]
+    extends ComputationMeaning[C, C] {
+
+  override private[pdbp] val unaryTransformation: C `~U~>` C = new {
+      override private[pdbp] def apply[Z](cz: C[Z]): C[Z] = {
+        cz
+      }
+  }
+
+}
+```
+
 
 ### **Defining program meanings in terms of computation meanings**
 
@@ -3188,41 +3213,14 @@ import pdbp.program.meaning.ProgramMeaning
 
 import pdbp.computation.meaning.ComputationMeaning
 
-import pdbp.computation.meaning.ofActive.MeaningOfActive
+import pdbp.computation.meaning.IdentityMeaning
 
 object implicits {
 
   implicit object activeMeaningOfActive
-      extends MeaningOfActive[Active]()
+      extends IdentityMeaning[Active]()
       with ComputationMeaning[Active, Active]()
       with ProgramMeaning[`=>A`, `=>A`]()
-
-}
-```
-
-where `MeaningOfActive` defines a computation meaning of `Active` for any type constructor `TR` that is declared to implicitly have the `Resulting` computational capability.
-
-```scala
-package pdbp.computation.meaning.ofActive
-
-import pdbp.types.active.activeTypes._
-
-import pdbp.computation.Resulting
-
-import pdbp.natural.transformation.unary.`~U~>`
-
-import pdbp.computation.meaning.ComputationMeaning
-
-private[pdbp] trait MeaningOfActive[TR[+ _]: Resulting]
-    extends ComputationMeaning[Active, TR] {
-
-  override private[pdbp] val unaryTransformation: Active `~U~>` TR =
-    new {
-      override private[pdbp] def apply[Z](az: Active[Z]): TR[Z] = {
-        import implicitly._
-        result(az)
-      }
-    }
 
 }
 ```
@@ -3292,10 +3290,10 @@ class EffectfulUtils[>-->[- _, + _]: Program] {
       message: String): Y >--> Unit =
     function[Y, Unit](effectfulWriteLineToConsoleFunction(message))
 
-  val effectfulReadIntFromConsole: Unit >--> BigInt =
+  lazy val effectfulReadIntFromConsole: Unit >--> BigInt =
     effectfulReadIntFromConsoleWithMessage("please type an integer")
 
-  val effectfulWriteFactorialOfIntToConsole: BigInt >--> Unit =
+  lazy val effectfulWriteFactorialOfIntToConsole: BigInt >--> Unit =
     effectfulWriteLineToConsoleWithMessage(
       "the factorial value of the integer is")
 
@@ -3633,8 +3631,14 @@ private[pdbp] trait ComputationTransformation[FC[+ _]: Computation, T[+ _]]
 
   private[pdbp] val transform: FC `~U~>` T
 
+  override private[pdbp] def result[Z]: Z => T[Z] = { z =>
+    transform(implicitly.result(z))
+  }
+
 }
 ```
+
+`trait ComputationTransformation` comes with a reasonable default definition for `result`.
 
 Computation transformations closely resemble *monad transformers*.
 
@@ -3661,24 +3665,24 @@ import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.transformation.ComputationTransformation
 
-private[pdbp] trait FreeTransformation[FC[+ _]: Computation]
-    extends ComputationTransformation[FC, FreeTransformed[FC]] {
+private[pdbp] trait FreeTransformation[C[+ _]: Computation]
+    extends ComputationTransformation[C, FreeTransformed[C]] {
 
-  private type FTFC = FreeTransformed[FC]
+  private type FTC = FreeTransformed[C]
 
-  override private[pdbp] val transform: FC `~U~>` FTFC = new {
-    override private[pdbp] def apply[Z](fcz: FC[Z]): FTFC[Z] =
-      Transform(fcz)
+  override private[pdbp] val transform: C `~U~>` FTC = new {
+    override private[pdbp] def apply[Z](cz: C[Z]): FTC[Z] =
+      Transform(cz)
   }
 
-  override private[pdbp] def result[Z]: Z => FTFC[Z] = { z =>
+  override private[pdbp] def result[Z]: Z => FTC[Z] = { z =>
     Result(z)
   }
 
   override private[pdbp] def bind[Z, Y](
-      ftfcz: FTFC[Z],
-      `z=>ftfcy`: => (Z => FTFC[Y])): FTFC[Y] =
-    Bind(ftfcz, `z=>ftfcy`)
+      ftcz: FTC[Z],
+      `z=>ftcy`: => (Z => FTC[Y])): FTC[Y] =
+    Bind(ftcz, `z=>ftcy`)
 
 }
 ```
@@ -3800,48 +3804,44 @@ import pdbp.computation.transformation.free.FreeTransformation._
 
 import pdbp.computation.meaning.ComputationMeaning
 
-private[pdbp] trait FreeTransformedMeaning[FC[+ _]: Computation, T[+ _]](
-    implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
-    extends ComputationMeaning[FreeTransformed[FC], T] {
+private[pdbp] trait FreeTransformedMeaning[C[+ _]: Computation, T[+ _]](
+    implicit toBeTransformedMeaning: ComputationMeaning[C, T])
+    extends ComputationMeaning[FreeTransformed[C], T] {
 
-  private val implicitComputation = implicitly[Computation[FC]]
+  private val implicitComputation = implicitly[Computation[C]]
 
   import implicitComputation._
 
-  private type FTFC = FreeTransformed[FC]
+  private type FTC = FreeTransformed[C]
 
-  private val foldingUnaryTransformation: FTFC `~U~>` FC =
+  private val foldingUnaryTransformation: FTC `~U~>` C =
     new {
       @annotation.tailrec
-      override private[pdbp] def apply[Z](ftfcz: FTFC[Z]): FC[Z] = ftfcz match {
-        case Transform(fcz) =>
-          fcz
+      override private[pdbp] def apply[Z](ftcz: FTC[Z]): C[Z] = ftcz match {
+        case Transform(cz) =>
+          cz
         case Result(z) =>
           result(z)
-        case Bind(Result(y), y2ftfcz) =>
-          apply(y2ftfcz(y))
-        case Bind(Bind(fcx, x2ftfcy), y2ftfcz) =>
-          apply(Bind(fcx, { x =>
-            Bind(x2ftfcy(x), y2ftfcz)
+        case Bind(Result(y), y2ftcz) =>
+          apply(y2ftcz(y))
+        case Bind(Bind(cx, x2ftcy), y2ftcz) =>
+          apply(Bind(cx, { x =>
+            Bind(x2ftcy(x), y2ftcz)
           }))
         case any =>
           sys.error("Impossible, since, 'apply' eliminates this case")
       }
     }
 
-  override private[pdbp] val unaryTransformation: FTFC `~U~>` T =
+  override private[pdbp] val unaryTransformation: FTC `~U~>` T =
     foldingUnaryTransformation andThen toBeTransformedMeaning.unaryTransformation
 
 }
 ```
 
-Note that in `FTFC`, resp. `ftfc`
-  - the first `F`, resp `f` stands for *free* (and `T` resp `t` stands for *transformed*)
-  - the second `F`, resp `f` stands for *from* (and `C` resp `c` stands for *computation*)
+Note that, for pattern matching, we use names like `y2ftcz` instead of `` `y=>ftcz` ``.
 
-Note that, for pattern matching, we use names like `y2ftfcz` instead of `` `y=>ftfcz` ``.
-
-The method `apply` that is used in the definition of `foldingUnaryTransformation` is a *tail recursive folding* of a computation of type `FTFC[Z]`, which is a free data structure wrapping a computation of type `FC[Z]`, back to a computation of type `FC[Z]`. 
+The method `apply` that is used in the definition of `foldingUnaryTransformation` is a *tail recursive folding* of a computation of type `FTC[Z]`, which is a free data structure wrapping a computation of type `C[Z]`, back to a computation of type `C[Z]`. 
 
 Note that the last `case` for `Bind` uses an *associativity* law of `bind`.
 The *left* associated `Bind`'s are folded to *right* associated `Bind`'s. 
@@ -4026,7 +4026,7 @@ import pdbp.types.implicitFunctionType.`I=>`
 
 private[pdbp] object ReadingTransformation {
 
-  private[pdbp] type ReadingTransformed[R, FC[+ _]] = [+Z] => R `I=>` FC[Z]
+  private[pdbp] type ReadingTransformed[R, C[+ _]] = [+Z] => R `I=>` C[Z]
 
 }
 
@@ -4042,32 +4042,28 @@ import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.transformation.ComputationTransformation
 
-private[pdbp] trait ReadingTransformation[R, FC[+ _]: Computation]
-    extends ComputationTransformation[FC, ReadingTransformed[R, FC]]
-    with Reading[R, Kleisli[ReadingTransformed[R, FC]]] {
+private[pdbp] trait ReadingTransformation[R, C[+ _]: Computation]
+    extends ComputationTransformation[C, ReadingTransformed[R, C]]
+    with Reading[R, Kleisli[ReadingTransformed[R, C]]] {
 
-  private type RTFC = ReadingTransformed[R, FC]
-  private type `=>RTFC` = Kleisli[RTFC]
+  private type RTC = ReadingTransformed[R, C]
+  private type `=>RTC` = Kleisli[RTC]
 
-  import implicitly.{result => resultFC}
-  import implicitly.{bind => bindFC}
+  import implicitly.{result => resultC}
+  import implicitly.{bind => bindC}
 
-  override private[pdbp] val transform: FC `~U~>` RTFC = new {
-    override private[pdbp] def apply[Z](fcz: FC[Z]): RTFC[Z] =
-      fcz
+  override private[pdbp] val transform: C `~U~>` RTC = new {
+    override private[pdbp] def apply[Z](cz: C[Z]): RTC[Z] =
+      cz
   }
 
-  override private[pdbp] def result[Z]: Z => RTFC[Z] = { z =>
-    resultFC(z)
-  }  
-
   override private[pdbp] def bind[Z, Y](
-      rtfcz: RTFC[Z],
-      `z>=rtfcy`: => (Z => RTFC[Y])): RTFC[Y] =
-    bindFC(rtfcz, `z>=rtfcy`(_))
+      rtcz: RTC[Z],
+      `z>=rtcy`: => (Z => RTC[Y])): RTC[Y] =
+    bindC(rtcz, `z>=rtcy`(_))
 
-  private[pdbp] override val `u>-->r`: Unit `=>RTFC` R = { _ =>
-    resultFC(implicitly)
+  private[pdbp] override val `u>-->r`: Unit `=>RTC` R = { _ =>
+    resultC(implicitly)
   }
 
 }
@@ -4080,13 +4076,13 @@ import pdbp.types.implicitFunctionType.`I=>`
 
 private[pdbp] object ReadingTransformation {
 
-  type ReadingTransformed[R, FC[+ _]] = [+Z] => R `I=>` FC[Z]
+  type ReadingTransformed[R, C[+ _]] = [+Z] => R `I=>` C[Z]
 
 }
 ```
 
-The types `RTFC` and `` `=>RTFC` ``, defined using `` `I=>` ``, indicate that the an implicitly available global value `implicitly[R]` is available. 
-In fact, in `` `u>-->r` `` we use it as `implicitly` (not to be confused with the other `implicitly` standing for `implicitly[Computation[FC]]`). 
+The types `RTC` and `` `=>RTC` ``, defined using `` `I=>` ``, indicate that the an implicitly available global value `implicitly[R]` is available. 
+In fact, in `` `u>-->r` `` we use it as `implicitly` (not to be confused with the other `implicitly` standing for `implicitly[Computation[C]]`). 
 
 You may wonder how on earth it is possible that the definitions above are so simple. 
 The magic of implicit function types is that the compiler can turn value types into implicit function types whenever it *expects* them to be.
@@ -4189,18 +4185,18 @@ import pdbp.computation.transformation.reading.ReadingTransformation._
 
 import pdbp.computation.meaning.ComputationMeaning
 
-private[pdbp] trait ReadingTransformedMeaning[R, FC[+ _]: Computation, T[+ _]](
-    implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
-    extends ComputationMeaning[ReadingTransformed[R, FC],
+private[pdbp] trait ReadingTransformedMeaning[R, C[+ _]: Computation, T[+ _]](
+    implicit toBeTransformedMeaning: ComputationMeaning[C, T])
+    extends ComputationMeaning[ReadingTransformed[R, C],
                                ReadingTransformed[R, T]] {
 
-  private type RTFC = ReadingTransformed[R, FC]
+  private type RTC = ReadingTransformed[R, C]
   private type RTT = ReadingTransformed[R, T]
 
-  override private[pdbp] val unaryTransformation: RTFC `~U~>` RTT =
+  override private[pdbp] val unaryTransformation: RTC `~U~>` RTT =
     new {
-      override private[pdbp] def apply[Z](rtfcz: RTFC[Z]): RTT[Z] =
-        toBeTransformedMeaning.unaryTransformation(rtfcz(implicitly))
+      override private[pdbp] def apply[Z](rtcz: RTC[Z]): RTT[Z] =
+        toBeTransformedMeaning.unaryTransformation(rtcz(implicitly))
 
     }
 
@@ -4291,7 +4287,7 @@ object implicits {
   private def readIntFromConsoleEffectWithMessage(message: String): BigInt =
     effectfulReadIntFromConsoleFunction(message)(())
 
-  implicit val readIntFromConsoleEffect: BigInt =
+  implicit lazy val readIntFromConsoleEffect: BigInt =
     readIntFromConsoleEffectWithMessage("please type an integer to read")
 
   // ...
@@ -4299,8 +4295,28 @@ object implicits {
 }
 ```
 
+and where
+
+```scala
+package examples.utils
+
+import pdbp.program.Program
+
+import pdbp.utils.effectfulUtils._
+
+class EffectfulUtils[>-->[- _, + _]: Program] {
+
+  // ...
+
+  lazy val effectfulWriteFactorialOfIntReadToConsole: BigInt >--> Unit =
+    effectfulWriteLineToConsoleWithMessage(
+      "the factorial value of the integer read is")
+
+}
+```
+
 For being able to run `mainFactorial`, we have to define the `implicit BigInt` of `ReadingTransformed`.
-We can postpone defining this to the body of `main` and we can simply do this by `import`ing  `implicit val readIntFromConsoleEffect`.
+We can postpone defining this to the body of `main` and we can simply do this by `import`ing  `implicit lazy val readIntFromConsoleEffect`.
 
 Let's try running `factorial` with `10`.
 
@@ -4444,7 +4460,7 @@ trait EffectfulUtils[>-->[- _, + _]: Function] {
 
   // ...
 
-  val effectfulWriteFactorialOfIntMultipliedByIntReadToConsole
+  lazy val effectfulWriteFactorialOfIntMultipliedByIntReadToConsole
     : BigInt >--> Unit =
     effectfulWriteLineToConsoleWithMessage(
       "the factorial value of the integer multiplied by the integer read is")
@@ -4634,7 +4650,7 @@ import pdbp.types.product.productType._
 
 private[pdbp] object WritingTransformation {
 
-  private[pdbp] type WritingTransformed[W, FC[+ _]] = [+Z] => FC[W && Z]
+  private[pdbp] type WritingTransformed[W, C[+ _]] = [+Z] => C[W && Z]
 
 }
 
@@ -4653,44 +4669,40 @@ import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.transformation.ComputationTransformation
 
-private[pdbp] trait WritingTransformation[W: Writable, FC[+ _]: Computation]
-    extends ComputationTransformation[FC, WritingTransformed[W, FC]]
-    with Writing[W, Kleisli[WritingTransformed[W, FC]]] {
+private[pdbp] trait WritingTransformation[W: Writable, C[+ _]: Computation]
+    extends ComputationTransformation[C, WritingTransformed[W, C]]
+    with Writing[W, Kleisli[WritingTransformed[W, C]]] {
 
-  private type WTFC = WritingTransformed[W, FC]
-  private type `=>WTFC` = Kleisli[WTFC]
+  private type WTC = WritingTransformed[W, C]
+  private type `=>WTC` = Kleisli[WTC]
 
-  private val implicitComputation = implicitly[Computation[FC]]
+  private val implicitComputation = implicitly[Computation[C]]
 
-  import implicitComputation.{bind => bindFC}
-  import implicitComputation.{result => resultFC}
+  import implicitComputation.{bind => bindC}
+  import implicitComputation.{result => resultC}
 
   private val implicitWritable = implicitly[Writable[W]]
 
   import implicitWritable._
 
-  override private[pdbp] val transform: FC `~U~>` WTFC = new {
-    override private[pdbp] def apply[Z](fcz: FC[Z]): WTFC[Z] =
-      bindFC(fcz, { z =>
-        resultFC((start, z))
+  override private[pdbp] val transform: C `~U~>` WTC = new {
+    override private[pdbp] def apply[Z](cz: C[Z]): WTC[Z] =
+      bindC(cz, { z =>
+        resultC((start, z))
       })
-  }
-
-  override private[pdbp] def result[Z]: Z => WTFC[Z] = { z =>
-    resultFC((start, z))
   }
 
   override private[pdbp] def bind[Z, Y](
-      wtfcz: WTFC[Z],
-      `z=>wtfcy`: => (Z => WTFC[Y])): WTFC[Y] =
-    bindFC(wtfcz, { (leftW, z) =>
-      bindFC(`z=>wtfcy`(z), { (rightW, y) =>
-        resultFC(append(leftW, rightW), y)
+      wtcz: WTC[Z],
+      `z=>wtcy`: => (Z => WTC[Y])): WTC[Y] =
+    bindC(wtcz, { (leftW, z) =>
+      bindC(`z=>wtcy`(z), { (rightW, y) =>
+        resultC(append(leftW, rightW), y)
       })
     })
 
-  private[pdbp] override val `w>-->u`: W `=>WTFC` Unit = { w =>
-    resultFC((w, ()))
+  private[pdbp] override val `w>-->u`: W `=>WTC` Unit = { w =>
+    resultC((w, ()))
   }
 
 }
@@ -4703,7 +4715,7 @@ import pdbp.types.product.productType._
 
 private[pdbp] object WritingTransformation { 
 
-  type WritingTransformed[W, FC[+ _]] = [+Z] => FC[W && Z]
+  type WritingTransformed[W, C[+ _]] = [+Z] => C[W && Z]
 
 }
 ```
@@ -4955,19 +4967,19 @@ import pdbp.computation.transformation.reading.ReadingTransformation._
 
 private[pdbp] trait ReadingWithWritingTransformation[
     R, W: Writable, 
-    FC[+ _]: Computation
-           : [FC[+ _]] => Writing[W, Kleisli[FC]]]
-    extends ReadingTransformation[R, FC]
-    with Writing[W, Kleisli[ReadingTransformed[R, FC]]] {
+    C[+ _]: Computation
+           : [C[+ _]] => Writing[W, Kleisli[C]]]
+    extends ReadingTransformation[R, C]
+    with Writing[W, Kleisli[ReadingTransformed[R, C]]] {
 
-  private val implicitWriting: Writing[W, Kleisli[FC]] =
-    implicitly[Writing[W, Kleisli[FC]]]
+  private val implicitWriting: Writing[W, Kleisli[C]] =
+    implicitly[Writing[W, Kleisli[C]]]
 
-  private type RTFC = ReadingTransformed[R, FC]
+  private type RTC = ReadingTransformed[R, C]
 
-  private type `=>RTFC` = Kleisli[RTFC]
+  private type `=>RTC` = Kleisli[RTC]
 
-  override private[pdbp] val `w>-->u`: W `=>RTFC` Unit = { w =>
+  override private[pdbp] val `w>-->u`: W `=>RTC` Unit = { w =>
     implicitWriting.`w>-->u`(w)
   }
 
@@ -5014,27 +5026,27 @@ import pdbp.computation.transformation.writing.WritingTransformation._
 
 import pdbp.computation.meaning.ComputationMeaning
 
-private[pdbp] trait WritingToConsoleTransformedMeaning[FC[+ _]: Computation,
-T[+ _]](implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
-    extends ComputationMeaning[WritingTransformed[ToConsole, FC], T] {
+private[pdbp] trait WritingToConsoleTransformedMeaning[C[+ _]: Computation,
+T[+ _]](implicit toBeTransformedMeaning: ComputationMeaning[C, T])
+    extends ComputationMeaning[WritingTransformed[ToConsole, C], T] {
 
-  private val implicitComputation = implicitly[Computation[FC]]
+  private val implicitComputation = implicitly[Computation[C]]
 
   import implicitComputation._
 
-  private type WTFC = WritingTransformed[ToConsole, FC]
+  private type WTC = WritingTransformed[ToConsole, C]
 
-  val effectfulUnaryTransformation: WTFC `~U~>` FC =
+  val effectfulUnaryTransformation: WTC `~U~>` C =
     new {
-      override private[pdbp] def apply[Z](wtfcz: WTFC[Z]): FC[Z] =
-        bind(wtfcz, {
+      override private[pdbp] def apply[Z](wtcz: WTC[Z]): C[Z] =
+        bind(wtcz, {
           case (ToConsole(effect), z) =>
             effect(())
             result(z)
         })
     }
 
-  override private[pdbp] val unaryTransformation: WTFC `~U~>` T =
+  override private[pdbp] val unaryTransformation: WTC `~U~>` T =
     effectfulUnaryTransformation andThen toBeTransformedMeaning.unaryTransformation
 
 }
@@ -5175,7 +5187,7 @@ object implicits {
 
   // ...
 
-  implicit val writeFactorialOfIntReadFromConsoleToConsoleEffect
+  implicit lazy val writeFactorialOfIntReadFromConsoleToConsoleEffect
     : BigInt => ToConsole =
     writeLineToConsoleEffectWithMessage(
       "the factorial value of the integer read is"
@@ -5186,7 +5198,7 @@ object implicits {
 }
 ```
 
-For being able to run `mainFactorial`, we have to define the `implicit BigInt => ToConsole` of `write`. We can postpone defining this to the body of `FactorialOfIntReadWrittenToConsoleMain` and we can simply do this by `import`ing `implicit val writeFactorialOfIntToConsoleEffect`.
+For being able to run `mainFactorial`, we have to define the `implicit BigInt => ToConsole` of `write`. We can postpone defining this to the body of `FactorialOfIntReadWrittenToConsoleMain` and we can simply do this by `import`ing `implicit val writeFactorialOfIntReadToConsoleEffect`.
 
 Let's try running `factorial` with `10`.
 
@@ -5436,6 +5448,25 @@ object FactorialOfIntReadWritingToConsoleWrittenToConsoleMain
     meaning(mainWritingFactorial)(())
 
   }
+
+}
+```
+
+where
+
+```scala
+package examples.utils.effects
+
+import pdbp.types.effect.toConsole.ToConsole
+
+import pdbp.utils.effectfulUtils._
+
+object implicits {
+
+  // ...
+
+  implicit lazy val writeToConsoleEffect: String => ToConsole =
+    writeToConsoleEffectWithMessage("")
 
 }
 ```

@@ -20,36 +20,36 @@ import pdbp.computation.transformation.free.FreeTransformation._
 
 import pdbp.computation.meaning.ComputationMeaning
 
-private[pdbp] trait FreeTransformedMeaning[FC[+ _]: Computation, T[+ _]](
-    implicit toBeTransformedMeaning: ComputationMeaning[FC, T])
-    extends ComputationMeaning[FreeTransformed[FC], T] {
+private[pdbp] trait FreeTransformedMeaning[C[+ _]: Computation, T[+ _]](
+    implicit toBeTransformedMeaning: ComputationMeaning[C, T])
+    extends ComputationMeaning[FreeTransformed[C], T] {
 
-  private val implicitComputation = implicitly[Computation[FC]]
+  private val implicitComputation = implicitly[Computation[C]]
 
   import implicitComputation._
 
-  private type FTFC = FreeTransformed[FC]
+  private type FTC = FreeTransformed[C]
 
-  private val foldingUnaryTransformation: FTFC `~U~>` FC =
+  private val foldingUnaryTransformation: FTC `~U~>` C =
     new {
       @annotation.tailrec
-      override private[pdbp] def apply[Z](ftfcz: FTFC[Z]): FC[Z] = ftfcz match {
-        case Transform(fcz) =>
-          fcz
+      override private[pdbp] def apply[Z](ftcz: FTC[Z]): C[Z] = ftcz match {
+        case Transform(cz) =>
+          cz
         case Result(z) =>
           result(z)
-        case Bind(Result(y), y2ftfcz) =>
-          apply(y2ftfcz(y))
-        case Bind(Bind(fcx, x2ftfcy), y2ftfcz) =>
-          apply(Bind(fcx, { x =>
-            Bind(x2ftfcy(x), y2ftfcz)
+        case Bind(Result(y), y2ftcz) =>
+          apply(y2ftcz(y))
+        case Bind(Bind(cx, x2ftcy), y2ftcz) =>
+          apply(Bind(cx, { x =>
+            Bind(x2ftcy(x), y2ftcz)
           }))
         case any =>
           sys.error("Impossible, since, 'apply' eliminates this case")
       }
     }
 
-  override private[pdbp] val unaryTransformation: FTFC `~U~>` T =
+  override private[pdbp] val unaryTransformation: FTC `~U~>` T =
     foldingUnaryTransformation andThen toBeTransformedMeaning.unaryTransformation
 
 }

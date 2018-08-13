@@ -37,23 +37,23 @@ import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.transformation.ComputationTransformation
 
-private[pdbp] trait FreeTransformation[FC[+ _]: Computation]
-    extends ComputationTransformation[FC, FreeTransformed[FC]] {
+private[pdbp] trait FreeTransformation[C[+ _]: Computation]
+    extends ComputationTransformation[C, FreeTransformed[C]] {
 
-  private type FTFC = FreeTransformed[FC]
+  private type FTC = FreeTransformed[C]
 
-  override private[pdbp] val transform: FC `~U~>` FTFC = new {
-    override private[pdbp] def apply[Z](fcz: FC[Z]): FTFC[Z] =
-      Transform(fcz)
+  override private[pdbp] val transform: C `~U~>` FTC = new {
+    override private[pdbp] def apply[Z](cz: C[Z]): FTC[Z] =
+      Transform(cz)
   }
 
-  override private[pdbp] def result[Z]: Z => FTFC[Z] = { z =>
+  override private[pdbp] def result[Z]: Z => FTC[Z] = { z =>
     Result(z)
   }
 
   override private[pdbp] def bind[Z, Y](
-      ftfcz: FTFC[Z],
-      `z=>ftfcy`: => (Z => FTFC[Y])): FTFC[Y] =
-    Bind(ftfcz, `z=>ftfcy`)
+      ftcz: FTC[Z],
+      `z=>ftcy`: => (Z => FTC[Y])): FTC[Y] =
+    Bind(ftcz, `z=>ftcy`)
 
 }

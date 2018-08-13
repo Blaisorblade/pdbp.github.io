@@ -1,4 +1,4 @@
-package pdbp.computation.transformation
+package pdbp.program.reactive
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,22 +11,24 @@ package pdbp.computation.transformation
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.kleisli.kleisliBinaryTypeConstructorType._
-
-import pdbp.natural.transformation.unary.`~U~>`
+import pdbp.types.active.activeTypes._
+import pdbp.types.reactive.reactiveTypes._
 
 import pdbp.program.Program
 
 import pdbp.computation.Computation
 
-private[pdbp] trait ComputationTransformation[FC[+ _]: Computation, T[+ _]]
-    extends Computation[T]
-    with Program[Kleisli[T]] {
+import pdbp.computation.transformation.ComputationTransformation
+import pdbp.computation.transformation.reactive.ReactiveTransformation
 
-  private[pdbp] val transform: FC `~U~>` T
+import pdbp.program.active.implicits.activeProgram
 
-  override private[pdbp] def result[Z]: Z => T[Z] = { z =>
-    transform(implicitly.result(z))
-  }
-
+object implicits {
+  
+  implicit object reactiveProgram
+      extends Computation[Reactive]
+      with Program[`=>R`]
+      with ReactiveTransformation[Active]()
+      with ComputationTransformation[Active, Reactive]()
+      
 }
