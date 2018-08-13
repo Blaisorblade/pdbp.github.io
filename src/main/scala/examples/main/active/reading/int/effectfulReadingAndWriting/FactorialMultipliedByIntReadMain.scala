@@ -37,7 +37,7 @@ object FactorialMultipliedByIntReadMain
 
     import pdbp.program.meaning.ofActiveIntReading.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReading.meaning
 
-    meaning(mainFactorialMultipliedByIntRead)(())
+    val mainFactorialMultipliedByIntReadMeaning: Unit = meaning(mainFactorialMultipliedByIntRead)(())
 
   }
   

@@ -33,7 +33,7 @@ object FactorialMain extends MainFactorial[`=>A`]() {
 
     import pdbp.program.meaning.ofActive.active.implicits.activeMeaningOfActive.meaning
 
-    meaning(mainFactorial)(())
+    val mainFactorialMeaning: Unit = meaning(mainFactorial)(())
 
   }
 

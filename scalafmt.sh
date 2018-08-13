@@ -36,6 +36,7 @@ do
         $f -ef src/main/scala/pdbp/program/meaning/ofActiveIntReadingWithWritingToConsole/activeIntReading/implicits.scala ||
         $f -ef src/main/scala/pdbp/program/meaning/ofActiveIntReading/activeIntReading/implicits.scala ||
         $f -ef src/main/scala/pdbp/program/meaning/ofReactive/reactive/implicits.scala ||
+        $f -ef src/main/scala/pdbp/program/meaning/ofReactiveFree/reactive/implicits.scala ||
         $f -ef src/main/scala/pdbp/program/Applying.scala ||
         $f -ef src/main/scala/pdbp/program/Construction.scala ||
         $f -ef src/main/scala/pdbp/program/Function.scala ||
@@ -78,7 +79,18 @@ do
         $f -ef src/main/scala/examples/main/reactive/effectfulReadingAndWriting/FactorialMain.scala ||
         $f -ef src/main/scala/examples/utils/effects/implicits.scala ||
         $f -ef src/main/scala/examples/utils/functionUtils.scala ||
-        $f -ef src/main/scala/pdbp/types/reactive/reactiveTypes.scala ]]
+        $f -ef src/main/scala/pdbp/types/reactive/reactiveTypes.scala ||
+        $f -ef src/main/scala/pdbp/types/reactive/reading/reactiveReadingTypes.scala ||
+        $f -ef src/main/scala/pdbp/types/reactive/writing/reactiveWritingTypes.scala ||
+        $f -ef src/main/scala/pdbp/types/reactive/reading/writing/reactiveReadingWithWritingTypes.scala ||
+        $f -ef src/main/scala/pdbp/program/reactive/free/implicits.scala ||
+        $f -ef src/main/scala/pdbp/program/reactive/reading/ReactiveReadingProgram.scala ||
+        $f -ef src/main/scala/pdbp/program/reactive/reading/int/implicits.scala ||
+        $f -ef src/main/scala/pdbp/program/reactive/writing/toConsole/implicits.scala || 
+        $f -ef src/main/scala/pdbp/program/reactive/reading/int/writing/toConsole/implicits.scala || 
+        $f -ef src/main/scala/examples/main/reactive/free/effectfulReadingAndWriting/FactorialMain.scala ||
+        $f -ef src/main/scala/examples/main/reactive/reading/int/effectfulWriting/FactorialOfIntReadMain.scala ||
+        $f -ef src/main/scala/pdbp/program/meaning/ofReactiveWritingToConsole/reactive/implicits.scala ]]
   then
     echo "scalafmt $f"
     scalafmt $f
@@ -130,7 +142,9 @@ do
           $f -ef src/main/scala/pdbp/computation/meaning/writing/toConsole/WritingToConsoleTransformedMeaning.scala ||
           $f -ef src/main/scala/pdbp/computation/meaning/ComputationMeaning.scala ||
           $f -ef src/main/scala/pdbp/computation/meaning/IdentityMeaning.scala ||
-          $f -ef src/main/scala/pdbp/computation/transformation/ComputationTransformation.scala ]]
+          $f -ef src/main/scala/pdbp/computation/transformation/ComputationTransformation.scala ||
+          $f -ef src/main/scala/pdbp/program/reactive/writing/ReactiveWritingProgram.scala ||
+          $f -ef src/main/scala/pdbp/program/reactive/reading/writing/ReactiveReadingWithWritingProgram.scala ]]
   then
     echo "scalafmt $f has problems with 'private[pdbp] trait '"
     sed -i "s/private\[pdbp\] trait /private\[pdbp\] class /g" $f

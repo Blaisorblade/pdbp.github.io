@@ -35,7 +35,7 @@ object FactorialOfIntReadMain extends MainFactorial[`=>AR`[BigInt]]() {
 
     import pdbp.program.meaning.ofActiveIntReading.activeIntReading.implicits.activeIntReadingMeaningOfActiveIntReading.meaning
 
-    meaning(mainFactorial)(())
+    val mainFactorialMeaning = meaning(mainFactorial)(())
 
   }
 }

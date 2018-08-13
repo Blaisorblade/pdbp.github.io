@@ -1,4 +1,4 @@
-package examples.main.active.free.effectfulReadingAndWriting
+package examples.main.reactive.free.effectfulReadingAndWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,17 +11,17 @@ package examples.main.active.free.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.free.activeFreeTypes._
+import pdbp.types.reactive.free.reactiveFreeTypes._
 
-import pdbp.program.active.free.implicits.activeFreeProgram
+import pdbp.program.reactive.free.implicits.reactiveFreeProgram
 
 import examples.mainPrograms.MainFactorial
 
-object FactorialMain extends MainFactorial[`=>AF`]() {
+object FactorialMain extends MainFactorial[`=>RF`]() {
 
   import examples.utils.EffectfulUtils
 
-  private val effectfulUtils = new EffectfulUtils[`=>AF`]
+  private val effectfulUtils = new EffectfulUtils[`=>RF`]
 
   import effectfulUtils._
 
@@ -31,9 +31,11 @@ object FactorialMain extends MainFactorial[`=>AF`]() {
 
   def main(args: Array[String]): Unit = {
 
-    import pdbp.program.meaning.ofActiveFree.active.implicits.activeMeaningOfActiveFree.meaning
+    import pdbp.program.meaning.ofReactiveFree.reactive.implicits.reactiveMeaningOfReactiveFree.meaning
 
-    val mainFactorialMeaning: Unit = meaning(mainFactorial)(())
+    val mainFactorialMeaning: (Unit => Unit) => Unit = meaning(mainFactorial)(())
+
+    mainFactorialMeaning(identity)
 
   }
 

@@ -30,26 +30,31 @@ import pdbp.natural.transformation.unary.`~U~>`
 
 import pdbp.computation.transformation.ComputationTransformation
 
-private[pdbp] trait ReactiveTransformation[FC[+ _]: Computation]
-    extends ComputationTransformation[FC, ReactiveTransformed[FC]] {
+private[pdbp] trait ReactiveTransformation[C[+ _]: Computation]
+    extends ComputationTransformation[C, ReactiveTransformed[C]] {
 
-  private type RTFC = ReactiveTransformed[FC]
+  private type RTC = ReactiveTransformed[C]
 
-  import implicitly.{result => resultFC}
-  import implicitly.{bind => bindFC}
+  import implicitly.{result => resultC}
+  import implicitly.{bind => bindC}
 
-  override private[pdbp] val transform: FC `~U~>` RTFC = new {
-    override private[pdbp] def apply[Z](fcz: FC[Z]): RTFC[Z] = { `fcz=>u` =>
-      `fcz=>u`(fcz)
+  override private[pdbp] val transform: C `~U~>` RTC = new {
+    override private[pdbp] def apply[Z](cz: C[Z]): RTC[Z] = { `cz=>u` =>
+      `cz=>u`(cz)
     }
   }
 
-  override private[pdbp] def bind[Z, Y](
-      rtfcz: RTFC[Z],
-      `z=>rtfcy`: => (Z => RTFC[Y])): RTFC[Y] = { `cy=>u` =>
-    rtfcz { cz =>
-      bindFC(cz, z => resultFC(`z=>rtfcy`(z)(`cy=>u`)))
-    }
+  override private[pdbp] def bind[Z, Y](rtcz: RTC[Z],
+                                        `z=>rtcy`: => (Z => RTC[Y])): RTC[Y] = {
+    `cy=>u` =>
+      rtcz { cz =>
+        bindC(cz, { z =>
+          // Thread.sleep(10)
+          // print(".")
+          // Thread.sleep(200)
+          resultC(`z=>rtcy`(z)(`cy=>u`))
+        })
+      }
   }
 
 }

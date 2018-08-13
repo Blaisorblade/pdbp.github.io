@@ -1,4 +1,4 @@
-package examples.main.reactive.effectfulReadingAndWriting
+package examples.main.reactive.reading.int.effectfulWriting
 
 //       _______         __    __        _______
 //      / ___  /\       / /\  / /\      / ___  /\
@@ -11,34 +11,33 @@ package examples.main.reactive.effectfulReadingAndWriting
 //  Program Description Based Programming Library
 //  author        Luc Duponcheel        2017-2018
 
-import pdbp.types.active.activeTypes._
+import pdbp.types.reactive.reading.reactiveReadingTypes._
 
-import pdbp.types.reactive.reactiveTypes._
-
-import pdbp.program.reactive.implicits.reactiveProgram
+import pdbp.program.reactive.reading.int.implicits.reactiveIntReadingProgram
 
 import examples.mainPrograms.MainFactorial
 
-object FactorialMain extends MainFactorial[`=>R`]() {
+object FactorialOfIntReadMain extends MainFactorial[`=>RR`[BigInt]]() {
 
   import examples.utils.EffectfulUtils
 
-  private val effectfulUtils = new EffectfulUtils[`=>R`]
+  private val effectfulUtils = new EffectfulUtils[`=>RR`[BigInt]]
 
   import effectfulUtils._
 
-  override val producer = effectfulReadIntFromConsole
+  override val producer = reactiveIntReadingProgram.read
 
-  override val consumer = effectfulWriteFactorialOfIntToConsole
+  override val consumer = effectfulWriteFactorialOfIntReadToConsole
 
   def main(args: Array[String]): Unit = {
 
-    import pdbp.program.meaning.ofReactive.reactive.implicits.reactiveMeaningOfReactive.meaning
+    import examples.utils.effects.implicits.readIntFromConsoleEffect
+
+    import pdbp.program.meaning.ofReactiveIntReading.reactiveIntReading.implicits.reactiveIntReadingMeaningOfReactiveIntReading.meaning
 
     val mainFactorialMeaning: (Unit => Unit) => Unit = meaning(mainFactorial)(())
 
     mainFactorialMeaning(identity)
 
   }
-
 }
